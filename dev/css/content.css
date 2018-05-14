@@ -1,0 +1,472 @@
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Post and page content
+	# Alignments
+	# Blocks
+	# Media
+		# Captions
+		# Galleries
+	# Comments
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+# Post and page content
+--------------------------------------------------------------*/
+/* Custom rule  for sticky posts:
+.sticky {
+
+}
+*/
+
+.hentry {
+	margin-bottom: 1rem;
+}
+
+.entry-meta,
+.entry-footer {
+	font-family: var(--highlight-font-family);
+	font-size: 80%;
+}
+
+/* Hides the update date and time. */
+.updated:not(.published) {
+	display: none;
+}
+
+.post-thumbnail img {
+	margin: 0 auto;
+}
+
+.page-content,
+.entry-content,
+.entry-summary {
+	margin: 1.5em 0 0;
+}
+
+.page-content > *,
+.entry-content > *,
+.entry-summary > *,
+.not-found > * {
+	margin-right: auto;
+	margin-left: auto;
+	padding-right: 24px;
+	padding-right: 1.5rem;
+	padding-left: 24px;
+	padding-left: 1.5rem;
+	max-width: calc(var(--content-width) * 16)px; /* Fallback for older browsers. */
+	max-width: var(--content-width)rem;
+}
+
+.page-title,
+.entry-header,
+.entry-footer,
+.site-info,
+.post-navigation,
+.page-navigation,
+.comments-area {
+	margin: 1.5em auto;
+	padding-right: 24px;
+	padding-right: 1.5rem;
+	padding-left: 24px;
+	padding-left: 1.5rem;
+	max-width: calc(var(--content-width) * 16)px; /* Fallback for older browsers. */
+	max-width: var(--content-width)rem;
+}
+
+@media (--content-query) {
+	.page-content > *,
+	.entry-content > *,
+	.entry-summary > *,
+	.page-title,
+	.entry-header,
+	.entry-footer,
+	.site-info,
+	.post-navigation,
+	.page-navigation,
+	.comments-area {
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+}
+
+.page-links {
+	clear: both;
+	margin: 0 0 1.5em;
+}
+
+.entry-footer span {
+	margin-right: 1em;
+}
+
+.entry-footer {
+	clear: both;
+	padding: 1.5em 1.5rem 3em;
+	border-bottom: 1px solid #111;
+}
+
+@media (--content-query) {
+	.entry-footer {
+		padding-right: 0;
+		padding-left: 0;
+	}
+}
+/*--------------------------------------------------------------
+## Alignments
+--------------------------------------------------------------*/
+.alignleft {
+	float: left;
+	margin-right: 1.5rem;
+}
+
+.alignright {
+	float: right;
+	margin-left: 1.5rem;
+}
+
+.aligncenter {
+	clear: both;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+@media (--content-query) {
+
+	.wp-caption.alignright,
+	.wp-block-image.alignright {
+		margin-right: calc((100% - calc(var(--content-width) * 16)px) / 2);
+		margin-right: calc((100% - var(--content-width)rem) / 2);
+	}
+
+	.wp-caption.alignleft,
+	.wp-block-image.alignleft {
+		margin-left: calc((100% - calc(var(--content-width) * 16)px) / 2);
+		margin-left: calc((100% - var(--content-width)rem) / 2);
+	}
+
+}
+
+/*--------------------------------------------------------------
+## Blocks
+--------------------------------------------------------------*/
+/*
+ * Available block selectors:
+
+ * .wp-block-image
+ * .wp-block-gallery
+ * .wp-block-video
+ * .wp-block-quote
+ * .wp-block-text-columns
+ * .wp-block-cover-text
+ * .wp-block-button
+ * .wp-block-gallery
+ * .wp-block-table
+ * .wp-block-embed
+ * .wp-block-audio
+ * .wp-block-pullquote
+ * .wp-block-preformatted
+ * .wp-block-code
+ * .wp-block-verse
+
+ */
+
+ .wp-block-quote {
+	 padding-left: 1em;
+	 border-left: 4px solid black;
+ }
+
+ .wp-block-quote cite, .wp-block-quote footer {
+	display: block;
+	color: hsl(0, 0%, 40%);
+}
+
+.wp-block-quote.is-large {
+	margin: 1.5em auto;
+}
+
+.wp-block-quote.is-large p {
+	margin-bottom: .75em;
+	font-size: 1.6em;
+	line-height: 1.25;
+}
+
+.wp-block-quote.is-large cite {
+	font-size: 1.2em;
+}
+
+.entry-content ul,
+.entry-content ol {
+	padding-right: 2.5em;
+	padding-left: 2.5em;
+}
+
+.entry-content ul ul,
+.entry-content ol ol {
+	margin-right: 0;
+	margin-left: 0;
+	padding-right: 1.5em;
+	padding-left: 1.5em;
+}
+
+.wp-block-video video {
+	max-width: var(--content-width)rem;
+}
+
+.alignwide {
+	max-width: calc(50% + var(--content-width)rem / 2);
+}
+
+.alignfull {
+	max-width: 100%;
+	padding: 0;
+}
+
+.wp-block-image img {
+	display: block;
+}
+
+.wp-block-cover-text p {
+	padding: 1.5em 1.5em;
+}
+
+@media (--content-query) {
+	.wp-block-cover-text p {
+		padding: 1.5em 0;
+	}
+
+	.entry-content pre {
+		padding: 1.5em;
+	}
+}
+
+.wp-block-columns {
+	grid-column-gap: 1em;
+}
+
+ul.wp-block-latest-posts.alignwide,
+ul.wp-block-latest-posts.alignfull,
+ul.wp-block-latest-posts.is-grid.alignwide,
+ul.wp-block-latest-posts.is-grid.alignwide {
+	padding: 0 1.5em;
+}
+
+.wp-block-table {
+	display: block;
+	overflow-x: auto;
+}
+
+.wp-block-table table {
+	border-collapse: collapse;
+	width: 100%
+}
+
+.wp-block-table td, .wp-block-table th {
+	padding: .5em;
+}
+
+.entry-content li {
+	list-style-position: outside;
+}
+
+/* Responsive video embed magic stuff: */
+.wp-block-embed.type-video > .wp-block-embed__wrapper {
+	position: relative;
+	width: 100%;
+	height: 0;
+	padding-top: 56.25%;
+}
+
+.wp-block-embed.type-video > .wp-block-embed__wrapper > iframe {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+.wp-block-separator {
+	margin-top: 4em;
+	margin-bottom: 4em;
+	width: 5em;
+}
+
+/*--------------------------------------------------------------
+## Media
+--------------------------------------------------------------*/
+.page-content .wp-smiley,
+.entry-content .wp-smiley,
+.comment-content .wp-smiley {
+	border: none;
+	margin-bottom: 0;
+	margin-top: 0;
+	padding: 0;
+}
+
+/* Make sure embeds and iframes fit their containers. */
+embed,
+iframe,
+object {
+	max-width: 100%;
+}
+
+/*--------------------------------------------------------------
+### Captions
+--------------------------------------------------------------*/
+.wp-caption {
+	margin-bottom: 1.5em;
+	max-width: 100%;
+}
+
+.wp-caption img[class*="wp-image-"] {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-caption .wp-caption-text {
+	margin: 0.8075em 0;
+}
+
+.wp-caption-text {
+	text-align: center;
+}
+
+/*--------------------------------------------------------------
+### Gallery Block - overrides core styles
+--------------------------------------------------------------*/
+
+.wp-block-gallery:not(.components-placeholder) {
+	margin: 1.5em auto;
+}
+
+/* Override standard ul indentation. */
+
+.entry-content .wp-block-gallery {
+	padding-right: 1.5em;
+	padding-left: 1.5em;
+}
+
+@media screen and (min-width: 48em) {
+	.entry-content .wp-block-gallery {
+		padding-right: 0;
+		padding-left: 0;
+	}
+}
+
+.wp-block-gallery {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-gap: .5em;
+}
+
+.wp-block-gallery.columns-2 .blocks-gallery-item,
+.wp-block-gallery.columns-3 .blocks-gallery-item,
+.wp-block-gallery.columns-4 .blocks-gallery-item,
+.wp-block-gallery.columns-5 .blocks-gallery-item,
+.wp-block-gallery.columns-6 .blocks-gallery-item,
+.wp-block-gallery.columns-7 .blocks-gallery-item,
+.wp-block-gallery.columns-8 .blocks-gallery-item,
+.wp-block-gallery.columns-9 .blocks-gallery-item {
+	grid-column: span 1;
+	margin: 0;
+	width: inherit;
+}
+
+
+.blocks-gallery-item:last-child:nth-child(odd) {
+	grid-column: span 2;
+}
+
+@media screen and (min-width: 40em) {
+	.wp-block-gallery.columns-2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.wp-block-gallery.columns-3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.wp-block-gallery.columns-4 {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.wp-block-gallery.columns-5 {
+		grid-template-columns: repeat(5, 1fr);
+	}
+
+	.wp-block-gallery.columns-6 {
+		grid-template-columns: repeat(6, 1fr);
+	}
+
+	.wp-block-gallery.columns-7 {
+		grid-template-columns: repeat(7, 1fr);
+	}
+
+	.wp-block-gallery.columns-8 {
+		grid-template-columns: repeat(8, 1fr);
+	}
+
+	.wp-block-gallery.columns-9 {
+		grid-template-columns: repeat(9, 1fr);
+	}
+}
+
+/*--------------------------------------------------------------
+### Galleries (Legacy)
+--------------------------------------------------------------*/
+.gallery {
+	margin-bottom: 1.5em;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	grid-gap: .5em;
+}
+
+@media screen and (min-width: 40em) {
+	.gallery-columns-2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.gallery-columns-3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.gallery-columns-4 {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.gallery-columns-5 {
+		grid-template-columns: repeat(5, 1fr);
+	}
+
+	.gallery-columns-6 {
+		grid-template-columns: repeat(6, 1fr);
+	}
+
+	.gallery-columns-7 {
+		grid-template-columns: repeat(7, 1fr);
+	}
+
+	.gallery-columns-8 {
+		grid-template-columns: repeat(8, 1fr);
+	}
+
+	.gallery-columns-9 {
+		grid-template-columns: repeat(9, 1fr);
+	}
+}
+
+.gallery-item {
+	padding: .5em;
+	border: 1px solid rgb(222, 222, 222);
+}
+
+.gallery-icon {
+	display: flex;
+	justify-content: center;
+}
+
+.gallery-caption {
+	font-size: 80%;
+}

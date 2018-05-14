@@ -1,0 +1,23 @@
+/**
+ * Styles for the WordPress post/page editor.
+ * Ensures a visual match between back- and front-end.
+ */
+.edit-post-visual-editor {
+	color: var(--global-font-color);
+	font-family: var(--global-font-family);
+	font-size: var(--global-font-size)px;
+	font-size: calc(var(--global-font-size) / 16)rem;
+	line-height: var(--global-font-line-height);
+}
+
+.editor-post-title .editor-post-title__input, h1, h2, h3, h4, h5, h6 {
+	font-family: var(--highlight-font-family);
+	color: #32373c;
+	clear: both;
+}
+
+.editor-post-title .editor-post-title__input {
+	font-size: 32px;
+	font-size: 2rem;
+	line-height: 1.4;
+}

@@ -1,0 +1,14 @@
+{
+    "name": "wprig/wprig",
+    "description": "A progressive theme development rig for WordPress.",
+    "type": "wordpress-theme",
+    "license": "GPL-2.0",
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^0.14.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+        "wimg/php-compatibility": "^8.1"
+    },
+    "require": {
+        "squizlabs/php_codesniffer": "^3.2"
+    }
+}

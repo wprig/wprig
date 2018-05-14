@@ -1,0 +1,46 @@
+/**
+ * Custom styles for the front-page.php template.
+ */
+
+@media (--sidebar-query) {
+	.site {
+		margin: 0 1em;
+		display: grid;
+		grid-template-columns: 1fr;
+	}
+
+	.site-main {
+		margin-top: 2rem;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		grid-gap: 2rem;
+	}
+
+	.post {
+		grid-column: 2/4;
+	}
+
+	.post:nth-child(-n+4) {
+		grid-column: span 2;
+		margin: 0 4rem;
+	}
+
+	.post:nth-child(-n+4) .entry-footer {
+		border-bottom: none;
+		padding-bottom: 1.5em;
+	}
+
+	.post:first-of-type {
+		grid-column: 1/5;
+		margin: 0;
+		padding: 1rem 0;
+		border: 1px solid hsl(0, 0%, 50%);
+	}
+
+	.primary-sidebar {
+		grid-column: 4;
+		grid-row: 3/8;
+		min-width: 0;
+	}
+
+}

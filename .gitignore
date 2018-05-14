@@ -1,0 +1,24 @@
+# Ignore everything:
+/*
+
+# Whitelist what you want tracked:
+!/.github/
+!/dev/
+!/languages/
+
+!.babelrc
+!composer.json
+!composer.lock
+!CONTRIBUTING.md
+!.editorconfig
+!.eslintignore
+!.eslintrc.json
+!.gitignore
+!gulpfile.bable.js
+!LICENSE
+!package-lock.json
+!package.json
+!phpcs.xml.dist
+!README.md
+!screenshot.png
+!.travis.yml
