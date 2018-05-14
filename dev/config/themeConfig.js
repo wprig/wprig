@@ -8,7 +8,7 @@ module.exports = {
 	dev: {
 		browserSync: {
 			live: true,
-			proxyURL: 'ptsk.test:8888',
+			proxyURL: 'wprig.test:8888',
 			bypassPort: '8181'
 		},
 		browserslist: [ // See https://github.com/browserslist/browserslist

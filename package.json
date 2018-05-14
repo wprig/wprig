@@ -23,7 +23,7 @@
     "babel-register": "^6.26.0",
     "browser-sync": "^2.23.6",
     "eslint": "^4.18.1",
-    "eslint-config-gulp": "^2.1.0",
+    "eslint-config-gulp": "^3.0.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-config-wordpress": "^2.0.0",
     "eslint-plugin-import": "^2.9.0",
