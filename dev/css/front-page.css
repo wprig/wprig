@@ -10,37 +10,46 @@
 	}
 
 	.site-main {
-		margin-top: 2rem;
+		margin: 2rem 1rem 0;
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+		grid-auto-flow: dense;
 		grid-gap: 2rem;
 	}
 
 	.post {
-		grid-column: 2/4;
-	}
-
-	.post:nth-child(-n+4) {
-		grid-column: span 2;
-		margin: 0 4rem;
-	}
-
-	.post:nth-child(-n+4) .entry-footer {
-		border-bottom: none;
-		padding-bottom: 1.5em;
-	}
-
-	.post:first-of-type {
-		grid-column: 1/5;
-		margin: 0;
-		padding: 1rem 0;
+		margin-bottom: 0;
+		padding: 0 2rem;
 		border: 1px solid hsl(0, 0%, 50%);
 	}
 
-	.primary-sidebar {
-		grid-column: 4;
-		grid-row: 3/8;
-		min-width: 0;
+	.post:first-of-type {
+		grid-column: span 2;
+		margin: 0;
+		padding: 0;
+
+	}
+
+	.wp-block-image.alignleft,
+	.wp-caption.alignleft {
+		margin-left: 0;
+	}
+
+	.wp-block-image.alignright,
+	.wp-caption.alignright {
+		margin-right: 0;
+	}
+
+	.entry-footer {
+		border-bottom: none;
+	}
+
+	.site-main .posts-navigation {
+		width: 100%;
+		margin-bottom: 0;
+		padding: 2rem 0 0;
+		border-top: 1px solid #111;
+		border-bottom: none;
 	}
 
 }
