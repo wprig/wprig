@@ -95,7 +95,7 @@ function wprig_add_body_style() {
 		// Get registered styles.
 		$wp_styles = wp_styles();
 
-		$prelods = array();
+		$preloads = array();
 
 		// Preload content.css.
 		$preloads['wprig-content'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-content' );

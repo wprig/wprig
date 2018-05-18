@@ -304,7 +304,7 @@ function wprig_scripts() {
 	if ( ! wprig_is_amp() ) {
 
 		// Enqueue the navigation script.
-		wp_enqueue_script( 'wprig-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20180514', true );
+		wp_enqueue_script( 'wprig-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20180514', false );
 		wp_script_add_data( 'wprig-navigation', 'async', true );
 		wp_localize_script( 'wprig-navigation', 'wprigScreenReaderText', array(
 			'expand'   => __( 'Expand child menu', 'wprig' ),

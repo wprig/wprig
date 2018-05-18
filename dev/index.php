@@ -17,14 +17,15 @@ get_header(); ?>
 	<main id="primary" class="site-main">
 
 	<?php
-	/**
-	 * Include the component stylesheet for the content.
-	 * This call runs only once on index and archive pages.
-	 * At some point, override functionality should be built in similar to the template part below.
-	 */
-	wp_print_styles( array( 'wprig-content' ) ); // Note: If this was already done it will be skipped.
 
 	if ( have_posts() ) :
+
+		/**
+		 * Include the component stylesheet for the content.
+		 * This call runs only once on index and archive pages.
+		 * At some point, override functionality should be built in similar to the template part below.
+		 */
+		wp_print_styles( array( 'wprig-content' ) ); // Note: If this was already done it will be skipped.
 
 		/* Display the appropriate header when required. */
 		wprig_index_header();

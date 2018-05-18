@@ -21,3 +21,7 @@
 	font-size: 2rem;
 	line-height: 1.4;
 }
+
+.edit-post-visual-editor p {
+	font-family: var(--global-font-family);
+}
