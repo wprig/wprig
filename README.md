@@ -4,7 +4,7 @@
 
 > A progressive theme development rig for WordPress.
 
-## Your Performance-Focussed Development Rig
+## Your Performance-Focused Development Rig
 WP Rig is built to promote the latest best practices for progressive web content and optimization. Building a theme from WP Rig means adopting this approach and the core principles it is built on:
 - Accessibility
 - [Lazy-loading of images ](https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/)
@@ -33,18 +33,18 @@ To take full advantage of the features in WP Rig, your code editor needs support
 - [ESLint](https://eslint.org/docs/user-guide/integrations)
 - [PHP CodeSniffer (phpCS)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki)
 
-## Workikng with WP Rig
+## Working with WP Rig
 WP Rig can be used in any development environment. It does not require any specific platform or server setup. It also does not have an opinion about what local or virtual server solution the developer uses.
 
 WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `proxy` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `URL` value is the URL to the live version of your local site.
 
 WP Rig uses a [Gulp 4](https://gulpjs.com/) build process to generate and optimize the code for the theme. All development is done in the `/dev` folder and Gulp preprocesses, transpiles, and compiles the files into the root folder. The root folder files become the active theme. WordPress ignores anything in the `/dev` folder.
 
-**Note:** If you have previously used Gulp, you may encounter seemingly random erros that prevent the build process from running. To fix this issue, [upgrade to Gulp 4 following the steps outlined here](https://github.com/pattern-lab/edition-node-gulp/wiki/Updating-to-Gulp-4).
+**Note:** If you have previously used Gulp, you may encounter seemingly random errors that prevent the build process from running. To fix this issue, [upgrade to Gulp 4 following the steps outlined here](https://github.com/pattern-lab/edition-node-gulp/wiki/Updating-to-Gulp-4).
 
-JavaScript files are automatically linted using [ESLint](https://eslint.org/) in accordance with [WordPress Codeing Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/).
+JavaScript files are automatically linted using [ESLint](https://eslint.org/) in accordance with [WordPress Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/).
 
-PHP and CSS files are automatically linted using [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) in accordance with [WordPress Codeing Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/). To take full advantage of this setup, configure your code editor / IDE to automatically test for the WordPress Coding Standards. More details can be found at the [WordPres Coding Standards Wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki).
+PHP and CSS files are automatically linted using [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) in accordance with [WordPress Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/). To take full advantage of this setup, configure your code editor / IDE to automatically test for the WordPress Coding Standards. More details can be found at the [WordPres Coding Standards Wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki).
 
 ### `build` process
 `npm run build` is the regular development process. While this process is running, files in the `./dev/` folder will be automatically compiled to the live theme and BrowserSync will update if it is enabled.
@@ -111,7 +111,7 @@ This approach has several advantages:
 - Leverages HTTP/2 multiplexing and can be extended to include server push etc.
 - Component-level stylesheets are cached and can be individually updated without forcing reload of all styles on the site.
 
-To improve the performance of the theme, progressively loaded stylesheets can be conditionally preloaded. This is done using the `wprig_add_body_style()` function in `./dev/inc/template-functions.php`. When preloading a stylesheet, use the console in Chrome developer tools to ensure no unneccessary stylesheets are loaded. A warning will appear letting you know if a stylesheet is preloaded but not used.
+To improve the performance of the theme, progressively loaded stylesheets can be conditionally preloaded. This is done using the `wprig_add_body_style()` function in `./dev/inc/template-functions.php`. When preloading a stylesheet, use the console in Chrome developer tools to ensure no unnecessary stylesheets are loaded. A warning will appear letting you know if a stylesheet is preloaded but not used.
 
 ### Modern CSS, custom properties (variables), autoprefixing, etc
 All CSS is processed through [PostCSS](http://postcss.org/) and leveraging [CSSNext](http://cssnext.io/) to allow the use of modern and future CSS markup like [custom properties (variables)](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables). Variables are defined in `./dev/config/cssVariables` and applied to all CSS files as they are processed.
@@ -120,7 +120,7 @@ CSSNext passes all CSS through Autoprefixer to ensure backward compatibility. [T
 ### Modern layouts through CSS grid, flex, and float
 The theme generated by WP Rig is mobile-first and accessible. It uses the modern layout modules CSS grid and flex to support a minimalist HTML structure.
 
-For backwards compatibility with browsers who do not support modern layout modules, WP Rig provides the mobile-first layout across all screen widths and serves two-dimensional layouts as a progressive enhancement.
+For backward compatibility with browsers who do not support modern layout modules, WP Rig provides the mobile-first layout across all screen widths and serves two-dimensional layouts as a progressive enhancement.
 
 The CSS philosophy of WP Rig breaks down as follows:
 - Mobile layout for all screen sizes as fallback.
