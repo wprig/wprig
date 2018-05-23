@@ -49,10 +49,9 @@ const paths = {
 		sass: ['dev/**/*.scss']
 	},
 	scripts: {
-		src: ['dev/**/*.js', '!dev/js/libs/**/*.js', '!dev/optional/**/*.*', '!dev/config/**/*'],
+		src: ['dev/**/*.js', '!dev/**/*.min.js', '!dev/js/libs/**/*.js', '!dev/optional/**/*.*', '!dev/config/**/*'],
 		dest: './',
-		libs: 'dev/js/libs/**/*.js',
-		libsDest: './js/libs/'
+		libs: ['dev/**/*.min.js', 'dev/js/libs/**/*.js']
 	},
 	images: {
 		src: ['dev/**/*.{jpg,JPG,png,svg}', '!dev/optional/**/*.*'],
@@ -195,9 +194,9 @@ export function scripts() {
  */
 export function jsCopy() {
 	return gulp.src(paths.scripts.libs)
-	.pipe(newer(paths.scripts.libsDest))
+	.pipe(newer(paths.scripts.dest))
 	.pipe(gulp.dest(paths.verbose))
-	.pipe(gulp.dest(paths.scripts.libsDest))
+	.pipe(gulp.dest(paths.scripts.dest));
 }
 
 
@@ -220,7 +219,8 @@ export function watch() {
 	gulp.watch(paths.config.cssVars, gulp.series(styles, reload));
 	gulp.watch(paths.styles.sass, sassStyles);
 	gulp.watch(paths.styles.src, gulp.series(styles, reload));
-	gulp.watch(paths.scripts.src, gulp.series(gulp.parallel(scripts, jsCopy), reload));
+	gulp.watch(paths.scripts.src, gulp.series(scripts, reload));
+	gulp.watch(paths.scripts.libs, gulp.series(jsCopy, reload));
 	gulp.watch(paths.images.src, gulp.series(images, reload));
 }
 
