@@ -50,8 +50,11 @@ const paths = {
 	},
 	scripts: {
 		src: ['dev/**/*.js', '!dev/**/*.min.js', '!dev/js/libs/**/*.js', '!dev/optional/**/*.*', '!dev/config/**/*'],
+		min: 'dev/**/*.min.js',
 		dest: './',
-		libs: ['dev/**/*.min.js', 'dev/js/libs/**/*.js']
+		libs: 'dev/js/libs/**/*.js',
+		libsDest: './js/libs/',
+		verboseLibsDest: './verbose/js/libs/'
 	},
 	images: {
 		src: ['dev/**/*.{jpg,JPG,png,svg}', '!dev/optional/**/*.*'],
@@ -192,13 +195,23 @@ export function scripts() {
 /**
  * Copy JS libraries without touching them.
  */
-export function jsCopy() {
+export function jsLibs() {
 	return gulp.src(paths.scripts.libs)
+	.pipe(newer(paths.scripts.verboseLibsDest))
+	.pipe(gulp.dest(paths.scripts.verboseLibsDest))
+	.pipe(gulp.dest(paths.scripts.libsDest));
+}
+
+
+/**
+ * Copy minified JS files without touching them.
+ */
+export function jsMin() {
+	return gulp.src(paths.scripts.min)
 	.pipe(newer(paths.scripts.dest))
 	.pipe(gulp.dest(paths.verbose))
 	.pipe(gulp.dest(paths.scripts.dest));
 }
-
 
 /**
  * Optimize images.
@@ -220,7 +233,8 @@ export function watch() {
 	gulp.watch(paths.styles.sass, sassStyles);
 	gulp.watch(paths.styles.src, gulp.series(styles, reload));
 	gulp.watch(paths.scripts.src, gulp.series(scripts, reload));
-	gulp.watch(paths.scripts.libs, gulp.series(jsCopy, reload));
+	gulp.watch(paths.scripts.min, gulp.series(jsMin, reload));
+	gulp.watch(paths.scripts.libs, gulp.series(jsLibs, reload));
 	gulp.watch(paths.images.src, gulp.series(images, reload));
 }
 
@@ -228,7 +242,7 @@ export function watch() {
 /**
  * Map out the sequence of events on first load:
  */
-const firstRun = gulp.series(php, gulp.parallel(scripts, jsCopy), sassStyles, styles, images, serve, watch);
+const firstRun = gulp.series(php, gulp.parallel(scripts, jsMin, jsLibs), sassStyles, styles, images, serve, watch);
 
 
 /**
@@ -273,6 +287,6 @@ const testTheme = gulp.series(php);
 /**
  * Export theme for distribution.
  */
-const bundleTheme = gulp.series(testTheme, gulp.parallel(scripts, jsCopy), styles, images, translate, bundle);
+const bundleTheme = gulp.series(testTheme, gulp.parallel(scripts, jsMin, jsLibs), styles, images, translate, bundle);
 
 export { testTheme, bundleTheme };
