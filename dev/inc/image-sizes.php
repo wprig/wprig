@@ -14,7 +14,7 @@
  *                      values in pixels (in that order).
  * @return string A source size value for use in a content image 'sizes' attribute.
  */
-function wprig_content_image_sizes_attr( $sizes, $size, $image_src, $image_meta, $attachment_id ) {
+function wprig_content_image_sizes_attr( $sizes, $size ) {
 	$width = $size[0];
 
 	if ( 740 <= $width ) {
@@ -27,7 +27,7 @@ function wprig_content_image_sizes_attr( $sizes, $size, $image_src, $image_meta,
 
 	return $sizes;
 }
-add_filter( 'wp_calculate_image_sizes', 'wprig_content_image_sizes_attr', 10, 5 );
+add_filter( 'wp_calculate_image_sizes', 'wprig_content_image_sizes_attr', 10, 2 );
 
 /**
  * Filter the `sizes` value in the header image markup.
