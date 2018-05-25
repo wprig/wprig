@@ -27,7 +27,7 @@
 					wprig_comments_link();
 				?>
 			</div><!-- .entry-meta -->
-		<?php
+			<?php
 		endif;
 		?>
 	</header><!-- .entry-header -->
