@@ -72,7 +72,7 @@ before_script:
 # All commands must exit with code 0 on success. Anything else is considered failure.
 script:
     # Search for PHP syntax errors.
-    - find -L . -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
+    - find -L . -name '*.php' ! -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 4 php -l
     # Run the theme through JavaScript Code Style checker.
     - if [[ "$SNIFF" == "1" ]]; then $(npm bin)/eslint .; fi
     # WordPress Coding Standards.
