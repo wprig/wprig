@@ -89,8 +89,6 @@ function wprig_get_preload_stylesheet_uri( $wp_styles, $handle ) {
 function wprig_add_body_style() {
 
 	if ( ! wprig_is_amp() ) {
-		// Get the current template global.
-		global $template;
 
 		// Get registered styles.
 		$wp_styles = wp_styles();
