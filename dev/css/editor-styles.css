@@ -2,7 +2,7 @@
  * Styles for the WordPress post/page editor.
  * Ensures a visual match between back- and front-end.
  */
-.edit-post-visual-editor {
+.editor-writing-flow {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	font-size: var(--global-font-size)px;
@@ -10,7 +10,7 @@
 	line-height: var(--global-font-line-height);
 }
 
-.editor-post-title .editor-post-title__input, h1, h2, h3, h4, h5, h6 {
+.editor-post-title .editor-post-title__input, h1, h2, h3, h4, h5, h6, .edit-post-visual-editor p {
 	font-family: var(--highlight-font-family);
 	color: #32373c;
 	clear: both;
@@ -24,4 +24,87 @@
 
 .edit-post-visual-editor p {
 	font-family: var(--global-font-family);
+}
+
+/* Visualize editor color palette (defined in functions.php). */
+
+.has-dusty-orange-color,
+.has-dusty-orange-color a {
+	color: #ED8F5B;
+}
+
+.has-dusty-orange-background-color {
+	background-color: #ED8F5B;
+}
+
+.has-dusty-red-color,
+.has-dusty-red-color a {
+	color: #E36D60;
+}
+
+.has-dusty-red-background-color {
+	background-color: #E36D60;
+}
+
+.has-dusty-wine-color,
+.has-dusty-wine-color a {
+	color: #9C4368;
+}
+
+.has-dusty-wine-background-color {
+	background-color: #9C4368;
+}
+
+.has-dark-sunset-color,
+.has-dark-sunset-color a {
+	color: #33223B;
+}
+
+.has-dark-sunset-background-color {
+	background-color: #33223B;
+}
+
+.has-almost-black-color,
+.has-almost-black-color a {
+	color: #0A1C28;
+}
+
+.has-almost-black-background-color {
+	background-color: #0A1C28;
+}
+
+.has-dusty-water-color,
+.has-dusty-water-color a {
+	color: #41848F;
+}
+
+.has-dusty-water-background-color {
+	background-color: #41848F;
+}
+
+.has-dusty-sky-color,
+.has-dusty-sky-color a {
+	color: #72A7A3;
+}
+
+.has-dusty-sky-background-color {
+	background-color: #72A7A3;
+}
+
+.has-dusty-daylight-color,
+.has-dusty-daylight-color a {
+	color: #97C0B7;
+}
+
+.has-dusty-daylight-background-color {
+	background-color: #97C0B7;
+}
+
+.has-dusty-sun-color,
+.has-dusty-sun-color a {
+	color: #EEE9D1;
+}
+
+.has-dusty-sun-background-color {
+	background-color: #EEE9D1;
 }
