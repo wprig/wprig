@@ -10,7 +10,14 @@
 	line-height: var(--global-font-line-height);
 }
 
-.editor-post-title .editor-post-title__input, h1, h2, h3, h4, h5, h6, .edit-post-visual-editor p {
+.editor-post-title .editor-post-title__input,
+.editor-writing-flow h1,
+.editor-writing-flow h2,
+.editor-writing-flow h3,
+.editor-writing-flow h4,
+.editor-writing-flow h5,
+.editor-writing-flow h6,
+.edit-post-visual-editor p {
 	font-family: var(--highlight-font-family);
 	color: #32373c;
 	clear: both;
