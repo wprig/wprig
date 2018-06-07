@@ -116,7 +116,7 @@ function wprig_setup() {
 		),
 		array(
 			'name'  => 'Dark sunset',
-			'color' => '##33223B',
+			'color' => '#33223B',
 		),
 		array(
 			'name'  => 'Almost black',
