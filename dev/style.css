@@ -648,6 +648,7 @@ input[type="submit"] {
 	font-size: 0.75rem;
 	line-height: 1;
 	padding: .6em 1em .4em;
+	cursor: pointer;
 }
 
 button:hover,
@@ -792,34 +793,6 @@ textarea {
 	background: transparent;
 }
 
-.main-navigation ul {
-	display: none;
-	list-style: none;
-	margin: 0;
-	padding-left: 0;
-}
-
-.main-navigation ul ul {
-	top: 1.5em;
-	z-index: 99999;
-}
-
-.main-navigation ul ul ul {
-	top: 0;
-}
-
-.main-navigation ul ul li {
-	padding-left: 1em;
-}
-
-.main-navigation ul ul a {
-	width: 200px;
-}
-
-.main-navigation li {
-	position: relative;
-}
-
 .main-navigation a {
 	display: block;
 	width: 100%;
@@ -833,48 +806,34 @@ textarea {
 	text-decoration: underline;
 }
 
-.main-navigation .current_page_item,
-.main-navigation .current_menu_item {
-	text-decoration: underline;
-}
-
-.main-navigation .menu-item-has-children > a,
-.main-navigation .page_item_has_children > a {
-	display: inline-block;
-	width: inherit;
-	padding-right: 0;
-}
-
-button.dropdown-toggle {
-	float: right;
-	margin-top: 1px;
-	margin-right: .4em;
-	padding: 0 .2em;
-	font-size: 1.2em;
-	line-height: 1.5em;
-	text-align: center;
-	border: none;
-	background: inherit;
-}
-
-ul ul .dropdown-toggle {
-	margin-right: .5em;
-}
-
-.dropdown-symbol {
-	padding-bottom: .25em;
+.main-navigation ul {
 	display: block;
-	width: 1em;
-	transform: rotate(90deg);
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
-/* Toggle small menu and children on */
-.main-navigation.toggled-on > .menu > ul,
-.main-navigation ul.toggled-on,
-.toggled-on ul,
-.sub-menu.toggled-on,
-.children.toggled-on {
-	display: block;
+.main-navigation li {
+	position: relative;
+}
+
+.main-navigation ul ul li {
+	padding-left: 1em;
+}
+
+.main-navigation .dropdown,
+.main-navigation button.dropdown-toggle {
+	display: none;
+}
+
+.main-navigation .menu {
+	display: none;
+}
+
+@media (--narrow-menu-query) {
+	.main-navigation.toggled-on .menu {
+		display: block;
+	}
 }
 
 @media (--wide-menu-query) {
@@ -882,44 +841,19 @@ ul ul .dropdown-toggle {
 		display: none;
 	}
 
-	/*
-	.main-navigation .menu-item-has-children > a,
-	.main-navigation .page_item_has_children > a {
-
+	.main-navigation ul li a {
+		padding: .4em 0.5em;
 	}
-	*/
 
-	.main-navigation ul,
-	.main-navigation ul.toggled-on,
-	.main-navigation.toggled-on > .menu > ul,
-	.main-navigation ul.toggled-on {
-		padding-top: 0;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
+	.main-navigation ul li {
+		margin: 0 0 0 0.5em;
+	}
+	.main-navigation ul li:first-child {
+		margin-left: 0;
 	}
 
 	.main-navigation ul ul {
 		display: none;
-	}
-
-	.main-navigation li:hover > ul,
-	.main-navigation li:focus > ul {
-		display: block;
-	}
-
-	/*
-	 * Alternative to focus class for supporting browsers (all but IE/Edge) for no-JS context (e.g. AMP)
-	 * See https://caniuse.com/#feat=css-focus-within
-	 */
-	.main-navigation li:focus-within > ul {
-		display: block;
-	}
-
-	.main-navigation ul ul a {
-		width: 200px;
-	}
-	.main-navigation ul ul {
 		position: absolute;
 		top: 100%;
 		flex-direction: column;
@@ -928,15 +862,13 @@ ul ul .dropdown-toggle {
 		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
 	}
 
-	.main-navigation ul ul li {
-		padding-left: 0;
+	.main-navigation ul ul a {
+		width: 200px;
 	}
 
-	.main-navigation ul ul .toggled-on,
-	.main-navigation ul ul li:hover > ul,
-	.main-navigation ul ul li:focus-within > ul {
-		top: 2em;
-		left: 2em;
+	.main-navigation ul ul li {
+		padding-left: 0;
+		margin-left: 0;
 	}
 
 	.main-navigation ul ul li a {
@@ -944,8 +876,78 @@ ul ul .dropdown-toggle {
 		background: none;
 	}
 
-	.main-navigation ul li a {
-		padding: .4em 1em;
+	.main-navigation ul ul ul {
+		top: 0;
+		left: 100%;
+		min-height: 100%;
+	}
+
+	.main-navigation .menu {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	.main-navigation .menu-item-has-children,
+	.main-navigation .page_item_has_children {
+		padding-right: var(--dropdown-symbol-width);
+	}
+
+	.main-navigation .dropdown,
+	.main-navigation button.dropdown-toggle {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		width: var(--dropdown-symbol-width);
+		height: var(--dropdown-symbol-width);
+		font-size: inherit;
+		line-height: inherit;
+		margin: 0;
+		padding: 0;
+		border: none;
+		border-radius: 0;
+		transform: translateY(-50%);
+		overflow: visible;
+	}
+
+	.main-navigation .dropdown-symbol {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 20%;
+		top: 35%;
+		width: 60%;
+		height: 60%;
+		border: solid black;
+		border-width: 0 2px 2px 0;
+		transform: translateY(-50%) rotate(45deg);
+	}
+
+	.main-navigation ul ul .dropdown,
+	.main-navigation ul ul button.dropdown-toggle {
+		top: 40%;
+		right: 0.2em;
+	}
+
+	.main-navigation ul ul .dropdown-symbol {
+		transform: rotate(-45deg);
+	}
+
+	/*
+	 * If the dropdown toggle is active with JS, then
+	 * we'll take care of showing the submenu with JS.
+	 *
+	 * "focus-within" is an alternative to focus class for
+	 * supporting browsers (all but IE/Edge) for no-JS context
+	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	 */
+	.main-navigation li:hover > ul,
+	.main-navigation li.toggled-on > ul,
+	.main-navigation:not(.has-dropdown-toggle) li:focus > ul,
+	.main-navigation:not(.has-dropdown-toggle) li:focus-within > ul {
+		display: block;
 	}
 }
 

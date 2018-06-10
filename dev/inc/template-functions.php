@@ -126,17 +126,49 @@ function wprig_add_body_style() {
 add_action( 'wp_head', 'wprig_add_body_style' );
 
 /**
- * Add dropdown toggle buttons to nav menu.
+ * Add dropdown symbol to nav menu items with children.
  *
- * @param string $menu Nav menu HTML.
+ * Adds the dropdown markup after the menu link element,
+ * before the submenu.
+ *
+ * Javascript converts the symbol to a toggle button.
+ *
+ * @param string   $item_output The menu item's starting HTML output.
+ * @param WP_Post  $item        Menu item data object.
+ * @param int      $depth       Depth of menu item. Used for padding.
+ * @param stdClass $args        An object of wp_nav_menu() arguments.
  * @return string Modified nav menu HTML.
  */
-function wprig_add_menu_dropdown_toggle_button( $menu ) {
-	$dropdown_button = sprintf(
-		'<button class="dropdown-toggle" aria-expanded="false"><span class="dropdown-symbol" aria-hidden="true">&rsaquo;</span><span class="screen-reader-text">%s</span></button>',
-		esc_html__( 'Expand child menu', 'wprig' )
-	);
-	return preg_replace( '/(?=<ul)/', $dropdown_button, $menu );
+function wprig_add_primary_menu_dropdown_symbol( $item_output, $item, $depth, $args ) {
+
+	// Only for our primary menu location.
+	if ( empty( $args->theme_location ) || 'primary' != $args->theme_location ) {
+		return $item_output;
+	}
+
+	// Add the dropdown for items that have children.
+	if ( ! empty( $item->classes ) && in_array( 'menu-item-has-children', $item->classes ) ) {
+		return $item_output . '<span class="dropdown"><i class="dropdown-symbol"></i></span>';
+	}
+
+	return $item_output;
 }
-add_filter( 'wp_list_pages', 'wprig_add_menu_dropdown_toggle_button' );
-add_filter( 'wp_nav_menu', 'wprig_add_menu_dropdown_toggle_button' );
+add_filter( 'walker_nav_menu_start_el', 'wprig_add_primary_menu_dropdown_symbol', 10, 4 );
+
+/**
+ * Filters the HTML attributes applied to a menu item's anchor element.
+ *
+ * Checks if the menu item is the current menu
+ * item and adds the aria "current" attribute.
+ *
+ * @param array $atts   The HTML attributes applied to the menu item's `<a>` element.
+ * @param WP_Post $item  The current menu item.
+ * @return array Modified HTML attributes
+ */
+function wprig_add_nav_menu_aria_current( $atts, $item ) {
+	if ( ! empty( $item->classes ) && in_array( 'current-menu-item', $item->classes ) ) {
+		$atts['aria-current'] = 'page';
+	}
+	return $atts;
+}
+add_filter( 'nav_menu_link_attributes', 'wprig_add_nav_menu_aria_current', 10, 2 );
