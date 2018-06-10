@@ -110,6 +110,7 @@ function wprig_add_body_style() {
 		}
 
 		// Preload front-page.css.
+		global $template;
 		if ( 'front-page.php' === basename( $template ) ) {
 			$preloads['wprig-front-page'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-front-page' );
 		}
