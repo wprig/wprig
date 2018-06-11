@@ -11,13 +11,6 @@
 
 ?>
 
-<?php
-// Comment out for sidebar.
-if ( ! is_front_page() ) {
-	get_sidebar();
-}
-?>
-
 <footer id="colophon" class="site-footer">
 	<div class="site-info">
 		<a href="<?php echo esc_url( __( 'https://wordpress.org/', 'wprig' ) ); ?>">
