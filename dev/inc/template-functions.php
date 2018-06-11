@@ -161,7 +161,7 @@ add_filter( 'walker_nav_menu_start_el', 'wprig_add_primary_menu_dropdown_symbol'
  * Checks if the menu item is the current menu
  * item and adds the aria "current" attribute.
  *
- * @param array $atts   The HTML attributes applied to the menu item's `<a>` element.
+ * @param array   $atts   The HTML attributes applied to the menu item's `<a>` element.
  * @param WP_Post $item  The current menu item.
  * @return array Modified HTML attributes
  */
