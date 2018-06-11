@@ -66,7 +66,7 @@ const paths = {
 	},
 	verbose: './verbose/',
 	export: {
-		src: ['**/*', '!dev/**/*', '!node_modules', '!node_modules/**/*', '!vendor', '!vendor/**/*', '!.*', '!composer.*', '!gulpfile.*', '!package*.*', '!phpcs.*', '!*.zip'],
+		src: ['**/*', '!' + config.theme.name, '!' + config.theme.name + '/**/*', '!dev/**/*', '!node_modules', '!node_modules/**/*', '!vendor', '!vendor/**/*', '!.*', '!composer.*', '!gulpfile.*', '!package*.*', '!phpcs.*', '!*.zip'],
 		dest: './'
 	}
 };
