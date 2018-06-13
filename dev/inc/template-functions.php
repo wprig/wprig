@@ -166,7 +166,7 @@ add_filter( 'walker_nav_menu_start_el', 'wprig_add_primary_menu_dropdown_symbol'
  * @return array Modified HTML attributes
  */
 function wprig_add_nav_menu_aria_current( $atts, $item ) {
-	if ( ! empty( $item->classes ) && in_array( 'current-menu-item', $item->classes ) ) {
+	if ( ! empty( $item->current ) ) {
 		$atts['aria-current'] = 'page';
 	}
 	return $atts;
