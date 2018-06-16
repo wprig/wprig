@@ -172,11 +172,9 @@ add_action( 'after_setup_theme', 'wprig_setup' );
  */
 function wprig_content_width() {
 
-	if ( isset( $GLOBALS['content_width'] ) ) {
-		$content_width = $GLOBALS['content_width'];
-	}
-
-	$content_width = 720;
+	$content_width = isset( $GLOBALS['content_width'] )
+		? (int) $GLOBALS['content_width']
+		: 720;
 
 	/**
 	 * Filter content width of the theme.
