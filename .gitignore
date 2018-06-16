@@ -13,7 +13,7 @@
 !.eslintignore
 !.eslintrc.json
 !.gitignore
-!gulpfile.bable.js
+!gulpfile.babel.js
 !LICENSE
 !package.json
 !phpcs.xml.dist
