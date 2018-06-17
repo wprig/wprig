@@ -11,8 +11,9 @@ If you want to contribute code to WP Rig, please follow the instructions below:
 5. Run WP Rig as you normally would.
 6. Make code changes as necessary.
 7. Commit changes within the new branch.
-8. Push the new branch to your forked repository.
-9. Submit a Pull Request to the WP Rig repository explaining your changes and referencing any related issues.
+8. If multiple commits, make sure they are squashed.
+9. Push the new branch to your forked repository.
+10. Submit a Pull Request to the WP Rig repository explaining your changes and referencing any related issues.
 
 ## Branch Naming Convention
 Name your branches with prefixes and descriptions: `[type]/[change]`. Examples:
