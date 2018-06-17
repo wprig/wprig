@@ -9,9 +9,9 @@
  * @package wprig
  */
 
- /**
-  * Main function. Runs everything.
-  */
+/**
+ * Main function. Runs everything.
+ */
 function wprig_lazyload_images() {
 
 	// If this is the admin page, do nothing.
@@ -176,7 +176,7 @@ function wprig_process_image_attributes( $attributes ) {
 	$attributes['class'] = wprig_set_lazy_class( $attributes );
 
 	// Set placeholder and lazy-src.
-	$attributes['src']      = wprig_get_placeholder_image();
+	$attributes['src'] = wprig_get_placeholder_image();
 
 	// Set data-src to the original source uri.
 	$attributes['data-src'] = $old_attributes['src'];
