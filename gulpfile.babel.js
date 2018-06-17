@@ -120,7 +120,8 @@ export function php() {
 	}))
 	// Log all problems that was found
 	.pipe(phpcs.reporter('log'))
-	.pipe(replace('wprig', config.theme.name))
+	.pipe(replace('wprig', config.theme.slug))
+	.pipe(replace('WP Rig', config.theme.name))
 	.pipe(gulp.dest(paths.verbose))
 	.pipe(gulp.dest(paths.php.dest));
 }
@@ -168,7 +169,8 @@ export function styles() {
 			}
 		})
 	]))
-	.pipe(replace('wprig', config.theme.name))
+	.pipe(replace('wprig', config.theme.slug))
+	.pipe(replace('WP Rig', config.theme.name))
 	.pipe(gulp.dest(paths.verbose))
 	.pipe(gulpif(!config.dev.debug.styles, cssnano()))
 	.pipe(gulp.dest(paths.styles.dest));
@@ -187,7 +189,8 @@ export function scripts() {
 	.pipe(babel())
 	.pipe(gulp.dest(paths.verbose))
 	.pipe(gulpif(!config.dev.debug.scripts, uglify()))
-	.pipe(replace('wprig', config.theme.name))
+	.pipe(replace('wprig', config.theme.slug))
+	.pipe(replace('WP Rig', config.theme.name))
 	.pipe(gulp.dest(paths.scripts.dest));
 }
 
