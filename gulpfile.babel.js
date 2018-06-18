@@ -82,13 +82,25 @@ const server = browserSync.create();
 // Initialize the BrowserSync server conditionally:
 function serve(done) {
 	if (config.dev.browserSync.live) {
-		server.init({
+		var serverConfig = {
 			proxy: config.dev.browserSync.proxyURL,
-			port: config.dev.browserSync.bypassPort,
 			liveReload: true
-		});
+		};
+		if (config.dev.browserSync.https) {
+			var httpConfig = {
+				https: {
+					key: config.dev.browserSync.keyPath,
+					cert: config.dev.browserSync.certPath
+				}
+			}
+		} else {
+			var httpConfig = {
+				proxy: config.dev.browserSync.proxyURL
+			}
+		}
 	}
-	done();
+	Object.assign(serverConfig, httpConfig);
+	server.init(serverConfig);
 }
 
 // Reload the live site:

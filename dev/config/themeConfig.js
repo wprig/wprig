@@ -9,7 +9,12 @@ module.exports = {
 		browserSync: {
 			live: true,
 			proxyURL: 'wprig.test:8888',
-			bypassPort: '8181'
+			bypassPort: '8181',
+			https: false,
+
+			// If true, path to local cert & key.
+			certPath: '',
+			keyPath: ''
 		},
 		browserslist: [ // See https://github.com/browserslist/browserslist
 			'> 1%',
