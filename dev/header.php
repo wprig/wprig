@@ -71,13 +71,18 @@
 					<?php esc_html_e( 'Menu', 'wprig' ); ?>
 				</button>
 
-				<?php
-				wp_nav_menu(
-					array(
-						'theme_location' => 'primary',
-						'menu_id'        => 'primary-menu',
-					)
-				);
-				?>
+				<div class="primary-menu-container">
+					<?php
+
+					wp_nav_menu(
+						array(
+							'theme_location' => 'primary',
+							'menu_id'        => 'primary-menu',
+							'container'      => 'ul',
+						)
+					);
+
+					?>
+				</div>
 			</nav><!-- #site-navigation -->
 		</header><!-- #masthead -->

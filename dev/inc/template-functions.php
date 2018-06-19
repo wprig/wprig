@@ -133,6 +133,12 @@ add_action( 'wp_head', 'wprig_add_body_style' );
  *
  * Javascript converts the symbol to a toggle button.
  *
+ * @TODO:
+ * - This doesn't work for the page menu because it
+ *   doesn't have a similar filter. So the dropdown symbol
+ *   is only being added for page menus if JS is enabled.
+ *   Create a ticket to add to core?
+ *
  * @param string   $item_output The menu item's starting HTML output.
  * @param WP_Post  $item        Menu item data object.
  * @param int      $depth       Depth of menu item. Used for padding.
@@ -166,9 +172,25 @@ add_filter( 'walker_nav_menu_start_el', 'wprig_add_primary_menu_dropdown_symbol'
  * @return array Modified HTML attributes
  */
 function wprig_add_nav_menu_aria_current( $atts, $item ) {
-	if ( ! empty( $item->current ) ) {
-		$atts['aria-current'] = 'page';
+	/*
+	 * First, check if "current" is set,
+	 * which means the item is a nav menu item.
+	 *
+	 * Otherwise, it's a post item so check
+	 * if the item is the current post.
+	 */
+	if ( isset( $item->current ) ) {
+		if ( $item->current ) {
+			$atts['aria-current'] = 'page';
+		}
+	} else if ( ! empty( $item->ID ) ) {
+		global $post;
+		if ( ! empty( $post->ID ) && $post->ID == $item->ID ) {
+			$atts['aria-current'] = 'page';
+		}
 	}
+
 	return $atts;
 }
 add_filter( 'nav_menu_link_attributes', 'wprig_add_nav_menu_aria_current', 10, 2 );
+add_filter( 'page_menu_link_attributes', 'wprig_add_nav_menu_aria_current', 10, 2 );
