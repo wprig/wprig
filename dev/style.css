@@ -860,6 +860,7 @@ textarea {
 		background: white;
 		margin-left: 0;
 		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+		z-index: 1;
 	}
 
 	.main-navigation ul ul a {
