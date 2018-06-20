@@ -11,13 +11,13 @@ import autoprefixer from 'autoprefixer';
 import browserSync from 'browser-sync';
 import cssnano from 'gulp-cssnano';
 import babel from 'gulp-babel';
-import cssnext from 'postcss-cssnext';
 import eslint from 'gulp-eslint';
 import log from 'fancy-log';
 import gulpif from 'gulp-if';
 import image from 'gulp-image';
 import newer from 'gulp-newer';
 import partialImport from 'postcss-partial-import';
+import postcssPresetEnv from 'postcss-preset-env';
 import phpcs from 'gulp-phpcs';
 import postcss from 'gulp-postcss';
 import print from 'gulp-print';
@@ -157,13 +157,16 @@ export function styles() {
 	// Log all problems that was found
 	.pipe(phpcs.reporter('log'))
 	.pipe(postcss([
-		cssnext({
+		postcssPresetEnv({
+			stage: 3,
 			browsers: config.dev.browserslist,
 			features: {
-				customProperties: {
+				'custom-properties': {
+					preserve: false,
 					variables: cssVars.variables,
 				},
-				customMedia: {
+				'custom-media-queries': {
+					preserve: false,
 					extensions: cssVars.queries,
 				}
 			}
