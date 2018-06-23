@@ -18,9 +18,14 @@ A progressive theme development rig for WordPress, WP Rig is built to promote th
 ## Installation
 WP Rig has been tested on Linux, Mac, and Windows.
 
-### Requirements before installation
-WP Rig requires [npm](https://www.npmjs.com/) and [Composer](https://getcomposer.org/). Full installation instructions at the respective websites.
+### Requirements
+WP Rig requires the following dependencies. Full installation instructions are provided at their respective websites.
 
+- [PHP](http://php.net/) 7.0
+- [npm](https://www.npmjs.com/)
+- [Composer](https://getcomposer.org/)
+
+### How to install WP Rig:
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
 2. Configure theme settings including the theme name in `./dev/config/themeConfig.js`.
 3. In command line, run `npm install` to install necessary node and Composer dependencies.
