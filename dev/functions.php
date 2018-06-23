@@ -164,7 +164,7 @@ function wprig_setup() {
 add_action( 'after_setup_theme', 'wprig_setup' );
 
 /**
- * Set the content width in pixels, based on the theme's design and stylesheet.
+ * Set the embed width in pixels, based on the theme's design and stylesheet.
  *
  * @param array $dimensions An array of embed width and height values in pixels (in that order).
  * @return array
