@@ -164,28 +164,16 @@ function wprig_setup() {
 add_action( 'after_setup_theme', 'wprig_setup' );
 
 /**
- * Set the content width in pixels, based on the theme's design and stylesheet.
+ * Set the embed width in pixels, based on the theme's design and stylesheet.
  *
- * Priority 0 to make it available to lower priority callbacks.
- *
- * @global int $content_width
+ * @param array $dimensions An array of embed width and height values in pixels (in that order).
+ * @return array
  */
-function wprig_content_width() {
-
-	if ( isset( $GLOBALS['content_width'] ) ) {
-		$content_width = $GLOBALS['content_width'];
-	}
-
-	$content_width = 720;
-
-	/**
-	 * Filter content width of the theme.
-	 *
-	 * @param int $content_width Content width in pixels.
-	 */
-	$GLOBALS['content_width'] = apply_filters( 'wprig_content_width', $content_width );
+function wprig_embed_dimensions( array $dimensions ) {
+	$dimensions['width'] = 720;
+	return $dimensions;
 }
-add_action( 'template_redirect', 'wprig_content_width', 0 );
+add_filter( 'embed_defaults', 'wprig_embed_dimensions' );
 
 /**
  * Register Google Fonts
