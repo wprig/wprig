@@ -33,11 +33,13 @@ import zip from 'gulp-zip';
 
 // Import theme-specific configurations.
 var config = require('./dev/config/themeConfig.js');
+var themeSlug = config.theme.slug;
 
 // Project paths
 const paths = {
 	config: {
-		cssVars: './dev/config/cssVariables.json'
+		cssVars: './dev/config/cssVariables.json',
+		themeConfig: './dev/config/themeConfig.js'
 	},
 	php: {
 		src: ['dev/**/*.php', '!dev/optional/**/*.*'],
@@ -111,8 +113,15 @@ function reload(done) {
  */
 export function php() {
 	config = requireUncached('./dev/config/themeConfig.js');
+	// Check if theme slug has been updated.
+	let newThemeSlug = false;
+	if ( config.theme.slug !== themeSlug ) {
+		newThemeSlug = true;
+		themeSlug = config.theme.slug;
+	}
 	return gulp.src(paths.php.src)
-	.pipe(newer(paths.php.dest))
+	// If theme slug has not been updated, run task on changed files only.
+	.pipe(gulpif(!newThemeSlug, newer(paths.php.dest)))
 	.pipe(phpcs({
 		bin: 'vendor/bin/phpcs',
 		standard: 'WordPress',
@@ -124,6 +133,7 @@ export function php() {
 	.pipe(replace('WP Rig', config.theme.name))
 	.pipe(gulp.dest(paths.verbose))
 	.pipe(gulp.dest(paths.php.dest));
+
 }
 
 /**
@@ -235,6 +245,7 @@ export function images() {
  */
 export function watch() {
 	gulp.watch(paths.php.src, gulp.series(php, reload));
+	gulp.watch(paths.config.themeConfig, gulp.series(php, reload));
 	gulp.watch(paths.config.cssVars, gulp.series(styles, reload));
 	gulp.watch(paths.styles.sass, sassStyles);
 	gulp.watch(paths.styles.src, gulp.series(styles, reload));
