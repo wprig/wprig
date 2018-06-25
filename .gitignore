@@ -14,7 +14,7 @@
 !.eslintignore
 !.eslintrc.json
 !.gitignore
-!gulpfile.bable.js
+!gulpfile.babel.js
 !LICENSE
 !package-lock.json
 !package.json
