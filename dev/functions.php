@@ -179,8 +179,6 @@ add_filter( 'embed_defaults', 'wprig_embed_dimensions' );
  * Register Google Fonts
  */
 function wprig_fonts_url() {
-	$fonts_url = '';
-
 	/**
 	 * Translator: If Roboto Sans does not support characters in your language, translate this to 'off'.
 	 */
@@ -200,17 +198,19 @@ function wprig_fonts_url() {
 		$font_families[] = 'Crimson Text:400,400i,600,600i';
 	}
 
-	if ( in_array( 'on', array( $roboto, $crimson_text ) ) ) {
-		$query_args = array(
-			'family' => urlencode( implode( '|', $font_families ) ),
-			'subset' => urlencode( 'latin,latin-ext' ),
-		);
-
-		$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
+	// If there are no fonts, bail out.
+	if ( empty( $font_families ) ) {
+		return '';
 	}
 
-	return esc_url_raw( $fonts_url );
+	$query_args = array(
+		'family' => urlencode( implode( '|', $font_families ) ),
+		'subset' => urlencode( 'latin,latin-ext' ),
+	);
 
+	$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
+
+	return esc_url_raw( $fonts_url );
 }
 
 /**
@@ -238,8 +238,11 @@ add_filter( 'wp_resource_hints', 'wprig_resource_hints', 10, 2 );
  * Enqueue WordPress theme styles within Gutenberg.
  */
 function wprig_gutenberg_styles() {
-	// Add custom fonts, used in the main stylesheet.
-	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null );
+	// When available, add the custom fonts, used in the main stylesheet.
+	$fonts_url = wprig_fonts_url();
+	if ( ! empty( $fonts_url ) ) {
+		wp_enqueue_style( 'wprig-fonts', $fonts_url, array(), null );
+	}
 
 	// Enqueue main stylesheet.
 	wp_enqueue_style( 'wprig-base-style', get_theme_file_uri( '/css/editor-styles.css' ), array(), '20180514' );
