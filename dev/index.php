@@ -30,9 +30,6 @@ get_header(); ?>
 		/* Display the appropriate header when required. */
 		wprig_index_header();
 
-		/* Counter to keep track of what post we're on. */
-		$post_count = 1;
-
 		/* Start the Loop. */
 		while ( have_posts() ) :
 			the_post();
@@ -43,9 +40,6 @@ get_header(); ?>
 			 * called content-___.php (where ___ is the Post Type name) and that will be used instead.
 			 */
 			get_template_part( 'template-parts/content', get_post_type() );
-
-			/* Increment counter. */
-			$post_count++;
 
 		endwhile;
 
