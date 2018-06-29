@@ -179,39 +179,44 @@ add_filter( 'embed_defaults', 'wprig_embed_dimensions' );
  * Register Google Fonts
  */
 function wprig_fonts_url() {
-	$fonts_url = '';
-
+	$font_families    = array();
+	$fonts_url        = '';
+	$fonts_default    = array(
+		'Roboto Condensed' => '400,400i,700,700i',
+		'Crimson Text'     => '400,400i,600,600i',
+	);
 	/**
-	 * Translator: If Roboto Sans does not support characters in your language, translate this to 'off'.
+	 * Filters default google fonts
+	 *
+	 * use filter in wprig_setup();
+	 *
+	 * @param array $fonts_default array of fonts to use
 	 */
-	$roboto = esc_html_x( 'on', 'Roboto Condensed font: on or off', 'wprig' );
-	/**
-	 * Translator: If Crimson Text does not support characters in your language, translate this to 'off'.
-	 */
-	$crimson_text = esc_html_x( 'on', 'Crimson Text font: on or off', 'wprig' );
+	$reg_fonts = apply_filters( 'wprig_register_google_font', $fonts_default );
 
-	$font_families = array();
+	foreach ( $reg_fonts as $font_name => $font_varients ) {
+		/**
+		 * Translator: If font does not support characters in your language, translate this to 'off'.
+		 */
+		$font = sprintf( esc_html_x( 'on', '%s font: on or off', 'wprig' ), $font_name );
 
-	if ( 'off' !== $roboto ) {
-		$font_families[] = 'Roboto Condensed:400,400i,700,700i';
+		if ( 'off' !== $font ) {
+			$font_families[] = "{$font_name}:{$font_varients}";
+		}
 	}
 
-	if ( 'off' !== $crimson_text ) {
-		$font_families[] = 'Crimson Text:400,400i,600,600i';
-	}
-
-	if ( in_array( 'on', array( $roboto, $crimson_text ) ) ) {
+	if ( ! empty( $font_families ) ) {
 		$query_args = array(
-			'family' => urlencode( implode( '|', $font_families ) ),
-			'subset' => urlencode( 'latin,latin-ext' ),
+			'family' => rawurlencode( implode( '|', $font_families ) ),
+			'subset' => rawurlencode( 'latin,latin-ext' ),
 		);
 
 		$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
 	}
 
 	return esc_url_raw( $fonts_url );
-
 }
+
 
 /**
  * Add preconnect for Google Fonts.
