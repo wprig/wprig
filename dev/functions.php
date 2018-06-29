@@ -8,6 +8,14 @@
  */
 
 /**
+ * Default version number for wp_{enqueue|register}_{script|style}.
+ *
+ * WP_DEBUG will force refresh while developing.
+ * Manualy changing YYYYMMDD value will force refresh all resources for visitors.
+ */
+define( 'WPRIG_VERSION', ( WP_DEBUG ? time() : '20180514' ) );
+
+/**
  * Sets up theme defaults and registers support for various WordPress features.
  *
  * Note that this function is hooked into the after_setup_theme hook, which
@@ -242,7 +250,7 @@ function wprig_gutenberg_styles() {
 	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null );
 
 	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wprig-base-style', get_theme_file_uri( '/css/editor-styles.css' ), array(), '20180514' );
+	wp_enqueue_style( 'wprig-base-style', get_theme_file_uri( '/css/editor-styles.css' ), array(), WPRIG_VERSION );
 }
 add_action( 'enqueue_block_editor_assets', 'wprig_gutenberg_styles' );
 
@@ -272,14 +280,14 @@ function wprig_styles() {
 	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null );
 
 	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wprig-base-style', get_stylesheet_uri(), array(), '20180514' );
+	wp_enqueue_style( 'wprig-base-style', get_stylesheet_uri(), array(), WPRIG_VERSION );
 
 	// Register component styles that are printed as needed.
-	wp_register_style( 'wprig-comments', get_theme_file_uri( '/css/comments.css' ), array(), '20180514' );
-	wp_register_style( 'wprig-content', get_theme_file_uri( '/css/content.css' ), array(), '20180514' );
-	wp_register_style( 'wprig-sidebar', get_theme_file_uri( '/css/sidebar.css' ), array(), '20180514' );
-	wp_register_style( 'wprig-widgets', get_theme_file_uri( '/css/widgets.css' ), array(), '20180514' );
-	wp_register_style( 'wprig-front-page', get_theme_file_uri( '/css/front-page.css' ), array(), '20180514' );
+	wp_register_style( 'wprig-comments', get_theme_file_uri( '/css/comments.css' ), array(), WPRIG_VERSION );
+	wp_register_style( 'wprig-content', get_theme_file_uri( '/css/content.css' ), array(), WPRIG_VERSION );
+	wp_register_style( 'wprig-sidebar', get_theme_file_uri( '/css/sidebar.css' ), array(), WPRIG_VERSION );
+	wp_register_style( 'wprig-widgets', get_theme_file_uri( '/css/widgets.css' ), array(), WPRIG_VERSION );
+	wp_register_style( 'wprig-front-page', get_theme_file_uri( '/css/front-page.css' ), array(), WPRIG_VERSION );
 }
 add_action( 'wp_enqueue_scripts', 'wprig_styles' );
 
@@ -292,7 +300,7 @@ function wprig_scripts() {
 	if ( ! wprig_is_amp() ) {
 
 		// Enqueue the navigation script.
-		wp_enqueue_script( 'wprig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), '20180514', false );
+		wp_enqueue_script( 'wprig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), WPRIG_VERSION, false );
 		wp_script_add_data( 'wprig-navigation', 'async', true );
 		wp_localize_script( 'wprig-navigation', 'wprigScreenReaderText', array(
 			'expand'   => __( 'Expand child menu', 'wprig' ),
@@ -300,7 +308,7 @@ function wprig_scripts() {
 		));
 
 		// Enqueue skip-link-focus script.
-		wp_enqueue_script( 'wprig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), '20180514', false );
+		wp_enqueue_script( 'wprig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), WPRIG_VERSION, false );
 		wp_script_add_data( 'wprig-skip-link-focus-fix', 'defer', true );
 
 		// Enqueue comment script on singular post/page views only.
