@@ -288,25 +288,26 @@ add_action( 'wp_enqueue_scripts', 'wprig_styles' );
  */
 function wprig_scripts() {
 
-	// If the AMP plugin is not active, enqueue custom scripts.
-	if ( ! wprig_is_amp() ) {
+	// If the AMP plugin is active, return early.
+	if ( wprig_is_amp() ) {
+		return;
+	}
 
-		// Enqueue the navigation script.
-		wp_enqueue_script( 'wprig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), '20180514', false );
-		wp_script_add_data( 'wprig-navigation', 'async', true );
-		wp_localize_script( 'wprig-navigation', 'wprigScreenReaderText', array(
-			'expand'   => __( 'Expand child menu', 'wprig' ),
-			'collapse' => __( 'Collapse child menu', 'wprig' ),
-		));
+	// Enqueue the navigation script.
+	wp_enqueue_script( 'wprig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), '20180514', false );
+	wp_script_add_data( 'wprig-navigation', 'async', true );
+	wp_localize_script( 'wprig-navigation', 'wprigScreenReaderText', array(
+		'expand'   => __( 'Expand child menu', 'wprig' ),
+		'collapse' => __( 'Collapse child menu', 'wprig' ),
+	));
 
-		// Enqueue skip-link-focus script.
-		wp_enqueue_script( 'wprig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), '20180514', false );
-		wp_script_add_data( 'wprig-skip-link-focus-fix', 'defer', true );
+	// Enqueue skip-link-focus script.
+	wp_enqueue_script( 'wprig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), '20180514', false );
+	wp_script_add_data( 'wprig-skip-link-focus-fix', 'defer', true );
 
-		// Enqueue comment script on singular post/page views only.
-		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-			wp_enqueue_script( 'comment-reply' );
-		}
+	// Enqueue comment script on singular post/page views only.
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
 	}
 
 }
