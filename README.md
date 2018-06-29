@@ -28,7 +28,7 @@ WP Rig requires the following dependencies. Full installation instructions are p
 
 ### How to install WP Rig:
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
-2. Configure theme settings including the theme name in `./dev/config/themeConfig.js`.
+2. Configure theme settings including the theme slug and name in `./dev/config/themeConfig.js`.
 3. In command line, run `npm install` to install necessary node and Composer dependencies.
 4. In command line, run `npm run build` to generate the theme.
 5. In WordPress admin, activate the theme.
