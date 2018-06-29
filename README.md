@@ -138,6 +138,9 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 
 # Changelog
 
+## 1.0.1
+- PHP process updated to run conditionally on theme name and theme slug rename and on first run. Props @hellofromtonya.
+
 ## Initial release
 - cssnext replaced with postcss-preset-env. No change in functionality. Props @mor10
-- Separate theme name and theme slug in `themeConfig.js`. Props @felixarntz
+- Separate theme name and theme slug in `themeConfig.js`. Props @felixarntz.
