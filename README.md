@@ -140,6 +140,7 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 
 ## 1.0.1
 - PHP process updated to run conditionally on theme name and theme slug rename and on first run. Props @hellofromtonya.
+- Introduce guard clause to simplify wprig_is_amp() condition around wprig_scripts(). Props @Tabrisrp.
 
 ## Initial release
 - cssnext replaced with postcss-preset-env. No change in functionality. Props @mor10
