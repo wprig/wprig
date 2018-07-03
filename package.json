@@ -46,18 +46,24 @@
     "gulp-sort": "^2.0.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-string-replace": "^1.0.0",
+    "gulp-stylelint": "^7.0.0",
     "gulp-tabify": "0.0.2",
     "gulp-uglify": "^3.0.0",
     "gulp-wp-pot": "^2.2.0",
     "gulp-zip": "^4.1.0",
     "postcss-partial-import": "^4.1.0",
     "postcss-preset-env": "^5.1.0",
-    "require-uncached": "^1.0.3"
+    "require-uncached": "^1.0.3",
+    "stylelint": "^9.3.0",
+    "stylelint-config-wordpress": "^13.0.0"
   },
   "babel": {
     "presets": [
       "es2015"
     ]
+  },
+  "stylelint": {
+    "extends": "stylelint-config-wordpress"
   },
   "eslintConfig": {
     "extends": "wordpress",
