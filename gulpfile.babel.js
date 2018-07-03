@@ -19,6 +19,7 @@ import newer from 'gulp-newer';
 import partialImport from 'postcss-partial-import';
 import postcssPresetEnv from 'postcss-preset-env';
 import phpcs from 'gulp-phpcs';
+import stylelint from 'gulp-stylelint';
 import postcss from 'gulp-postcss';
 import print from 'gulp-print';
 import replace from 'gulp-string-replace';
@@ -168,13 +169,6 @@ export function styles() {
 
 	return gulp.src(paths.styles.src)
 	.pipe(print())
-	.pipe(phpcs({
-		bin: 'vendor/bin/phpcs',
-		standard: 'WordPress',
-		warningSeverity: 0
-	}))
-	// Log all problems that was found
-	.pipe(phpcs.reporter('log'))
 	.pipe(postcss([
 		postcssPresetEnv({
 			stage: 3,
