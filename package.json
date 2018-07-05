@@ -54,6 +54,7 @@
     "gulp-zip": "^4.1.0",
     "postcss-partial-import": "^4.1.0",
     "postcss-preset-env": "^5.1.0",
+    "pump": "^3.0.0",
     "require-uncached": "^1.0.3",
     "rimraf": "^2.6.2"
   },

@@ -13,6 +13,7 @@
  import log from 'fancy-log';
  import partialImport from 'postcss-partial-import';
  import postcssPresetEnv from 'postcss-preset-env';
+ import pump from 'pump';
  import requireUncached from 'require-uncached';
 
 // Internal dependencies
@@ -61,7 +62,7 @@ function reload(done) {
 /**
  * PHP via PHP Code Sniffer.
  */
-export function php() {
+export function php(done) {
 	config = requireUncached('./dev/config/themeConfig.js');
 	// Check if theme slug has been updated.
 	let isRebuild = themeConfig.isFirstRun ||
@@ -77,124 +78,141 @@ export function php() {
 		themeConfig.isFirstRun = false;
 	}
 
-	return src(paths.php.src)
-	// If not a rebuild, then run tasks on changed files only.
-	.pipe(gulpPlugins.if(!isRebuild, gulpPlugins.newer(paths.php.dest)))
-	.pipe(gulpPlugins.phpcs({
-		bin: 'vendor/bin/phpcs',
-		standard: 'WordPress',
-		warningSeverity: 0
-	}))
-	// Log all problems that was found
-	.pipe(gulpPlugins.phpcs.reporter('log'))
-	.pipe(gulpPlugins.stringReplace('wprig', config.theme.slug))
-	.pipe(gulpPlugins.stringReplace('WP Rig', config.theme.name))
-	.pipe(dest(paths.verbose))
-	.pipe(dest(paths.php.dest));
+	pump([
+        src(paths.php.src),
+        // If not a rebuild, then run tasks on changed files only.
+        gulpPlugins.if(!isRebuild, gulpPlugins.newer(paths.php.dest)),
+        gulpPlugins.phpcs({
+            bin: 'vendor/bin/phpcs',
+            standard: 'WordPress',
+            warningSeverity: 0
+        }),
+        // Log all problems that was found
+        gulpPlugins.phpcs.reporter('log'),
+        gulpPlugins.stringReplace('wprig', config.theme.slug),
+        gulpPlugins.stringReplace('WP Rig', config.theme.name),
+        dest(paths.verbose),
+        dest(paths.php.dest),
+    ], done);
 
 }
 
 /**
  * Sass, if that's being used.
  */
-export function sassStyles() {
-	return src(paths.styles.sass, { base: "./" })
-	.pipe(gulpPlugins.sourcemaps.init())
-	.pipe(gulpPlugins.sass().on('error', gulpPlugins.sass.logError))
-	.pipe(gulpPlugins.tabify(2, true))
-	.pipe(gulpPlugins.sourcemaps.write('./maps'))
-	.pipe(dest('.'));
+export function sassStyles(done) {
+    pump([
+        src(paths.styles.sass, { base: "./" }),
+        gulpPlugins.sourcemaps.init(),
+        gulpPlugins.sass().on('error', gulpPlugins.sass.logError),
+        gulpPlugins.tabify(2, true),
+        gulpPlugins.sourcemaps.write('./maps'),
+        dest('.'),
+    ], done);
 }
 
 /**
  * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
  */
-export function styles() {
+export function styles(done) {
 	config = requireUncached('./dev/config/themeConfig.js');
 
 	// Reload cssVars every time the task runs.
     let cssVars = requireUncached(paths.config.cssVars);
 
-	return src(paths.styles.src)
-	// .pipe(gulpPlugins.print())
-	.pipe(gulpPlugins.phpcs({
-		bin: 'vendor/bin/phpcs',
-		standard: 'WordPress',
-		warningSeverity: 0
-	}))
-	// Log all problems that was found
-	.pipe(gulpPlugins.phpcs.reporter('log'))
-	.pipe(gulpPlugins.postcss([
-		postcssPresetEnv({
-			stage: 3,
-			browsers: config.dev.browserslist,
-			features: {
-				'custom-properties': {
-					preserve: false,
-					variables: cssVars.variables,
-				},
-				'custom-media-queries': {
-					preserve: false,
-					extensions: cssVars.queries,
-				}
-			}
-		})
-	]))
-	.pipe(gulpPlugins.stringReplace('wprig', config.theme.slug))
-	.pipe(gulpPlugins.stringReplace('WP Rig', config.theme.name))
-	.pipe(dest(paths.verbose))
-	.pipe(gulpPlugins.if(!config.dev.debug.styles, gulpPlugins.cssnano()))
-	.pipe(dest(paths.styles.dest));
+	pump([
+        src(paths.styles.src),
+        // gulpPlugins.print()
+        gulpPlugins.phpcs({
+            bin: 'vendor/bin/phpcs',
+            standard: 'WordPress',
+            warningSeverity: 0
+        }),
+        // Log any problems found
+        gulpPlugins.phpcs.reporter('log'),
+        gulpPlugins.postcss([
+            postcssPresetEnv({
+                stage: 3,
+                browsers: config.dev.browserslist,
+                features: {
+                    'custom-properties': {
+                        preserve: false,
+                        variables: cssVars.variables,
+                    },
+                    'custom-media-queries': {
+                        preserve: false,
+                        extensions: cssVars.queries,
+                    }
+                }
+            })
+        ]),
+        gulpPlugins.stringReplace('wprig', config.theme.slug),
+        gulpPlugins.stringReplace('WP Rig', config.theme.name),
+        dest(paths.verbose),
+        gulpPlugins.if(!config.dev.debug.styles, gulpPlugins.cssnano()),
+        dest(paths.styles.dest),
+    ], done);
 }
 
 
 /**
  * JavaScript via Babel, ESlint, and uglify.
  */
-export function scripts() {
+export function scripts(done) {
 	config = requireUncached('./dev/config/themeConfig.js');
-	return src(paths.scripts.src)
-	.pipe(gulpPlugins.newer(paths.scripts.dest))
-	.pipe(gulpPlugins.eslint())
-	.pipe(gulpPlugins.eslint.format())
-	.pipe(gulpPlugins.babel())
-	.pipe(dest(paths.verbose))
-	.pipe(gulpPlugins.if(!config.dev.debug.scripts, gulpPlugins.uglify()))
-	.pipe(gulpPlugins.stringReplace('wprig', config.theme.slug))
-	.pipe(gulpPlugins.stringReplace('WP Rig', config.theme.name))
-	.pipe(dest(paths.scripts.dest));
+	pump([
+        src(paths.scripts.src),
+        gulpPlugins.newer(paths.scripts.dest),
+        gulpPlugins.eslint(),
+        gulpPlugins.eslint.format(),
+        gulpPlugins.babel(),
+        dest(paths.verbose),
+        gulpPlugins.if(
+            !config.dev.debug.scripts, 
+            gulpPlugins.uglify()
+        ),
+        gulpPlugins.stringReplace('wprig', config.theme.slug),
+        gulpPlugins.stringReplace('WP Rig', config.theme.name),
+        dest(paths.scripts.dest),
+    ], done);
 }
 
 
 /**
  * Copy JS libraries without touching them.
  */
-export function jsLibs() {
-	return src(paths.scripts.libs)
-	.pipe(gulpPlugins.newer(paths.scripts.verboseLibsDest))
-	.pipe(dest(paths.scripts.verboseLibsDest))
-	.pipe(dest(paths.scripts.libsDest));
+export function jsLibs(done) {
+	pump([
+        src(paths.scripts.libs),
+        gulpPlugins.newer(paths.scripts.verboseLibsDest),
+        dest(paths.scripts.verboseLibsDest),
+        dest(paths.scripts.libsDest),
+    ], done);
 }
 
 
 /**
  * Copy minified JS files without touching them.
  */
-export function jsMin() {
-	return src(paths.scripts.min)
-	.pipe(gulpPlugins.newer(paths.scripts.dest))
-	.pipe(dest(paths.verbose))
-	.pipe(dest(paths.scripts.dest));
+export function jsMin(done) {
+	pump([
+        src(paths.scripts.min),
+        gulpPlugins.newer(paths.scripts.dest),
+        dest(paths.verbose),
+        dest(paths.scripts.dest),
+    ], done);
 }
 
 /**
  * Optimize images.
  */
-export function images() {
-	return src(paths.images.src)
-	.pipe(gulpPlugins.newer(paths.images.dest))
-	.pipe(gulpPlugins.image())
-	.pipe(dest(paths.images.dest));
+export function images(done) {
+	pump([
+        src(paths.images.src),
+        gulpPlugins.newer(paths.images.dest),
+        gulpPlugins.image(),
+        dest(paths.images.dest),
+    ], done);
 }
 
 
@@ -229,27 +247,38 @@ export default firstRun;
 /**
  * Generate translation files.
  */
-export function translate() {
-	return src(paths.languages.src)
-	.pipe(gulpPlugins.sort())
-	.pipe(gulpPlugins.wpPot({
-		domain: config.theme.name,
-		package: config.theme.name,
-		bugReport: config.theme.name,
-		lastTranslator: config.theme.author
-	}))
-	.pipe(dest(paths.languages.dest));
+export function translate(done) {
+	pump([
+        src(paths.languages.src),
+        gulpPlugins.sort(),
+        gulpPlugins.wpPot({
+            domain: config.theme.name,
+            package: config.theme.name,
+            bugReport: config.theme.name,
+            lastTranslator: config.theme.author
+        }),
+        dest(paths.languages.dest),
+    ], done);
 }
 
 
 /**
  * Create zip archive from generated theme files.
  */
-export function bundle() {
-	return src(paths.export.src)
-	// .pipe(gulpPlugins.print())
-	.pipe(gulpPlugins.if(config.export.compress, gulpPlugins.zip(`${config.theme.name}.zip`), dest(`${paths.export.dest}${config.theme.name}`)))
-	.pipe(gulpPlugins.if(config.export.compress, dest(paths.export.dest)));
+export function bundle(done) {
+	pump([
+        src(paths.export.src),
+        // gulpPlugins.print(),
+        gulpPlugins.if(
+            config.export.compress, 
+            gulpPlugins.zip(`${config.theme.name}.zip`), 
+            dest(`${paths.export.dest}${config.theme.name}`)
+        ),
+        gulpPlugins.if(
+            config.export.compress, 
+            dest(paths.export.dest)
+        ),
+    ], done);
 }
 
 
