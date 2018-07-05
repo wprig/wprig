@@ -1,7 +1,8 @@
 /* eslint-env es6 */
 'use strict';
 
-// gulp plugins
+// External dependencies
+import requireUncached from 'require-uncached';
 export const gulpPlugins = require('gulp-load-plugins')();
 
 // gulp string replace options
@@ -12,10 +13,10 @@ export const gulpReplaceOptions = {
     searchValue: 'string',
 }
 
-// Theme config
-let config = require('../dev/config/themeConfig.js');
-let themeConfig = config.theme;
+// get a fresh copy of the config
+export const config = require(`${rootPath}/dev/config/themeConfig.js`);
 
+// Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
 
 // Project paths
