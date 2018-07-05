@@ -21,49 +21,12 @@
 import {paths, gulpPlugins, gulpReplaceOptions} from './gulp/constants';
 import styles from './gulp/styles';
 import {serve, reload} from './gulp/browserSync';
+import php from './gulp/php';
 
 // Import theme-specific configurations.
 let config = require('./dev/config/themeConfig.js');
 let themeConfig = config.theme;
 themeConfig.isFirstRun = true;
-
-/**
- * PHP via PHP Code Sniffer.
- */
-export function php(done) {
-	config = requireUncached('./dev/config/themeConfig.js');
-	// Check if theme slug has been updated.
-	let isRebuild = themeConfig.isFirstRun ||
-		( themeConfig.slug !== config.theme.slug ) ||
-		( themeConfig.name !== config.theme.name );
-	if ( isRebuild ) {
-		themeConfig.slug = config.theme.slug;
-		themeConfig.name = config.theme.name;
-	}
-
-	// Reset first run.
-	if ( themeConfig.isFirstRun ) {
-		themeConfig.isFirstRun = false;
-	}
-
-	pump([
-        src(paths.php.src),
-        // If not a rebuild, then run tasks on changed files only.
-        gulpPlugins.if(!isRebuild, gulpPlugins.newer(paths.php.dest)),
-        gulpPlugins.phpcs({
-            bin: 'vendor/bin/phpcs',
-            standard: 'WordPress',
-            warningSeverity: 0
-        }),
-        // Log all problems that was found
-        gulpPlugins.phpcs.reporter('log'),
-        gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
-        gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
-        dest(paths.verbose),
-        dest(paths.php.dest),
-    ], done);
-
-}
 
 /**
  * Sass, if that's being used.
