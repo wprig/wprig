@@ -23,33 +23,10 @@ import styles from './gulp/styles';
 import {serve, reload} from './gulp/browserSync';
 import php from './gulp/php';
 import sassStyles from './gulp/sassStyles';
+import scripts from './gulp/scripts';
 
 // Get a fresh copy of the config
 let config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
-
-/**
- * JavaScript via Babel, ESlint, and uglify.
- */
-export function scripts(done) {
-    // Get a fresh copy of the config
-    const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
-
-	pump([
-        src(paths.scripts.src),
-        gulpPlugins.newer(paths.scripts.dest),
-        gulpPlugins.eslint(),
-        gulpPlugins.eslint.format(),
-        gulpPlugins.babel(),
-        dest(paths.verbose),
-        gulpPlugins.if(
-            !config.dev.debug.scripts, 
-            gulpPlugins.uglify()
-        ),
-        gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
-        gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
-        dest(paths.scripts.dest),
-    ], done);
-}
 
 
 /**
@@ -167,4 +144,4 @@ const testTheme = series(php);
  */
 const bundleTheme = series(testTheme, parallel(scripts, jsMin, jsLibs), styles, images, translate, bundle);
 
-export { testTheme, bundleTheme };
+export { testTheme, bundleTheme, scripts, styles };
