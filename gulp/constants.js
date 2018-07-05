@@ -16,40 +16,77 @@ export const gulpReplaceOptions = {
 let config = require('../dev/config/themeConfig.js');
 let themeConfig = config.theme;
 
+export const rootPath = process.env.INIT_CWD;
+
 // Project paths
 export const paths = {
 	config: {
-		cssVars: './dev/config/cssVariables.json',
-		themeConfig: './dev/config/themeConfig.js'
+		cssVars: `${rootPath}/dev/config/cssVariables.json`,
+		themeConfig: `${rootPath}/dev/config/themeConfig.js`
 	},
 	php: {
-		src: ['dev/**/*.php', '!dev/optional/**/*.*'],
-		dest: './'
+		src: [
+            `${rootPath}/dev/**/*.php`,
+            `!${rootPath}/dev/optional/**/*.*`,
+        ],
+		dest: `${rootPath}/`
 	},
 	styles: {
-		src: ['dev/**/*.css', '!dev/optional/**/*.*'],
-		dest: './',
-		sass: ['dev/**/*.scss']
+		src: [
+            `${rootPath}/dev/**/*.css`,
+            `!${rootPath}/dev/optional/**/*.*`
+        ],
+		dest: `${rootPath}/`,
+		sass: [`${rootPath}/dev/**/*.scss`]
 	},
 	scripts: {
-		src: ['dev/**/*.js', '!dev/**/*.min.js', '!dev/js/libs/**/*.js', '!dev/optional/**/*.*', '!dev/config/**/*'],
-		min: 'dev/**/*.min.js',
-		dest: './',
-		libs: 'dev/js/libs/**/*.js',
-		libsDest: './js/libs/',
-		verboseLibsDest: './verbose/js/libs/'
+		src: [
+            `${rootPath}/dev/**/*.js`, 
+            `!${rootPath}/dev/**/*.min.js`, 
+            `!${rootPath}/dev/js/libs/**/*.js`, 
+            `!${rootPath}/dev/optional/**/*.*`, 
+            `!${rootPath}/dev/config/**/*`,
+        ],
+		min: `${rootPath}/dev/**/*.min.js`,
+		dest: `${rootPath}/`,
+		libs: `${rootPath}/dev/js/libs/**/*.js`,
+		libsDest: `${rootPath}/js/libs/`,
+		verboseLibsDest: `${rootPath}/verbose/js/libs/`,
 	},
 	images: {
-		src: ['dev/**/*.{jpg,JPG,png,svg}', '!dev/optional/**/*.*'],
-		dest: './'
+		src: [
+            `${rootPath}/dev/**/*.{jpg,JPG,png,svg}`,
+            `!${rootPath}/dev/optional/**/*.*`,
+        ],
+		dest: `${rootPath}/`
 	},
 	languages: {
-		src: ['./**/*.php', '!dev/**/*.php', '!verbose/**/*.php'],
-		dest: `./languages/${config.theme.name}.pot`
+		src: [
+            `${rootPath}/**/*.php`,
+            `!${rootPath}/dev/**/*.php`,
+            `!${rootPath}/verbose/**/*.php`,
+        ],
+		dest: `${rootPath}/languages/${config.theme.name}.pot`
 	},
-	verbose: './verbose/',
+	verbose: `${rootPath}/verbose/`,
 	export: {
-		src: ['**/*', `!${config.theme.name}`, `!${config.theme.name}/**/*`, '!dev/**/*', '!node_modules', '!node_modules/**/*', '!vendor', '!vendor/**/*', '!.*', '!composer.*', '!gulpfile.*', '!package*.*', '!phpcs.*', '!*.zip'],
-		dest: './'
+		src: [
+            `${rootPath}/**/*`,
+            `!${rootPath}/${config.theme.name}`,
+            `!${rootPath}/${config.theme.name}/**/*`,
+            `!${rootPath}/dev/**/*`,
+            `!${rootPath}/node_modules`,
+            `!${rootPath}/node_modules/**/*`,
+            `!${rootPath}/vendor`,
+            `!${rootPath}/vendor/**/*`,
+            `!${rootPath}/.*`,
+            `!${rootPath}/composer.*`,
+            `!${rootPath}/gulpfile.*`,
+            `!${rootPath}/gulp/**/*`,
+            `!${rootPath}/package*.*`,
+            `!${rootPath}/phpcs.*`,
+            `!${rootPath}/*.zip`,
+        ],
+		dest: `${rootPath}/`
 	}
 };

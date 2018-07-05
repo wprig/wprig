@@ -19,6 +19,7 @@
 
 // Internal dependencies
 import {paths, gulpPlugins, gulpReplaceOptions} from './gulp/constants';
+import styles from './gulp/styles';
 
 // Import theme-specific configurations.
 let config = require('./dev/config/themeConfig.js');
@@ -109,49 +110,6 @@ export function sassStyles(done) {
         gulpPlugins.tabify(2, true),
         gulpPlugins.sourcemaps.write('./maps'),
         dest('.'),
-    ], done);
-}
-
-/**
- * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
- */
-export function styles(done) {
-	config = requireUncached('./dev/config/themeConfig.js');
-
-	// Reload cssVars every time the task runs.
-    let cssVars = requireUncached(paths.config.cssVars);
-
-	pump([
-        src(paths.styles.src),
-        // gulpPlugins.print()
-        gulpPlugins.phpcs({
-            bin: 'vendor/bin/phpcs',
-            standard: 'WordPress',
-            warningSeverity: 0
-        }),
-        // Log any problems found
-        gulpPlugins.phpcs.reporter('log'),
-        gulpPlugins.postcss([
-            postcssPresetEnv({
-                stage: 3,
-                browsers: config.dev.browserslist,
-                features: {
-                    'custom-properties': {
-                        preserve: false,
-                        variables: cssVars.variables,
-                    },
-                    'custom-media-queries': {
-                        preserve: false,
-                        extensions: cssVars.queries,
-                    }
-                }
-            })
-        ]),
-        gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
-        gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
-        dest(paths.verbose),
-        gulpPlugins.if(!config.dev.debug.styles, gulpPlugins.cssnano()),
-        dest(paths.styles.dest),
     ], done);
 }
 
