@@ -20,46 +20,12 @@
 // Internal dependencies
 import {paths, gulpPlugins, gulpReplaceOptions} from './gulp/constants';
 import styles from './gulp/styles';
+import {serve, reload} from './gulp/browserSync';
 
 // Import theme-specific configurations.
 let config = require('./dev/config/themeConfig.js');
 let themeConfig = config.theme;
 themeConfig.isFirstRun = true;
-
-/**
- * Conditionally set up BrowserSync.
- * Only run BrowserSync if config.browserSync.live = true.
- */
-
-// Create a BrowserSync instance:
-const server = browserSync.create();
-
-// Initialize the BrowserSync server conditionally:
-function serve(done) {
-	if (config.dev.browserSync.live) {
-		server.init({
-			proxy: config.dev.browserSync.proxyURL,
-			port: config.dev.browserSync.bypassPort,
-			liveReload: true
-		});
-	}
-	done();
-}
-
-// Reload the live site:
-function reload(done) {
-	config = requireUncached('./dev/config/themeConfig.js');
-	if (config.dev.browserSync.live) {
-		if (server.paused) {
-			server.resume();
-		}
-		server.reload();
-	} else {
-		server.pause();
-	}
-	done();
-}
-
 
 /**
  * PHP via PHP Code Sniffer.
