@@ -16,6 +16,7 @@
   "dependencies": {},
   "devDependencies": {
     "ajv": "^6.5.0",
+    "ansi-colors": "^2.0.2",
     "autoprefixer": "^8.5.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.7.0",
@@ -38,13 +39,13 @@
     "gulp-eslint": "^4.0.2",
     "gulp-if": "^2.0.2",
     "gulp-image": "^4.3.0",
+    "gulp-load-plugins": "^1.5.0",
     "gulp-newer": "^1.4.0",
     "gulp-phpcs": "^2.1.0",
     "gulp-postcss": "^7.0.1",
     "gulp-print": "^5.0.0",
     "gulp-sass": "^4.0.0",
     "gulp-sort": "^2.0.0",
-    "gulp-sourcemaps": "^2.6.4",
     "gulp-string-replace": "^1.0.0",
     "gulp-tabify": "0.0.2",
     "gulp-uglify": "^3.0.0",
@@ -52,7 +53,9 @@
     "gulp-zip": "^4.1.0",
     "postcss-partial-import": "^4.1.0",
     "postcss-preset-env": "^5.1.0",
-    "require-uncached": "^1.0.3"
+    "pump": "^3.0.0",
+    "require-uncached": "^1.0.3",
+    "rimraf": "^2.6.2"
   },
   "babel": {
     "presets": [
@@ -70,9 +73,9 @@
   },
   "scripts": {
     "install": "composer install",
-    "build": "gulp",
-    "translate": "gulp translate",
-    "bundle": "gulp bundleTheme",
-    "test": "gulp testTheme"
+    "build": "node ./node_modules/gulp/bin/gulp.js",
+    "translate": "node ./node_modules/gulp/bin/gulp.js translate",
+    "bundle": "node ./node_modules/gulp/bin/gulp.js bundleTheme",
+    "test": "node ./node_modules/gulp/bin/gulp.js testTheme"
   }
 }
