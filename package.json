@@ -16,6 +16,7 @@
   "dependencies": {},
   "devDependencies": {
     "ajv": "^6.5.0",
+    "ansi-colors": "^2.0.2",
     "autoprefixer": "^8.5.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.7.0",
@@ -38,6 +39,7 @@
     "gulp-eslint": "^4.0.2",
     "gulp-if": "^2.0.2",
     "gulp-image": "^4.3.0",
+    "gulp-load-plugins": "^1.5.0",
     "gulp-newer": "^1.4.0",
     "gulp-phpcs": "^2.1.0",
     "gulp-postcss": "^7.0.1",
@@ -52,7 +54,8 @@
     "gulp-zip": "^4.1.0",
     "postcss-partial-import": "^4.1.0",
     "postcss-preset-env": "^5.1.0",
-    "require-uncached": "^1.0.3"
+    "require-uncached": "^1.0.3",
+    "rimraf": "^2.6.2"
   },
   "babel": {
     "presets": [

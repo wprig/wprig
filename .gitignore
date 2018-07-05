@@ -5,6 +5,7 @@
 !/.github/
 !/dev/
 !/languages/
+!gulp/
 
 !.babelrc
 !composer.json
