@@ -248,7 +248,7 @@ export function translate() {
 export function bundle() {
 	return src(paths.export.src)
 	// .pipe(gulpPlugins.print())
-	.pipe(gulpPlugins.if(config.export.compress, gulpPlugins.zip(config.theme.name + '.zip'), dest(paths.export.dest + config.theme.name)))
+	.pipe(gulpPlugins.if(config.export.compress, gulpPlugins.zip(`${config.theme.name}.zip`), dest(`${paths.export.dest}${config.theme.name}`)))
 	.pipe(gulpPlugins.if(config.export.compress, dest(paths.export.dest)));
 }
 

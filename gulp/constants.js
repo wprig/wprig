@@ -37,11 +37,11 @@ export const paths = {
 	},
 	languages: {
 		src: ['./**/*.php', '!dev/**/*.php', '!verbose/**/*.php'],
-		dest: './languages/' + config.theme.name + '.pot'
+		dest: `./languages/${config.theme.name}.pot`
 	},
 	verbose: './verbose/',
 	export: {
-		src: ['**/*', '!' + config.theme.name, '!' + config.theme.name + '/**/*', '!dev/**/*', '!node_modules', '!node_modules/**/*', '!vendor', '!vendor/**/*', '!.*', '!composer.*', '!gulpfile.*', '!package*.*', '!phpcs.*', '!*.zip'],
+		src: ['**/*', `!${config.theme.name}`, `!${config.theme.name}/**/*`, '!dev/**/*', '!node_modules', '!node_modules/**/*', '!vendor', '!vendor/**/*', '!.*', '!composer.*', '!gulpfile.*', '!package*.*', '!phpcs.*', '!*.zip'],
 		dest: './'
 	}
 };
