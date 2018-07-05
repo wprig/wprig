@@ -18,36 +18,22 @@
  import requireUncached from 'require-uncached';
 
 // Internal dependencies
-import {paths, gulpPlugins, gulpReplaceOptions} from './gulp/constants';
+import {rootPath, paths, gulpPlugins, gulpReplaceOptions} from './gulp/constants';
 import styles from './gulp/styles';
 import {serve, reload} from './gulp/browserSync';
 import php from './gulp/php';
+import sassStyles from './gulp/sassStyles';
 
-// Import theme-specific configurations.
-let config = require('./dev/config/themeConfig.js');
-let themeConfig = config.theme;
-themeConfig.isFirstRun = true;
-
-/**
- * Sass, if that's being used.
- */
-export function sassStyles(done) {
-    pump([
-        src(paths.styles.sass, { base: "./" }),
-        gulpPlugins.sourcemaps.init(),
-        gulpPlugins.sass().on('error', gulpPlugins.sass.logError),
-        gulpPlugins.tabify(2, true),
-        gulpPlugins.sourcemaps.write('./maps'),
-        dest('.'),
-    ], done);
-}
-
+// Get a fresh copy of the config
+let config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
 
 /**
  * JavaScript via Babel, ESlint, and uglify.
  */
 export function scripts(done) {
-	config = requireUncached('./dev/config/themeConfig.js');
+    // Get a fresh copy of the config
+    const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+
 	pump([
         src(paths.scripts.src),
         gulpPlugins.newer(paths.scripts.dest),
