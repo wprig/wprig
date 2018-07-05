@@ -4,6 +4,14 @@
 // gulp plugins
 export const gulpPlugins = require('gulp-load-plugins')();
 
+// gulp string replace options
+export const gulpReplaceOptions = {
+    logs: {
+      enabled: false
+    },
+    searchValue: 'string',
+}
+
 // Theme config
 let config = require('../dev/config/themeConfig.js');
 let themeConfig = config.theme;

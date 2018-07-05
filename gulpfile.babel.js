@@ -10,6 +10,7 @@
  import {src, dest, watch as gulpWatch, parallel, series} from 'gulp';
  import autoprefixer from 'autoprefixer';
  import browserSync from 'browser-sync';
+ import colors from 'ansi-colors';
  import log from 'fancy-log';
  import partialImport from 'postcss-partial-import';
  import postcssPresetEnv from 'postcss-preset-env';
@@ -17,7 +18,7 @@
  import requireUncached from 'require-uncached';
 
 // Internal dependencies
-import {paths, gulpPlugins} from './gulp/constants';
+import {paths, gulpPlugins, gulpReplaceOptions} from './gulp/constants';
 
 // Import theme-specific configurations.
 let config = require('./dev/config/themeConfig.js');
@@ -89,8 +90,8 @@ export function php(done) {
         }),
         // Log all problems that was found
         gulpPlugins.phpcs.reporter('log'),
-        gulpPlugins.stringReplace('wprig', config.theme.slug),
-        gulpPlugins.stringReplace('WP Rig', config.theme.name),
+        gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
+        gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
         dest(paths.verbose),
         dest(paths.php.dest),
     ], done);
@@ -146,8 +147,8 @@ export function styles(done) {
                 }
             })
         ]),
-        gulpPlugins.stringReplace('wprig', config.theme.slug),
-        gulpPlugins.stringReplace('WP Rig', config.theme.name),
+        gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
+        gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
         dest(paths.verbose),
         gulpPlugins.if(!config.dev.debug.styles, gulpPlugins.cssnano()),
         dest(paths.styles.dest),
@@ -171,8 +172,8 @@ export function scripts(done) {
             !config.dev.debug.scripts, 
             gulpPlugins.uglify()
         ),
-        gulpPlugins.stringReplace('wprig', config.theme.slug),
-        gulpPlugins.stringReplace('WP Rig', config.theme.name),
+        gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
+        gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
         dest(paths.scripts.dest),
     ], done);
 }
