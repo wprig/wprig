@@ -22,7 +22,7 @@ export default function watch() {
 	gulpWatch(paths.php.src, series(php, reload));
 	gulpWatch(paths.config.themeConfig, series(php, reload));
 	gulpWatch(paths.config.cssVars, series(styles, reload));
-	gulpWatch(paths.styles.sass, sassStyles);
+	gulpWatch(paths.styles.sass, series(sassStyles, reload));
 	gulpWatch(paths.styles.src, series(styles, reload));
 	gulpWatch(paths.scripts.src, series(scripts, reload));
 	gulpWatch(paths.scripts.min, series(jsMin, reload));

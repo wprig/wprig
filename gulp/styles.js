@@ -21,7 +21,7 @@ export default function styles(done) {
    const cssVars = requireUncached(paths.config.cssVars);
 
    pump([
-       src(paths.styles.src),
+       src(paths.styles.src, {sourcemaps: true}),
        // gulpPlugins.print()
        gulpPlugins.phpcs({
            bin: `${rootPath}/vendor/bin/phpcs`,
@@ -53,6 +53,6 @@ export default function styles(done) {
            !config.dev.debug.styles, 
            gulpPlugins.cssnano()
         ),
-       dest(paths.styles.dest),
+       dest(paths.styles.dest, {sourcemaps: true}),
    ], done);
 }

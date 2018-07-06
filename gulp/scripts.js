@@ -17,7 +17,7 @@ export default function scripts(done) {
     const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
 
 	pump([
-        src(paths.scripts.src),
+        src(paths.scripts.src, {sourcemaps: true}),
         gulpPlugins.newer(paths.scripts.dest),
         gulpPlugins.eslint(),
         gulpPlugins.eslint.format(),
@@ -29,6 +29,6 @@ export default function scripts(done) {
         ),
         gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
         gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
-        dest(paths.scripts.dest),
+        dest(paths.scripts.dest, {sourcemaps: true}),
     ], done);
 }
