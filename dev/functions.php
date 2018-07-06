@@ -101,7 +101,7 @@ function wprig_setup() {
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
 	 */
-	add_theme_support( 'editor-color-palette',
+	add_theme_support( 'editor-color-palette', array(
 		array(
 			'name'  => 'Dusty orange',
 			'color' => '#ED8F5B',
@@ -138,7 +138,7 @@ function wprig_setup() {
 			'name'  => 'Dusty sun',
 			'color' => '#EEE9D1',
 		)
-	);
+	) );
 
 	/**
 	 * Optional: Disable custom colors in block color palettes.
