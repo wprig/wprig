@@ -12,7 +12,6 @@
 // Internal dependencies
 import bundle from './gulp/bundle';
 import {serve, reload} from './gulp/browserSync';
-import {rootPath, paths, gulpPlugins, gulpReplaceOptions} from './gulp/constants';
 import images from './gulp/images';
 import jsLibs from './gulp/jsLibs';
 import jsMin from './gulp/jsMin';

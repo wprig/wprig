@@ -4,7 +4,6 @@
 // External dependencies
 import {src, dest} from 'gulp';
 import pump from 'pump';
-import requireUncached from 'require-uncached';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins} from './constants';
@@ -13,8 +12,6 @@ import {rootPath, paths, gulpPlugins} from './constants';
  * Sass, if that's being used.
  */
 export default function sassStyles(done) {
-    // get a fresh copy of the config
-    const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
 
     pump([
         src(paths.styles.sass, { base: `${rootPath}/` }),

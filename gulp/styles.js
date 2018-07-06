@@ -2,11 +2,7 @@
 'use strict';
 
 // External dependencies
-import {src, dest, watch as gulpWatch, parallel, series} from 'gulp';
-import autoprefixer from 'autoprefixer';
-import colors from 'ansi-colors';
-import log from 'fancy-log';
-import partialImport from 'postcss-partial-import';
+import {src, dest} from 'gulp';
 import postcssPresetEnv from 'postcss-preset-env';
 import pump from 'pump';
 import requireUncached from 'require-uncached';

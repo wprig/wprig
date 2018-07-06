@@ -11,7 +11,7 @@ export const gulpReplaceOptions = {
       enabled: false
     },
     searchValue: 'string',
-}
+};
 
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;

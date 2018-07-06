@@ -2,9 +2,7 @@
 'use strict';
 
 // External dependencies
-import {src, dest, watch as gulpWatch, parallel, series} from 'gulp';
-import colors from 'ansi-colors';
-import log from 'fancy-log';
+import {src, dest} from 'gulp';
 import pump from 'pump';
 import requireUncached from 'require-uncached';
 
