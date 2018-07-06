@@ -137,7 +137,7 @@ function wprig_setup() {
 		array(
 			'name'  => 'Dusty sun',
 			'color' => '#EEE9D1',
-		)
+		),
 	) );
 
 	/**
