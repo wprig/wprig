@@ -103,40 +103,49 @@ function wprig_setup() {
 	 */
 	add_theme_support( 'editor-color-palette', array(
 		array(
-			'name'  => 'Dusty orange',
-			'color' => '#ED8F5B',
+			'name'  => esc_html__( 'Dusty orange', 'wprig' ),
+			'slug'  => 'dusty-orange',
+			'color' => '#ed8f5b',
 		),
 		array(
-			'name'  => 'Dusty red',
-			'color' => '#E36D60',
+			'name'  => esc_html__( 'Dusty red', 'wprig' ),
+			'slug'  => 'dusty-red',
+			'color' => '#e36d60',
 		),
 		array(
-			'name'  => 'Dusty wine',
-			'color' => '#9C4368',
+			'name'  => esc_html__( 'Dusty wine', 'wprig' ),
+			'slug'  => 'dusty-wine',
+			'color' => '#9c4368',
 		),
 		array(
-			'name'  => 'Dark sunset',
-			'color' => '#33223B',
+			'name'  => esc_html__( 'Dark sunset', 'wprig' ),
+			'slug'  => 'dark-sunset',
+			'color' => '#33223b',
 		),
 		array(
-			'name'  => 'Almost black',
-			'color' => '#0A1C28',
+			'name'  => esc_html__( 'Almost black', 'wprig' ),
+			'slug'  => 'almost-black',
+			'color' => '#0a1c28',
 		),
 		array(
-			'name'  => 'Dusty water',
-			'color' => '#41848F',
+			'name'  => esc_html__( 'Dusty water', 'wprig' ),
+			'slug'  => 'dusty-water',
+			'color' => '#41848f',
 		),
 		array(
-			'name'  => 'Dusty sky',
-			'color' => '#72A7A3',
+			'name'  => esc_html__( 'Dusty sky', 'wprig' ),
+			'slug'  => 'dusty-sky',
+			'color' => '#72a7a3',
 		),
 		array(
-			'name'  => 'Dusty daylight',
-			'color' => '#97C0B7',
+			'name'  => esc_html__( 'Dusty daylight', 'wprig' ),
+			'slug'  => 'dusty-daylight',
+			'color' => '#97c0b7',
 		),
 		array(
-			'name'  => 'Dusty sun',
-			'color' => '#EEE9D1',
+			'name'  => esc_html__( 'Dusty sun', 'wprig' ),
+			'slug'  => 'dusty-sun',
+			'color' => '#eee9d1',
 		),
 	) );
 
