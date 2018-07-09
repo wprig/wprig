@@ -10,7 +10,7 @@ export const gulpReplaceOptions = {
     logs: {
       enabled: false
     },
-    searchValue: 'string',
+    searchValue: 'regex',
 };
 
 // Root path is where npm run commands happen
