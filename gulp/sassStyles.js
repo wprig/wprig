@@ -7,14 +7,14 @@ import pump from 'pump';
 import requireUncached from 'require-uncached';
 
 // Internal dependencies
-import {rootPath, paths, gulpPlugins} from './constants';
+import {paths, gulpPlugins} from './constants';
 
 /**
  * Sass, if that's being used.
  */
 export default function sassStyles(done) {
     // get a fresh copy of the config
-   const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+   const config = requireUncached(paths.config.themeConfig);
 
     pump([
         src(paths.styles.sass, { sourcemaps: true }),

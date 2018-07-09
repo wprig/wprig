@@ -7,14 +7,14 @@ import pump from 'pump';
 import requireUncached from 'require-uncached';
 
 // Internal dependencies
-import {rootPath, paths, gulpPlugins, gulpReplaceOptions} from './constants';
+import {paths, gulpPlugins, gulpReplaceOptions} from './constants';
 
 /**
  * JavaScript via Babel, ESlint, and uglify.
  */
 export default function scripts(done) {
     // Get a fresh copy of the config
-    const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+    const config = requireUncached(paths.config.themeConfig);
 
 	pump([
         src(paths.scripts.src, {sourcemaps: true}),

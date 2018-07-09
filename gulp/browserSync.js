@@ -6,7 +6,7 @@ import requireUncached from 'require-uncached';
 import browserSync from 'browser-sync';
 
 // Internal dependencies
-import {rootPath} from './constants';
+import {paths} from './constants';
 
 /**
  * Conditionally set up BrowserSync.
@@ -19,7 +19,7 @@ export const server = browserSync.create();
 // Initialize the BrowserSync server conditionally:
 export function serve(done) {
     // get a fresh copy of the config
-    const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+    const config = requireUncached(paths.config.themeConfig);
 
 	if (config.dev.browserSync.live) {
 		server.init({
@@ -34,7 +34,7 @@ export function serve(done) {
 // Reload the live site:
 export function reload(done) {
 	// get a fresh copy of the config
-    const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+    const config = requireUncached(paths.config.themeConfig);
     
 	if (config.dev.browserSync.live) {
 		if (server.paused) {

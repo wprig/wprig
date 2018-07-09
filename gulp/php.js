@@ -15,7 +15,7 @@ import {paths, rootPath, gulpPlugins, gulpReplaceOptions} from './constants';
 let isFirstRun = true;
 
 // Grab the initial config so we can check if the theme slug/name change later
-let initialConfig = require(`${rootPath}/dev/config/themeConfig.js`);
+let initialConfig = require(paths.config.themeConfig);
 
 // Stash theme config
 let themeConfig = initialConfig.theme;
@@ -26,7 +26,7 @@ let themeConfig = initialConfig.theme;
 export default function php(done) {
 
     // get a fresh copy of the config
-    const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+    const config = requireUncached(paths.config.themeConfig);
 
 	// We should rebuild if this is the first run OR the theme slug/name have changed
 	let isRebuild = isFirstRun ||
