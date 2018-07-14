@@ -141,6 +141,7 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 
 ## 1.0.2
 - Updated theme support for Gutenberg color palette with a single array attribute. Props @webmandesign
+- `./verbose/` folder no longer holds PHP files. Resolves duplicate functionality as described in [#51](https://github.com/wprig/wprig/issues/51).
 
 ## 1.0.1
 - PHP process updated to run conditionally on theme name and theme slug rename and on first run. Props @hellofromtonya.
