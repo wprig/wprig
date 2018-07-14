@@ -140,7 +140,6 @@ export function php() {
 	.pipe(phpcs.reporter('log'))
 	.pipe(replace('wprig', config.theme.slug))
 	.pipe(replace('WP Rig', config.theme.name))
-	.pipe(gulp.dest(paths.verbose))
 	.pipe(gulp.dest(paths.php.dest));
 
 }
