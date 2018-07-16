@@ -23,7 +23,8 @@ export const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
 export const paths = {
 	config: {
 		cssVars: `${rootPath}/dev/config/cssVariables.json`,
-		themeConfig: `${rootPath}/dev/config/themeConfig.js`
+		themeConfig: `${rootPath}/dev/config/themeConfig.js`,
+		browserSync: `${rootPath}/dev/config/BrowserSync`
 	},
 	php: {
 		src: [
