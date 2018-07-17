@@ -65,11 +65,11 @@ const paths = {
 	},
 	languages: {
 		src: ['./**/*.php', '!dev/**/*.php', '!verbose/**/*.php'],
-		dest: './languages/' + config.theme.name + '.pot'
+		dest: './languages/' + config.theme.slug + '.pot'
 	},
 	verbose: './verbose/',
 	export: {
-		src: ['**/*', '!' + config.theme.name, '!' + config.theme.name + '/**/*', '!dev/**/*', '!node_modules', '!node_modules/**/*', '!vendor', '!vendor/**/*', '!.*', '!composer.*', '!gulpfile.*', '!package*.*', '!phpcs.*', '!*.zip'],
+		src: ['**/*', '!' + config.theme.slug, '!' + config.theme.slug + '/**/*', '!dev/**/*', '!node_modules', '!node_modules/**/*', '!vendor', '!vendor/**/*', '!.*', '!composer.*', '!gulpfile.*', '!package*.*', '!phpcs.*', '!*.zip'],
 		dest: './'
 	}
 };
@@ -283,7 +283,7 @@ export function translate() {
 	return gulp.src(paths.languages.src)
 	.pipe(sort())
 	.pipe(wppot({
-		domain: config.theme.name,
+		domain: config.theme.slug,
 		package: config.theme.name,
 		bugReport: config.theme.name,
 		lastTranslator: config.theme.author
@@ -298,7 +298,7 @@ export function translate() {
 export function bundle() {
 	return gulp.src(paths.export.src)
 	.pipe(print())
-	.pipe(gulpif(config.export.compress, zip(config.theme.name + '.zip'), gulp.dest(paths.export.dest + config.theme.name)))
+	.pipe(gulpif(config.export.compress, zip(config.theme.slug + '.zip'), gulp.dest(paths.export.dest + config.theme.slug)))
 	.pipe(gulpif(config.export.compress, gulp.dest(paths.export.dest)));
 }
 
