@@ -31,8 +31,30 @@ import uglify from 'gulp-uglify';
 import wppot from 'gulp-wp-pot';
 import zip from 'gulp-zip';
 
+/**
+ * Get theme configuration.
+ *
+ * @param {bool} uncached Whether to get an uncached version of the configuration.
+ * @return {object} Theme configuration data.
+ */
+function getThemeConfig( uncached ) {
+	var config;
+
+	if ( uncached ) {
+		config = requireUncached('./dev/config/themeConfig.js')
+	} else {
+		config = require('./dev/config/themeConfig.js');
+	}
+
+	if ( ! config.theme.constant ) {
+		config.theme.constant = config.theme.slug.toUpperCase();
+	}
+
+	return config;
+}
+
 // Import theme-specific configurations.
-var config = require('./dev/config/themeConfig.js');
+var config = getThemeConfig();
 var themeConfig = config.theme;
 themeConfig.isFirstRun = true;
 
@@ -96,7 +118,7 @@ function serve(done) {
 
 // Reload the live site:
 function reload(done) {
-	config = requireUncached('./dev/config/themeConfig.js');
+	config = getThemeConfig(true);
 	if (config.dev.browserSync.live) {
 		if (server.paused) {
 			server.resume();
@@ -113,14 +135,16 @@ function reload(done) {
  * PHP via PHP Code Sniffer.
  */
 export function php() {
-	config = requireUncached('./dev/config/themeConfig.js');
+	config = getThemeConfig(true);
 	// Check if theme slug has been updated.
 	let isRebuild = themeConfig.isFirstRun ||
 		( themeConfig.slug !== config.theme.slug ) ||
-		( themeConfig.name !== config.theme.name );
+		( themeConfig.name !== config.theme.name ) ||
+		( themeConfig.constant !== config.theme.constant );
 	if ( isRebuild ) {
 		themeConfig.slug = config.theme.slug;
 		themeConfig.name = config.theme.name;
+		themeConfig.constant = config.theme.constant;
 	}
 
 	// Reset first run.
@@ -140,6 +164,7 @@ export function php() {
 	.pipe(phpcs.reporter('log'))
 	.pipe(replace('wprig', config.theme.slug))
 	.pipe(replace('WP Rig', config.theme.name))
+	.pipe(replace('WPRIG', config.theme.constant))
 	.pipe(gulp.dest(paths.php.dest));
 
 }
@@ -160,7 +185,7 @@ export function sassStyles() {
  * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
  */
 export function styles() {
-	config = requireUncached('./dev/config/themeConfig.js');
+	config = getThemeConfig(true);
 
 	// Reload cssVars every time the task runs.
 	let cssVars = requireUncached(paths.config.cssVars)
@@ -192,6 +217,7 @@ export function styles() {
 	]))
 	.pipe(replace('wprig', config.theme.slug))
 	.pipe(replace('WP Rig', config.theme.name))
+	.pipe(replace('WPRIG', config.theme.constant))
 	.pipe(gulp.dest(paths.verbose))
 	.pipe(gulpif(!config.dev.debug.styles, cssnano()))
 	.pipe(gulp.dest(paths.styles.dest));
@@ -202,7 +228,7 @@ export function styles() {
  * JavaScript via Babel, ESlint, and uglify.
  */
 export function scripts() {
-	config = requireUncached('./dev/config/themeConfig.js');
+	config = getThemeConfig(true);
 	return gulp	.src(paths.scripts.src)
 	.pipe(newer(paths.scripts.dest))
 	.pipe(eslint())
@@ -212,6 +238,7 @@ export function scripts() {
 	.pipe(gulpif(!config.dev.debug.scripts, uglify()))
 	.pipe(replace('wprig', config.theme.slug))
 	.pipe(replace('WP Rig', config.theme.name))
+	.pipe(replace('WPRIG', config.theme.constant))
 	.pipe(gulp.dest(paths.scripts.dest));
 }
 
