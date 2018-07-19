@@ -62,10 +62,6 @@ export default function php(done) {
         gulpPlugins.phpcs.reporter('log'),
         gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
         gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
-<<<<<<< HEAD
-        dest(paths.verbose),
-=======
->>>>>>> 0167df9104a316dd12add03209411f098c6e17ca
         dest(paths.php.dest),
     ], done);
 
