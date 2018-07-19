@@ -23,6 +23,11 @@ export function serve(done) {
     // get a fresh copy of the config
     const config = requireUncached(paths.config.themeConfig);
 
+    // bail early if not serving via BrowserSync
+    if (config.dev.browserSync.live) {
+		done();
+	}
+
     let serverConfig = {
         proxy: config.dev.browserSync.proxyURL,
         port: config.dev.browserSync.bypassPort,
@@ -57,9 +62,8 @@ export function serve(done) {
         };
     }
 
-	if (config.dev.browserSync.live) {
-		server.init(serverConfig);
-	}
+    server.init(serverConfig);
+
 	done();
 }
 
