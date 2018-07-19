@@ -24,7 +24,7 @@ export function serve(done) {
     const config = requireUncached(paths.config.themeConfig);
 
     // bail early if not serving via BrowserSync
-    if (config.dev.browserSync.live) {
+    if (! config.dev.browserSync.live) {
 		done();
 	}
 
