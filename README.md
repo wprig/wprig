@@ -45,6 +45,18 @@ WP Rig can be used in any development environment. It does not require any speci
 
 WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `proxy` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `URL` value is the URL to the live version of your local site.
 
+To disable SSL certificate warnings in the browser you can either:
+
+    1. Use the certificate and key files included with WP Rig, located in the `dev/config/BrowserSync` directory. You will need to configure your computer to trust the certificate as it is self-signed to avoid browser warnings.
+        - macOS
+            1. Open Keychain Access
+            2. Drag the certificate file `dev/config/BrowserSync/wp-rig-browser-sync.crt` onto KeyChain access
+            3. Double click on the new `WP Rig` certificate in the list
+            4. Expand the `trust` menu
+            5. Change the `When using this certificate:` setting to `Always Trust`
+            6. Close the certificate dialogue. You may be prompted for your computer password to save the setting
+    2. Generate your own certificate and uncomment/update the `certPath` and `keyPath` values in `dev/config/themeConfig.js` to the absolute path of your certificate and key files. Ensure the certificate has the proper Subject Alternative Name to avoid browser warnings as Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)).
+
 WP Rig uses a [Gulp 4](https://gulpjs.com/) build process to generate and optimize the code for the theme. All development is done in the `/dev` folder and Gulp preprocesses, transpiles, and compiles the files into the root folder. The root folder files become the active theme. WordPress ignores anything in the `/dev` folder.
 
 **Note:** If you have previously used Gulp, you may encounter seemingly random errors that prevent the build process from running. To fix this issue, [upgrade to Gulp 4 following the steps outlined here](https://github.com/pattern-lab/edition-node-gulp/wiki/Updating-to-Gulp-4).
