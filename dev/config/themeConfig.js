@@ -9,7 +9,7 @@ module.exports = {
 	dev: {
 		browserSync: {
 			live: true,
-			proxyURL: 'wprig.test:8888',
+			proxyURL: 'https://wprig.lndo.site',
 			bypassPort: '8181',
 
             // Use a custom cert/key if desired
