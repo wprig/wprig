@@ -14,7 +14,7 @@ module.exports = {
 
             // Use a custom cert/key if desired
 			// certPath: '',
-			// keyPath: ''
+			// keyPath: '',
             https: true
 		},
 		browserslist: [ // See https://github.com/browserslist/browserslist
