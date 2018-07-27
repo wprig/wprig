@@ -9,15 +9,14 @@ module.exports = {
 	dev: {
 		browserSync: {
 			live: true,
-			proxyURL: 'https://wprig.lndo.site',
+			proxyURL: 'wprig.test:8888',
 			bypassPort: '8181',
 
-            // Use a custom cert/key if desired
-            // This article is helpful
-            // https://deliciousbrains.com/https-locally-without-browser-privacy-errors/
+            // To use HTTPS you need a cert/key
+            // Please see the README for instructions
 			// certPath: '',
 			// keyPath: '',
-            https: true
+            https: false
 		},
 		browserslist: [ // See https://github.com/browserslist/browserslist
 			'> 1%',
