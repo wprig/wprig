@@ -4,17 +4,17 @@
 // External dependencies
 import {src, dest} from 'gulp';
 import pump from 'pump';
-import requireUncached from 'require-uncached';
 
 // Internal dependencies
 import {paths, gulpPlugins} from './constants';
+import {getThemeConfig} from './utils';
 
 /**
  * Sass, if that's being used.
  */
 export default function sassStyles(done) {
     // get a fresh copy of the config
-   const config = requireUncached(paths.config.themeConfig);
+   const config = getThemeConfig(true);
 
     pump([
         src(paths.styles.sass, { sourcemaps: true }),

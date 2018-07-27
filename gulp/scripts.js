@@ -4,17 +4,17 @@
 // External dependencies
 import {src, dest} from 'gulp';
 import pump from 'pump';
-import requireUncached from 'require-uncached';
 
 // Internal dependencies
 import {paths, gulpPlugins, gulpReplaceOptions} from './constants';
+import {getThemeConfig} from './utils';
 
 /**
  * JavaScript via Babel, ESlint, and uglify.
  */
 export default function scripts(done) {
     // Get a fresh copy of the config
-    const config = requireUncached(paths.config.themeConfig);
+    const config = getThemeConfig(true);
 
 	pump([
         src(paths.scripts.src, {sourcemaps: true}),
@@ -29,6 +29,7 @@ export default function scripts(done) {
         ),
         gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
         gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
+        gulpPlugins.stringReplace('WPRIG', config.theme.constant, gulpReplaceOptions),
         dest(paths.scripts.dest, {sourcemaps: true}),
     ], done);
 }

@@ -9,13 +9,14 @@ import requireUncached from 'require-uncached';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, gulpReplaceOptions} from './constants';
+import {getThemeConfig} from './utils';
 
 /**
 * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
 */
 export default function styles(done) {
    // get a fresh copy of the config
-   const config = requireUncached(paths.config.themeConfig);
+   const config = getThemeConfig(true);
 
    // Reload cssVars every time the task runs.
    const cssVars = requireUncached(paths.config.cssVars);
