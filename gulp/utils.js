@@ -5,7 +5,7 @@
 import requireUncached from 'require-uncached';
 
 // Internal dependencies
-import {paths} from './constants';
+import {rootPath} from './constants';
 
 /**
  * Get theme configuration.
@@ -14,12 +14,12 @@ import {paths} from './constants';
  * @return {object} Theme configuration data.
  */
 export function getThemeConfig( uncached=false ) {
-	var config;
+    let config;
 
 	if ( uncached ) {
-		config = requireUncached(paths.config.themeConfig);
+		config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
 	} else {
-		config = require(paths.config.themeConfig);
+		config = require(`${rootPath}/dev/config/themeConfig.js`);
 	}
 
 	if ( ! config.theme.constant ) {
