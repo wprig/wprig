@@ -13,6 +13,8 @@ module.exports = {
 			bypassPort: '8181',
 
             // Use a custom cert/key if desired
+            // This article is helpful
+            // https://deliciousbrains.com/https-locally-without-browser-privacy-errors/
 			// certPath: '',
 			// keyPath: '',
             https: true
