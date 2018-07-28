@@ -115,3 +115,21 @@
 .has-dusty-sun-background-color {
 	background-color: #EEE9D1;
 }
+
+/* Visualize editor font sizes (defined in functions.php). */
+
+.has-small-font-size {
+	font-size: 14px;
+}
+
+.has-regular-font-size {
+	font-size: 16px;
+}
+
+.has-large-font-size {
+	font-size: 36px;
+}
+
+.has-larger-font-size {
+	font-size: 48px;
+}

@@ -379,6 +379,26 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 }
 
 /*--------------------------------------------------------------
+## Custom block font sizes.
+--------------------------------------------------------------*/
+
+.has-small-font-size {
+	font-size: 14px;
+}
+
+.has-regular-font-size {
+	font-size: 16px;
+}
+
+.has-large-font-size {
+	font-size: 36px;
+}
+
+.has-larger-font-size {
+	font-size: 48px;
+}
+
+/*--------------------------------------------------------------
 ## Media
 --------------------------------------------------------------*/
 .page-content .wp-smiley,
