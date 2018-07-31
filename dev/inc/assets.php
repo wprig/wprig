@@ -71,11 +71,12 @@ add_action( 'enqueue_block_editor_assets', 'wprig_gutenberg_styles' );
 function wprig_fonts_url() {
 	$fonts_url = '';
 
-	/**
+	/*
 	 * Translator: If Roboto Sans does not support characters in your language, translate this to 'off'.
 	 */
 	$roboto = esc_html_x( 'on', 'Roboto Condensed font: on or off', 'wprig' );
-	/**
+
+	/*
 	 * Translator: If Crimson Text does not support characters in your language, translate this to 'off'.
 	 */
 	$crimson_text = esc_html_x( 'on', 'Crimson Text font: on or off', 'wprig' );
@@ -100,7 +101,6 @@ function wprig_fonts_url() {
 	}
 
 	return esc_url_raw( $fonts_url );
-
 }
 
 /**
@@ -119,7 +119,6 @@ function wprig_resource_hints( $urls, $relation_type ) {
 			'crossorigin',
 		);
 	}
-
 	return $urls;
 }
 add_filter( 'wp_resource_hints', 'wprig_resource_hints', 10, 2 );

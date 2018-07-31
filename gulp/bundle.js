@@ -16,7 +16,7 @@ export default function bundle(done) {
     // get a fresh copy of the config
     const config = getThemeConfig(true);
 
-	pump([
+	return pump([
         src(paths.export.src),
         gulpPlugins.if(
             config.export.compress, 
