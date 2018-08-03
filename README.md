@@ -4,7 +4,7 @@
 # WP Rig: WordPress Theme Boilerplate
 [![Build Status](https://travis-ci.com/wprig/wprig.svg?branch=master)](https://travis-ci.com/wprig/wprig)
 [![License: GPL](https://img.shields.io/aur/license/yaourt.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-![WP Rig version 1.0.2](https://img.shields.io/badge/version-1.0.1-blue.svg)
+![WP Rig version 1.0.3](https://img.shields.io/badge/version-1.0.3-blue.svg)
 
 ## Your Performance-Focused Development Rig
 A progressive theme development rig for WordPress, WP Rig is built to promote the latest best practices for progressive web content and optimization. Building a theme from WP Rig means adopting this approach and the core principles it is built on:
@@ -142,6 +142,7 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 ## 1.0.3
 - Add Gutenberg editor-font-sizes. Props @atanas-angelov-dev
 - Improve conditional logic in wprig_add_body_style(). Props @iliman
+- Update WordPress Coding Standards to 1.0.0. Props @mor10
 
 ## 1.0.2
 - Updated theme support for Gutenberg color palette with a single array attribute. Props @webmandesign
