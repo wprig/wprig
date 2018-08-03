@@ -5,6 +5,7 @@
 	# Alignments
 	# Blocks
 	# Custom block colors
+	# Custom font sizes
 	# Media
 		# Captions
 		# Galleries
@@ -399,6 +400,38 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 
 .has-dusty-sun-background-color {
 	background-color: #eee9d1;
+}
+
+/*--------------------------------------------------------------
+## Custom block font sizes.
+--------------------------------------------------------------*/
+
+.has-small-font-size {
+	/* stylelint-disable */
+	font-size: var(--small-font-size)px;
+	font-size: calc(var(--small-font-size) / 16)rem;
+	/* stylelint-enable */
+}
+
+.has-regular-font-size {
+	/* stylelint-disable */
+	font-size: var(--regular-font-size)px;
+	font-size: calc(var(--regular-font-size) / 16)rem;
+	/* stylelint-enable */
+}
+
+.has-large-font-size {
+	/* stylelint-disable */
+	font-size: var(--large-font-size)px;
+	font-size: calc(var(--large-font-size) / 16)rem;
+	/* stylelint-enable */
+}
+
+.has-larger-font-size {
+	/* stylelint-disable */
+	font-size: var(--larger-font-size)px;
+	font-size: calc(var(--larger-font-size) / 16)rem;
+	/* stylelint-enable */
 }
 
 /*--------------------------------------------------------------
