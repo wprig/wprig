@@ -15,6 +15,7 @@ import eslint from 'gulp-eslint';
 import log from 'fancy-log';
 import gulpif from 'gulp-if';
 import image from 'gulp-image';
+import imagemin from 'gulp-imagemin';
 import newer from 'gulp-newer';
 import partialImport from 'postcss-partial-import';
 import postcssPresetEnv from 'postcss-preset-env';
@@ -243,7 +244,7 @@ export function jsMin() {
 export function images() {
 	return gulp.src(paths.images.src)
 	.pipe(newer(paths.images.dest))
-	.pipe(image())
+	.pipe(imagemin())
 	.pipe(gulp.dest(paths.images.dest));
 }
 
