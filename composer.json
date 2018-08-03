@@ -4,7 +4,7 @@
   "type": "wordpress-theme",
   "license": "GPL-2.0",
   "require-dev": {
-    "wp-coding-standards/wpcs": "^0.14.1",
+    "wp-coding-standards/wpcs": "^1.0.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
     "wimg/php-compatibility": "^8.1"
   },
