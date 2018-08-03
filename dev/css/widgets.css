@@ -1,13 +1,14 @@
 /*--------------------------------------------------------------
 # Widgets
 --------------------------------------------------------------*/
+
+/* Make sure select elements fit in widgets. */
 .widget {
-  margin: 0 0 1.5em;
-  /* Make sure select elements fit in widgets. */
+	margin: 0 0 1.5em;
 }
 
 .widget li {
-	line-height: 1.8em;
+	line-height: 1.8;
 }
 
 .widget_archive ul,
@@ -24,13 +25,13 @@
 }
 
 .widget select {
-  max-width: 100%;
-  text-overflow: ellipsis;
+	max-width: 100%;
+	text-overflow: ellipsis;
 }
 
 /* Archive and Categories widgets */
 .widget_archive li {
-	color: #7D7D7D;
+	color: #7d7d7d;
 }
 
 .widget_categories .children {
@@ -46,22 +47,23 @@
 .widget_pages .children,
 .widget_nav_menu .sub-menu {
 	padding-top: 0;
-	padding-bottom: .5em;
+	padding-bottom: 0.5em;
 }
 
 .widget_pages a,
 .widget_nav_menu a {
 	display: block;
-	padding: .6em 0;
+	padding: 0.6em 0;
 	text-decoration: none;
-	border-bottom: 1px dashed gray;
+	border-bottom: 1px dashed #808080;
 }
 
-.widget_pages a:hover, .widget_pages a:focus,
+.widget_pages a:hover,
+.widget_pages a:focus,
 .widget_nav_menu a:hover,
 .widget_nav_menu a:focus {
 	text-decoration: none;
-	border-bottom: 1px dashed gray;
+	border-bottom: 1px dashed #808080;
 }
 
 .widget_pages li,
@@ -81,8 +83,8 @@
 
 /* Recent comments */
 .widget_recent_comments li {
-	line-height: 1.3em;
-	padding-bottom: .5em;
+	line-height: 1.3;
+	padding-bottom: 0.5em;
 }
 
 .widget_recent_comments a:hover,
@@ -93,33 +95,33 @@
 /* RSS widget */
 .widget_rss li {
 	margin-bottom: 1em;
-	line-height: 1.3em;
+	line-height: 1.3;
 }
 
 .widget li a.rsswidget {
-	padding-right: .5em;
+	padding-right: 0.5em;
 	font-size: 1em;
-	line-height: 1.4em;
+	line-height: 1.4;
 }
 
 .rss-date,
 .widget_rss cite {
 	color: #333;
-	font-size: .8em;
+	font-size: 0.8em;
 }
 
 .rssSummary {
 	font-family: var(--global-font-family);
-	padding: .5em 0;
-	font-size: .9em;
-	line-height: 1.3em;
+	padding: 0.5em 0;
+	font-size: 0.9em;
+	line-height: 1.3;
 }
 
 /* Search widget */
 .widget_search input[type="search"] {
 	box-sizing: border-box;
 	width: 100%;
-	padding: .5em 1em;
+	padding: 0.5em 1em;
 	border: 1px solid #c3c3c3;
 	border-radius: 0;
 }
@@ -130,7 +132,7 @@
 }
 
 .widget_calendar caption {
-	padding: .5em 0;
+	padding: 0.5em 0;
 	font-size: 1em;
 	font-weight: 500;
 	text-align: left;
@@ -138,19 +140,7 @@
 
 .widget_calendar thead {
 	background: transparent;
-	color: black;
-}
-
-.widget_calendar thead th {
-	border-bottom-width: 2px;
-}
-
-.widget_calendar td {
-	padding: .2em;
-	font-size: .8em;
-	text-align: center;
-	background: white;
-	border: 1px solid #cccccc;
+	color: #333;
 }
 
 .widget_calendar th {
@@ -158,19 +148,33 @@
 	text-align: center;
 }
 
+.widget_calendar thead th {
+	border-bottom-width: 2px;
+}
+
+.widget_calendar td {
+	padding: 0.2em;
+	font-size: 0.8em;
+	text-align: center;
+	background: #fff;
+	border: 1px solid #ccc;
+}
+
 .widget_calendar .pad {
 	background: #eaeaea;
 }
 
+/* stylelint-disable */
 .widget_calendar a {
 	font-weight: 900;
 	text-decoration: none;
 }
+/* stylelint-enable */
 
 /* Text widget */
 .textwidget {
 	font-size: 80%;
-	line-height: 1.3em;
+	line-height: 1.3;
 }
 
 /* Footer widget stylings */
