@@ -139,6 +139,9 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 
 # Changelog
 
+## 1.0.3
+- Add Gutenberg editor-font-sizes. Props @atanas-angelov-dev
+
 ## 1.0.2
 - Updated theme support for Gutenberg color palette with a single array attribute. Props @webmandesign
 - `./verbose/` folder no longer holds PHP files. Resolves duplicate functionality as described in [#51](https://github.com/wprig/wprig/issues/51).

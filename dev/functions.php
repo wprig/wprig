@@ -164,28 +164,28 @@ function wprig_setup() {
 	 */
 	add_theme_support( 'editor-font-sizes', array(
 		array(
-			'name' => __( 'small', 'wprig' ),
+			'name'      => __( 'small', 'wprig' ),
 			'shortName' => __( 'S', 'wprig' ),
-			'size' => 14,
-			'slug' => 'small',
+			'size'      => 16,
+			'slug'      => 'small',
 		),
 		array(
-			'name' => __( 'regular', 'wprig' ),
+			'name'      => __( 'regular', 'wprig' ),
 			'shortName' => __( 'M', 'wprig' ),
-			'size' => 16,
-			'slug' => 'regular',
+			'size'      => 20,
+			'slug'      => 'regular',
 		),
 		array(
-			'name' => __( 'large', 'wprig' ),
+			'name'      => __( 'large', 'wprig' ),
 			'shortName' => __( 'L', 'wprig' ),
-			'size' => 36,
-			'slug' => 'large',
+			'size'      => 36,
+			'slug'      => 'large',
 		),
 		array(
-			'name' => __( 'larger', 'wprig' ),
+			'name'      => __( 'larger', 'wprig' ),
 			'shortName' => __( 'XL', 'wprig' ),
-			'size' => 48,
-			'slug' => 'larger',
+			'size'      => 48,
+			'slug'      => 'larger',
 		),
 	) );
 
