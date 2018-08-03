@@ -141,6 +141,7 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 
 ## 1.0.3
 - Add Gutenberg editor-font-sizes. Props @atanas-angelov-dev
+- Improve conditional logic in wprig_add_body_style(). Props @iliman
 
 ## 1.0.2
 - Updated theme support for Gutenberg color palette with a single array attribute. Props @webmandesign
