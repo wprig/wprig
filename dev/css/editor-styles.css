@@ -2,7 +2,7 @@
  * Styles for the WordPress post/page editor.
  * Ensures a visual match between back- and front-end.
  */
-.editor-writing-flow {
+ body.gutenberg-editor-page .editor-writing-flow {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
@@ -12,27 +12,30 @@
 	line-height: var(--global-font-line-height);
 }
 
-.editor-post-title .editor-post-title__input,
-.editor-writing-flow h1,
-.editor-writing-flow h2,
-.editor-writing-flow h3,
-.editor-writing-flow h4,
-.editor-writing-flow h5,
-.editor-writing-flow h6,
-.edit-post-visual-editor p {
+body.gutenberg-editor-page .editor-post-title .editor-post-title__input,
+body.gutenberg-editor-page .editor-writing-flow h1,
+body.gutenberg-editor-page .editor-writing-flow h2,
+body.gutenberg-editor-page .editor-writing-flow h3,
+body.gutenberg-editor-page .editor-writing-flow h4,
+body.gutenberg-editor-page .editor-writing-flow h5,
+body.gutenberg-editor-page .editor-writing-flow h6,
+body.gutenberg-editor-page .edit-post-visual-editor p {
 	font-family: var(--highlight-font-family);
 	color: #32373c;
 	clear: both;
 }
 
-.editor-post-title .editor-post-title__input {
+body.gutenberg-editor-page .editor-post-title .editor-post-title__input {
 	font-size: 32px;
 	font-size: 2rem;
 	line-height: 1.4;
 }
 
-.edit-post-visual-editor p {
+body.gutenberg-editor-page .edit-post-visual-editor p {
 	font-family: var(--global-font-family);
+	font-size: var(--global-font-size)px;
+	font-size: calc(var(--global-font-size) / 16)rem;
+
 }
 
 /* Visualize editor color palette (defined in functions.php). */
@@ -146,4 +149,26 @@
 	font-size: var(--larger-font-size)px;
 	font-size: calc(var(--larger-font-size) / 16)rem;
 	/* stylelint-enable */
+}
+
+/* Visualize editor font sizes (defined in functions.php). */
+
+.has-small-font-size {
+	font-size: var(--small-font-size)px;
+	font-size: calc(var(--small-font-size) / 16)rem;
+}
+
+.has-regular-font-size {
+	font-size: var(--regular-font-size)px;
+	font-size: calc(var(--regular-font-size) / 16)rem;
+}
+
+.has-large-font-size {
+	font-size: var(--large-font-size)px;
+	font-size: calc(var(--large-font-size) / 16)rem;
+}
+
+.has-larger-font-size {
+	font-size: var(--larger-font-size)px;
+	font-size: calc(var(--larger-font-size) / 16)rem;
 }

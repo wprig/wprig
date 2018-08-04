@@ -435,6 +435,30 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 }
 
 /*--------------------------------------------------------------
+## Custom block font sizes.
+--------------------------------------------------------------*/
+
+.has-small-font-size {
+	font-size: var(--small-font-size)px;
+	font-size: calc(var(--small-font-size) / 16)rem;
+}
+
+.has-regular-font-size {
+	font-size: var(--regular-font-size)px;
+	font-size: calc(var(--regular-font-size) / 16)rem;
+}
+
+.has-large-font-size {
+	font-size: var(--large-font-size)px;
+	font-size: calc(var(--large-font-size) / 16)rem;
+}
+
+.has-larger-font-size {
+	font-size: var(--larger-font-size)px;
+	font-size: calc(var(--larger-font-size) / 16)rem;
+}
+
+/*--------------------------------------------------------------
 ## Media
 --------------------------------------------------------------*/
 .page-content .wp-smiley,
