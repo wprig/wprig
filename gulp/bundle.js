@@ -20,8 +20,8 @@ export default function bundle(done) {
         src(paths.export.src),
         gulpPlugins.if(
             config.export.compress, 
-            gulpPlugins.zip(`${config.theme.name}.zip`), 
-            dest(`${paths.export.dest}${config.theme.name}`)
+            gulpPlugins.zip(`${config.theme.slug}.zip`), 
+            dest(`${paths.export.dest}${config.theme.slug}`)
         ),
         gulpPlugins.if(
             config.export.compress, 

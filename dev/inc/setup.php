@@ -155,6 +155,38 @@ function wprig_setup() {
 	 * add_theme_support( 'disable-custom-colors' );
 	 */
 
+	/**
+	 * Add support for font sizes.
+	 *
+	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
+	 */
+	add_theme_support( 'editor-font-sizes', array(
+		array(
+			'name'      => __( 'small', 'wprig' ),
+			'shortName' => __( 'S', 'wprig' ),
+			'size'      => 16,
+			'slug'      => 'small',
+		),
+		array(
+			'name'      => __( 'regular', 'wprig' ),
+			'shortName' => __( 'M', 'wprig' ),
+			'size'      => 20,
+			'slug'      => 'regular',
+		),
+		array(
+			'name'      => __( 'large', 'wprig' ),
+			'shortName' => __( 'L', 'wprig' ),
+			'size'      => 36,
+			'slug'      => 'large',
+		),
+		array(
+			'name'      => __( 'larger', 'wprig' ),
+			'shortName' => __( 'XL', 'wprig' ),
+			'size'      => 48,
+			'slug'      => 'larger',
+		),
+	) );
+
 	/*
 	 * Optional: Add AMP support.
 	 *

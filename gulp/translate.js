@@ -20,7 +20,7 @@ export default function translate(done) {
         src(paths.languages.src),
         gulpPlugins.sort(),
         gulpPlugins.wpPot({
-            domain: config.theme.name,
+            domain: config.theme.slug,
             package: config.theme.name,
             bugReport: config.theme.name,
             lastTranslator: config.theme.author

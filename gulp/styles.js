@@ -49,6 +49,16 @@ export default function styles(done) {
        ]),
        gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
        gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
+       gulpPlugins.stylelint({
+          failAfterError: false,
+          fix: true,  
+          reporters: [
+              {
+                  formatter: 'string', 
+                  console: true
+              }
+          ]
+       }),
        dest(paths.verbose),
        gulpPlugins.if(
            !config.dev.debug.styles, 
