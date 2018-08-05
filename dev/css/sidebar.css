@@ -8,6 +8,7 @@
 }
 
 @media (--sidebar-query) {
+
 	.primary-sidebar {
 		padding: 0;
 	}

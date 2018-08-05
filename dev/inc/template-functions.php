@@ -88,38 +88,40 @@ function wprig_get_preload_stylesheet_uri( $wp_styles, $handle ) {
  */
 function wprig_add_body_style() {
 
-	if ( ! wprig_is_amp() ) {
+	// If AMP is active, do nothing.
+	if ( wprig_is_amp() ) {
+		return;
+	}
 
-		// Get registered styles.
-		$wp_styles = wp_styles();
+	// Get registered styles.
+	$wp_styles = wp_styles();
 
-		$preloads = array();
+	$preloads = array();
 
-		// Preload content.css.
-		$preloads['wprig-content'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-content' );
+	// Preload content.css.
+	$preloads['wprig-content'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-content' );
 
-		// Preload sidebar.css and widget.css.
-		if ( is_active_sidebar( 'sidebar-1' ) ) {
-			$preloads['wprig-sidebar'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-sidebar' );
-			$preloads['wprig-widgets'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-widgets' );
-		}
+	// Preload sidebar.css and widget.css.
+	if ( is_active_sidebar( 'sidebar-1' ) ) {
+		$preloads['wprig-sidebar'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-sidebar' );
+		$preloads['wprig-widgets'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-widgets' );
+	}
 
-		// Preload comments.css.
-		if ( ! post_password_required() && is_singular() && ( comments_open() || get_comments_number() ) ) {
-			$preloads['wprig-comments'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-comments' );
-		}
+	// Preload comments.css.
+	if ( ! post_password_required() && is_singular() && ( comments_open() || get_comments_number() ) ) {
+		$preloads['wprig-comments'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-comments' );
+	}
 
-		// Preload front-page.css.
-		global $template;
-		if ( 'front-page.php' === basename( $template ) ) {
-			$preloads['wprig-front-page'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-front-page' );
-		}
+	// Preload front-page.css.
+	global $template;
+	if ( 'front-page.php' === basename( $template ) ) {
+		$preloads['wprig-front-page'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-front-page' );
+	}
 
-		// Output the preload markup in <head>.
-		foreach ( $preloads as $handle => $src ) {
-			echo '<link rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $src ) . '" as="style" />';
-			echo "\n";
-		}
+	// Output the preload markup in <head>.
+	foreach ( $preloads as $handle => $src ) {
+		echo '<link rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $src ) . '" as="style" />';
+		echo "\n";
 	}
 
 }

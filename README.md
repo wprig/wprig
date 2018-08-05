@@ -142,10 +142,17 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 ## 1.1.0
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme
 
+## 1.0.3
+- Add Gutenberg editor-font-sizes. Props @atanas-angelov-dev
+- Improve conditional logic in wprig_add_body_style(). Props @iliman
+- Update WordPress Coding Standards to 1.0.0. Props @mor10
+
 ## 1.0.2
 - Updated theme support for Gutenberg color palette with a single array attribute. Props @webmandesign
 - `./verbose/` folder no longer holds PHP files. Resolves duplicate functionality as described in [#51](https://github.com/wprig/wprig/issues/51).
 - Update Composer dependencies to latest versions (and to remove update nag).
+- Use slug for naming language file and ZIP bundle. Props @felixarntz.
+- Fixed bug with is_amp_endpoint() being called too soon. Props @iliman.
 
 ## 1.0.1
 - PHP process updated to run conditionally on theme name and theme slug rename and on first run. Props @hellofromtonya.

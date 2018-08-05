@@ -67,14 +67,14 @@ export const paths = {
             `!${rootPath}/dev/**/*.php`,
             `!${rootPath}/verbose/**/*.php`,
         ],
-		dest: `${rootPath}/languages/${config.theme.name}.pot`
+		dest: `${rootPath}/languages/${config.theme.slug}.pot`
 	},
 	verbose: `${rootPath}/verbose/`,
 	export: {
 		src: [
             `${rootPath}/**/*`,
-            `!${rootPath}/${config.theme.name}`,
-            `!${rootPath}/${config.theme.name}/**/*`,
+            `!${rootPath}/${config.theme.slug}`,
+            `!${rootPath}/${config.theme.slug}/**/*`,
             `!${rootPath}/dev/**/*`,
             `!${rootPath}/node_modules`,
             `!${rootPath}/node_modules/**/*`,

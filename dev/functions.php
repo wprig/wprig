@@ -16,29 +16,29 @@
  */
 function wprig_setup() {
 	/*
-		* Make theme available for translation.
-		* Translations can be filed in the /languages/ directory.
-		* If you're building a theme based on wprig, use a find and replace
-		* to change 'wprig' to the name of your theme in all the template files.
-		*/
+	 * Make theme available for translation.
+	 * Translations can be filed in the /languages/ directory.
+	 * If you're building a theme based on wprig, use a find and replace
+	 * to change 'wprig' to the name of your theme in all the template files.
+	 */
 	load_theme_textdomain( 'wprig', get_template_directory() . '/languages' );
 
 	// Add default posts and comments RSS feed links to head.
 	add_theme_support( 'automatic-feed-links' );
 
 	/*
-		* Let WordPress manage the document title.
-		* By adding theme support, we declare that this theme does not use a
-		* hard-coded <title> tag in the document head, and expect WordPress to
-		* provide it for us.
-		*/
+	 * Let WordPress manage the document title.
+	 * By adding theme support, we declare that this theme does not use a
+	 * hard-coded <title> tag in the document head, and expect WordPress to
+	 * provide it for us.
+	 */
 	add_theme_support( 'title-tag' );
 
 	/*
-		* Enable support for Post Thumbnails on posts and pages.
-		*
-		* @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-		*/
+	 * Enable support for Post Thumbnails on posts and pages.
+	 *
+	 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+	 */
 	add_theme_support( 'post-thumbnails' );
 
 	// This theme uses wp_nav_menu() in one location.
@@ -49,9 +49,9 @@ function wprig_setup() {
 	);
 
 	/*
-		* Switch default core markup for search form, comment form, and comments
-		* to output valid HTML5.
-		*/
+	 * Switch default core markup for search form, comment form, and comments
+	 * to output valid HTML5.
+	 */
 	add_theme_support(
 		'html5', array(
 			'search-form',
@@ -75,7 +75,7 @@ function wprig_setup() {
 	// Add theme support for selective refresh for widgets.
 	add_theme_support( 'customize-selective-refresh-widgets' );
 
-	/**
+	/*
 	 * Add support for core custom logo.
 	 *
 	 * @link https://codex.wordpress.org/Theme_Logo
@@ -89,14 +89,14 @@ function wprig_setup() {
 		)
 	);
 
-	/**
+	/*
 	 * Add support for wide aligments.
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
 	 */
 	add_theme_support( 'align-wide' );
 
-	/**
+	/*
 	 * Add support for block color palettes.
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
@@ -147,9 +147,9 @@ function wprig_setup() {
 			'slug'  => 'dusty-sun',
 			'color' => '#eee9d1',
 		),
-	) );
+	));
 
-	/**
+	/*
 	 * Optional: Disable custom colors in block color palettes.
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
@@ -158,6 +158,38 @@ function wprig_setup() {
 	 */
 
 	/**
+	 * Add support for font sizes.
+	 *
+	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
+	 */
+	add_theme_support( 'editor-font-sizes', array(
+		array(
+			'name'      => __( 'small', 'wprig' ),
+			'shortName' => __( 'S', 'wprig' ),
+			'size'      => 16,
+			'slug'      => 'small',
+		),
+		array(
+			'name'      => __( 'regular', 'wprig' ),
+			'shortName' => __( 'M', 'wprig' ),
+			'size'      => 20,
+			'slug'      => 'regular',
+		),
+		array(
+			'name'      => __( 'large', 'wprig' ),
+			'shortName' => __( 'L', 'wprig' ),
+			'size'      => 36,
+			'slug'      => 'large',
+		),
+		array(
+			'name'      => __( 'larger', 'wprig' ),
+			'shortName' => __( 'XL', 'wprig' ),
+			'size'      => 48,
+			'slug'      => 'larger',
+		),
+	));
+
+	/*
 	 * Optional: Add AMP support.
 	 *
 	 * Add built-in support for the AMP plugin and specific AMP features.
@@ -167,7 +199,7 @@ function wprig_setup() {
 	 */
 	add_theme_support( 'amp', array(
 		'comments_live_list' => true,
-	) );
+	));
 
 }
 add_action( 'after_setup_theme', 'wprig_setup' );
@@ -251,7 +283,6 @@ function wprig_resource_hints( $urls, $relation_type ) {
 			'crossorigin',
 		);
 	}
-
 	return $urls;
 }
 add_filter( 'wp_resource_hints', 'wprig_resource_hints', 10, 2 );
@@ -286,7 +317,7 @@ function wprig_widgets_init() {
 		'after_widget'  => '</section>',
 		'before_title'  => '<h2 class="widget-title">',
 		'after_title'   => '</h2>',
-	) );
+	));
 }
 add_action( 'widgets_init', 'wprig_widgets_init' );
 
@@ -339,7 +370,6 @@ function wprig_scripts() {
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
-
 }
 add_action( 'wp_enqueue_scripts', 'wprig_scripts' );
 
