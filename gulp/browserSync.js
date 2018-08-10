@@ -4,6 +4,8 @@
 // External dependencies
 import requireUncached from 'require-uncached';
 import browserSync from 'browser-sync';
+import log from 'fancy-log';
+import colors from 'ansi-colors';
 
 // Internal dependencies
 import {paths} from './constants';
@@ -21,13 +23,52 @@ export function serve(done) {
     // get a fresh copy of the config
     const config = requireUncached(paths.config.themeConfig);
 
-	if (config.dev.browserSync.live) {
-		server.init({
-			proxy: config.dev.browserSync.proxyURL,
-			port: config.dev.browserSync.bypassPort,
-			liveReload: true
-		});
+    // bail early if not serving via BrowserSync
+    if (! config.dev.browserSync.live) {
+		done();
 	}
+
+    let serverConfig = {
+        proxy: config.dev.browserSync.proxyURL,
+        port: config.dev.browserSync.bypassPort,
+        liveReload: true,
+        https: false
+    };
+
+    // Only setup HTTPS certificates if HTTPS is enabled
+    if (config.dev.browserSync.https){
+
+        let certFound = false;
+        let keyFound = false;
+
+        // Use custom cert and key paths if defined
+        if( config.dev.browserSync.hasOwnProperty('certPath') ){
+            certFound = true;
+            log(colors.yellow(`Using the custom SSL certificate ${colors.bold(config.dev.browserSync.certPath)}`));
+        } else {
+            log(colors.yellow(`No custom SSL certificate found, HTTPS will ${colors.bold('not')} be enabled`));
+        }
+        
+        if( config.dev.browserSync.hasOwnProperty('keyPath') ){
+            keyFound = true;
+            log(colors.yellow(`Using the custom SSL key ${colors.bold(config.dev.browserSync.keyPath)}`));
+        } else {
+            log(colors.yellow(`No custom SSL key found, HTTPS will ${colors.bold('not')} be enabled`));
+        }
+
+        // Only enable HTTPS is a custom cert and key are found
+        if( certFound && keyFound ){
+            log(colors.yellow(`HTTPS is ${colors.bold('on')}`));
+            serverConfig.https = {
+                key: config.dev.browserSync.keyPath,
+                cert: config.dev.browserSync.certPath
+            };
+        }
+
+    }
+
+    server.init(serverConfig);
+
 	done();
 }
 
