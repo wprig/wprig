@@ -12,8 +12,8 @@ module.exports = {
 			proxyURL: 'wprig.test:8888',
 			bypassPort: '8181',
 
-            // To use HTTPS you need a cert/key
-            // Please see the README for instructions
+			// To use HTTPS you need a cert/key
+			// Please see the README for instructions
 			// certPath: '',
 			// keyPath: '',
             https: false

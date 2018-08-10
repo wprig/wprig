@@ -47,9 +47,9 @@ WP Rig can be used in any development environment. It does not require any speci
 WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `proxy` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `URL` value is the URL to the live version of your local site.
 
 ### Enabling HTTPS
-In order to enable HTTPS with BrowserSync you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)). Let's Encrypt has [instructions on generating a key and cert](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates).
+In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)). Let's Encrypt has [instructions on generating a key and cert](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates).
 
-Once you have a key and cert add uncomment the `certPath` and `keyPath` values in `dev/config/themeConfig.js` and update them to the absolute paths of your key and cert. You will also need to update `https` to `true` in `dev/config/themeConfig.js`.
+Once you have a key and certificate, uncomment the `certPath` and `keyPath` values in `dev/config/themeConfig.js` and update them to the absolute paths of your key and cert. You will also need to update `https` to `true` in `dev/config/themeConfig.js`.
 
 In addition, to disable SSL certificate warnings in the browser you will need to trust the certificate.
 
