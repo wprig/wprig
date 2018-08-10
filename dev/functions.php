@@ -253,7 +253,14 @@ function wprig_fonts_url() {
 
 	foreach ( $fonts_register as $font_name => $font_variants ) {
 		if ( ! empty( $font_variants ) ) {
-			$font_families[] = "{$font_name}:{$font_variants}";
+
+			// Make sure its an array.
+			if ( ! is_array( $font_variants ) ) {
+				$font_variants = explode( ',', str_replace( ' ', '', $font_variants ) );
+			}
+
+			$font_families[] = $font_name . ':' . implode( ',', $font_variants );
+
 		} else {
 			$font_families[] = $font_name;
 		}
