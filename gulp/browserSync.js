@@ -2,13 +2,12 @@
 'use strict';
 
 // External dependencies
-import requireUncached from 'require-uncached';
 import browserSync from 'browser-sync';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 
 // Internal dependencies
-import {paths} from './constants';
+import {getThemeConfig} from './utils';
 
 /**
  * Conditionally set up BrowserSync.
@@ -21,7 +20,7 @@ export const server = browserSync.create();
 // Initialize the BrowserSync server conditionally:
 export function serve(done) {
     // get a fresh copy of the config
-    const config = requireUncached(paths.config.themeConfig);
+    const config = getThemeConfig(true);
 
     // bail early if not serving via BrowserSync
     if (! config.dev.browserSync.live) {
@@ -75,7 +74,7 @@ export function serve(done) {
 // Reload the live site:
 export function reload(done) {
 	// get a fresh copy of the config
-    const config = requireUncached(paths.config.themeConfig);
+    const config = getThemeConfig(true);
     
 	if (config.dev.browserSync.live) {
 		if (server.paused) {

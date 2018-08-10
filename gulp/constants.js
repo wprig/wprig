@@ -2,8 +2,10 @@
 'use strict';
 
 // External dependencies
-import requireUncached from 'require-uncached';
 export const gulpPlugins = require('gulp-load-plugins')();
+
+// Internal dependencies
+import {getThemeConfig} from './utils';
 
 // gulp string replace options
 export const gulpReplaceOptions = {
@@ -17,7 +19,7 @@ export const gulpReplaceOptions = {
 export const rootPath = process.env.INIT_CWD;
 
 // get a fresh copy of the config
-export const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+export const config = getThemeConfig(true);
 
 // Project paths
 export const paths = {
