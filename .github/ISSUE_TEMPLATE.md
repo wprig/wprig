@@ -3,6 +3,7 @@ BEFORE POSTING YOUR ISSUE:
 - These comments won't show up when you submit the issue.
 - Please use the sections below to provide information about the issue.
 - Be specific: Add as much detail as possible.
+- Check the issues page to ensure your issue has not already been reported.
 -->
 
 ## Issue Overview

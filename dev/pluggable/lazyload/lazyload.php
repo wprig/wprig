@@ -42,6 +42,7 @@ function wprig_lazyload_images() {
 	add_filter( 'wp_kses_allowed_html', 'wprig_allow_lazy_attributes' );
 
 }
+add_action( 'wp', 'wprig_lazyload_images' );
 
 /**
  * Setup filters to enable lazy-loading of images.
@@ -261,5 +262,3 @@ function wprig_enqueue_assets() {
 	wp_enqueue_script( 'wprig-lazy-load-images', get_theme_file_uri( '/pluggable/lazyload/js/lazyload.js' ), array(), '20151215', false );
 	wp_script_add_data( 'wprig-lazy-load-images', 'defer', true );
 }
-
-wprig_lazyload_images();

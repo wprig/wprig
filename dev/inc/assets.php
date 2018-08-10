@@ -9,8 +9,12 @@
  * Enqueue styles.
  */
 function wprig_styles() {
+
 	// Add custom fonts, used in the main stylesheet.
-	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null );
+	$fonts_url = wprig_fonts_url();
+	if ( ! empty( $fonts_url ) ) {
+		wp_enqueue_style( 'wprig-fonts', $fonts_url, array(), null );
+	}
 
 	// Enqueue main stylesheet.
 	wp_enqueue_style( 'wprig-base-style', get_stylesheet_uri(), array(), '20180514' );
@@ -57,8 +61,12 @@ add_action( 'wp_enqueue_scripts', 'wprig_scripts' );
  * Enqueue WordPress theme styles within Gutenberg.
  */
 function wprig_gutenberg_styles() {
+
 	// Add custom fonts, used in the main stylesheet.
-	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null );
+	$fonts_url = wprig_fonts_url();
+	if ( ! empty( $fonts_url ) ) {
+		wp_enqueue_style( 'wprig-fonts', $fonts_url, array(), null );
+	}
 
 	// Enqueue main stylesheet.
 	wp_enqueue_style( 'wprig-base-style', get_theme_file_uri( '/css/editor-styles.css' ), array(), '20180514' );
@@ -66,41 +74,61 @@ function wprig_gutenberg_styles() {
 add_action( 'enqueue_block_editor_assets', 'wprig_gutenberg_styles' );
 
 /**
+ * Returns Google Fonts used in theme.
+ *
+ * Has filter "wprig_google_fonts".
+ *
+ * @return array
+ */
+function wprig_get_google_fonts() {
+
+	$fonts_default = array(
+		'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
+		'Crimson Text'     => array( '400', '400i', '600', '600i' ),
+	);
+
+	/*
+	 * Filters default Google fonts.
+	 *
+	 * @param array $fonts_default array of fonts to use
+	 */
+	return apply_filters( 'wprig_google_fonts', $fonts_default );
+}
+
+/**
  * Register Google Fonts
  */
 function wprig_fonts_url() {
-	$fonts_url = '';
 
-	/*
-	 * Translator: If Roboto Sans does not support characters in your language, translate this to 'off'.
-	 */
-	$roboto = esc_html_x( 'on', 'Roboto Condensed font: on or off', 'wprig' );
+	$fonts_register = wprig_get_google_fonts();
 
-	/*
-	 * Translator: If Crimson Text does not support characters in your language, translate this to 'off'.
-	 */
-	$crimson_text = esc_html_x( 'on', 'Crimson Text font: on or off', 'wprig' );
+	if ( empty( $fonts_register ) ) {
+		return '';
+	}
 
 	$font_families = array();
 
-	if ( 'off' !== $roboto ) {
-		$font_families[] = 'Roboto Condensed:400,400i,700,700i';
+	foreach ( $fonts_register as $font_name => $font_variants ) {
+		if ( ! empty( $font_variants ) ) {
+
+			// Make sure its an array.
+			if ( ! is_array( $font_variants ) ) {
+				$font_variants = explode( ',', str_replace( ' ', '', $font_variants ) );
+			}
+
+			$font_families[] = $font_name . ':' . implode( ',', $font_variants );
+
+		} else {
+			$font_families[] = $font_name;
+		}
 	}
 
-	if ( 'off' !== $crimson_text ) {
-		$font_families[] = 'Crimson Text:400,400i,600,600i';
-	}
+	$query_args = array(
+		'family' => implode( '|', $font_families ),
+		'subset' => 'latin-ext',
+	);
 
-	if ( in_array( 'on', array( $roboto, $crimson_text ) ) ) {
-		$query_args = array(
-			'family' => urlencode( implode( '|', $font_families ) ),
-			'subset' => urlencode( 'latin,latin-ext' ),
-		);
-
-		$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
-	}
-
-	return esc_url_raw( $fonts_url );
+	return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
 }
 
 /**
