@@ -5,8 +5,10 @@
 import browserSync from 'browser-sync';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
+import fs from 'fs';
 
 // Internal dependencies
+import {paths} from './constants';
 import {getThemeConfig} from './utils';
 
 /**
@@ -37,30 +39,27 @@ export function serve(done) {
     // Only setup HTTPS certificates if HTTPS is enabled
     if (config.dev.browserSync.https){
 
-        let certFound = false;
-        let keyFound = false;
+        const certFound = fs.existsSync(paths.browserSync.cert);
+        const keyFound = fs.existsSync(paths.browserSync.key);
 
-        // Use custom cert and key paths if defined
-        if( config.dev.browserSync.hasOwnProperty('certPath') ){
-            certFound = true;
+        if( certFound ){
             log(colors.yellow(`Using the custom SSL certificate ${colors.bold(config.dev.browserSync.certPath)}`));
         } else {
             log(colors.yellow(`No custom SSL certificate found, HTTPS will ${colors.bold('not')} be enabled`));
         }
         
-        if( config.dev.browserSync.hasOwnProperty('keyPath') ){
-            keyFound = true;
+        if( keyFound ){
             log(colors.yellow(`Using the custom SSL key ${colors.bold(config.dev.browserSync.keyPath)}`));
         } else {
             log(colors.yellow(`No custom SSL key found, HTTPS will ${colors.bold('not')} be enabled`));
         }
 
-        // Only enable HTTPS is a custom cert and key are found
+        // Only enable HTTPS if a cert and key exist
         if( certFound && keyFound ){
             log(colors.yellow(`HTTPS is ${colors.bold('on')}`));
             serverConfig.https = {
-                key: config.dev.browserSync.keyPath,
-                cert: config.dev.browserSync.certPath
+                key: paths.browserSync.key,
+                cert: paths.browserSync.cert
             };
         }
 

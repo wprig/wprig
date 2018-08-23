@@ -47,9 +47,13 @@ WP Rig can be used in any development environment. It does not require any speci
 WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `browserSync` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `proxyURL` value is the URL to the live version of your local site.
 
 ### Enabling HTTPS
-In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)). Let's Encrypt has [instructions on generating a key and cert](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates).
+In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)).
 
-Once you have a key and certificate, uncomment the `certPath` and `keyPath` values in `dev/config/themeConfig.js` and update them to the absolute paths of your key and cert. You will also need to update `https` to `true` in `dev/config/themeConfig.js`.
+WP Rig can generate a key and certificate for you with the command `npm run generate-ssl-cert`.
+
+Once you have a key and certificate update `https` to `true` in `dev/config/themeConfig.js`.
+
+If you wish to use a manually generated key and certificate they must be saved as `BrowserSync/wp-rig-browser-sync.key` and `BrowserSync/wp-rig-browser-sync.crt` in the WP Rig theme directory.
 
 In addition, to disable SSL certificate warnings in the browser you will need to trust the certificate.
 
@@ -61,7 +65,7 @@ In addition, to disable SSL certificate warnings in the browser you will need to
         5. Change the `When using this certificate:` setting to `Always Trust`
         6. Close the certificate dialogue. You may be prompted for your computer password to save the setting
 
-Note that these steps only need to be done once and should work for multiple WP Rig based projects.
+Note that these steps only need to be done once.
 
 ### gulp
 WP Rig uses a [Gulp 4](https://gulpjs.com/) build process to generate and optimize the code for the theme. All development is done in the `/dev` folder and Gulp preprocesses, transpiles, and compiles the files into the root folder. The root folder files become the active theme. WordPress ignores anything in the `/dev` folder.

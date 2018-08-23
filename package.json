@@ -83,6 +83,7 @@
     "build": "node ./node_modules/gulp/bin/gulp.js",
     "translate": "node ./node_modules/gulp/bin/gulp.js translate",
     "bundle": "node ./node_modules/gulp/bin/gulp.js bundleTheme",
-    "test": "node ./node_modules/gulp/bin/gulp.js testTheme"
+    "test": "node ./node_modules/gulp/bin/gulp.js testTheme",
+    "generate-ssl-cert": "node ./node_modules/gulp/bin/gulp.js generateCert"
   }
 }

@@ -16,6 +16,7 @@ import scripts from './gulp/scripts';
 import styles from './gulp/styles';
 import translate from './gulp/translate';
 import watch from './gulp/watch';
+import generateCert from './gulp/generateCert';
 
 /**
  * Map out the sequence of events on first load and make it the default task
@@ -37,4 +38,4 @@ export const bundleTheme = series(testTheme, parallel(scripts, jsMin, jsLibs), s
 /**
  * Export all imported functions as tasks
  */
-export { bundle, jsLibs, jsMin, php, sassStyles, scripts, styles, translate, watch };
+export { bundle, generateCert, jsLibs, jsMin, php, sassStyles, scripts, styles, translate, watch };
