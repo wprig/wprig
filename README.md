@@ -43,8 +43,27 @@ To take full advantage of the features in WP Rig, your code editor needs support
 ## Working with WP Rig
 WP Rig can be used in any development environment. It does not require any specific platform or server setup. It also does not have an opinion about what local or virtual server solution the developer uses.
 
-WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `proxy` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `URL` value is the URL to the live version of your local site.
+### BrowserSync
+WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `browserSync` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `proxyURL` value is the URL to the live version of your local site.
 
+### Enabling HTTPS
+In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)). Let's Encrypt has [instructions on generating a key and cert](https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates).
+
+Once you have a key and certificate, uncomment the `certPath` and `keyPath` values in `dev/config/themeConfig.js` and update them to the absolute paths of your key and cert. You will also need to update `https` to `true` in `dev/config/themeConfig.js`.
+
+In addition, to disable SSL certificate warnings in the browser you will need to trust the certificate.
+
+    * For macOS
+        1. Open Keychain Access
+        2. Drag the certificate file onto KeyChain access
+        3. Double click on the new `WP Rig` certificate in the list
+        4. Expand the `trust` menu
+        5. Change the `When using this certificate:` setting to `Always Trust`
+        6. Close the certificate dialogue. You may be prompted for your computer password to save the setting
+
+Note that these steps only need to be done once and should work for multiple WP Rig based projects.
+
+### gulp
 WP Rig uses a [Gulp 4](https://gulpjs.com/) build process to generate and optimize the code for the theme. All development is done in the `/dev` folder and Gulp preprocesses, transpiles, and compiles the files into the root folder. The root folder files become the active theme. WordPress ignores anything in the `/dev` folder.
 
 **Note:** If you have previously used Gulp, you may encounter seemingly random errors that prevent the build process from running. To fix this issue, [upgrade to Gulp 4 following the steps outlined here](https://github.com/pattern-lab/edition-node-gulp/wiki/Updating-to-Gulp-4).
@@ -142,10 +161,17 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 ## 1.1.0
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme
 
+## 1.0.3
+- Add Gutenberg editor-font-sizes. Props @atanas-angelov-dev
+- Improve conditional logic in wprig_add_body_style(). Props @iliman
+- Update WordPress Coding Standards to 1.0.0. Props @mor10
+
 ## 1.0.2
 - Updated theme support for Gutenberg color palette with a single array attribute. Props @webmandesign
 - `./verbose/` folder no longer holds PHP files. Resolves duplicate functionality as described in [#51](https://github.com/wprig/wprig/issues/51).
 - Update Composer dependencies to latest versions (and to remove update nag).
+- Use slug for naming language file and ZIP bundle. Props @felixarntz.
+- Fixed bug with is_amp_endpoint() being called too soon. Props @iliman.
 
 ## 1.0.1
 - PHP process updated to run conditionally on theme name and theme slug rename and on first run. Props @hellofromtonya.

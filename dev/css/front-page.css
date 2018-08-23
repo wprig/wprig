@@ -3,6 +3,7 @@
  */
 
 @media (--sidebar-query) {
+
 	.site {
 		margin: 0 1em;
 		display: grid;

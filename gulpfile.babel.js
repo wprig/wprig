@@ -1,11 +1,6 @@
 /* eslint-env es6 */
 'use strict';
 
-/**
- * To start theme building process, define the theme name below,
- * then run "gulp" in command line.
- */
-
 // External dependencies
 import {parallel, series} from 'gulp';
 
@@ -26,6 +21,7 @@ import watch from './gulp/watch';
  * Map out the sequence of events on first load and make it the default task
  */
 export const firstRun = series(php, parallel(scripts, jsMin, jsLibs), sassStyles, styles, images, serve, watch);
+
 export default firstRun;
 
 /**

@@ -38,7 +38,7 @@
     "gulp-cssnano": "^2.1.2",
     "gulp-eslint": "^4.0.2",
     "gulp-if": "^2.0.2",
-    "gulp-image": "^4.3.0",
+    "gulp-imagemin": "^4.1.0",
     "gulp-load-plugins": "^1.5.0",
     "gulp-newer": "^1.4.0",
     "gulp-phpcs": "^2.1.0",
@@ -47,6 +47,7 @@
     "gulp-sass": "^4.0.0",
     "gulp-sort": "^2.0.0",
     "gulp-string-replace": "^1.0.0",
+    "gulp-stylelint": "^7.0.0",
     "gulp-tabify": "0.0.2",
     "gulp-uglify": "^3.0.0",
     "gulp-wp-pot": "^2.2.0",
@@ -56,7 +57,9 @@
     "postcss-preset-env": "^5.1.0",
     "pump": "^3.0.0",
     "require-uncached": "^1.0.3",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "stylelint": "^9.3.0",
+    "stylelint-config-wordpress": "^13.0.0"
   },
   "babel": {
     "presets": [
@@ -71,6 +74,9 @@
       "node": true,
       "es6": true
     }
+  },
+  "stylelint": {
+    "extends": "stylelint-config-wordpress"
   },
   "scripts": {
     "install": "composer install",

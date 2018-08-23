@@ -2,8 +2,10 @@
 'use strict';
 
 // External dependencies
-import requireUncached from 'require-uncached';
 export const gulpPlugins = require('gulp-load-plugins')();
+
+// Internal dependencies
+import {getThemeConfig} from './utils';
 
 // gulp string replace options
 export const gulpReplaceOptions = {
@@ -17,7 +19,7 @@ export const gulpReplaceOptions = {
 export const rootPath = process.env.INIT_CWD;
 
 // get a fresh copy of the config
-export const config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+export const config = getThemeConfig(true);
 
 // Project paths
 export const paths = {
@@ -67,14 +69,14 @@ export const paths = {
             `!${rootPath}/dev/**/*.php`,
             `!${rootPath}/verbose/**/*.php`,
         ],
-		dest: `${rootPath}/languages/${config.theme.name}.pot`
+		dest: `${rootPath}/languages/${config.theme.slug}.pot`
 	},
 	verbose: `${rootPath}/verbose/`,
 	export: {
 		src: [
             `${rootPath}/**/*`,
-            `!${rootPath}/${config.theme.name}`,
-            `!${rootPath}/${config.theme.name}/**/*`,
+            `!${rootPath}/${config.theme.slug}`,
+            `!${rootPath}/${config.theme.slug}/**/*`,
             `!${rootPath}/dev/**/*`,
             `!${rootPath}/node_modules`,
             `!${rootPath}/node_modules/**/*`,
