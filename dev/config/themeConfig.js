@@ -14,6 +14,8 @@ module.exports = {
 
 			// To use HTTPS you need a cert/key
 			// Please see the README for instructions
+			// keyPath: '',
+			// certPath: '',
 			https: false
 		},
 		browserslist: [ // See https://github.com/browserslist/browserslist

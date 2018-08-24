@@ -29,8 +29,10 @@ export default function generateCert(done) {
           throw err;
         }
 
-        let keySaved = false;
-        let certSaved = false;
+        // Create the BrowserSync directory if needed
+        if ( !fs.existsSync(paths.browserSync.dir) ){
+            fs.mkdirSync(paths.browserSync.dir);
+        }
 
         // Save the key
         fs.writeFileSync(paths.browserSync.key, keys.serviceKey, (err) => {  
@@ -39,7 +41,6 @@ export default function generateCert(done) {
                 throw err;
               }
         
-            keySaved = true;
         });
         
         // Save the cert
@@ -49,14 +50,9 @@ export default function generateCert(done) {
                 throw err;
             }
         
-            certSaved = true;
         });
 
-        if ( keySaved && certSaved ){
-            log(colors.green('Custom SSL key and certificate generated succressfully!'));
-        } else {
-            log(colors.red('There was an error generating a custom SSL key and certificate. Please generate them manually to use HTTPS.'));
-        }
+        log(colors.green('Custom SSL key and certificate generated succressfully!'));
 
         done();
 
