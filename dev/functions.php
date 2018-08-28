@@ -9,8 +9,8 @@
  * @package wp_rig
  */
 
-define( 'WPRIG_MINIMUM_WP_VERSION', '4.5' );
-define( 'WPRIG_MINIMUM_PHP_VERSION', '7.0' );
+define( 'WP_RIG_MINIMUM_WP_VERSION', '4.5' );
+define( 'WP_RIG_MINIMUM_PHP_VERSION', '7.0' );
 
 /**
  * Bail if requirements are not met.
