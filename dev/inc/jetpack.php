@@ -4,7 +4,7 @@
  *
  * @link https://jetpack.com/
  *
- * @package wprig
+ * @package wp_rig
  */
 
 /**
@@ -14,12 +14,12 @@
  * See: https://jetpack.com/support/responsive-videos/
  * See: https://jetpack.com/support/content-options/
  */
-function wprig_jetpack_setup() {
+function wp_rig_jetpack_setup() {
 	// Add theme support for Infinite Scroll.
 	add_theme_support(
 		'infinite-scroll', array(
 			'container' => 'main',
-			'render'    => 'wprig_infinite_scroll_render',
+			'render'    => 'wp_rig_infinite_scroll_render',
 			'footer'    => 'page',
 		)
 	);
@@ -31,7 +31,7 @@ function wprig_jetpack_setup() {
 	add_theme_support(
 		'jetpack-content-options', array(
 			'post-details' => array(
-				'stylesheet' => 'wprig-style',
+				'stylesheet' => 'wp-rig-style',
 				'date'       => '.posted-on',
 				'categories' => '.cat-links',
 				'tags'       => '.tags-links',
@@ -41,12 +41,12 @@ function wprig_jetpack_setup() {
 		)
 	);
 }
-add_action( 'after_setup_theme', 'wprig_jetpack_setup' );
+add_action( 'after_setup_theme', 'wp_rig_jetpack_setup' );
 
 /**
  * Custom render function for Infinite Scroll.
  */
-function wprig_infinite_scroll_render() {
+function wp_rig_infinite_scroll_render() {
 	while ( have_posts() ) {
 		the_post();
 		if ( is_search() ) :

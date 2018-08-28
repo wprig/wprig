@@ -6,7 +6,7 @@
  *
  * @link https://developer.wordpress.org/themes/basics/theme-functions/
  *
- * @package wprig
+ * @package wp_rig
  */
 
 define( 'WPRIG_MINIMUM_WP_VERSION', '4.5' );

@@ -2,7 +2,7 @@
 /**
  * Functions which enhance the theme by hooking into WordPress
  *
- * @package wprig
+ * @package wp_rig
  */
 
 /**
@@ -11,7 +11,7 @@
  * @param array $classes Classes for the body element.
  * @return array
  */
-function wprig_body_classes( $classes ) {
+function wp_rig_body_classes( $classes ) {
 	// Adds a class of hfeed to non-singular pages.
 	if ( ! is_singular() ) {
 		$classes[] = 'hfeed';
@@ -26,17 +26,17 @@ function wprig_body_classes( $classes ) {
 
 	return $classes;
 }
-add_filter( 'body_class', 'wprig_body_classes' );
+add_filter( 'body_class', 'wp_rig_body_classes' );
 
 /**
  * Add a pingback url auto-discovery header for singularly identifiable articles.
  */
-function wprig_pingback_header() {
+function wp_rig_pingback_header() {
 	if ( is_singular() && pings_open() ) {
 		echo '<link rel="pingback" href="', esc_url( get_bloginfo( 'pingback_url' ) ), '">';
 	}
 }
-add_action( 'wp_head', 'wprig_pingback_header' );
+add_action( 'wp_head', 'wp_rig_pingback_header' );
 
 /**
  * Adds async/defer attributes to enqueued / registered scripts.
@@ -48,7 +48,7 @@ add_action( 'wp_head', 'wprig_pingback_header' );
  * @param string $handle The script handle.
  * @return array
  */
-function wprig_filter_script_loader_tag( $tag, $handle ) {
+function wp_rig_filter_script_loader_tag( $tag, $handle ) {
 
 	foreach ( array( 'async', 'defer' ) as $attr ) {
 		if ( ! wp_scripts()->get_data( $handle, $attr ) ) {
@@ -67,7 +67,7 @@ function wprig_filter_script_loader_tag( $tag, $handle ) {
 	return $tag;
 }
 
-add_filter( 'script_loader_tag', 'wprig_filter_script_loader_tag', 10, 2 );
+add_filter( 'script_loader_tag', 'wp_rig_filter_script_loader_tag', 10, 2 );
 
 /**
  * Generate preload markup for stylesheets.
@@ -75,7 +75,7 @@ add_filter( 'script_loader_tag', 'wprig_filter_script_loader_tag', 10, 2 );
  * @param object $wp_styles Registered styles.
  * @param string $handle The style handle.
  */
-function wprig_get_preload_stylesheet_uri( $wp_styles, $handle ) {
+function wp_rig_get_preload_stylesheet_uri( $wp_styles, $handle ) {
 	$preload_uri = $wp_styles->registered[ $handle ]->src . '?ver=' . $wp_styles->registered[ $handle ]->ver;
 	return $preload_uri;
 }
@@ -86,10 +86,10 @@ function wprig_get_preload_stylesheet_uri( $wp_styles, $handle ) {
  *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content
  */
-function wprig_add_body_style() {
+function wp_rig_add_body_style() {
 
 	// If AMP is active, do nothing.
-	if ( wprig_is_amp() ) {
+	if ( wp_rig_is_amp() ) {
 		return;
 	}
 
@@ -99,23 +99,23 @@ function wprig_add_body_style() {
 	$preloads = array();
 
 	// Preload content.css.
-	$preloads['wprig-content'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-content' );
+	$preloads['wp-rig-content'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-content' );
 
 	// Preload sidebar.css and widget.css.
 	if ( is_active_sidebar( 'sidebar-1' ) ) {
-		$preloads['wprig-sidebar'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-sidebar' );
-		$preloads['wprig-widgets'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-widgets' );
+		$preloads['wp-rig-sidebar'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-sidebar' );
+		$preloads['wp-rig-widgets'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-widgets' );
 	}
 
 	// Preload comments.css.
 	if ( ! post_password_required() && is_singular() && ( comments_open() || get_comments_number() ) ) {
-		$preloads['wprig-comments'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-comments' );
+		$preloads['wp-rig-comments'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-comments' );
 	}
 
 	// Preload front-page.css.
 	global $template;
 	if ( 'front-page.php' === basename( $template ) ) {
-		$preloads['wprig-front-page'] = wprig_get_preload_stylesheet_uri( $wp_styles, 'wprig-front-page' );
+		$preloads['wp-rig-front-page'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-front-page' );
 	}
 
 	// Output the preload markup in <head>.
@@ -125,7 +125,7 @@ function wprig_add_body_style() {
 	}
 
 }
-add_action( 'wp_head', 'wprig_add_body_style' );
+add_action( 'wp_head', 'wp_rig_add_body_style' );
 
 /**
  * Add dropdown symbol to nav menu items with children.
@@ -147,7 +147,7 @@ add_action( 'wp_head', 'wprig_add_body_style' );
  * @param stdClass $args        An object of wp_nav_menu() arguments.
  * @return string Modified nav menu HTML.
  */
-function wprig_add_primary_menu_dropdown_symbol( $item_output, $item, $depth, $args ) {
+function wp_rig_add_primary_menu_dropdown_symbol( $item_output, $item, $depth, $args ) {
 
 	// Only for our primary menu location.
 	if ( empty( $args->theme_location ) || 'primary' != $args->theme_location ) {
@@ -161,7 +161,7 @@ function wprig_add_primary_menu_dropdown_symbol( $item_output, $item, $depth, $a
 
 	return $item_output;
 }
-add_filter( 'walker_nav_menu_start_el', 'wprig_add_primary_menu_dropdown_symbol', 10, 4 );
+add_filter( 'walker_nav_menu_start_el', 'wp_rig_add_primary_menu_dropdown_symbol', 10, 4 );
 
 /**
  * Filters the HTML attributes applied to a menu item's anchor element.
@@ -173,7 +173,7 @@ add_filter( 'walker_nav_menu_start_el', 'wprig_add_primary_menu_dropdown_symbol'
  * @param WP_Post $item  The current menu item.
  * @return array Modified HTML attributes
  */
-function wprig_add_nav_menu_aria_current( $atts, $item ) {
+function wp_rig_add_nav_menu_aria_current( $atts, $item ) {
 	/*
 	 * First, check if "current" is set,
 	 * which means the item is a nav menu item.
@@ -194,5 +194,5 @@ function wprig_add_nav_menu_aria_current( $atts, $item ) {
 
 	return $atts;
 }
-add_filter( 'nav_menu_link_attributes', 'wprig_add_nav_menu_aria_current', 10, 2 );
-add_filter( 'page_menu_link_attributes', 'wprig_add_nav_menu_aria_current', 10, 2 );
+add_filter( 'nav_menu_link_attributes', 'wp_rig_add_nav_menu_aria_current', 10, 2 );
+add_filter( 'page_menu_link_attributes', 'wp_rig_add_nav_menu_aria_current', 10, 2 );

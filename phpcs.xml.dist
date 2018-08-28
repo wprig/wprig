@@ -48,7 +48,7 @@
 		 Multiple valid text domains can be provided as a comma-delimited list. -->
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="wprig"/>
+			<property name="text_domain" type="array" value="wp-rig"/>
 		</properties>
 	</rule>
 

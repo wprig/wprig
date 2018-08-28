@@ -4,7 +4,7 @@
  *
  * @link https://codex.wordpress.org/Template_Hierarchy
  *
- * @package wprig
+ * @package wp_rig
  */
 
 ?>
@@ -17,10 +17,10 @@
 		?>
 		<div class="entry-meta">
 			<?php
-				wprig_posted_on();
-				wprig_posted_by();
-				wprig_attachment_in( $post );
-				wprig_comments_link();
+				wp_rig_posted_on();
+				wp_rig_posted_by();
+				wp_rig_attachment_in( $post );
+				wp_rig_comments_link();
 			?>
 		</div><!-- .entry-meta -->
 
@@ -44,7 +44,7 @@
 
 	<footer class="entry-footer">
 		<?php
-			wprig_edit_post_link();
+			wp_rig_edit_post_link();
 		?>
 	</footer><!-- .entry-footer -->
 </article><!-- #post-<?php the_ID(); ?> -->
@@ -54,7 +54,7 @@
 
 // If the attachment is attached to a post, try linking to other attachments on the same post.
 if ( ! empty( $post->post_parent ) ) :
-	wprig_the_attachment_navigation();
+	wp_rig_the_attachment_navigation();
 endif;
 
 // If comments are open or we have at least one comment, load up the comment template.

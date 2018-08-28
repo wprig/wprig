@@ -9,7 +9,7 @@
  *
  * @link https://codex.wordpress.org/Template_Hierarchy
  *
- * @package wprig
+ * @package wp_rig
  */
 
 get_header(); ?>
@@ -25,10 +25,10 @@ get_header(); ?>
 		 * This call runs only once on index and archive pages.
 		 * At some point, override functionality should be built in similar to the template part below.
 		 */
-		wp_print_styles( array( 'wprig-content' ) ); // Note: If this was already done it will be skipped.
+		wp_print_styles( array( 'wp-rig-content' ) ); // Note: If this was already done it will be skipped.
 
 		/* Display the appropriate header when required. */
-		wprig_index_header();
+		wp_rig_index_header();
 
 		/* Start the Loop. */
 		while ( have_posts() ) :
