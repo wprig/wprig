@@ -11,6 +11,16 @@ import colors from 'ansi-colors';
 import {paths, rootPath, gulpPlugins, gulpReplaceOptions} from './constants';
 import {getThemeConfig} from './utils';
 
+const nameFieldDefaults = {
+	slug          : 'wp-rig',
+	name          : 'WP Rig',
+	underscoreCase: 'wp_rig',
+	constant      : 'WP_RIG',
+	camelCase     : 'WpRig',
+	camelCaseVar  : 'wpRig',
+};
+const nameFields = Object.keys( nameFieldDefaults );
+
 // We are on the first run by default
 let isFirstRun = true;
 
@@ -25,47 +35,52 @@ let themeConfig = initialConfig.theme;
  */
 export default function php(done) {
 
-    // get a fresh copy of the config
-    const config = getThemeConfig(true);
+	// get a fresh copy of the config
+	const config = getThemeConfig(true);
 
-	// We should rebuild if this is the first run OR the theme slug/name have changed
-	let isRebuild = isFirstRun ||
-		( themeConfig.slug !== config.theme.slug ) ||
-        ( themeConfig.name !== config.theme.name ) ||
-        ( themeConfig.constant !== config.theme.constant );
+	// We should rebuild if this is the first run OR the theme name fields have changed
+	let isRebuild = isFirstRun;
+	let i = 0;
+	while ( ! isRebuild || i >= nameFields.length ) {
+		isRebuild = isRebuild || themeConfig[ nameFields[ i ] ] !== config.theme[ nameFields[ i ] ];
+	}
 
 	if ( isRebuild ) {
-		themeConfig.slug = config.theme.slug;
-        themeConfig.name = config.theme.name;
-        themeConfig.constant = config.theme.constant;
-        log(colors.yellow(`Rebuilding ${colors.bold('all')} the PHP files, this may take a while...`));
+		nameFields.forEach( nameField => {
+			themeConfig[ nameField ] = config.theme[ nameField ];
+		});
+		log(colors.yellow(`Rebuilding ${colors.bold('all')} the PHP files, this may take a while...`));
 	} else {
-        log(colors.yellow(`Rebuilding just the changed PHP files, this should be quick...`));
-    }
+		log(colors.yellow(`Rebuilding just the changed PHP files, this should be quick...`));
+	}
 
 	// Reset first run.
 	if ( isFirstRun ) {
 		isFirstRun = false;
-    }
+	}
 
-	pump([
-        src(paths.php.src),
-        // If not a rebuild, then run tasks on changed files only.
-        gulpPlugins.if(
-            !isRebuild,
-            gulpPlugins.newer(paths.php.dest)
-        ),
-        gulpPlugins.phpcs({
-            bin: `${rootPath}/vendor/bin/phpcs`,
-            standard: 'WordPress',
-            warningSeverity: 0
-        }),
-        // Log all problems that was found
-        gulpPlugins.phpcs.reporter('log'),
-        gulpPlugins.stringReplace('wprig', config.theme.slug, gulpReplaceOptions),
-        gulpPlugins.stringReplace('WP Rig', config.theme.name, gulpReplaceOptions),
-        gulpPlugins.stringReplace('WPRIG', config.theme.constant, gulpReplaceOptions),
-        dest(paths.php.dest),
-    ], done);
+	const steps = [
+		src(paths.php.src),
+		// If not a rebuild, then run tasks on changed files only.
+		gulpPlugins.if(
+			!isRebuild,
+			gulpPlugins.newer(paths.php.dest)
+		),
+		gulpPlugins.phpcs({
+			bin: `${rootPath}/vendor/bin/phpcs`,
+			standard: 'WordPress',
+			warningSeverity: 0
+		}),
+		// Log all problems that was found
+		gulpPlugins.phpcs.reporter('log'),
+	];
+
+	Object.keys( nameFieldDefaults ).forEach( nameField => {
+		steps.push( gulpPlugins.stringReplace( nameFieldDefaults[ nameField ], config.theme[ nameField ], gulpReplaceOptions ) );
+	});
+
+	steps.push( dest( paths.php.dest ) );
+
+	pump( steps, done );
 
 }
