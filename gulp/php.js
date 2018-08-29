@@ -8,17 +8,9 @@ import log from 'fancy-log';
 import colors from 'ansi-colors';
 
 // Internal dependencies
-import {paths, rootPath, gulpPlugins, gulpReplaceOptions} from './constants';
+import {paths, rootPath, gulpPlugins, gulpReplaceOptions, nameFieldDefaults} from './constants';
 import {getThemeConfig} from './utils';
 
-const nameFieldDefaults = {
-	slug          : 'wp-rig',
-	name          : 'WP Rig',
-	underscoreCase: 'wp_rig',
-	constant      : 'WP_RIG',
-	camelCase     : 'WpRig',
-	camelCaseVar  : 'wpRig',
-};
 const nameFields = Object.keys( nameFieldDefaults );
 
 // We are on the first run by default
@@ -41,8 +33,9 @@ export default function php(done) {
 	// We should rebuild if this is the first run OR the theme name fields have changed
 	let isRebuild = isFirstRun;
 	let i = 0;
-	while ( ! isRebuild || i >= nameFields.length ) {
+	while ( ! isRebuild && i < nameFields.length ) {
 		isRebuild = isRebuild || themeConfig[ nameFields[ i ] ] !== config.theme[ nameFields[ i ] ];
+		i++;
 	}
 
 	if ( isRebuild ) {
