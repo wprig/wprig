@@ -24,7 +24,7 @@ WP Rig requires the following dependencies. Full installation instructions are p
 
 - [PHP](http://php.net/) 7.0
 - [npm](https://www.npmjs.com/)
-- [Composer](https://getcomposer.org/)
+- [Composer](https://getcomposer.org/) (installed globally)
 
 ### How to install WP Rig:
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
