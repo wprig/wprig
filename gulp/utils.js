@@ -5,7 +5,7 @@
 import requireUncached from 'require-uncached';
 
 // Internal dependencies
-import {rootPath} from './constants';
+import {rootPath, gulpPlugins, gulpReplaceOptions, nameFieldDefaults} from './constants';
 
 /**
  * Get theme configuration.
@@ -42,4 +42,18 @@ export function getThemeConfig( uncached=false ) {
 	}
 
 	return config;
+}
+
+/**
+ * Get string replacement streams to push into a pump process.
+ *
+ * @return {array} List of tasks.
+ */
+export function getStringReplacementTasks() {
+	// Get a fresh copy of the config
+    const config = getThemeConfig(true);
+
+	return Object.keys( nameFieldDefaults ).map( nameField => {
+		return gulpPlugins.stringReplace( nameFieldDefaults[ nameField ], config.theme[ nameField ], gulpReplaceOptions );
+	});
 }

@@ -8,10 +8,8 @@ import log from 'fancy-log';
 import colors from 'ansi-colors';
 
 // Internal dependencies
-import {paths, rootPath, gulpPlugins, gulpReplaceOptions, nameFieldDefaults} from './constants';
-import {getThemeConfig} from './utils';
-
-const nameFields = Object.keys( nameFieldDefaults );
+import {paths, rootPath, gulpPlugins, nameFieldDefaults} from './constants';
+import {getThemeConfig, getStringReplacementTasks} from './utils';
 
 // We are on the first run by default
 let isFirstRun = true;
@@ -29,6 +27,8 @@ export default function php(done) {
 
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
+
+	const nameFields = Object.keys( nameFieldDefaults );
 
 	// We should rebuild if this is the first run OR the theme name fields have changed
 	let isRebuild = isFirstRun;
@@ -52,7 +52,7 @@ export default function php(done) {
 		isFirstRun = false;
 	}
 
-	const steps = [
+	const beforeReplacement = [
 		src(paths.php.src),
 		// If not a rebuild, then run tasks on changed files only.
 		gulpPlugins.if(
@@ -68,12 +68,17 @@ export default function php(done) {
 		gulpPlugins.phpcs.reporter('log'),
 	];
 
-	Object.keys( nameFieldDefaults ).forEach( nameField => {
-		steps.push( gulpPlugins.stringReplace( nameFieldDefaults[ nameField ], config.theme[ nameField ], gulpReplaceOptions ) );
-	});
+	const afterReplacement = [
+		dest( paths.php.dest ),
+	];
 
-	steps.push( dest( paths.php.dest ) );
-
-	pump( steps, done );
+	pump(
+		[].concat(
+			beforeReplacement,
+			getStringReplacementTasks(),
+			afterReplacement
+		),
+		done
+	);
 
 }
