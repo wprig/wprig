@@ -22,6 +22,10 @@ export function getThemeConfig( uncached=false ) {
 		config = require(`${rootPath}/dev/config/themeConfig.js`);
 	}
 
+	if ( ! config.theme.slug ) {
+		config.theme.slug = config.theme.name.toLowerCase().replace( /\s_/g, '-' );
+	}
+
 	if ( ! config.theme.underscoreCase ) {
 		config.theme.underscoreCase = config.theme.slug.replace( /-/g, '_' );
 	}
