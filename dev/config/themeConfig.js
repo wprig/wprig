@@ -2,8 +2,7 @@
 
 module.exports = {
 	theme: {
-		// The slug must only consist of lowercase letters, numbers and dashes
-		slug: 'wp-rig',
+		slug: 'wp-rig', // The slug must only consist of lowercase letters, numbers and dashes.
 		name: 'WP Rig',
 		author: 'Morten Rand-Hendriksen'
 	},
