@@ -23,7 +23,7 @@ export function getThemeConfig( uncached=false ) {
 	}
 
 	if ( ! config.theme.slug ) {
-		config.theme.slug = config.theme.name.toLowerCase().replace( /\s_/g, '-' );
+		config.theme.slug = config.theme.name.toLowerCase().replace( /[\s_]+/g, '-' ).replace( /[^a-z0-9-]+/g, '' );
 	}
 
 	if ( ! config.theme.underscoreCase ) {
