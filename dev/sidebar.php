@@ -4,7 +4,7 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
- * @package wprig
+ * @package wp_rig
  */
 
 if ( ! is_active_sidebar( 'sidebar-1' ) ) {
@@ -12,7 +12,7 @@ if ( ! is_active_sidebar( 'sidebar-1' ) ) {
 }
 ?>
 
-<?php wp_print_styles( array( 'wprig-sidebar', 'wprig-widgets' ) ); ?>
+<?php wp_print_styles( array( 'wp-rig-sidebar', 'wp-rig-widgets' ) ); ?>
 <aside id="secondary" class="primary-sidebar widget-area">
 	<?php dynamic_sidebar( 'sidebar-1' ); ?>
 </aside><!-- #secondary -->
