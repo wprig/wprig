@@ -49,25 +49,26 @@ WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browse
 ### Enabling HTTPS
 In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)).
 
-WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generate-ssl-cert`. The key and certificate will be saved as `BrowserSync/wp-rig-browser-sync.key` and `BrowserSync/wp-rig-browser-sync.crt` in the WP Rig theme directory.
+WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generate-ssl-cert`. The key and certificates will be saved as `BrowserSync/wp-rig-browser-sync-key.key`, `BrowserSync/wp-rig-browser-sync-root-cert.crt` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory.
 
-To use the generated key and certificate across multiple projects copy `BrowserSync/wp-rig-browser-sync.key` and `BrowserSync/wp-rig-browser-sync.crt` in the WP Rig theme directory to a global location, such as your home directory, uncomment and update the `keyPath` and `certPath` values in `dev/config/themeConfig.js` with the absolute paths for the key and certificate.
+To use the generated key and certificate across multiple projects copy `BrowserSync/wp-rig-browser-sync-key.key`, `BrowserSync/wp-rig-browser-sync-root-cert.crt` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory to a global location, such as your home directory, uncomment and update the `keyPath` and `certPath` values in `dev/config/themeConfig.js` with the absolute paths for the key and certificate.
 
-Then in future WP Rig projects you can simply set `https` to `true` and uncomment and update `keyPath` and `certPath` in `dev/config/themeConfig.js` with the paths of your existing key and certificate files rather than generating new ones for each project.
+Then in future WP Rig projects you can simply set `https` to `true` and uncomment and update `keyPath` and `certPath` in `dev/config/themeConfig.js` with the paths of your existing key and certificate files rather than generating new ones for each project. Note that the certificate must be signed with an accompanying CA certificate and both certificates need to be trusted.
 
-If you leave `keyPath` and `certPath` commented out then the default paths of `BrowserSync/wp-rig-browser-sync.key` and `BrowserSync/wp-rig-browser-sync.crt` in the WP Rig theme directory will be used. Once you have a key and certificate update `https` to `true` in `dev/config/themeConfig.js`.
+If you leave `keyPath` and `certPath` commented out then the default paths of `BrowserSync/wp-rig-browser-sync-key.key` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory will be used. Once you have a key and certificate update `https` to `true` in `dev/config/themeConfig.js`.
 
-In addition, to disable SSL certificate warnings in the browser you will need to trust the certificate.
+In addition, to disable SSL certificate warnings in the browser you will need to trust the certificate and CA certificate.
 
     * For macOS
         1. Open Keychain Access
-        2. Drag the certificate file onto KeyChain access
-        3. Double click on the new `WP Rig` certificate in the list
+        2. Drag the certificate files, which if using `npm run generate-ssl-cert` to generate the certifcates are saved to `BrowserSync/wp-rig-browser-sync-cert.crt` and `BrowserSync/wp-rig-browser-sync-root-cert.crt`, onto KeyChain access
+        3. Double click on one of the new `WP Rig` certificate in the list
         4. Expand the `trust` menu
         5. Change the `When using this certificate:` setting to `Always Trust`
         6. Close the certificate dialogue. You may be prompted for your computer password to save the setting
+        7. Repeat steps 3 through 6 for the other certificate
 
-Note that these steps only need to be done once for each key and certificate. The generated key and certificate expire after 5 years, at which point you will need to generate new ones and follow the steps above again.
+Note that these steps only need to be done once for each key and certificate. The generated key and certificates expire after 5 years, at which point you will need to generate new ones and follow the steps above again.
 
 ### gulp
 WP Rig uses a [Gulp 4](https://gulpjs.com/) build process to generate and optimize the code for the theme. All development is done in the `/dev` folder and Gulp preprocesses, transpiles, and compiles the files into the root folder. The root folder files become the active theme. WordPress ignores anything in the `/dev` folder.

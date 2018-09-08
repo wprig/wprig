@@ -90,6 +90,7 @@ export function reload(done) {
 		server.reload();
 	} else {
 		server.pause();
-	}
+    }
+
 	done();
 }
