@@ -4,7 +4,7 @@
  *
  * @link https://codex.wordpress.org/Template_Hierarchy
  *
- * @package wprig
+ * @package wp_rig
  */
 
 ?>
@@ -14,7 +14,7 @@
 		<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
 	</header><!-- .entry-header -->
 
-	<?php wprig_post_thumbnail(); ?>
+	<?php wp_rig_post_thumbnail(); ?>
 
 	<div class="entry-content">
 		<?php
@@ -22,7 +22,7 @@
 
 		wp_link_pages(
 			array(
-				'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'wprig' ),
+				'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'wp-rig' ),
 				'after'  => '</div>',
 			)
 		);
@@ -32,7 +32,7 @@
 	<?php if ( get_edit_post_link() ) : ?>
 		<footer class="entry-footer">
 			<?php
-				wprig_edit_post_link();
+				wp_rig_edit_post_link();
 			?>
 		</footer><!-- .entry-footer -->
 	<?php endif; ?>

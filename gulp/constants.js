@@ -9,10 +9,10 @@ import {getThemeConfig} from './utils';
 
 // gulp string replace options
 export const gulpReplaceOptions = {
-    logs: {
-      enabled: false
-    },
-    searchValue: 'regex',
+	logs: {
+		enabled: false
+	},
+	searchValue: 'regex',
 };
 
 // Root path is where npm run commands happen
@@ -35,27 +35,27 @@ export const paths = {
 	},
 	php: {
 		src: [
-            `${rootPath}/dev/**/*.php`,
-            `!${rootPath}/dev/optional/**/*.*`,
-        ],
+			`${rootPath}/dev/**/*.php`,
+			`!${rootPath}/dev/optional/**/*.*`,
+		],
 		dest: `${rootPath}/`
 	},
 	styles: {
 		src: [
-            `${rootPath}/dev/**/*.css`,
-            `!${rootPath}/dev/optional/**/*.*`
-        ],
+			`${rootPath}/dev/**/*.css`,
+			`!${rootPath}/dev/optional/**/*.*`
+		],
 		dest: `${rootPath}/`,
 		sass: [`${rootPath}/dev/**/*.scss`]
 	},
 	scripts: {
 		src: [
-            `${rootPath}/dev/**/*.js`, 
-            `!${rootPath}/dev/**/*.min.js`, 
-            `!${rootPath}/dev/js/libs/**/*.js`, 
-            `!${rootPath}/dev/optional/**/*.*`, 
-            `!${rootPath}/dev/config/**/*`,
-        ],
+			`${rootPath}/dev/**/*.js`,
+			`!${rootPath}/dev/**/*.min.js`,
+			`!${rootPath}/dev/js/libs/**/*.js`,
+			`!${rootPath}/dev/optional/**/*.*`,
+			`!${rootPath}/dev/config/**/*`,
+		],
 		min: `${rootPath}/dev/**/*.min.js`,
 		dest: `${rootPath}/`,
 		libs: `${rootPath}/dev/js/libs/**/*.js`,
@@ -64,38 +64,48 @@ export const paths = {
 	},
 	images: {
 		src: [
-            `${rootPath}/dev/**/*.{jpg,JPG,png,svg}`,
-            `!${rootPath}/dev/optional/**/*.*`,
-        ],
+			`${rootPath}/dev/**/*.{jpg,JPG,png,svg}`,
+			`!${rootPath}/dev/optional/**/*.*`,
+		],
 		dest: `${rootPath}/`
 	},
 	languages: {
 		src: [
-            `${rootPath}/**/*.php`,
-            `!${rootPath}/dev/**/*.php`,
-            `!${rootPath}/verbose/**/*.php`,
-        ],
+			`${rootPath}/**/*.php`,
+			`!${rootPath}/dev/**/*.php`,
+			`!${rootPath}/verbose/**/*.php`,
+		],
 		dest: `${rootPath}/languages/${config.theme.slug}.pot`
 	},
 	verbose: `${rootPath}/verbose/`,
 	export: {
 		src: [
-            `${rootPath}/**/*`,
-            `!${rootPath}/${config.theme.slug}`,
-            `!${rootPath}/${config.theme.slug}/**/*`,
-            `!${rootPath}/dev/**/*`,
-            `!${rootPath}/node_modules`,
-            `!${rootPath}/node_modules/**/*`,
-            `!${rootPath}/vendor`,
-            `!${rootPath}/vendor/**/*`,
-            `!${rootPath}/.*`,
-            `!${rootPath}/composer.*`,
-            `!${rootPath}/gulpfile.*`,
-            `!${rootPath}/gulp/**/*`,
-            `!${rootPath}/package*.*`,
-            `!${rootPath}/phpcs.*`,
-            `!${rootPath}/*.zip`,
-        ],
+			`${rootPath}/**/*`,
+			`!${rootPath}/${config.theme.slug}`,
+			`!${rootPath}/${config.theme.slug}/**/*`,
+			`!${rootPath}/dev/**/*`,
+			`!${rootPath}/node_modules`,
+			`!${rootPath}/node_modules/**/*`,
+			`!${rootPath}/vendor`,
+			`!${rootPath}/vendor/**/*`,
+			`!${rootPath}/.*`,
+			`!${rootPath}/composer.*`,
+			`!${rootPath}/gulpfile.*`,
+			`!${rootPath}/gulp/**/*`,
+			`!${rootPath}/package*.*`,
+			`!${rootPath}/phpcs.*`,
+			`!${rootPath}/*.zip`,
+		],
 		dest: `${rootPath}/`
 	}
+};
+
+// Theme config name fields and their defaults
+export const nameFieldDefaults = {
+	slug          : 'wp-rig',
+	name          : 'WP Rig',
+	underscoreCase: 'wp_rig',
+	constant      : 'WP_RIG',
+	camelCase     : 'WpRig',
+	camelCaseVar  : 'wpRig',
 };
