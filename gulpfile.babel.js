@@ -60,7 +60,7 @@ const paths = {
 		verboseLibsDest: './verbose/js/libs/'
 	},
 	images: {
-		src: ['dev/**/*.{jpg,JPG,png,svg}', '!dev/optional/**/*.*'],
+		src: ['dev/**/*.{jpg,JPG,png,svg,gif,GIF}', '!dev/optional/**/*.*'],
 		dest: './'
 	},
 	languages: {
