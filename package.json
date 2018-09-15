@@ -79,9 +79,9 @@
   },
   "scripts": {
     "install": "composer install",
-    "build": "node ./node_modules/gulp/bin/gulp.js",
-    "translate": "node ./node_modules/gulp/bin/gulp.js translate",
-    "bundle": "node ./node_modules/gulp/bin/gulp.js bundleTheme",
-    "test": "node ./node_modules/gulp/bin/gulp.js testTheme"
+    "build": "gulp",
+    "translate": "gulp translate",
+    "bundle": "gulp bundleTheme",
+    "test": "gulp testTheme"
   }
 }
