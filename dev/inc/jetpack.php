@@ -17,7 +17,8 @@
 function wp_rig_jetpack_setup() {
 	// Add theme support for Infinite Scroll.
 	add_theme_support(
-		'infinite-scroll', array(
+		'infinite-scroll',
+		array(
 			'container' => 'main',
 			'render'    => 'wp_rig_infinite_scroll_render',
 			'footer'    => 'page',
@@ -29,7 +30,8 @@ function wp_rig_jetpack_setup() {
 
 	// Add theme support for Content Options.
 	add_theme_support(
-		'jetpack-content-options', array(
+		'jetpack-content-options',
+		array(
 			'post-details' => array(
 				'stylesheet' => 'wp-rig-style',
 				'date'       => '.posted-on',
