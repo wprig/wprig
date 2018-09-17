@@ -102,7 +102,7 @@ script:
   # Check the theme against WordPress Coding Standards.
   - |
     if [[ "$SNIFF" == "1" ]]; then
-      composer run-script phpcs-dev
+      vendor/bin/phpcs
     fi
 
   # Run the theme through JavaScript Code Style checker.
@@ -114,13 +114,13 @@ script:
   # Run the unit tests.
   - |
     if [[ "$UNIT" == "1" ]]; then
-      composer run-script phpunit-dev
+      vendor/bin/phpunit
     fi
 
   # Run the integration tests.
   - |
     if [[ "$INTEGRATION" == "1" ]]; then
-      composer run-script phpunit-integration-dev
+      vendor/bin/phpunit -c phpunit.integration.xml.dist
     fi
 
 # Receive notifications for build results.
