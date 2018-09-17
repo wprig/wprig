@@ -33,6 +33,10 @@ if ( ! file_exists( $test_root . '/includes/phpunit6-compat.php' ) && class_exis
 	class_alias( 'PHPUnit\Framework\TestListener', 'PHPUnit_Framework_TestListener' );
 	class_alias( 'PHPUnit\Util\GlobalState', 'PHPUnit_Util_GlobalState' );
 	class_alias( 'PHPUnit\Util\Getopt', 'PHPUnit_Util_Getopt' );
+	class_alias( 'PHPUnit\Util\Test', 'PHPUnit_Util_Test' );
+
+	// This only needs to be included to that the WP test suite does not call the `getTickets()` method which conflicts.
+	define( 'WP_TESTS_FORCE_KNOWN_BUGS', true );
 }
 
 // Override WP options to set current theme and themes directory.
