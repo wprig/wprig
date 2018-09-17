@@ -238,7 +238,8 @@ function wp_rig_post_thumbnail() {
 				);
 			} else {
 				the_post_thumbnail(
-					'post-thumbnail', array(
+					'post-thumbnail',
+					array(
 						'alt' => the_title_attribute(
 							array(
 								'echo' => false,
