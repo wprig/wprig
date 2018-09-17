@@ -11,6 +11,11 @@
     "phpunit/phpunit": "^6",
     "brain/monkey": "^2"
   },
+  "config": {
+    "platform": {
+      "php": "7.0"
+    }
+  },
   "scripts": {
     "install-codestandards": [
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
