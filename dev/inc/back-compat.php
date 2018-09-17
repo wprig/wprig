@@ -65,9 +65,13 @@ function wp_rig_upgrade_notice() {
  * Prevents the Customizer from being loaded when requirements are not met.
  */
 function wp_rig_customize() {
-	wp_die( esc_html( wp_rig_get_insufficient_requirements_message() ), '', array(
-		'back_link' => true,
-	) );
+	wp_die(
+		esc_html( wp_rig_get_insufficient_requirements_message() ),
+		'',
+		array(
+			'back_link' => true,
+		)
+	);
 }
 add_action( 'load-customize.php', 'wp_rig_customize' );
 
