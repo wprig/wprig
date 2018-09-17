@@ -15,7 +15,7 @@ define( 'WP_RIG_MINIMUM_PHP_VERSION', '7.0' );
 /**
  * Bail if requirements are not met.
  */
-if ( version_compare( $GLOBALS['wp_version'], WPRIG_MINIMUM_WP_VERSION, '<' ) || version_compare( phpversion(), WPRIG_MINIMUM_PHP_VERSION, '<' ) ) {
+if ( version_compare( $GLOBALS['wp_version'], WP_RIG_MINIMUM_WP_VERSION, '<' ) || version_compare( phpversion(), WP_RIG_MINIMUM_PHP_VERSION, '<' ) ) {
 	require get_template_directory() . '/inc/back-compat.php';
 	return;
 }
