@@ -45,7 +45,7 @@ matrix:
 before_install:
   # Install Composer dependencies.
   - |
-    if [[ "$SNIFF" == "1" ] || [ "$UNIT" == "1" ] || [ "$INTEGRATION" == "1" ]]; then
+    if [[ ( "$SNIFF" == "1" ) || ( "$UNIT" == "1" ) || ( "$INTEGRATION" == "1" ) ]]; then
       composer install;
     fi
 
