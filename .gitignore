@@ -20,6 +20,8 @@
 !package-lock.json
 !package.json
 !phpcs.xml.dist
+!phpunit.integration.xml.dist
+!phpunit.xml.dist
 !README.md
 !screenshot.png
 !.travis.yml
