@@ -31,6 +31,7 @@ export const paths = {
 		src: [
 			`${rootPath}/dev/**/*.php`,
 			`!${rootPath}/dev/optional/**/*.*`,
+			`!${rootPath}/dev/tests/**/*.*`,
 		],
 		dest: `${rootPath}/`
 	},

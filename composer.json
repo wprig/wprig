@@ -4,9 +4,17 @@
   "type": "wordpress-theme",
   "license": "GPL-2.0",
   "require-dev": {
+    "php": ">=7.0",
     "wp-coding-standards/wpcs": "^1.0.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
-    "wimg/php-compatibility": "^8.1"
+    "wimg/php-compatibility": "^8.1",
+    "phpunit/phpunit": "^6",
+    "brain/monkey": "^2"
+  },
+  "config": {
+    "platform": {
+      "php": "7.0"
+    }
   },
   "scripts": {
     "install-codestandards": [
@@ -15,6 +23,8 @@
     "phpcs-dev": "\"vendor/bin/phpcs\"",
     "run-phpcs": [
       "@phpcs-dev"
-    ]
+    ],
+    "phpunit-dev": "\"vendor/bin/phpunit\"",
+    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
   }
 }
