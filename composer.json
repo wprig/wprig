@@ -20,6 +20,6 @@
       "@phpcs-dev"
     ],
     "phpunit-dev": "\"vendor/bin/phpunit\"",
-    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c phpunit.integration.xml.dist"
+    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
   }
 }
