@@ -4,3 +4,10 @@
 # Gulp owner:
 gulpfile.babel.js @ataylorme
 /gulp/ @ataylorme
+
+# Tests owner:
+.travis.yml @felixarntz
+phpcs.xml.dist @felixarntz
+phpunit.integration.xml.dist @felixarntz
+phpunit.xml.dist @felixarntz
+/dev/tests/ @felixarntz
