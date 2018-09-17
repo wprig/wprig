@@ -59,7 +59,7 @@ export const paths = {
 	},
 	images: {
 		src: [
-			`${rootPath}/dev/**/*.{jpg,JPG,png,svg}`,
+			`${rootPath}/dev/**/*.{jpg,JPG,png,svg,,gif,GIF}`,
 			`!${rootPath}/dev/optional/**/*.*`,
 		],
 		dest: `${rootPath}/`

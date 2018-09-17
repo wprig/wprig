@@ -79,12 +79,15 @@ function wp_rig_allow_lazy_attributes( $allowed_tags ) {
 		return $allowed_tags;
 	}
 	// But, if images are allowed, ensure that our attributes are allowed!
-	$img_attributes      = array_merge( $allowed_tags['img'], array(
-		'data-src'    => 1,
-		'data-srcset' => 1,
-		'data-sizes'  => 1,
-		'class'       => 1,
-	) );
+	$img_attributes      = array_merge(
+		$allowed_tags['img'],
+		array(
+			'data-src'    => 1,
+			'data-srcset' => 1,
+			'data-sizes'  => 1,
+			'class'       => 1,
+		)
+	);
 	$allowed_tags['img'] = $img_attributes;
 	return $allowed_tags;
 }
