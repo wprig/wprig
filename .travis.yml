@@ -20,21 +20,36 @@ matrix:
   fast_finish: true
 
   include:
-    # aliased to a recent 7.0.x version
-    - php: '7.0'
-      env: SNIFF=1
-    # aliased to a recent 7.2.x version
-    - php: '7.2'
-    # bleeding edge PHP
+    - php: 7.2
+      env: UNIT=1 SNIFF=1
+    - php: 7.0
+      env: UNIT=1
     - php: 'nightly'
+      env: UNIT=1
+    - php: 7.2
+      env: INTEGRATION=1 WP_VERSION=latest
+    - php: 7.2
+      env: INTEGRATION=1 WP_VERSION=4.5
+    - php: 7.2
+      env: INTEGRATION=1 WP_VERSION=master
 
   allow_failures:
     - php: 'nightly'
+      env: UNIT=1
+    - php: 7.2
+      env: INTEGRATION=1 WP_VERSION=master
 
 # Use this to prepare the system to install prerequisites or dependencies.
 # e.g. sudo apt-get update.
 # Failures in this section will result in build status 'errored'.
 before_install:
+  # Install Composer dependencies.
+  - |
+    if [[ "$SNIFF" == "1" ] || [ "$UNIT" == "1" ] || [ "$INTEGRATION" == "1" ]]; then
+      composer install;
+    fi
+
+  # Install NPM dependencies.
   - |
     if [[ "$SNIFF" == "1" ]]; then
       npm install;
@@ -46,41 +61,36 @@ before_install:
 before_script:
   # Speed up build time by disabling Xdebug.
   - phpenv config-rm xdebug.ini || echo 'No xdebug config.'
-  # Set up temporary paths.
-  - export PHPCS_DIR=/tmp/phpcs
-  - export WPCS_DIR=/tmp/wpcs
-  - export PHPCOMPAT_DIR=/tmp/phpcompatibility
-  # Install CodeSniffer for WordPress Coding Standards checks.
-  - |
-    if [[ "$SNIFF" == "1" ]]; then
-      git clone -b master --depth 1 https://github.com/squizlabs/PHP_CodeSniffer.git $PHPCS_DIR;
-    fi
-  # Install WordPress Coding Standards.
-  - |
-    if [[ "$SNIFF" == "1" ]]; then
-      git clone -b 0.14.1 --depth 1 https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git $WPCS_DIR;
-    fi
-  # Install PHP Compatibility sniffs.
-  - |
-    if [[ "$SNIFF" == "1" ]]; then
-      git clone -b master --depth 1 https://github.com/wimg/PHPCompatibility.git $PHPCOMPAT_DIR;
-    fi
-  # Set install path for PHPCS sniffs.
-  # @link https://github.com/squizlabs/PHP_CodeSniffer/blob/4237c2fc98cc838730b76ee9cee316f99286a2a7/CodeSniffer.php#L1941
-  - |
-    if [[ "$SNIFF" == "1" ]]; then
-      $PHPCS_DIR/bin/phpcs --config-set installed_paths $WPCS_DIR,$PHPCOMPAT_DIR;
-    fi
-  # After CodeSniffer install you should refresh your path.
-  - |
-    if [[ "$SNIFF" == "1" ]]; then
-      phpenv rehash;
-    fi
+
   # Pull in the WP Core jshint rules.
   - |
     if [[ "$SNIFF" == "1" ]]; then
       wget https://develop.svn.wordpress.org/trunk/.jshintrc;
     fi
+
+  # Setup WordPress core test suite for integration.
+  - |
+    if [[ "$INTEGRATION" == "1" ]]; then
+      if [[ "$WP_VERSION" == "latest" ]]; then
+        curl -s http://api.wordpress.org/core/version-check/1.7/ > /tmp/wp-latest.json
+        WP_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
+      fi
+      THEME_SLUG=$(basename $(pwd))
+      export WP_DEVELOP_DIR=/tmp/wordpress/
+      git clone --depth=50 --branch="$WP_VERSION" git://develop.git.wordpress.org/ /tmp/wordpress
+      cd ..
+      cp -r "$THEME_SLUG" "/tmp/wordpress/src/wp-content/themes/$THEME_SLUG"
+      cd /tmp/wordpress/
+      cp wp-tests-config-sample.php wp-tests-config.php
+      sed -i "s/youremptytestdbnamehere/wordpress_tests/" wp-tests-config.php
+      sed -i "s/yourusernamehere/travis/" wp-tests-config.php
+      sed -i "s/yourpasswordhere//" wp-tests-config.php
+      mysql -e "CREATE DATABASE wordpress_tests;" -uroot
+      cd "/tmp/wordpress/src/wp-content/themes/$THEME_SLUG"
+    fi
+
+  # After setup you should refresh your path.
+  - phpenv rehash;
 
 # Run test script commands.
 # Default is specific to project language.
@@ -88,19 +98,29 @@ before_script:
 script:
   # Search for PHP syntax errors.
   - find -L . -name '*.php' ! -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 4 php -l
+
+  # Check the theme against WordPress Coding Standards.
+  - |
+    if [[ "$SNIFF" == "1" ]]; then
+      composer run-script phpcs-dev
+    fi
+
   # Run the theme through JavaScript Code Style checker.
   - |
     if [[ "$SNIFF" == "1" ]]; then
       $(npm bin)/eslint .;
     fi
-  # WordPress Coding Standards.
-  # @link https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
-  # @link https://pear.php.net/package/PHP_CodeSniffer/
-  # Uses a custom ruleset based on WordPress. This ruleset is automatically
-  # picked up by PHPCS as it's named `phpcs.xml(.dist)`.
+
+  # Run the unit tests.
   - |
-    if [[ "$SNIFF" == "1" ]]; then
-      $PHPCS_DIR/bin/phpcs --runtime-set ignore_warnings_on_exit 1;
+    if [[ "$UNIT" == "1" ]]; then
+      composer run-script phpunit-dev
+    fi
+
+  # Run the integration tests.
+  - |
+    if [[ "$INTEGRATION" == "1" ]]; then
+      composer run-script phpunit-integration-dev
     fi
 
 # Receive notifications for build results.
