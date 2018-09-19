@@ -18,7 +18,10 @@ export default function scripts(done) {
 
 	const beforeReplacement = [
 		src(paths.scripts.src, {sourcemaps: true}),
-		gulpPlugins.newer(paths.scripts.dest),
+		gulpPlugins.newer({
+			dest: paths.scripts.dest,
+			extra: [paths.config.themeConfig]
+		}),
 		gulpPlugins.eslint(),
 		gulpPlugins.eslint.format(),
 		gulpPlugins.babel(),

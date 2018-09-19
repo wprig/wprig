@@ -13,9 +13,12 @@ import {paths, gulpPlugins} from './constants';
  */
 export default function jsMin(done) {
 	pump([
-        src(paths.scripts.min),
-        gulpPlugins.newer(paths.scripts.dest),
-        dest(paths.verbose),
-        dest(paths.scripts.dest),
-    ], done);
+		src(paths.scripts.min),
+		gulpPlugins.newer({
+			dest: paths.scripts.dest,
+			extra: [paths.config.themeConfig]
+		}),
+		dest(paths.verbose),
+		dest(paths.scripts.dest),
+	], done);
 }
