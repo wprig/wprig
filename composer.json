@@ -10,11 +10,14 @@
     "wimg/php-compatibility": "^8.1",
     "phpunit/phpunit": "^6",
     "brain/monkey": "^2",
-    "codedungeon/phpunit-result-printer": "^0.9.3"
+    "codedungeon/phpunit-result-printer": "^0.20.3"
+  },
+  "require": {
+    "php": ">=7.0"
   },
   "config": {
     "platform": {
-      "php": "7.0"
+      "php": "7.1"
     },
     "process-timeout": 600,
     "sort-packages": true
