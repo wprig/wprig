@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="3" assertions="3" errors="0" failures="0" skipped="0" time="0.366809">
+    <testsuite name="WP_Rig\WP_Rig\Tests\Unit\Setup_Tests" file="/Users/infinum-denis/Projects/Personal/wprig/dev/tests/phpunit/unit/Setup_Tests.php" tests="3" assertions="3" errors="0" failures="0" skipped="0" time="0.366809">
+      <testcase name="test_wp_rig_setup" class="WP_Rig\WP_Rig\Tests\Unit\Setup_Tests" classname="WP_Rig.WP_Rig.Tests.Unit.Setup_Tests" file="/Users/infinum-denis/Projects/Personal/wprig/dev/tests/phpunit/unit/Setup_Tests.php" line="41" assertions="1" time="0.362101"/>
+      <testcase name="test_wp_rig_embed_dimensions" class="WP_Rig\WP_Rig\Tests\Unit\Setup_Tests" classname="WP_Rig.WP_Rig.Tests.Unit.Setup_Tests" file="/Users/infinum-denis/Projects/Personal/wprig/dev/tests/phpunit/unit/Setup_Tests.php" line="84" assertions="1" time="0.002143"/>
+      <testcase name="test_wp_rig_widgets_init" class="WP_Rig\WP_Rig\Tests\Unit\Setup_Tests" classname="WP_Rig.WP_Rig.Tests.Unit.Setup_Tests" file="/Users/infinum-denis/Projects/Personal/wprig/dev/tests/phpunit/unit/Setup_Tests.php" line="98" assertions="1" time="0.002565"/>
+    </testsuite>
+  </testsuite>
+</testsuites>

@@ -10,6 +10,15 @@
 sudo: false
 dist: trusty
 
+# Cache Composer
+cache:
+  apt: true
+  directories:
+    # Cache directory for older Composer versions.
+    - $HOME/.composer/cache/files
+    # Cache directory for more recent Composer versions.
+    - $HOME/.cache/composer/files
+
 # Declare project language.
 # @link https://about.travis-ci.org/docs/user/languages/php/
 language: php

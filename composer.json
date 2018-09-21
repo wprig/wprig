@@ -5,26 +5,31 @@
   "license": "GPL-2.0",
   "require-dev": {
     "php": ">=7.0",
-    "wp-coding-standards/wpcs": "^1.0.0",
+    "wp-coding-standards/wpcs": "^1.1.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
     "wimg/php-compatibility": "^8.1",
     "phpunit/phpunit": "^6",
-    "brain/monkey": "^2"
+    "brain/monkey": "^2",
+    "codedungeon/phpunit-result-printer": "^0.9.3"
   },
   "config": {
     "platform": {
       "php": "7.0"
-    }
+    },
+    "process-timeout": 600,
+    "sort-packages": true
   },
   "scripts": {
     "install-codestandards": [
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
     ],
-    "phpcs-dev": "\"vendor/bin/phpcs\"",
+    "phpcs-dev": "@php ./vendor/bin/phpcs",
     "run-phpcs": [
       "@phpcs-dev"
     ],
-    "phpunit-dev": "\"vendor/bin/phpunit\"",
-    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
+    "phpunit-dev": "@php vendor/bin/phpunit -c phpunit.xml.dist --no-coverage --colors=always",
+    "phpunit-integration-dev": "@php vendor/bin/phpunit -c phpunit.integration.xml.dist --no-coverage --colors=always",
+    "phpunit-cov": "@php vendor/bin/phpunit -c phpunit.xml.dist --colors=always",
+    "phpunit-integration-cov": "@php vendor/bin/phpunit -c phpunit.integration.xml.dist --colors=always"
   }
 }
