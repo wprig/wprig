@@ -57,7 +57,10 @@ export default function php(done) {
 		// If not a rebuild, then run tasks on changed files only.
 		gulpPlugins.if(
 			!isRebuild,
-			gulpPlugins.newer(paths.php.dest)
+			gulpPlugins.newer({
+				dest: paths.php.dest,
+				extra: [paths.config.themeConfig]
+			})
 		),
 		gulpPlugins.phpcs({
 			bin: `${rootPath}/vendor/bin/phpcs`,
