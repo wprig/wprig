@@ -27,9 +27,9 @@
     "run-phpcs": [
       "@phpcs-dev"
     ],
-    "phpunit-dev": "@php vendor/bin/phpunit -c phpunit.xml.dist --no-coverage --colors=always",
-    "phpunit-integration-dev": "@php vendor/bin/phpunit -c phpunit.integration.xml.dist --no-coverage --colors=always",
-    "phpunit-cov": "@php vendor/bin/phpunit -c phpunit.xml.dist --colors=always",
-    "phpunit-integration-cov": "@php vendor/bin/phpunit -c phpunit.integration.xml.dist --colors=always"
+    "phpunit-dev": "@php ./vendor/bin/phpunit -c phpunit.xml.dist --no-coverage --colors=always",
+    "phpunit-integration-dev": "@php ./vendor/bin/phpunit -c phpunit.integration.xml.dist --no-coverage --colors=always",
+    "phpunit-cov": "@php ./vendor/bin/phpunit -c phpunit.xml.dist --colors=always",
+    "phpunit-integration-cov": "@php ./vendor/bin/phpunit -c phpunit.integration.xml.dist --colors=always"
   }
 }
