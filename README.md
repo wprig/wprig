@@ -61,7 +61,7 @@ In addition, to disable SSL certificate warnings in the browser you will need to
 
     * For macOS
         1. Open Keychain Access
-        2. Drag the certificate files, which if using `npm run generateCert` to generate the certifcates are saved to `BrowserSync/wp-rig-browser-sync-cert.crt` and `BrowserSync/wp-rig-browser-sync-root-cert.crt`, onto KeyChain access
+        2. Drag the certificate files, which if using `npm run generateCert` to generate the certificates are saved to `BrowserSync/wp-rig-browser-sync-cert.crt` and `BrowserSync/wp-rig-browser-sync-root-cert.crt`, onto KeyChain access
         3. Double click on one of the new `WP Rig` certificate in the list
         4. Expand the `trust` menu
         5. Change the `When using this certificate:` setting to `Always Trust`
