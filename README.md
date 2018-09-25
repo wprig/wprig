@@ -49,7 +49,7 @@ WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browse
 ### Enabling HTTPS
 In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)).
 
-WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generate-ssl-cert`. The key and certificates will be saved as `BrowserSync/wp-rig-browser-sync-key.key`, `BrowserSync/wp-rig-browser-sync-root-cert.crt` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory.
+WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generateCert`. The key and certificates will be saved as `BrowserSync/wp-rig-browser-sync-key.key`, `BrowserSync/wp-rig-browser-sync-root-cert.crt` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory.
 
 To use the generated key and certificate across multiple projects copy `BrowserSync/wp-rig-browser-sync-key.key`, `BrowserSync/wp-rig-browser-sync-root-cert.crt` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory to a global location, such as your home directory, uncomment and update the `keyPath` and `certPath` values in `dev/config/themeConfig.js` with the absolute paths for the key and certificate.
 
@@ -61,7 +61,7 @@ In addition, to disable SSL certificate warnings in the browser you will need to
 
     * For macOS
         1. Open Keychain Access
-        2. Drag the certificate files, which if using `npm run generate-ssl-cert` to generate the certifcates are saved to `BrowserSync/wp-rig-browser-sync-cert.crt` and `BrowserSync/wp-rig-browser-sync-root-cert.crt`, onto KeyChain access
+        2. Drag the certificate files, which if using `npm run generateCert` to generate the certifcates are saved to `BrowserSync/wp-rig-browser-sync-cert.crt` and `BrowserSync/wp-rig-browser-sync-root-cert.crt`, onto KeyChain access
         3. Double click on one of the new `WP Rig` certificate in the list
         4. Expand the `trust` menu
         5. Change the `When using this certificate:` setting to `Always Trust`
