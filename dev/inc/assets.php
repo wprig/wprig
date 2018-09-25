@@ -13,7 +13,7 @@ function wp_rig_styles() {
 	// Add custom fonts, used in the main stylesheet.
 	$fonts_url = wp_rig_fonts_url();
 	if ( ! empty( $fonts_url ) ) {
-		wp_enqueue_style( 'wp-rig-fonts', $fonts_url, array(), null );
+		wp_enqueue_style( 'wp-rig-fonts', $fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 	}
 
 	// Enqueue main stylesheet.
@@ -41,10 +41,14 @@ function wp_rig_scripts() {
 	// Enqueue the navigation script.
 	wp_enqueue_script( 'wp-rig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), '20180514', false );
 	wp_script_add_data( 'wp-rig-navigation', 'async', true );
-	wp_localize_script( 'wp-rig-navigation', 'wpRigScreenReaderText', array(
-		'expand'   => __( 'Expand child menu', 'wp-rig' ),
-		'collapse' => __( 'Collapse child menu', 'wp-rig' ),
-	));
+	wp_localize_script(
+		'wp-rig-navigation',
+		'wpRigScreenReaderText',
+		array(
+			'expand'   => __( 'Expand child menu', 'wp-rig' ),
+			'collapse' => __( 'Collapse child menu', 'wp-rig' ),
+		)
+	);
 
 	// Enqueue skip-link-focus script.
 	wp_enqueue_script( 'wp-rig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), '20180514', false );
@@ -65,7 +69,7 @@ function wp_rig_gutenberg_styles() {
 	// Add custom fonts, used in the main stylesheet.
 	$fonts_url = wp_rig_fonts_url();
 	if ( ! empty( $fonts_url ) ) {
-		wp_enqueue_style( 'wp-rig-fonts', $fonts_url, array(), null );
+		wp_enqueue_style( 'wp-rig-fonts', $fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 	}
 
 	// Enqueue main stylesheet.

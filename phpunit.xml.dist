@@ -1,0 +1,29 @@
+<phpunit
+	backupGlobals="false"
+	backupStaticAttributes="false"
+	bootstrap="dev/tests/phpunit/bootstrap-unit.php"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	processIsolation="false"
+	stopOnError="false"
+	stopOnFailure="false"
+	stopOnIncomplete="false"
+	stopOnSkipped="false"
+	syntaxCheck="false"
+	verbose="true"
+	>
+	<testsuites>
+		<testsuite>
+			<directory suffix=".php">./dev/tests/phpunit/unit/</directory>
+		</testsuite>
+	</testsuites>
+
+	<filter>
+		<whitelist>
+			<file>./dev/functions.php</file>
+			<directory>./dev/inc</directory>
+		</whitelist>
+	</filter>
+</phpunit>
