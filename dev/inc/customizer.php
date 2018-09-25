@@ -17,13 +17,15 @@ function wp_rig_customize_register( $wp_customize ) {
 
 	if ( isset( $wp_customize->selective_refresh ) ) {
 		$wp_customize->selective_refresh->add_partial(
-			'blogname', array(
+			'blogname',
+			array(
 				'selector'        => '.site-title a',
 				'render_callback' => 'wp_rig_customize_partial_blogname',
 			)
 		);
 		$wp_customize->selective_refresh->add_partial(
-			'blogdescription', array(
+			'blogdescription',
+			array(
 				'selector'        => '.site-description',
 				'render_callback' => 'wp_rig_customize_partial_blogdescription',
 			)
@@ -34,7 +36,8 @@ function wp_rig_customize_register( $wp_customize ) {
 	 * Theme options.
 	 */
 	$wp_customize->add_section(
-		'theme_options', array(
+		'theme_options',
+		array(
 			'title'    => __( 'Theme Options', 'wp-rig' ),
 			'priority' => 130, // Before Additional CSS.
 		)
@@ -42,7 +45,8 @@ function wp_rig_customize_register( $wp_customize ) {
 
 	if ( function_exists( 'wp_rig_lazyload_images' ) ) {
 		$wp_customize->add_setting(
-			'lazy_load_media', array(
+			'lazy_load_media',
+			array(
 				'default'           => 'lazyload',
 				'sanitize_callback' => 'wp_rig_sanitize_lazy_load_media',
 				'transport'         => 'postMessage',
@@ -50,7 +54,8 @@ function wp_rig_customize_register( $wp_customize ) {
 		);
 
 		$wp_customize->add_control(
-			'lazy_load_media', array(
+			'lazy_load_media',
+			array(
 				'label'           => __( 'Lazy-load images', 'wp-rig' ),
 				'section'         => 'theme_options',
 				'type'            => 'radio',

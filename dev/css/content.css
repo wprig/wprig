@@ -53,12 +53,9 @@
 .not-found > * {
 	margin-right: auto;
 	margin-left: auto;
-	padding-right: 24px;
 	padding-right: 1.5rem;
-	padding-left: 24px;
 	padding-left: 1.5rem;
 	/* stylelint-disable */
-	max-width: calc(var(--content-width) * 16)px; /* Fallback for older browsers. */
 	max-width: var(--content-width)rem;
 	/* stylelint-enable */
 }
@@ -71,12 +68,9 @@
 .page-navigation,
 .comments-area {
 	margin: 1.5em auto;
-	padding-right: 24px;
 	padding-right: 1.5rem;
-	padding-left: 24px;
 	padding-left: 1.5rem;
 	/* stylelint-disable */
-	max-width: calc(var(--content-width) * 16)px; /* Fallback for older browsers. */
 	max-width: var(--content-width)rem;
 	/* stylelint-enable */
 }
@@ -146,7 +140,6 @@
 	.wp-caption.alignright,
 	.wp-block-image.alignright {
 		/* stylelint-disable */
-		margin-right: calc((100% - calc(var(--content-width) * 16)px) / 2);
 		margin-right: calc((100% - var(--content-width)rem) / 2);
 		/* stylelint-enable */
 	}
@@ -154,7 +147,6 @@
 	.wp-caption.alignleft,
 	.wp-block-image.alignleft {
 		/* stylelint-disable */
-		margin-left: calc((100% - calc(var(--content-width) * 16)px) / 2);
 		margin-left: calc((100% - var(--content-width)rem) / 2);
 		/* stylelint-enable */
 	}
@@ -408,28 +400,24 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 
 .has-small-font-size {
 	/* stylelint-disable */
-	font-size: var(--small-font-size)px;
 	font-size: calc(var(--small-font-size) / 16)rem;
 	/* stylelint-enable */
 }
 
 .has-regular-font-size {
 	/* stylelint-disable */
-	font-size: var(--regular-font-size)px;
 	font-size: calc(var(--regular-font-size) / 16)rem;
 	/* stylelint-enable */
 }
 
 .has-large-font-size {
 	/* stylelint-disable */
-	font-size: var(--large-font-size)px;
 	font-size: calc(var(--large-font-size) / 16)rem;
 	/* stylelint-enable */
 }
 
 .has-larger-font-size {
 	/* stylelint-disable */
-	font-size: var(--larger-font-size)px;
 	font-size: calc(var(--larger-font-size) / 16)rem;
 	/* stylelint-enable */
 }
@@ -439,22 +427,18 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 --------------------------------------------------------------*/
 
 .has-small-font-size {
-	font-size: var(--small-font-size)px;
 	font-size: calc(var(--small-font-size) / 16)rem;
 }
 
 .has-regular-font-size {
-	font-size: var(--regular-font-size)px;
 	font-size: calc(var(--regular-font-size) / 16)rem;
 }
 
 .has-large-font-size {
-	font-size: var(--large-font-size)px;
 	font-size: calc(var(--large-font-size) / 16)rem;
 }
 
 .has-larger-font-size {
-	font-size: var(--larger-font-size)px;
 	font-size: calc(var(--larger-font-size) / 16)rem;
 }
 

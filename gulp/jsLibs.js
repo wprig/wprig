@@ -13,9 +13,12 @@ import {paths, gulpPlugins} from './constants';
  */
 export default function jsLibs(done) {
 	pump([
-        src(paths.scripts.libs),
-        gulpPlugins.newer(paths.scripts.verboseLibsDest),
-        dest(paths.scripts.verboseLibsDest),
-        dest(paths.scripts.libsDest),
-    ], done);
+		src(paths.scripts.libs),
+		gulpPlugins.newer({
+			dest: paths.scripts.verboseLibsDest,
+			extra: [paths.config.themeConfig]
+		}),
+		dest(paths.scripts.verboseLibsDest),
+		dest(paths.scripts.libsDest),
+	], done);
 }

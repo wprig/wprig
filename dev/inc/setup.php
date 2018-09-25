@@ -51,7 +51,8 @@ function wp_rig_setup() {
 	 * to output valid HTML5.
 	 */
 	add_theme_support(
-		'html5', array(
+		'html5',
+		array(
 			'search-form',
 			'comment-form',
 			'comment-list',
@@ -62,8 +63,10 @@ function wp_rig_setup() {
 
 	// Set up the WordPress core custom background feature.
 	add_theme_support(
-		'custom-background', apply_filters(
-			'wp_rig_custom_background_args', array(
+		'custom-background',
+		apply_filters(
+			'wp_rig_custom_background_args',
+			array(
 				'default-color' => 'ffffff',
 				'default-image' => '',
 			)
@@ -79,7 +82,8 @@ function wp_rig_setup() {
 	 * @link https://codex.wordpress.org/Theme_Logo
 	 */
 	add_theme_support(
-		'custom-logo', array(
+		'custom-logo',
+		array(
 			'height'      => 250,
 			'width'       => 250,
 			'flex-width'  => false,
@@ -99,53 +103,56 @@ function wp_rig_setup() {
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
 	 */
-	add_theme_support( 'editor-color-palette', array(
+	add_theme_support(
+		'editor-color-palette',
 		array(
-			'name'  => __( 'Dusty orange', 'wp-rig' ),
-			'slug'  => 'dusty-orange',
-			'color' => '#ed8f5b',
-		),
-		array(
-			'name'  => __( 'Dusty red', 'wp-rig' ),
-			'slug'  => 'dusty-red',
-			'color' => '#e36d60',
-		),
-		array(
-			'name'  => __( 'Dusty wine', 'wp-rig' ),
-			'slug'  => 'dusty-wine',
-			'color' => '#9c4368',
-		),
-		array(
-			'name'  => __( 'Dark sunset', 'wp-rig' ),
-			'slug'  => 'dark-sunset',
-			'color' => '#33223b',
-		),
-		array(
-			'name'  => __( 'Almost black', 'wp-rig' ),
-			'slug'  => 'almost-black',
-			'color' => '#0a1c28',
-		),
-		array(
-			'name'  => __( 'Dusty water', 'wp-rig' ),
-			'slug'  => 'dusty-water',
-			'color' => '#41848f',
-		),
-		array(
-			'name'  => __( 'Dusty sky', 'wp-rig' ),
-			'slug'  => 'dusty-sky',
-			'color' => '#72a7a3',
-		),
-		array(
-			'name'  => __( 'Dusty daylight', 'wp-rig' ),
-			'slug'  => 'dusty-daylight',
-			'color' => '#97c0b7',
-		),
-		array(
-			'name'  => __( 'Dusty sun', 'wp-rig' ),
-			'slug'  => 'dusty-sun',
-			'color' => '#eee9d1',
-		),
-	) );
+			array(
+				'name'  => __( 'Dusty orange', 'wp-rig' ),
+				'slug'  => 'dusty-orange',
+				'color' => '#ed8f5b',
+			),
+			array(
+				'name'  => __( 'Dusty red', 'wp-rig' ),
+				'slug'  => 'dusty-red',
+				'color' => '#e36d60',
+			),
+			array(
+				'name'  => __( 'Dusty wine', 'wp-rig' ),
+				'slug'  => 'dusty-wine',
+				'color' => '#9c4368',
+			),
+			array(
+				'name'  => __( 'Dark sunset', 'wp-rig' ),
+				'slug'  => 'dark-sunset',
+				'color' => '#33223b',
+			),
+			array(
+				'name'  => __( 'Almost black', 'wp-rig' ),
+				'slug'  => 'almost-black',
+				'color' => '#0a1c28',
+			),
+			array(
+				'name'  => __( 'Dusty water', 'wp-rig' ),
+				'slug'  => 'dusty-water',
+				'color' => '#41848f',
+			),
+			array(
+				'name'  => __( 'Dusty sky', 'wp-rig' ),
+				'slug'  => 'dusty-sky',
+				'color' => '#72a7a3',
+			),
+			array(
+				'name'  => __( 'Dusty daylight', 'wp-rig' ),
+				'slug'  => 'dusty-daylight',
+				'color' => '#97c0b7',
+			),
+			array(
+				'name'  => __( 'Dusty sun', 'wp-rig' ),
+				'slug'  => 'dusty-sun',
+				'color' => '#eee9d1',
+			),
+		)
+	);
 
 	/*
 	 * Optional: Disable custom colors in block color palettes.
@@ -160,32 +167,35 @@ function wp_rig_setup() {
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
 	 */
-	add_theme_support( 'editor-font-sizes', array(
+	add_theme_support(
+		'editor-font-sizes',
 		array(
-			'name'      => __( 'small', 'wp-rig' ),
-			'shortName' => __( 'S', 'wp-rig' ),
-			'size'      => 16,
-			'slug'      => 'small',
-		),
-		array(
-			'name'      => __( 'regular', 'wp-rig' ),
-			'shortName' => __( 'M', 'wp-rig' ),
-			'size'      => 20,
-			'slug'      => 'regular',
-		),
-		array(
-			'name'      => __( 'large', 'wp-rig' ),
-			'shortName' => __( 'L', 'wp-rig' ),
-			'size'      => 36,
-			'slug'      => 'large',
-		),
-		array(
-			'name'      => __( 'larger', 'wp-rig' ),
-			'shortName' => __( 'XL', 'wp-rig' ),
-			'size'      => 48,
-			'slug'      => 'larger',
-		),
-	) );
+			array(
+				'name'      => __( 'small', 'wp-rig' ),
+				'shortName' => __( 'S', 'wp-rig' ),
+				'size'      => 16,
+				'slug'      => 'small',
+			),
+			array(
+				'name'      => __( 'regular', 'wp-rig' ),
+				'shortName' => __( 'M', 'wp-rig' ),
+				'size'      => 20,
+				'slug'      => 'regular',
+			),
+			array(
+				'name'      => __( 'large', 'wp-rig' ),
+				'shortName' => __( 'L', 'wp-rig' ),
+				'size'      => 36,
+				'slug'      => 'large',
+			),
+			array(
+				'name'      => __( 'larger', 'wp-rig' ),
+				'shortName' => __( 'XL', 'wp-rig' ),
+				'size'      => 48,
+				'slug'      => 'larger',
+			),
+		)
+	);
 
 	/*
 	 * Optional: Add AMP support.
@@ -195,9 +205,12 @@ function wp_rig_setup() {
 	 *
 	 * @link https://wordpress.org/plugins/amp/
 	 */
-	add_theme_support( 'amp', array(
-		'comments_live_list' => true,
-	) );
+	add_theme_support(
+		'amp',
+		array(
+			'comments_live_list' => true,
+		)
+	);
 
 }
 add_action( 'after_setup_theme', 'wp_rig_setup' );
@@ -220,14 +233,16 @@ add_filter( 'embed_defaults', 'wp_rig_embed_dimensions' );
  * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
  */
 function wp_rig_widgets_init() {
-	register_sidebar( array(
-		'name'          => esc_html__( 'Sidebar', 'wp-rig' ),
-		'id'            => 'sidebar-1',
-		'description'   => esc_html__( 'Add widgets here.', 'wp-rig' ),
-		'before_widget' => '<section id="%1$s" class="widget %2$s">',
-		'after_widget'  => '</section>',
-		'before_title'  => '<h2 class="widget-title">',
-		'after_title'   => '</h2>',
-	) );
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'Sidebar', 'wp-rig' ),
+			'id'            => 'sidebar-1',
+			'description'   => esc_html__( 'Add widgets here.', 'wp-rig' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
 }
 add_action( 'widgets_init', 'wp_rig_widgets_init' );
