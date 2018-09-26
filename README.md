@@ -47,30 +47,9 @@ WP Rig can be used in any development environment. It does not require any speci
 WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `browserSync` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `proxyURL` value is the URL to the live version of your local site.
 
 ### Enabling HTTPS
-In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. Common Name has been deprecated since 2000 ([details](https://www.chromestatus.com/features/4981025180483584)).
+In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. If needed, WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generateCert`.
 
-WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generateCert`. The key and certificates will be saved as `BrowserSync/wp-rig-browser-sync-key.key`, `BrowserSync/wp-rig-browser-sync-root-cert.crt` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory.
-
-To use the generated key and certificate across multiple projects copy `BrowserSync/wp-rig-browser-sync-key.key`, `BrowserSync/wp-rig-browser-sync-root-cert.crt` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory to a global location, such as your home directory, uncomment and update the `keyPath` and `certPath` values in `dev/config/themeConfig.js` with the absolute paths for the key and certificate.
-
-Then in future WP Rig projects you can simply set `https` to `true` and uncomment and update `keyPath` and `certPath` in `dev/config/themeConfig.js` with the paths of your existing key and certificate files rather than generating new ones for each project. Note that the certificate must be signed with an accompanying CA certificate and both certificates need to be trusted.
-
-If you leave `keyPath` and `certPath` commented out then the default paths of `BrowserSync/wp-rig-browser-sync-key.key` and `BrowserSync/wp-rig-browser-sync-cert.crt` in the WP Rig theme directory will be used. Once you have a key and certificate update `https` to `true` in `dev/config/themeConfig.js`.
-
-In addition, to disable SSL certificate warnings in the browser you will need to trust the certificate and CA certificate.
-
-    * For macOS
-        1. Open Keychain Access.
-        2. Drag the certificate file, which if using `npm run generateCert` to generate the certificates is saved to `BrowserSync/wp-rig-browser-sync-cert.crt`, into KeyChain access.
-        3. Double click on the new `WP Rig` certificate in the list, might also be labelled `localhost`.
-        4. Expand the `trust` menu.
-        5. Change the `When using this certificate:` setting to `Always Trust`.
-        6. Close the certificate dialogue.
-            * You may be prompted for your computer password to save the setting.
-            * If not, close the window and you will receive the prompt.
-        7. Repeat steps 3 through 6 for any other certificates.
-
-Note that these steps only need to be done once for each key and certificate. The generated key and certificates expire after 5 years, at which point you will need to generate new ones and follow the steps above again.
+For more information, and instructions, visit the [BrowserSync wiki page](https://github.com/wprig/wprig/wiki/BrowserSync).
 
 ### gulp
 WP Rig uses a [Gulp 4](https://gulpjs.com/) build process to generate and optimize the code for the theme. All development is done in the `/dev` folder and Gulp preprocesses, transpiles, and compiles the files into the root folder. The root folder files become the active theme. WordPress ignores anything in the `/dev` folder.
