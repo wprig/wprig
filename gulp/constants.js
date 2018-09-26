@@ -23,6 +23,12 @@ export const config = getThemeConfig(true);
 
 // Project paths
 export const paths = {
+    browserSync: {
+		dir: `${rootPath}/BrowserSync`,
+		cert: `${rootPath}/BrowserSync/wp-rig-browser-sync-cert.crt`,
+		caCert: `${rootPath}/BrowserSync/wp-rig-browser-sync-root-cert.crt`,
+		key: `${rootPath}/BrowserSync/wp-rig-browser-sync-key.key`
+    },
 	config: {
 		cssVars: `${rootPath}/dev/config/cssVariables.json`,
 		themeConfig: `${rootPath}/dev/config/themeConfig.js`
