@@ -25,3 +25,6 @@
 !README.md
 !screenshot.png
 !.travis.yml
+
+# Ignore code coverage reports:
+/dev/tests/_reports

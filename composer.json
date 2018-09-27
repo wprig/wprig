@@ -3,13 +3,17 @@
   "description": "A progressive theme development rig for WordPress.",
   "type": "wordpress-theme",
   "license": "GPL-2.0",
+  "require": {
+    "php": ">=7.0"
+  },
   "require-dev": {
     "php": ">=7.0",
     "wp-coding-standards/wpcs": "^1.0.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
     "wimg/php-compatibility": "^8.1",
     "phpunit/phpunit": "^6",
-    "brain/monkey": "^2"
+    "brain/monkey": "^2",
+    "codedungeon/phpunit-result-printer": "^0.8"
   },
   "config": {
     "platform": {
