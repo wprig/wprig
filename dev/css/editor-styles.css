@@ -5,7 +5,6 @@
  body.gutenberg-editor-page .editor-writing-flow {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
-	font-size: var(--global-font-size)px;
 	font-size: calc(var(--global-font-size) / 16)rem;
 	line-height: var(--global-font-line-height);
 }
@@ -24,14 +23,12 @@ body.gutenberg-editor-page .edit-post-visual-editor p {
 }
 
 body.gutenberg-editor-page .editor-post-title .editor-post-title__input {
-	font-size: 32px;
 	font-size: 2rem;
 	line-height: 1.4;
 }
 
 body.gutenberg-editor-page .edit-post-visual-editor p {
 	font-family: var(--global-font-family);
-	font-size: var(--global-font-size)px;
 	font-size: calc(var(--global-font-size) / 16)rem;
 
 }
@@ -141,21 +138,17 @@ body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image h2 {
 /* Visualize editor font sizes (defined in functions.php). */
 
 .has-small-font-size {
-	font-size: var(--small-font-size)px;
 	font-size: calc(var(--small-font-size) / 16)rem;
 }
 
 .has-regular-font-size {
-	font-size: var(--regular-font-size)px;
 	font-size: calc(var(--regular-font-size) / 16)rem;
 }
 
 .has-large-font-size {
-	font-size: var(--large-font-size)px;
 	font-size: calc(var(--large-font-size) / 16)rem;
 }
 
 .has-larger-font-size {
-	font-size: var(--larger-font-size)px;
 	font-size: calc(var(--larger-font-size) / 16)rem;
 }
