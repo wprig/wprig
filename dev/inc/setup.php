@@ -91,17 +91,24 @@ function wp_rig_setup() {
 		)
 	);
 
-	/*
+	/**
+	 * Add support for default block styles.
+	 *
+	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/#default-block-styles
+	 */
+	add_theme_support( 'wp-block-styles' );
+
+	/**
 	 * Add support for wide aligments.
 	 *
-	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
+	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/#wide-alignment
 	 */
 	add_theme_support( 'align-wide' );
 
-	/*
+	/**
 	 * Add support for block color palettes.
 	 *
-	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/
+	 * @link https://wordpress.org/gutenberg/handbook/extensibility/theme-support/#block-color-palettes
 	 */
 	add_theme_support(
 		'editor-color-palette',
