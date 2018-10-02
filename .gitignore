@@ -20,5 +20,6 @@
 !package.json
 !phpcs.xml.dist
 !README.md
+!readme.txt
 !screenshot.png
 !.travis.yml
