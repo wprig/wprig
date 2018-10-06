@@ -17,6 +17,7 @@
 !gulp/
 !style.css
 !/inc/
+!/template-parts/
 
 !.babelrc
 !composer.json
