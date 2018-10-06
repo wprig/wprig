@@ -4,6 +4,11 @@
 # Whitelist what you want tracked:
 !/.github/
 !/dev/
+!/css/
+/css/*
+!/css/src/*.css
+!/css/src/*.scss
+!/css/src/*.sass
 !/languages/
 !gulp/
 
