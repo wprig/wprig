@@ -16,6 +16,7 @@
 !/languages/
 !gulp/
 !style.css
+!/inc/
 
 !.babelrc
 !composer.json
