@@ -21,6 +21,7 @@
 !/pluggable/
 !/config/
 !/tests/
+!/optional/
 
 !.babelrc
 !composer.json
