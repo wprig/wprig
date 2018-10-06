@@ -15,6 +15,7 @@
 !/js/src/*.jsx
 !/languages/
 !gulp/
+!style.css
 
 !.babelrc
 !composer.json
