@@ -9,6 +9,10 @@
 !/css/src/*.css
 !/css/src/*.scss
 !/css/src/*.sass
+!js/
+/js/*
+!/js/src/*.js
+!/js/src/*.jsx
 !/languages/
 !gulp/
 
