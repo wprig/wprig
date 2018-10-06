@@ -19,6 +19,7 @@
 !/inc/
 !/template-parts/
 !/pluggable/
+!/config/
 
 !.babelrc
 !composer.json
