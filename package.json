@@ -22,7 +22,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
-    "browser-sync": "^2.24.7",
+    "browser-sync": "^2.26.0",
     "create-cert": "^1.0.6",
     "eslint": "^4.18.1",
     "eslint-config-gulp": "^3.0.1",
@@ -81,8 +81,9 @@
   "scripts": {
     "install": "composer install",
     "build": "gulp",
+    "styles": "gulp styles",
     "translate": "gulp translate",
-    "bundle": "gulp bundleTheme",
+    "bundle": "NODE_ENV=production gulp bundleTheme",
     "test": "gulp testTheme",
     "generateCert": "gulp generateCert"
   }
