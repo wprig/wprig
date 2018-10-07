@@ -17,9 +17,9 @@ export function getThemeConfig( uncached=false ) {
     let config;
 
 	if ( uncached ) {
-		config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+		config = requireUncached(`${rootPath}/config/themeConfig.js`);
 	} else {
-		config = require(`${rootPath}/dev/config/themeConfig.js`);
+		config = require(`${rootPath}/config/themeConfig.js`);
 	}
 
 	if ( ! config.theme.slug ) {
