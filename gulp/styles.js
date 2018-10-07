@@ -8,7 +8,7 @@ import pump from 'pump';
 import requireUncached from 'require-uncached';
 
 // Internal dependencies
-import {rootPath, paths, gulpPlugins} from './constants';
+import {rootPath, paths, gulpPlugins, isProd} from './constants';
 import {getThemeConfig, getStringReplacementTasks} from './utils';
 
 /**
@@ -71,7 +71,10 @@ export default function styles(done) {
 	pump(
 		[].concat(
 			beforeReplacement,
-			getStringReplacementTasks(),
+			gulpPlugins.if(
+				isProd,
+				getStringReplacementTasks()
+			),
 			afterReplacement
 		),
 		done
