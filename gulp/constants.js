@@ -18,6 +18,9 @@ export const gulpReplaceOptions = {
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
 
+// Dev or production
+export const isProd = ( process.env.NODE_ENV === 'production' );
+
 // get a fresh copy of the config
 export const config = getThemeConfig(true);
 
@@ -30,50 +33,49 @@ export const paths = {
 		key: `${rootPath}/BrowserSync/wp-rig-browser-sync-key.key`
     },
 	config: {
-		cssVars: `${rootPath}/dev/config/cssVariables.json`,
-		themeConfig: `${rootPath}/dev/config/themeConfig.js`
+		cssVars: `${rootPath}/config/cssVariables.json`,
+		themeConfig: `${rootPath}/config/themeConfig.js`
 	},
 	php: {
 		src: [
-			`${rootPath}/dev/**/*.php`,
-			`!${rootPath}/dev/optional/**/*.*`,
-			`!${rootPath}/dev/tests/**/*.*`,
+			`${rootPath}/**/*.php`,
+			`!${rootPath}/optional/**/*.*`,
+			`!${rootPath}/tests/**/*.*`,
 		],
 		dest: `${rootPath}/`
 	},
 	styles: {
 		src: [
-			`${rootPath}/dev/**/*.css`,
-			`!${rootPath}/dev/optional/**/*.*`
+			`${rootPath}/css/src/**/*.css`
 		],
-		dest: `${rootPath}/`,
-		sass: [`${rootPath}/dev/**/*.scss`]
+		dest: [`${rootPath}/css/`, !`${rootPath}/css/src/**/*.*`],
+		sass: `${rootPath}/**/*.scss`
 	},
 	scripts: {
 		src: [
-			`${rootPath}/dev/**/*.js`,
-			`!${rootPath}/dev/**/*.min.js`,
-			`!${rootPath}/dev/js/libs/**/*.js`,
-			`!${rootPath}/dev/optional/**/*.*`,
-			`!${rootPath}/dev/config/**/*`,
+			`${rootPath}/**/*.js`,
+			`!${rootPath}/**/*.min.js`,
+			`!${rootPath}/js/libs/**/*.js`,
+			`!${rootPath}/optional/**/*.*`,
+			`!${rootPath}/config/**/*`,
 		],
-		min: `${rootPath}/dev/**/*.min.js`,
+		min: `${rootPath}/**/*.min.js`,
 		dest: `${rootPath}/`,
-		libs: `${rootPath}/dev/js/libs/**/*.js`,
+		libs: `${rootPath}/js/libs/**/*.js`,
 		libsDest: `${rootPath}/js/libs/`,
 		verboseLibsDest: `${rootPath}/verbose/js/libs/`,
 	},
 	images: {
 		src: [
-			`${rootPath}/dev/**/*.{jpg,JPG,png,svg,,gif,GIF}`,
-			`!${rootPath}/dev/optional/**/*.*`,
+			`${rootPath}/**/*.{jpg,JPG,png,svg,,gif,GIF}`,
+			`!${rootPath}/optional/**/*.*`,
 		],
 		dest: `${rootPath}/`
 	},
 	languages: {
 		src: [
 			`${rootPath}/**/*.php`,
-			`!${rootPath}/dev/**/*.php`,
+			`!${rootPath}/**/*.php`,
 			`!${rootPath}/verbose/**/*.php`,
 		],
 		dest: `${rootPath}/languages/${config.theme.slug}.pot`
@@ -84,7 +86,7 @@ export const paths = {
 			`${rootPath}/**/*`,
 			`!${rootPath}/${config.theme.slug}`,
 			`!${rootPath}/${config.theme.slug}/**/*`,
-			`!${rootPath}/dev/**/*`,
+			`!${rootPath}/**/*`,
 			`!${rootPath}/node_modules`,
 			`!${rootPath}/node_modules/**/*`,
 			`!${rootPath}/vendor`,
