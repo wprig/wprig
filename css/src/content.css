@@ -371,26 +371,6 @@
 }
 
 /*--------------------------------------------------------------
-## Custom block font sizes.
---------------------------------------------------------------*/
-
-.has-small-font-size {
-	font-size: calc(var(--small-font-size) / 16)rem;
-}
-
-.has-regular-font-size {
-	font-size: calc(var(--regular-font-size) / 16)rem;
-}
-
-.has-large-font-size {
-	font-size: calc(var(--large-font-size) / 16)rem;
-}
-
-.has-larger-font-size {
-	font-size: calc(var(--larger-font-size) / 16)rem;
-}
-
-/*--------------------------------------------------------------
 ## Media
 --------------------------------------------------------------*/
 .page-content .wp-smiley,

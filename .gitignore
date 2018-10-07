@@ -6,13 +6,10 @@
 !/dev/
 !/css/
 /css/*
-!/css/src/*.css
-!/css/src/*.scss
-!/css/src/*.sass
-!js/
+!/css/src/*
+!/js/
 /js/*
-!/js/src/*.js
-!/js/src/*.jsx
+!/js/src/*
 !/languages/
 !gulp/
 !style.css
