@@ -30,9 +30,8 @@ export default function watch() {
 	gulpWatch(paths.config.themeConfig, series(
 		themeConfigChangeAlert, php, parallel(scripts, jsMin, jsLibs), sassStyles, styles, images, reload)
 	);
-	gulpWatch(paths.config.cssVars, series(styles, reload));
 	gulpWatch(paths.styles.sass, series(sassStyles, reload));
-	gulpWatch(paths.styles.src, series(styles, reload));
+	gulpWatch([paths.styles.src, paths.config.cssVars], series(styles, reload));
 	gulpWatch(paths.scripts.src, series(scripts, reload));
 	gulpWatch(paths.scripts.min, series(jsMin, reload));
 	gulpWatch(paths.scripts.libs, series(jsLibs, reload));
