@@ -1,15 +1,13 @@
 # Ignore everything:
 /*
-
-# Whitelist what you want tracked:
 !/.github/
 !/dev/
 !/css/
 /css/*
-!/css/src/*
+!/css/src/
 !/js/
 /js/*
-!/js/src/*
+!/js/src/
 !/languages/
 !gulp/
 !style.css
