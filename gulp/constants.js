@@ -48,7 +48,7 @@ export const paths = {
 		src: [
 			`${rootPath}/css/src/**/*.css`
 		],
-		dest: [`${rootPath}/css/`, !`${rootPath}/css/src/**/*.*`],
+		dest: [`${rootPath}/css/`],
 		sass: `${rootPath}/**/*.scss`
 	},
 	scripts: {
