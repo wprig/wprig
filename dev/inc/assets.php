@@ -50,16 +50,30 @@ function wp_rig_scripts() {
 		)
 	);
 
-	// Enqueue skip-link-focus script.
-	wp_enqueue_script( 'wp-rig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), '20180514', false );
-	wp_script_add_data( 'wp-rig-skip-link-focus-fix', 'defer', true );
-
 	// Enqueue comment script on singular post/page views only.
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'wp_rig_scripts' );
+
+/**
+ * Fix skip link focus in IE11.
+ *
+ * This does not enqueue the script because it is tiny and because it is only for IE11,
+ * thus it does not warrant having an entire dedicated blocking script being loaded.
+ *
+ * @link https://git.io/vWdr2
+ */
+function wp_rig_fix_skip_link_focus() {
+	if ( wp_rig_is_amp() ) {
+		return; // See <https://github.com/ampproject/amphtml/issues/18671>.
+	}
+	echo '<script>';
+	echo file_get_contents( get_template_directory() . '/js/skip-link-focus-fix.js' );
+	echo '</script>';
+}
+add_action( 'wp_print_footer_scripts', 'wp_rig_fix_skip_link_focus' );
 
 /**
  * Enqueue WordPress theme styles within Gutenberg.
