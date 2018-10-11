@@ -22,7 +22,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 function initMainNavigation() {
 
 	// No point if no site nav.
-	if ( undefined === SITENAV ) {
+	if ( ! SITENAV ) {
 		return;
 	}
 
@@ -90,7 +90,7 @@ function initMainNavigation() {
 			const focusSelector = 'ul.toggle-show > li > a, ul.toggle-show > li > button';
 
 			if ( KEYMAP.TAB === event.keyCode ) {
-				if ( true === event.shiftKey ) {
+				if ( event.shiftKey ) {
 
 					// Means we're tabbing out of the beginning of the submenu.
 					if ( isfirstFocusableElement( this, document.activeElement, focusSelector ) ) {
@@ -118,7 +118,7 @@ function initMenuToggle() {
 	const MENUTOGGLE = SITENAV.querySelector( '.menu-toggle' );
 
 	// Return early if MENUTOGGLE is missing.
-	if ( undefined === MENUTOGGLE ) {
+	if ( ! MENUTOGGLE ) {
 		return;
 	}
 
