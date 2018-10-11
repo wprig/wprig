@@ -19,12 +19,15 @@ function wp_rig_styles() {
 	// Enqueue main stylesheet.
 	wp_enqueue_style( 'wp-rig-base-style', get_stylesheet_uri(), array(), '20180514' );
 
-	// Register component styles that are printed as needed.
-	wp_register_style( 'wp-rig-comments', get_theme_file_uri( '/css/comments.css' ), array(), '20180514' );
-	wp_register_style( 'wp-rig-content', get_theme_file_uri( '/css/content.css' ), array(), '20180514' );
-	wp_register_style( 'wp-rig-sidebar', get_theme_file_uri( '/css/sidebar.css' ), array(), '20180514' );
-	wp_register_style( 'wp-rig-widgets', get_theme_file_uri( '/css/widgets.css' ), array(), '20180514' );
-	wp_register_style( 'wp-rig-front-page', get_theme_file_uri( '/css/front-page.css' ), array(), '20180514' );
+	// Register all styles in the css dir.
+	$wp_rig_theme_css_dir = get_theme_file_path( '/css/' );
+
+	foreach ( glob( $wp_rig_theme_css_dir . '*.css' ) as $file_path ) {
+		$file_modified_time = filemtime( $file_path );
+		$file_name = str_replace( get_theme_file_path( '/css/' ), '', $file_path );
+		$file_slug = str_replace( '.css', '', $file_name );
+		wp_register_style( "wp-rig-$file_slug", get_theme_file_uri( "/css/$file_name" ), array(), $file_modified_time );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'wp_rig_styles' );
 
