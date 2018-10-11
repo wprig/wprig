@@ -7,20 +7,24 @@
  * @package wp_rig
  */
 
-get_header(); ?>
+get_header();
+
+/*
+ * Include the component stylesheet for the content.
+ * This call runs only once on index and archive pages.
+ * At some point, override functionality should be built in similar to the template part below.
+ * 
+ * Note: If this was already done it will be skipped.
+ */
+wp_print_styles( array( 'wp-rig-content' ) );
+
+?>
 
 	<main id="primary" class="site-main">
 
 		<?php
 		while ( have_posts() ) :
 			the_post();
-
-			/*
-			 * Include the component stylesheet for the content.
-			 * This call runs only once on index and archive pages.
-			 * At some point, override functionality should be built in similar to the template part below.
-			 */
-			wp_print_styles( array( 'wp-rig-content' ) ); // Note: If this was already done it will be skipped.
 
 			get_template_part( 'template-parts/content', 'page' );
 

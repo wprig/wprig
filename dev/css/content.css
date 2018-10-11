@@ -49,8 +49,7 @@
 
 .page-content > *,
 .entry-content > *,
-.entry-summary > *,
-.not-found > * {
+.entry-summary > * {
 	margin-right: auto;
 	margin-left: auto;
 	padding-right: 1.5rem;
@@ -60,7 +59,7 @@
 	/* stylelint-enable */
 }
 
-.page-title,
+.page-header,
 .entry-header,
 .entry-footer,
 .site-info,
@@ -80,7 +79,7 @@
 	.page-content > *,
 	.entry-content > *,
 	.entry-summary > *,
-	.page-title,
+	.page-header,
 	.entry-header,
 	.entry-footer,
 	.site-info,
