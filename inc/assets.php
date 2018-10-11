@@ -24,7 +24,7 @@ function wp_rig_styles() {
 
 	foreach ( glob( $wp_rig_theme_css_dir . '*.css' ) as $file_path ) {
 		$file_modified_time = filemtime( $file_path );
-		$file_name = str_replace( get_theme_file_path( '/css/' ), '', $file_path );
+		$file_name = str_replace( $wp_rig_theme_css_dir, '', $file_path );
 		$file_slug = str_replace( '.css', '', $file_name );
 		wp_register_style( "wp-rig-$file_slug", get_theme_file_uri( "/css/$file_name" ), array(), $file_modified_time );
 	}
