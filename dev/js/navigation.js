@@ -10,6 +10,12 @@ const SITENAV = document.querySelector( '.main-navigation' ),
 		TAB: 9
 	};
 
+// Initiate the menus when the DOM loads.
+document.addEventListener( 'DOMContentLoaded', function() {
+	initMainNavigation();
+	initMenuToggle();
+});
+
 /**
  * Initiate the main navigation script.
  */
@@ -105,8 +111,6 @@ function initMainNavigation() {
 
 }
 
-initMainNavigation();
-
 /**
  * Initiate the mobile menu toggle button.
  */
@@ -126,8 +130,6 @@ function initMenuToggle() {
 		this.setAttribute( 'aria-expanded', 'false' === this.getAttribute( 'aria-expanded' ) ? 'true' : 'false' );
 	}, false );
 }
-
-initMenuToggle();
 
 /**
  * Toggle submenus open and closed, and tell screen readers what's going on.
