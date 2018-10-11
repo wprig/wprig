@@ -69,6 +69,10 @@ function wp_rig_fix_skip_link_focus() {
 	if ( wp_rig_is_amp() ) {
 		return; // See <https://github.com/ampproject/amphtml/issues/18671>.
 	}
+	if ( ! file_exists( get_template_directory() . '/js/skip-link-focus-fix.js' ) ) {
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Unable to locate js/skip-link-focus-fix.js, perhaps due to not performing a build. If not desired, please unhook wp_rig_fix_skip_link_focus from the wp_print_footer_scripts.', '2.0' ) );
+		return;
+	}
 	echo '<script>';
 	echo file_get_contents( get_template_directory() . '/js/skip-link-focus-fix.js' );
 	echo '</script>';
