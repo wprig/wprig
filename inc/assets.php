@@ -20,13 +20,13 @@ function wp_rig_styles() {
 	wp_enqueue_style( 'wp-rig-base-style', get_stylesheet_uri(), array(), filemtime( get_stylesheet_directory() . '/style.css' ) );
 
 	// Register all styles in the css dir.
-	$wp_rig_theme_css_dir = get_theme_file_path( '/css/' );
+	$wp_rig_theme_css_dir = get_theme_file_path( '/assets/css/' );
 
 	foreach ( glob( $wp_rig_theme_css_dir . '*.css' ) as $file_path ) {
 		$file_modified_time = filemtime( $file_path );
 		$file_name = str_replace( $wp_rig_theme_css_dir, '', $file_path );
 		$file_slug = str_replace( '.css', '', $file_name );
-		wp_register_style( "wp-rig-$file_slug", get_theme_file_uri( "/css/$file_name" ), array(), $file_modified_time );
+		wp_register_style( "wp-rig-$file_slug", get_theme_file_uri( "/assets/css/$file_name" ), array(), $file_modified_time );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'wp_rig_styles' );
@@ -42,7 +42,7 @@ function wp_rig_scripts() {
 	}
 
 	// Enqueue the navigation script.
-	wp_enqueue_script( 'wp-rig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), filemtime( get_stylesheet_directory() . '/js/navigation.js' ), false );
+	wp_enqueue_script( 'wp-rig-navigation', get_theme_file_uri( '/assets/js/navigation.js' ), array(), filemtime( get_stylesheet_directory() . '/assets/js/navigation.js' ), false );
 	wp_script_add_data( 'wp-rig-navigation', 'async', true );
 	wp_localize_script(
 		'wp-rig-navigation',
@@ -54,7 +54,7 @@ function wp_rig_scripts() {
 	);
 
 	// Enqueue skip-link-focus script.
-	wp_enqueue_script( 'wp-rig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), filemtime( get_stylesheet_directory() . '/js/skip-link-focus-fix.js' ), false );
+	wp_enqueue_script( 'wp-rig-skip-link-focus-fix', get_theme_file_uri( '/assets/js/skip-link-focus-fix.js' ), array(), filemtime( get_stylesheet_directory() . '/assets/js/skip-link-focus-fix.js' ), false );
 	wp_script_add_data( 'wp-rig-skip-link-focus-fix', 'defer', true );
 
 	// Enqueue comment script on singular post/page views only.
@@ -76,7 +76,7 @@ function wp_rig_gutenberg_styles() {
 	}
 
 	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wp-rig-editor-styles', get_theme_file_uri( '/css/editor/editor-styles.css' ), array(), filemtime( get_stylesheet_directory() . '/css/editor/editor-styles.css' ) );
+	wp_enqueue_style( 'wp-rig-editor-styles', get_theme_file_uri( '/assets/css/editor/editor-styles.css' ), array(), filemtime( get_stylesheet_directory() . '/assets/css/editor/editor-styles.css' ) );
 }
 add_action( 'enqueue_block_editor_assets', 'wp_rig_gutenberg_styles' );
 

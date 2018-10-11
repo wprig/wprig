@@ -24,8 +24,12 @@ export const isProd = ( process.env.NODE_ENV === 'production' );
 // get a fresh copy of the config
 export const config = getThemeConfig(true);
 
+// directory for assets (CSS, JS, images)
+export const assetsDir = `${rootPath}/assets`;
+
 // Project paths
 export const paths = {
+	assetsDir: assetsDir,
     browserSync: {
 		dir: `${rootPath}/BrowserSync`,
 		cert: `${rootPath}/BrowserSync/wp-rig-browser-sync-cert.crt`,
@@ -45,17 +49,17 @@ export const paths = {
 		dest: `${rootPath}/`
 	},
 	styles: {
-		src: `${rootPath}/css/src/**/*.css`,
-		sass: `${rootPath}/css/src/**/*.scss`,
-		dest: `${rootPath}/css/`
+		src: `${assetsDir}/css/src/**/*.css`,
+		sass: `${assetsDir}/css/src/**/*.scss`,
+		dest: `${assetsDir}/css/`
 	},
 	scripts: {
-		src: `${rootPath}/js/src/**/*.js`,
-		dest: `${rootPath}/js/`
+		src: `${assetsDir}/js/src/**/*.js`,
+		dest: `${assetsDir}/js/`
 	},
 	images: {
-		src: `${rootPath}/images/**/*.{jpg,JPG,png,svg,gif,GIF}`,
-		dest: `${rootPath}/images/`
+		src: `${assetsDir}/images/**/*.{jpg,JPG,png,svg,gif,GIF}`,
+		dest: `${assetsDir}/images/`
 	},
 	languages: {
 		src: `${rootPath}/**/*.php`,
