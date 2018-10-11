@@ -202,10 +202,10 @@ add_filter( 'page_menu_link_attributes', 'wp_rig_add_nav_menu_aria_current', 10,
  * from being scanned for theme files
  *
  * @link https://developer.wordpress.org/reference/hooks/theme_scandir_exclusions/
- * @param array $exclusions
+ * @param array $exclusions the default directories to exclude.
  * @return array
  */
-function wp_rig_exclude_optional_templates( $exclusions ){
+function wp_rig_exclude_optional_templates( $exclusions ) {
 	return array_merge(
 		$exclusions,
 		array( 'optional' )
