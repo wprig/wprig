@@ -16,9 +16,6 @@ function wp_rig_styles() {
 		wp_enqueue_style( 'wp-rig-fonts', $fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 	}
 
-	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wp-rig-base-style', get_stylesheet_uri(), array(), filemtime( get_stylesheet_directory() . '/style.css' ) );
-
 	// Register all styles in the css dir.
 	$wp_rig_theme_css_dir = get_theme_file_path( '/assets/css/' );
 
