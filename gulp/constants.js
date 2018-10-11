@@ -45,42 +45,22 @@ export const paths = {
 		dest: `${rootPath}/`
 	},
 	styles: {
-		src: [
-			`${rootPath}/css/src/**/*.css`
-		],
-		dest: [`${rootPath}/css/`],
-		sass: `${rootPath}/**/*.scss`
+		src: `${rootPath}/css/src/**/*.css`,
+		sass: `${rootPath}/css/src/**/*.scss`,
+		dest: `${rootPath}/css/`
 	},
 	scripts: {
-		src: [
-			`${rootPath}/**/*.js`,
-			`!${rootPath}/**/*.min.js`,
-			`!${rootPath}/js/libs/**/*.js`,
-			`!${rootPath}/optional/**/*.*`,
-			`!${rootPath}/config/**/*`,
-		],
-		min: `${rootPath}/**/*.min.js`,
-		dest: `${rootPath}/`,
-		libs: `${rootPath}/js/libs/**/*.js`,
-		libsDest: `${rootPath}/js/libs/`,
-		verboseLibsDest: `${rootPath}/verbose/js/libs/`,
+		src: `${rootPath}/js/src/**/*.js`,
+		dest: `${rootPath}/js/`
 	},
 	images: {
-		src: [
-			`${rootPath}/**/*.{jpg,JPG,png,svg,,gif,GIF}`,
-			`!${rootPath}/optional/**/*.*`,
-		],
-		dest: `${rootPath}/`
+		src: `${rootPath}/images/**/*.{jpg,JPG,png,svg,gif,GIF}`,
+		dest: `${rootPath}/images/`
 	},
 	languages: {
-		src: [
-			`${rootPath}/**/*.php`,
-			`!${rootPath}/**/*.php`,
-			`!${rootPath}/verbose/**/*.php`,
-		],
+		src: `${rootPath}/**/*.php`,
 		dest: `${rootPath}/languages/${config.theme.slug}.pot`
 	},
-	verbose: `${rootPath}/verbose/`,
 	export: {
 		src: [
 			`${rootPath}/**/*`,
