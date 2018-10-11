@@ -17,7 +17,7 @@ function wp_rig_styles() {
 	}
 
 	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wp-rig-base-style', get_stylesheet_uri(), array(), '20180514' );
+	wp_enqueue_style( 'wp-rig-base-style', get_stylesheet_uri(), array(), filemtime( get_stylesheet_directory() . '/style.css' ) );
 
 	// Register all styles in the css dir.
 	$wp_rig_theme_css_dir = get_theme_file_path( '/css/' );
@@ -42,7 +42,7 @@ function wp_rig_scripts() {
 	}
 
 	// Enqueue the navigation script.
-	wp_enqueue_script( 'wp-rig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), '20180514', false );
+	wp_enqueue_script( 'wp-rig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), filemtime( get_stylesheet_directory() . '/js/navigation.js' ), false );
 	wp_script_add_data( 'wp-rig-navigation', 'async', true );
 	wp_localize_script(
 		'wp-rig-navigation',
@@ -54,7 +54,7 @@ function wp_rig_scripts() {
 	);
 
 	// Enqueue skip-link-focus script.
-	wp_enqueue_script( 'wp-rig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), '20180514', false );
+	wp_enqueue_script( 'wp-rig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), filemtime( get_stylesheet_directory() . '/js/skip-link-focus-fix.js' ), false );
 	wp_script_add_data( 'wp-rig-skip-link-focus-fix', 'defer', true );
 
 	// Enqueue comment script on singular post/page views only.
@@ -76,7 +76,7 @@ function wp_rig_gutenberg_styles() {
 	}
 
 	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wp-rig-base-style', get_theme_file_uri( '/css/editor-styles.css' ), array(), '20180514' );
+	wp_enqueue_style( 'wp-rig-editor-styles', get_theme_file_uri( '/css/editor/editor-styles.css' ), array(), filemtime( get_stylesheet_directory() . '/css/editor/editor-styles.css' ) );
 }
 add_action( 'enqueue_block_editor_assets', 'wp_rig_gutenberg_styles' );
 
