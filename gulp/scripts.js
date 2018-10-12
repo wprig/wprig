@@ -29,6 +29,9 @@ export default function scripts(done) {
 			!config.dev.debug.scripts,
 			gulpPlugins.uglify()
 		),
+		gulpPlugins.rename({
+			suffix: '.min'
+		}),
 	];
 
 	const afterReplacement = [

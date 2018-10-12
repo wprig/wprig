@@ -69,6 +69,9 @@ export default function styles(done) {
 			gulpPlugins.cssnano()
 		),
 		server.stream({match: "**/*.css"}),
+		gulpPlugins.rename({
+			suffix: '.min'
+		}),
 		dest(paths.styles.dest, {sourcemaps: true}),
 	];
 

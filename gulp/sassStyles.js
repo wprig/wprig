@@ -24,6 +24,9 @@ export default function sassStyles(done) {
             gulpPlugins.sass({outputStyle: 'compressed'}).on('error', gulpPlugins.sass.logError)
         ),
         gulpPlugins.tabify(2, true),
+        gulpPlugins.rename({
+			suffix: '.min'
+		}),
         dest(paths.styles.dest, {sourcemaps: true}),
     ], done);
 }

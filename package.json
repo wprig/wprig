@@ -45,6 +45,7 @@
     "gulp-phpcs": "^2.1.0",
     "gulp-postcss": "^7.0.1",
     "gulp-print": "^5.0.0",
+    "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.0",
     "gulp-sort": "^2.0.0",
     "gulp-string-replace": "^1.0.0",
@@ -81,7 +82,6 @@
   "scripts": {
     "install": "composer install",
     "build": "gulp",
-    "styles": "gulp styles",
     "translate": "gulp translate",
     "bundle": "NODE_ENV=production gulp bundleTheme",
     "test": "gulp testTheme",
