@@ -31,9 +31,9 @@ function wp_rig_get_css_files() {
 }
 
 /**
- * Register styles.
+ * Register and enqueue styles.
  */
-function wp_rig_register_styles() {
+function wp_rig_styles() {
 
 	// Add custom fonts, used in the main stylesheet.
 	$fonts_url = wp_rig_fonts_url();
@@ -73,7 +73,7 @@ function wp_rig_register_styles() {
 	}
 
 }
-add_action( 'wp_enqueue_scripts', 'wp_rig_register_styles' );
+add_action( 'wp_enqueue_scripts', 'wp_rig_styles' );
 
 /**
  * Enqueue scripts.
