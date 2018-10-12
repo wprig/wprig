@@ -98,9 +98,6 @@ function wp_rig_add_body_style() {
 
 	$preloads = array();
 
-	// Preload global.css.
-	$preloads['wp-rig-global'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-global' );
-
 	// Preload content.css.
 	$preloads['wp-rig-content'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-content' );
 

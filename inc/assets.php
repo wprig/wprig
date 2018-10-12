@@ -24,7 +24,7 @@ function wp_rig_get_css_files() {
 	/*
 	 * Filters default CSS files.
 	 *
-	 * @param array $wp_rig_css_filest array of CSS files
+	 * @param array $wp_rig_css_files array of CSS files
 	 * to register and enqueue with WordPress.
 	 */
 	return apply_filters( 'wp_rig_css_files', $wp_rig_css_files );
@@ -49,40 +49,31 @@ function wp_rig_register_styles() {
 
 	foreach ( $wp_rig_css_files as $wp_rig_css_file ) {
 		$file_modified_time = filemtime( $wp_rig_theme_css_dir . $wp_rig_css_file . '.min.css' );
-		wp_register_style(
-			'wp-rig-' . $wp_rig_css_file,
-			$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
-			array(),
-			$file_modified_time
-		);
+
+		/*
+		* Enqueue global styles and register
+		* the rest as they are called conditionally
+		* on an as-needed basis.
+		*/
+		if ( 'global' === $wp_rig_css_file ) {
+			wp_enqueue_style(
+				'wp-rig-' . $wp_rig_css_file,
+				$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
+				array(),
+				$file_modified_time
+			);
+		} else {
+			wp_register_style(
+				'wp-rig-' . $wp_rig_css_file,
+				$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
+				array(),
+				$file_modified_time
+			);
+		}
 	}
 
 }
 add_action( 'wp_enqueue_scripts', 'wp_rig_register_styles' );
-
-/**
- * Enqueue styles.
- *
- * @return void
- */
-function wp_rig_enqueue_styles() {
-	// Enqueue component styles that are printed as needed.
-	$wp_rig_theme_css_dir = get_theme_file_path( '/assets/css/' );
-	$wp_rig_theme_css_uri = get_theme_file_uri( '/assets/css/' );
-
-	$wp_rig_css_files = wp_rig_get_css_files();
-
-	foreach ( $wp_rig_css_files as $wp_rig_css_file ) {
-		$file_modified_time = filemtime( $wp_rig_theme_css_dir . $wp_rig_css_file . '.min.css' );
-		wp_enqueue_style(
-			'wp-rig-' . $wp_rig_css_file,
-			$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
-			array(),
-			$file_modified_time
-		);
-	}
-}
-add_action( 'get_footer', 'wp_rig_enqueue_styles' );
 
 /**
  * Enqueue scripts.
