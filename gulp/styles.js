@@ -68,10 +68,10 @@ export default function styles(done) {
 			!config.dev.debug.styles,
 			gulpPlugins.cssnano()
 		),
-		server.stream({match: "**/*.css"}),
 		gulpPlugins.rename({
 			suffix: '.min'
 		}),
+		server.stream({match: "**/*.css"}),
 		dest(paths.styles.dest, {sourcemaps: true}),
 	];
 
