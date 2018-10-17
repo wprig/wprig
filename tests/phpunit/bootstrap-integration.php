@@ -16,7 +16,7 @@ if ( false !== getenv( 'WP_TESTS_DIR' ) ) {
 } elseif ( file_exists( '/tmp/wordpress-tests-lib/includes/bootstrap.php' ) ) {
 	$test_root = '/tmp/wordpress-tests-lib';
 } else {
-	$test_root = '../../../../../../../tests/phpunit';
+	$test_root = '../../../../../../tests/phpunit';
 }
 
 // WordPress only includes its PHPUnit 6 compatibility file since version 4.7.
