@@ -31,7 +31,10 @@
 	<arg name="extensions" value="php,css,scss/css"/>
 
 	<!-- Check all files in this directory and the directories below it. -->
-	<file>./dev/</file>
+	<file>.</file>
+
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
 
 	<rule ref="WordPress"/>
 	<rule ref="WordPress-Core" />
@@ -85,9 +88,6 @@
 	<!-- Include sniffs for PHP cross-version compatibility. -->
 	<config name="testVersion" value="7.0-99.0"/>
 	<rule ref="PHPCompatibility"/>
-
-	<exclude-pattern>*/node_modules/*</exclude-pattern>
-	<exclude-pattern>*/vendor/*</exclude-pattern>
 
 	<!--
 	#############################################################################
