@@ -29,7 +29,7 @@ export default function watch() {
 		themeConfigChangeAlert, php, scripts, sassStyles, styles, images, reload
 	));
 	gulpWatch(paths.styles.sass, series(sassStyles, reload));
-	gulpWatch([paths.styles.src, paths.config.cssVars], styles);
+	gulpWatch([paths.styles.src, paths.config.cssVars], series( styles ) );
 	gulpWatch(paths.scripts.src, series(scripts, reload));
 	gulpWatch(paths.images.src, series(images, reload));
 }
