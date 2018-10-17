@@ -1,7 +1,6 @@
 # Ignore everything:
 /*
 !/.github/
-!/dev/
 !/assets/
 /assets/*
 !/assets/css/
