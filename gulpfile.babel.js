@@ -136,7 +136,7 @@ export function php() {
 		standard: 'WordPress',
 		warningSeverity: 0
 	}))
-	// Log all problems that was found
+	// Log all problems that were found.
 	.pipe(phpcs.reporter('log'))
 	.pipe(replace('wprig', config.theme.slug))
 	.pipe(replace('WP Rig', config.theme.name))
