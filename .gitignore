@@ -9,6 +9,9 @@
 !/assets/js/
 /assets/js/*
 !/assets/js/src/
+!/assets/images/
+/assets/images/*
+!/assets/images/src/
 !/languages/
 !gulp/
 !style.css

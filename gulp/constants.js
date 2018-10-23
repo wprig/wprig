@@ -58,7 +58,7 @@ export const paths = {
 		dest: `${assetsDir}/js/`
 	},
 	images: {
-		src: `${assetsDir}/images/**/*.{jpg,JPG,png,svg,gif,GIF}`,
+		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
 		dest: `${assetsDir}/images/`
 	},
 	languages: {

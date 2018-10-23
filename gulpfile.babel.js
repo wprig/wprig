@@ -19,7 +19,7 @@ import watch from './gulp/watch';
 /**
  * Map out the sequence of events on first load and make it the default task
  */
-export const firstRun = series( parallel(php, sassStyles, styles, scripts), serve, watch);
+export const firstRun = series( parallel(php, images, sassStyles, styles, scripts), serve, watch);
 
 export default firstRun;
 
