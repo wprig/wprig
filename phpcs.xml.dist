@@ -8,7 +8,6 @@
 	<!-- Set a description for this ruleset. -->
 	<description>A custom set of code standard rules to check for WordPress themes.</description>
 
-
 	<!--
 	#############################################################################
 	COMMAND LINE ARGUMENTS
@@ -33,10 +32,7 @@
 	<!-- Check all files in this directory and the directories below it. -->
 	<file>./dev/</file>
 
-	<rule ref="WordPress"/>
-	<rule ref="WordPress-Core" />
-	<rule ref="WordPress-Docs" />
-	<rule ref="WordPress-Extra" />
+	<rule ref="WPThemeReview"/>
 
 	<!--
 	#############################################################################
@@ -79,7 +75,6 @@
 
 	<!-- Include sniffs for PHP cross-version compatibility. -->
 	<config name="testVersion" value="5.2-99.0"/>
-	<rule ref="PHPCompatibility"/>
 
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
@@ -112,13 +107,6 @@
 		<exclude name="PHPCompatibility.PHP.NewFunctions.array_replace_recursiveFound"/>
 
 		<exclude name="PHPCompatibility.PHP.NewInterfaces.jsonserializableFound"/>
-	</rule>
-
-	<!-- Whitelist the WP Core mysql_to_rfc3339() function. -->
-	<rule ref="PHPCompatibility.PHP.RemovedExtensions">
-		<properties>
-			<property name="functionWhitelist" type="array" value="mysql_to_rfc3339"/>
-		</properties>
 	</rule>
 
 </ruleset>
