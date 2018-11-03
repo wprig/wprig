@@ -3,6 +3,7 @@
 
 // External dependencies
 export const gulpPlugins = require('gulp-load-plugins')();
+import path from 'path';
 
 // Internal dependencies
 import {getThemeConfig} from './utils';
@@ -24,8 +25,14 @@ export const isProd = ( process.env.NODE_ENV === 'production' );
 // get a fresh copy of the config
 export const config = getThemeConfig(true);
 
+// directory for the production theme
+export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}-prod`);
+
 // directory for assets (CSS, JS, images)
 export const assetsDir = `${rootPath}/assets`;
+
+// directory for assets (CSS, JS, images) in production
+export const prodAssetsDir = `${prodThemePath}/assets`;
 
 // Project paths
 export const paths = {
@@ -45,21 +52,22 @@ export const paths = {
 			`${rootPath}/**/*.php`,
 			`!${rootPath}/optional/**/*.*`,
 			`!${rootPath}/tests/**/*.*`,
+			`!${rootPath}/vendor/**/*.*`,
 		],
-		dest: `${rootPath}/`
+		dest: (isProd) ? `${prodThemePath}/` : `${rootPath}/`
 	},
 	styles: {
 		src: `${assetsDir}/css/src/**/*.css`,
 		sass: `${assetsDir}/css/src/**/*.scss`,
-		dest: `${assetsDir}/css/`
+		dest: (isProd) ? `${prodAssetsDir}/css/` : `${assetsDir}/css/`
 	},
 	scripts: {
 		src: `${assetsDir}/js/src/**/*.js`,
-		dest: `${assetsDir}/js/`
+		dest: (isProd) ? `${prodAssetsDir}/js/` : `${assetsDir}/js/`
 	},
 	images: {
 		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
-		dest: `${assetsDir}/images/`
+		dest: (isProd) ? `${prodAssetsDir}/images/` : `${assetsDir}/images/`
 	},
 	languages: {
 		src: `${rootPath}/**/*.php`,

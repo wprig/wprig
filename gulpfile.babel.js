@@ -15,6 +15,7 @@ import scripts from './gulp/scripts';
 import styles from './gulp/styles';
 import translate from './gulp/translate';
 import watch from './gulp/watch';
+import prodPrep from './gulp/prodPrep';
 
 /**
  * Map out the sequence of events on first load and make it the default task
@@ -24,9 +25,14 @@ export const firstRun = series( parallel(php, images, sassStyles, styles, script
 export default firstRun;
 
 /**
+ * Build theme for development without BrowserSync or watching
+ */
+export const buildDev = parallel(php, images, sassStyles, styles, scripts);
+
+/**
  * Export theme for distribution.
  */
-export const bundleTheme = series(php, scripts, styles, images, translate, bundle);
+export const bundleTheme = series(prodPrep, parallel(php, scripts, styles, sassStyles, images));
 
 /**
  * Export all imported functions as tasks

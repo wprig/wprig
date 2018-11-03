@@ -4,19 +4,28 @@
 // External dependencies
 import {src, dest} from 'gulp';
 import pump from 'pump';
+import log from 'fancy-log';
+import colors from 'ansi-colors';
 
 // Internal dependencies
-import {paths, gulpPlugins} from './constants';
-import {getThemeConfig} from './utils';
+import {paths, gulpPlugins, isProd} from './constants';
+import {getThemeConfig, getStringReplacementTasks} from './utils';
 
 /**
  * Create zip archive from generated theme files.
  */
 export default function bundle(done) {
+
+    if( ! isProd ){
+        log(colors.red(`${colors.bold('Error:')} the bundle task may only be called from the production environment. Set NODE_ENV to production and try again.`));
+        done();
+        return;
+    }
+
     // get a fresh copy of the config
     const config = getThemeConfig(true);
 
-	return pump([
+    let beforeReplacement = [
         src(paths.export.src),
         gulpPlugins.if(
             config.export.compress, 
@@ -27,5 +36,18 @@ export default function bundle(done) {
             config.export.compress, 
             dest(paths.export.dest)
         ),
-    ], done);
+    ];
+
+    let afterReplacement = [
+
+    ];
+
+    return pump(
+		[].concat(
+			beforeReplacement,
+			getStringReplacementTasks(),
+			afterReplacement
+		),
+		done
+    );
 }

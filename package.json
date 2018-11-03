@@ -54,6 +54,7 @@
     "gulp-uglify": "^3.0.0",
     "gulp-wp-pot": "^2.2.0",
     "gulp-zip": "^4.1.0",
+    "mkdirp": "^0.5.1",
     "postcss-partial-import": "^4.1.0",
     "postcss-preset-env": "^5.1.0",
     "pump": "^3.0.0",
@@ -81,7 +82,8 @@
   },
   "scripts": {
     "install": "composer install",
-    "build": "gulp",
+    "build": "gulp buildDev",
+    "dev": "gulp",
     "translate": "gulp translate",
     "bundle": "NODE_ENV=production gulp bundleTheme",
     "test": "gulp testTheme",
