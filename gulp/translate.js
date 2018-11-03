@@ -20,10 +20,10 @@ export default function translate(done) {
         src(paths.languages.src),
         gulpPlugins.sort(),
         gulpPlugins.wpPot({
-            domain: (isProd) ? nameFieldDefaults.slug : config.theme.slug,
-            package: (isProd) ? nameFieldDefaults.name : config.theme.name,
-            bugReport: (isProd) ? nameFieldDefaults.name : config.theme.name,
-            lastTranslator: (isProd) ? nameFieldDefaults.author : config.theme.author
+            domain: (isProd) ? config.theme.slug : nameFieldDefaults.slug,
+            package: (isProd) ? config.theme.name : nameFieldDefaults.name,
+            bugReport: (isProd) ? config.theme.name : nameFieldDefaults.name,
+            lastTranslator: (isProd) ? config.theme.author : nameFieldDefaults.author
         }),
         dest(paths.languages.dest),
     ], done);
