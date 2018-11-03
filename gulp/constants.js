@@ -26,13 +26,24 @@ export const isProd = ( process.env.NODE_ENV === 'production' );
 export const config = getThemeConfig(true);
 
 // directory for the production theme
-export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}-prod`);
+export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}`);
 
 // directory for assets (CSS, JS, images)
 export const assetsDir = `${rootPath}/assets`;
 
 // directory for assets (CSS, JS, images) in production
 export const prodAssetsDir = `${prodThemePath}/assets`;
+
+// Theme config name fields and their defaults
+export const nameFieldDefaults = {
+	slug          : 'wp-rig',
+	name          : 'WP Rig',
+	underscoreCase: 'wp_rig',
+	constant      : 'WP_RIG',
+	camelCase     : 'WpRig',
+	camelCaseVar  : 'wpRig',
+	author        : 'Morten Rand-Hendriksen',
+};
 
 // Project paths
 export const paths = {
@@ -70,37 +81,22 @@ export const paths = {
 		dest: (isProd) ? `${prodAssetsDir}/images/` : `${assetsDir}/images/`
 	},
 	languages: {
-		src: `${rootPath}/**/*.php`,
-		dest: `${rootPath}/languages/${config.theme.slug}.pot`
+		src: (isProd) ? `${prodThemePath}/**/*.php` : [
+			`${rootPath}/**/*.php`,
+			`!${rootPath}/optional/**/*.*`,
+			`!${rootPath}/tests/**/*.*`,
+			`!${rootPath}/vendor/**/*.*`,
+		],
+		dest: (isProd) ? `${prodThemePath}/languages/${config.theme.slug}.pot` : `${rootPath}/languages/${nameFieldDefaults.slug}.pot`
 	},
 	export: {
 		src: [
-			`${rootPath}/**/*`,
-			`!${rootPath}/${config.theme.slug}`,
-			`!${rootPath}/${config.theme.slug}/**/*`,
-			`!${rootPath}/**/*`,
-			`!${rootPath}/node_modules`,
-			`!${rootPath}/node_modules/**/*`,
-			`!${rootPath}/vendor`,
-			`!${rootPath}/vendor/**/*`,
-			`!${rootPath}/.*`,
-			`!${rootPath}/composer.*`,
-			`!${rootPath}/gulpfile.*`,
-			`!${rootPath}/gulp/**/*`,
-			`!${rootPath}/package*.*`,
-			`!${rootPath}/phpcs.*`,
-			`!${rootPath}/*.zip`,
+			`${rootPath}/style.css`,
+			`${rootPath}/readme.txt`,
+			`${rootPath}/screenshot.png`,
+			`${rootPath}/LICENSE`,
+			`${rootPath}/pluggable/`,
 		],
-		dest: `${rootPath}/`
+		dest: `${prodThemePath}/`
 	}
-};
-
-// Theme config name fields and their defaults
-export const nameFieldDefaults = {
-	slug          : 'wp-rig',
-	name          : 'WP Rig',
-	underscoreCase: 'wp_rig',
-	constant      : 'WP_RIG',
-	camelCase     : 'WpRig',
-	camelCaseVar  : 'wpRig',
 };
