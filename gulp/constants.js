@@ -46,14 +46,14 @@ export const nameFieldDefaults = {
 };
 
 // Project paths
-export const paths = {
+let paths = {
 	assetsDir: assetsDir,
-    browserSync: {
+	browserSync: {
 		dir: `${rootPath}/BrowserSync`,
 		cert: `${rootPath}/BrowserSync/wp-rig-browser-sync-cert.crt`,
 		caCert: `${rootPath}/BrowserSync/wp-rig-browser-sync-root-cert.crt`,
 		key: `${rootPath}/BrowserSync/wp-rig-browser-sync-key.key`
-    },
+	},
 	config: {
 		cssVars: `${rootPath}/config/cssVariables.json`,
 		themeConfig: `${rootPath}/config/themeConfig.js`
@@ -65,29 +65,29 @@ export const paths = {
 			`!${rootPath}/tests/**/*.*`,
 			`!${rootPath}/vendor/**/*.*`,
 		],
-		dest: (isProd) ? `${prodThemePath}/` : `${rootPath}/`
+		dest: `${rootPath}/`
 	},
 	styles: {
 		src: `${assetsDir}/css/src/**/*.css`,
 		sass: `${assetsDir}/css/src/**/*.scss`,
-		dest: (isProd) ? `${prodAssetsDir}/css/` : `${assetsDir}/css/`
+		dest: `${assetsDir}/css/`
 	},
 	scripts: {
 		src: `${assetsDir}/js/src/**/*.js`,
-		dest: (isProd) ? `${prodAssetsDir}/js/` : `${assetsDir}/js/`
+		dest: `${assetsDir}/js/`
 	},
 	images: {
 		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
-		dest: (isProd) ? `${prodAssetsDir}/images/` : `${assetsDir}/images/`
+		dest: `${assetsDir}/images/`
 	},
 	languages: {
-		src: (isProd) ? `${prodThemePath}/**/*.php` : [
+		src: [
 			`${rootPath}/**/*.php`,
 			`!${rootPath}/optional/**/*.*`,
 			`!${rootPath}/tests/**/*.*`,
 			`!${rootPath}/vendor/**/*.*`,
 		],
-		dest: (isProd) ? `${prodThemePath}/languages/${config.theme.slug}.pot` : `${rootPath}/languages/${nameFieldDefaults.slug}.pot`
+		dest: `${rootPath}/languages/${nameFieldDefaults.slug}.pot`
 	},
 	export: {
 		src: [
@@ -100,3 +100,17 @@ export const paths = {
 		dest: `${prodThemePath}/`
 	}
 };
+
+// Override paths for production
+if( isProd ){
+	paths.php.dest = `${prodThemePath}/`;
+	paths.styles.dest = `${prodAssetsDir}/css/`;
+	paths.scripts.dest = `${prodAssetsDir}/js/`;
+	paths.images.dest = `${prodAssetsDir}/images/`;
+	paths.languages = {
+		src: `${prodThemePath}/**/*.php`,
+		dest: `${prodThemePath}/languages/${config.theme.slug}.pot`
+	};
+}
+
+export {paths};
