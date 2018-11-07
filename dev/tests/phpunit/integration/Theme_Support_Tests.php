@@ -56,6 +56,9 @@ class Theme_Support_Tests extends Integration_Test_Case {
 				'custom-logo',
 			],
 			[
+				'wp-block-styles',
+			],
+			[
 				'align-wide',
 			],
 			[
