@@ -149,7 +149,23 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 # Changelog
 
 ## 2.0
+TODO.
+
+## 1.1.0
+- Fix theme slug replacement process and use `wp-rig` instead of `wprig` throughout the codebase. See [#93](https://github.com/wprig/wprig/pull/93). Props @felixarntz.
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme.
+- Add support for SSL certificates. See [#92](https://github.com/wprig/wprig/pull/92). Props @ataylorme.
+- Watch for theme config changes and rebuild more efficiently. See [#123](https://github.com/wprig/wprig/pull/123). Props @ataylorme.
+- Respect PHP 7.0 and WordPress 4.5 version requirements, use `functions.php` as plain 5.2-compatible entry file. See [#59](https://github.com/wprig/wprig/pull/59). Props @ataylorme, @felixarntz.
+- Add unit and integration tests infrastructure. See [#114](https://github.com/wprig/wprig/pull/114). Props @felixarntz.
+- Add gif extension to processed image paths. See [#117](https://github.com/wprig/wprig/pull/117). Props @ataylorme.
+- Add `stylelint`. See [#56](https://github.com/wprig/wprig/pull/56). Props @ataylorme.
+- Remove rem fallback. See [#127](https://github.com/wprig/wprig/pull/127). Props @benoitchantre.
+
+## 1.0.5
+- Do not initialize menus until DOM is loaded. See [#140](https://github.com/wprig/wprig/pull/140). Props @bamadesigner.
+- Fix PHPCodeSniffer issues and violations. Props @mor10, @felixarntz.
+- Fix incorrect grammar in comment. See [#151](https://github.com/wprig/wprig/pull/151). Props @ecotechie.
 
 ## 1.0.4
 - Update CSS (front and editor styles) to meet current Gutenberg recommendations as of October 1, 2018. Props mor10.

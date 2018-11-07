@@ -256,6 +256,15 @@
 	border: 1px solid hsl(0, 0%, 80%);
 }
 
+/* stylelint-disable */
+ul.wp-block-latest-posts.alignwide,
+ul.wp-block-latest-posts.alignfull,
+ul.wp-block-latest-posts.is-grid.alignwide,
+ul.wp-block-latest-posts.is-grid.alignwide {
+	padding: 0 1.5em;
+}
+/* stylelint-enable */
+
 /*--------------------------------------------------------------
 ## Custom block colors.
 --------------------------------------------------------------*/
