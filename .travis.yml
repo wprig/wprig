@@ -52,30 +52,10 @@ before_install:
 before_script:
   # Speed up build time by disabling Xdebug.
   - phpenv config-rm xdebug.ini || echo 'No xdebug config.'
-  # Set up temporary paths.
-  - export PHPCS_DIR=/tmp/phpcs
-  - export WPCS_DIR=/tmp/wpcs
-  - export PHPCOMPAT_DIR=/tmp/phpcompatibility
-  # Install CodeSniffer for WordPress Coding Standards checks.
+  # Install CodeSniffer and rulesets.
   - |
     if [[ "$SNIFF" == "1" ]]; then
-      git clone -b master --depth 1 https://github.com/squizlabs/PHP_CodeSniffer.git $PHPCS_DIR;
-    fi
-  # Install WordPress Coding Standards.
-  - |
-    if [[ "$SNIFF" == "1" ]]; then
-      git clone -b 0.14.1 --depth 1 https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git $WPCS_DIR;
-    fi
-  # Install PHP Compatibility sniffs.
-  - |
-    if [[ "$SNIFF" == "1" ]]; then
-      git clone -b master --depth 1 https://github.com/wimg/PHPCompatibility.git $PHPCOMPAT_DIR;
-    fi
-  # Set install path for PHPCS sniffs.
-  # @link https://github.com/squizlabs/PHP_CodeSniffer/blob/4237c2fc98cc838730b76ee9cee316f99286a2a7/CodeSniffer.php#L1941
-  - |
-    if [[ "$SNIFF" == "1" ]]; then
-      $PHPCS_DIR/bin/phpcs --config-set installed_paths $WPCS_DIR,$PHPCOMPAT_DIR;
+      composer install;
     fi
   # After CodeSniffer install you should refresh your path.
   - |
@@ -106,7 +86,7 @@ script:
   # picked up by PHPCS as it's named `phpcs.xml(.dist)`.
   - |
     if [[ "$SNIFF" == "1" ]]; then
-      $PHPCS_DIR/bin/phpcs --runtime-set ignore_warnings_on_exit 1;
+      vendor/bin/phpcs --runtime-set ignore_warnings_on_exit 1;
     fi
 
 # Receive notifications for build results.

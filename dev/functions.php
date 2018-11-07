@@ -286,7 +286,7 @@ add_filter( 'wp_resource_hints', 'wprig_resource_hints', 10, 2 );
  */
 function wprig_gutenberg_styles() {
 	// Add custom fonts, used in the main stylesheet.
-	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null );
+	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 
 	// Enqueue main stylesheet.
 	wp_enqueue_style( 'wprig-base-style', get_theme_file_uri( '/css/editor-styles.css' ), array(), '20180514' );
@@ -316,7 +316,7 @@ add_action( 'widgets_init', 'wprig_widgets_init' );
  */
 function wprig_styles() {
 	// Add custom fonts, used in the main stylesheet.
-	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null );
+	wp_enqueue_style( 'wprig-fonts', wprig_fonts_url(), array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 
 	// Enqueue main stylesheet.
 	wp_enqueue_style( 'wprig-base-style', get_stylesheet_uri(), array(), '20180514' );
