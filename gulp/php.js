@@ -30,18 +30,23 @@ export default function php(done) {
 		dest( paths.php.dest )
 	];
 
-	return pump(
-		[].concat(
-			beforeReplacement,
-			// Only do string replacements when building for production
-			gulpPlugins.if(
-				isProd,
+	if( isProd ) {
+
+		// Only do string replacements and save PHP files when building for production
+		return pump(
+			[].concat(
+				beforeReplacement,
 				getStringReplacementTasks(),
-				[]
+				afterReplacement
 			),
-			afterReplacement
-		),
-		done
-	);
+			done
+		);
+
+	} else {
+
+		// Only run code sniffing in dev, don't save PHP files
+		return pump( beforeReplacement, done );
+
+	}
 
 }
