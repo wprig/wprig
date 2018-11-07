@@ -17,22 +17,22 @@
 function wp_rig_get_insufficient_requirements_message() {
 	global $wp_version;
 
-	$insufficient_wp  = version_compare( $wp_version, WPRIG_MINIMUM_WP_VERSION, '<' );
-	$insufficient_php = version_compare( phpversion(), WPRIG_MINIMUM_PHP_VERSION, '<' );
+	$insufficient_wp  = version_compare( $wp_version, WP_RIG_MINIMUM_WP_VERSION, '<' );
+	$insufficient_php = version_compare( phpversion(), WP_RIG_MINIMUM_PHP_VERSION, '<' );
 
 	if ( $insufficient_wp && $insufficient_php ) {
 		/* translators: 1: required WP version number, 2: required PHP version number, 3: available WP version number, 4: available PHP version number */
-		return sprintf( __( 'WP Rig requires at least WordPress version %1$s and PHP version %2$s. You are running versions %3$s and %3$s respectively. Please update and try again.', 'wp-rig' ), WPRIG_MINIMUM_WP_VERSION, WPRIG_MINIMUM_PHP_VERSION, $wp_version, phpversion() );
+		return sprintf( __( 'WP Rig requires at least WordPress version %1$s and PHP version %2$s. You are running versions %3$s and %3$s respectively. Please update and try again.', 'wp-rig' ), WP_RIG_MINIMUM_WP_VERSION, WP_RIG_MINIMUM_PHP_VERSION, $wp_version, phpversion() );
 	}
 
 	if ( $insufficient_wp ) {
 		/* translators: 1: required WP version number, 2: available WP version number */
-		return sprintf( __( 'WP Rig requires at least WordPress version %1$s. You are running version %2$s. Please update and try again.', 'wp-rig' ), WPRIG_MINIMUM_WP_VERSION, $wp_version );
+		return sprintf( __( 'WP Rig requires at least WordPress version %1$s. You are running version %2$s. Please update and try again.', 'wp-rig' ), WP_RIG_MINIMUM_WP_VERSION, $wp_version );
 	}
 
 	if ( $insufficient_php ) {
 		/* translators: 1: required PHP version number, 2: available PHP version number */
-		return sprintf( __( 'WP Rig requires at least PHP version %1$s. You are running version %2$s. Please update and try again.', 'wp-rig' ), WPRIG_MINIMUM_PHP_VERSION, phpversion() );
+		return sprintf( __( 'WP Rig requires at least PHP version %1$s. You are running version %2$s. Please update and try again.', 'wp-rig' ), WP_RIG_MINIMUM_PHP_VERSION, phpversion() );
 	}
 
 	return '';
