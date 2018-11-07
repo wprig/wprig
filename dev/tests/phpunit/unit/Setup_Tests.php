@@ -67,6 +67,7 @@ class Setup_Tests extends Unit_Test_Case {
 				'custom-background',
 				'customize-selective-refresh-widgets',
 				'custom-logo',
+				'wp-block-styles',
 				'align-wide',
 				'editor-color-palette',
 				'editor-font-sizes',
