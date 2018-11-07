@@ -55,6 +55,25 @@ body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image h2 {
 	padding-left: 1.5em;
 }
 
+body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image-text,
+body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image h2 {
+	color: #fff;
+	font-size: 2em;
+	line-height: 1.25;
+}
+
+.editor-block-list__block ol.wp-block-latest-comments,
+.editor-block-list__block ul.wp-block-latest-posts {
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
+	border: 1px solid hsl(0, 0%, 80%);
+}
+
+.editor-block-list__block ol.wp-block-latest-comments {
+	padding-right: 1.5em;
+	padding-left: 1.5em;
+}
+
 /* Visualize editor color palette (defined in functions.php). */
 
 .has-dusty-orange-color,

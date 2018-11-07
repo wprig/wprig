@@ -33,7 +33,7 @@ export default function styles(done) {
 			standard: 'WordPress',
 			warningSeverity: 0
 		}),
-		// Log any problems found
+		// Log all problems that were found.
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
 			postcssPresetEnv({

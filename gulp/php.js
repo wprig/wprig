@@ -22,8 +22,8 @@ export default function php(done) {
 			standard: 'WordPress',
 			warningSeverity: 0
 		}),
-		// Log all problems that were found
-		gulpPlugins.phpcs.reporter('log')
+		// Log all problems that were found.
+		gulpPlugins.phpcs.reporter('log'),
 	];
 
 	const afterReplacement = [
