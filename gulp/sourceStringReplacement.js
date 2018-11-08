@@ -24,6 +24,7 @@ export function sourceStringReplacementPHP(done) {
 	);
 
 }
+
 /**
  * Replace WP Rig strings in all source CSS files.
  */
@@ -34,12 +35,13 @@ export function sourceStringReplacementCSS(done) {
 			// CSS and Sass source files
 			[src([paths.styles.src, paths.styles.sass])],
 			getStringReplacementTasks(),
-			[dest(paths.styles.dest)]
+			[dest(`${paths.assetsDir}/css/src/`)]
 		),
 		done
 	);
 
 }
+
 /**
  * Replace WP Rig strings in all source JS files.
  */
@@ -49,7 +51,7 @@ export function sourceStringReplacementJS(done) {
 		[].concat(
 			[src(paths.scripts.src)],
 			getStringReplacementTasks(),
-			[dest(paths.scripts.dest)]
+			[dest(`${paths.assetsDir}/js/src/`)]
 		),
 		done
 	);
