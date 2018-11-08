@@ -43,7 +43,7 @@ export function sourceStringReplacementCSS(done) {
 /**
  * Replace WP Rig strings in all source JS files.
  */
-export function sourceStringReplacementCSS(done) {
+export function sourceStringReplacementJS(done) {
 
 	return pump(
 		[].concat(
