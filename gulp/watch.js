@@ -2,12 +2,13 @@
 'use strict';
 
 // External dependencies
-import {watch as gulpWatch, series} from 'gulp';
+import {watch as gulpWatch, series, src} from 'gulp';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
+import pump from 'pump';
 
 // Internal dependencies
-import {paths} from './constants';
+import {paths, gulpPlugins, rootPath} from './constants';
 import {reload} from './browserSync';
 import images from './images';
 import php from './php';
@@ -24,7 +25,20 @@ export function themeConfigChangeAlert(done){
  * Watch everything
  */
 export default function watch() {
-	gulpWatch(paths.php.src, series(php, reload));
+	const PHPwatcher = gulpWatch(paths.php.src, reload);
+	PHPwatcher.on('change', function(path) {
+		return pump([
+			src(path),
+			// Run code sniffing
+			gulpPlugins.phpcs({
+				bin: `${rootPath}/vendor/bin/phpcs`,
+				standard: 'WordPress',
+				warningSeverity: 0
+			}),
+			// Log all problems that were found.
+			gulpPlugins.phpcs.reporter('log'),
+		]);
+	});
 	gulpWatch(paths.config.themeConfig, series(
 		themeConfigChangeAlert, php, scripts, sassStyles, styles, images, reload
 	));
