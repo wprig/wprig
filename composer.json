@@ -2,7 +2,7 @@
   "name": "wprig/wprig",
   "description": "A progressive theme development rig for WordPress.",
   "type": "wordpress-theme",
-  "license": "GPL-2.0-only",
+  "license": "GPL-2.0-or-later",
   "require-dev": {
     "wptrt/wpthemereview": "^0.1.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0"

@@ -73,8 +73,6 @@
 		</properties>
 	</rule>
 
-	<!-- Include sniffs for PHP cross-version compatibility. -->
-	<config name="testVersion" value="5.2-99.0"/>
 
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
@@ -86,7 +84,8 @@
 	-->
 
 
-	<config name="testVersion" value="5.2-99.0"/>
+	<!-- Include sniffs for PHP cross-version compatibility. -->
+	<config name="testVersion" value="7.0-"/>
 	<rule ref="PHPCompatibility">
 		<!-- Whitelist PHP native classes, interfaces, functions and constants which
 			 are back-filled by WP.
