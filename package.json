@@ -86,6 +86,7 @@
     "dev": "gulp",
     "translate": "gulp translate",
     "bundle": "NODE_ENV=production gulp bundleTheme",
-    "generateCert": "gulp generateCert"
+    "generateCert": "gulp generateCert",
+    "devStringReplace": "gulp sourceStringReplacement"
   }
 }
