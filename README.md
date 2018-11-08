@@ -81,6 +81,9 @@ Details on how to enable PHPCS in VS Code can be found in the [WP Rig Wiki](http
 ### `translate` process
 `npm run translate` generates a `.pot` file for the theme to enable translation. The translation file will be stored in `./languages/`.
 
+### `string replacement` process
+`npm run devStringReplace` will replace all instances of the WP Rig naming in PHP, CSS and JS files in the development theme with the name specified in `./config/themeConfig.js`. This is optional if you do not wish to have WP Rig naming in the development theme.
+
 ### `production bundle` process
 `npm run bundle` generates a production ready theme as a new theme directory and, optionally, a `.zip` archive. This builds all source files, optimizes the built files for production, does a string replacement and runs translations. Non-essential files from the `wp-rig` development theme are not copied to the production theme.
 To bundle the theme without creating a zip archive, change the `export:compress` setting in `./config/themeConfig.js`:
