@@ -10,7 +10,13 @@ import mkdirp from 'mkdirp';
 import fs from 'fs';
 
 // Internal dependencies
-import {rootPath, gulpPlugins, gulpReplaceOptions, nameFieldDefaults, prodThemePath} from './constants';
+import {
+	gulpPlugins,
+	gulpReplaceOptions,
+	nameFieldDefaults,
+	prodThemePath,
+	paths
+} from './constants';
 
 /**
  * Get theme configuration.
@@ -19,12 +25,12 @@ import {rootPath, gulpPlugins, gulpReplaceOptions, nameFieldDefaults, prodThemeP
  * @return {object} Theme configuration data.
  */
 export function getThemeConfig( uncached=false ) {
-    let config;
+	let config;
 
 	if ( uncached ) {
-		config = requireUncached(`${rootPath}/config/themeConfig.js`);
+		config = requireUncached(paths.config.themeConfig);
 	} else {
-		config = require(`${rootPath}/config/themeConfig.js`);
+		config = require(paths.config.themeConfig);
 	}
 
 	if ( ! config.theme.slug ) {

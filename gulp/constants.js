@@ -4,9 +4,7 @@
 // External dependencies
 export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
-
-// Internal dependencies
-import {getThemeConfig} from './utils';
+import requireUncached from 'require-uncached';
 
 // gulp string replace options
 export const gulpReplaceOptions = {
@@ -23,7 +21,7 @@ export const rootPath = process.env.INIT_CWD;
 export const isProd = ( process.env.NODE_ENV === 'production' );
 
 // get a fresh copy of the config
-export const config = getThemeConfig(true);
+export const config = requireUncached(`${rootPath}/config/themeConfig.js`);
 
 // directory for the production theme
 export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}`);

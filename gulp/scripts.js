@@ -24,7 +24,11 @@ export default function scripts(done) {
 		}),
 		gulpPlugins.eslint(),
 		gulpPlugins.eslint.format(),
-		gulpPlugins.babel(),
+		gulpPlugins.babel({
+			presets: [
+				'@babel/preset-env'
+			]
+		}),
 		gulpPlugins.if(
 			!config.dev.debug.scripts,
 			gulpPlugins.uglify()

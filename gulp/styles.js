@@ -19,7 +19,7 @@ export default function styles(done) {
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
 
-	// Reload cssVars every time the task runs.
+	// Reload cssVars every time the task runs
 	const cssVars = requireUncached(paths.config.cssVars);
 
 	const beforeReplacement = [
