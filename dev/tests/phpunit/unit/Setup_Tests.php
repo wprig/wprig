@@ -35,8 +35,6 @@ class Setup_Tests extends Unit_Test_Case {
 
 	/**
 	 * Tests that the theme setup function performs the necessary logic.
-	 *
-	 * @covers wp_rig_setup()
 	 */
 	public function test_wp_rig_setup() {
 		Functions\expect( 'load_theme_textdomain' )
@@ -79,8 +77,6 @@ class Setup_Tests extends Unit_Test_Case {
 
 	/**
 	 * Tests that the embed dimensions filter callback returns the correct value.
-	 *
-	 * @covers wp_rig_embed_dimensions()
 	 */
 	public function test_wp_rig_embed_dimensions() {
 		$result = wp_rig_embed_dimensions( [] );
@@ -93,8 +89,6 @@ class Setup_Tests extends Unit_Test_Case {
 
 	/**
 	 * Tests that the widgets and sidebar initialization function performs the necessary logic.
-	 *
-	 * @covers wp_rig_widgets_init()
 	 */
 	public function test_wp_rig_widgets_init() {
 		Functions\when( 'register_sidebar' )->alias(

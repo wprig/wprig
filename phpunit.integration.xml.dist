@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <phpunit
 	backupGlobals="false"
 	backupStaticAttributes="false"
@@ -26,4 +27,11 @@
 			<directory>./dev/inc</directory>
 		</whitelist>
 	</filter>
+
+	<logging>
+		<log type="coverage-clover" target="dev/tests/_reports/clover-integration.xml"/>
+		<log type="coverage-html" target="dev/tests/_reports/coverage-integration" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70" />
+		<log type="coverage-php" target="dev/tests/_reports/coverage-integration.cov"/>
+		<log type="junit" target="dev/tests/_reports/logfile-integration.xml"/>
+	</logging>
 </phpunit>
