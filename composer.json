@@ -2,12 +2,11 @@
   "name": "wprig/wprig",
   "description": "A progressive theme development rig for WordPress.",
   "type": "wordpress-theme",
-  "license": "GPL-2.0",
+  "license": "GPL-2.0-or-later",
   "require-dev": {
     "php": ">=7.0",
-    "wp-coding-standards/wpcs": "^1.0.0",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
-    "wimg/php-compatibility": "^8.1",
+    "wptrt/wpthemereview": "^0.1.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
     "phpunit/phpunit": "^6",
     "brain/monkey": "^2"
   },
@@ -20,10 +19,9 @@
     "install-codestandards": [
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
     ],
-    "phpcs-dev": "\"vendor/bin/phpcs\"",
-    "run-phpcs": [
-      "@phpcs-dev"
-    ],
+    "phpcs-i": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs -i",
+    "phpcs-dev": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs",
+    "phpcs-fix": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcbf",
     "phpunit-dev": "\"vendor/bin/phpunit\"",
     "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
   }
