@@ -16,11 +16,6 @@ import translate from './gulp/translate';
 import watch from './gulp/watch';
 import prodPrep from './gulp/prodPrep';
 import prodFinish from './gulp/prodFinish';
-import {
-    sourceStringReplacementPHP,
-    sourceStringReplacementJS,
-    sourceStringReplacementCSS
-} from './gulp/sourceStringReplacement';
 
 /**
  * Map out the sequence of events on first load and make it the default task
@@ -36,13 +31,6 @@ export default firstRun;
  */
 export const buildDev = parallel(
     php, images, sassStyles, styles, scripts, translate
-);
-
-/**
- * Replace default strings in source files
- */
-export const sourceStringReplacement = parallel(
-    sourceStringReplacementPHP, sourceStringReplacementJS, sourceStringReplacementCSS
 );
 
 /**
