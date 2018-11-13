@@ -73,16 +73,13 @@ PHP and CSS files are automatically linted using [PHP CodeSniffer](https://githu
 Details on how to enable PHPCS in VS Code can be found in the [WP Rig Wiki](https://github.com/wprig/wprig/wiki/Enabling-PHPCodeSniffer-(PHPCS)-in-VS-Code). More details on how to work with PHPCS and WordPress Coding Standards can be found at the [WordPress Coding Standards Wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki). `composer run-phpcs` runs PHPCS locally.
 
 ### `dev` process
-`npm run dev` is the regular development process that processes source files. While this process is running, source files will be watched for changes and the BrowserSync server will run. This process is optimized for speed so you can iterate quickly.
+`npm run gulp` will run the default development task that processes source files. While this process is running, source files will be watched for changes and the BrowserSync server will run. This process is optimized for speed so you can iterate quickly.
 
 ### `dev build` process
-`npm run build` processes files one-time. It does not watch for changes nor start the BrowserSync server.
+`npm run build` processes source files one-time. It does not watch for changes nor start the BrowserSync server.
 
 ### `translate` process
 `npm run translate` generates a `.pot` file for the theme to enable translation. The translation file will be stored in `./languages/`.
-
-### `string replacement` process
-`npm run devStringReplace` will replace all instances of the WP Rig naming in PHP, CSS and JS files in the development theme with the name specified in `./config/themeConfig.js`. This is optional if you do not wish to have WP Rig naming in the development theme.
 
 ### `production bundle` process
 `npm run bundle` generates a production ready theme as a new theme directory and, optionally, a `.zip` archive. This builds all source files, optimizes the built files for production, does a string replacement and runs translations. Non-essential files from the `wp-rig` development theme are not copied to the production theme.
@@ -93,6 +90,9 @@ export: {
 	compress: false
 }
 ```
+
+### Running other `gulp` tasks
+gulp tasks not specifically mapped to an npm script can still be run using the format `npm run gulp -- <task_name>`, replacing `<task_name>` with the actual gulp task name. For example, `npm run gulp -- images` will run the image task.
 
 ## Advanced Features
 WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), and existing tools like Sass without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
