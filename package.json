@@ -81,11 +81,12 @@
     "extends": "stylelint-config-wordpress"
   },
   "scripts": {
-    "install": "composer install",
     "build": "gulp buildDev",
-    "gulp": "gulp",
-    "translate": "gulp translate",
     "bundle": "NODE_ENV=production gulp bundleTheme",
-    "generateCert": "gulp generateCert"
+    "dev": "gulp",
+    "generateCert": "gulp generateCert",
+    "gulp": "gulp",
+    "install": "composer install",
+    "translate": "gulp translate"
   }
 }

@@ -72,8 +72,8 @@ PHP and CSS files are automatically linted using [PHP CodeSniffer](https://githu
 
 Details on how to enable PHPCS in VS Code can be found in the [WP Rig Wiki](https://github.com/wprig/wprig/wiki/Enabling-PHPCodeSniffer-(PHPCS)-in-VS-Code). More details on how to work with PHPCS and WordPress Coding Standards can be found at the [WordPress Coding Standards Wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki). `composer run-phpcs` runs PHPCS locally.
 
-### `dev` process
-`npm run gulp` will run the default development task that processes source files. While this process is running, source files will be watched for changes and the BrowserSync server will run. This process is optimized for speed so you can iterate quickly.
+### `dev watch` process
+`npm run dev` will run the default development task that processes source files. While this process is running, source files will be watched for changes and the BrowserSync server will run. This process is optimized for speed so you can iterate quickly.
 
 ### `dev build` process
 `npm run build` processes source files one-time. It does not watch for changes nor start the BrowserSync server.
