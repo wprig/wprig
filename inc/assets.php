@@ -76,6 +76,64 @@ function wp_rig_styles() {
 add_action( 'wp_enqueue_scripts', 'wp_rig_styles' );
 
 /**
+ * Generate preload markup for stylesheets.
+ *
+ * @param object $wp_styles Registered styles.
+ * @param string $handle The style handle.
+ */
+function wp_rig_get_preload_stylesheet_uri( $wp_styles, $handle ) {
+	$preload_uri = $wp_styles->registered[ $handle ]->src . '?ver=' . $wp_styles->registered[ $handle ]->ver;
+	return $preload_uri;
+}
+
+/**
+ * Adds preload for in-body stylesheets depending on what templates are being used.
+ * Disabled when AMP is active as AMP injects the stylesheets inline.
+ *
+ * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content
+ */
+function wp_rig_add_body_style() {
+
+	// If AMP is active, do nothing.
+	if ( wp_rig_is_amp() ) {
+		return;
+	}
+
+	// Get registered styles.
+	$wp_styles = wp_styles();
+
+	$preloads = array();
+
+	// Preload content.css.
+	$preloads['wp-rig-content'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-content' );
+
+	// Preload sidebar.css and widget.css.
+	if ( is_active_sidebar( 'sidebar-1' ) ) {
+		$preloads['wp-rig-sidebar'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-sidebar' );
+		$preloads['wp-rig-widgets'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-widgets' );
+	}
+
+	// Preload comments.css.
+	if ( ! post_password_required() && is_singular() && ( comments_open() || get_comments_number() ) ) {
+		$preloads['wp-rig-comments'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-comments' );
+	}
+
+	// Preload front-page.css.
+	global $template;
+	if ( 'front-page.php' === basename( $template ) ) {
+		$preloads['wp-rig-front-page'] = wp_rig_get_preload_stylesheet_uri( $wp_styles, 'wp-rig-front-page' );
+	}
+
+	// Output the preload markup in <head>.
+	foreach ( $preloads as $handle => $src ) {
+		echo '<link rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $src ) . '" as="style" />';
+		echo "\n";
+	}
+
+}
+add_action( 'wp_head', 'wp_rig_add_body_style' );
+
+/**
  * Enqueue scripts.
  */
 function wp_rig_scripts() {
@@ -119,6 +177,36 @@ function wp_rig_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'wp_rig_scripts' );
+
+/**
+ * Adds async/defer attributes to enqueued / registered scripts.
+ *
+ * If #12009 lands in WordPress, this function can no-op since it would be handled in core.
+ *
+ * @link https://core.trac.wordpress.org/ticket/12009
+ * @param string $tag    The script tag.
+ * @param string $handle The script handle.
+ * @return array
+ */
+function wp_rig_filter_script_loader_tag( $tag, $handle ) {
+
+	foreach ( array( 'async', 'defer' ) as $attr ) {
+		if ( ! wp_scripts()->get_data( $handle, $attr ) ) {
+			continue;
+		}
+
+		// Prevent adding attribute when already added in #12009.
+		if ( ! preg_match( ":\s$attr(=|>|\s):", $tag ) ) {
+			$tag = preg_replace( ':(?=></script>):', " $attr", $tag, 1 );
+		}
+
+		// Only allow async or defer, not both.
+		break;
+	}
+
+	return $tag;
+}
+add_filter( 'script_loader_tag', 'wp_rig_filter_script_loader_tag', 10, 2 );
 
 /**
  * Enqueue WordPress theme styles within Gutenberg.
