@@ -8,7 +8,6 @@ import postcssCustomProperties from 'postcss-custom-properties';
 import postcssCustomMedia from 'postcss-custom-media';
 import pump from 'pump';
 import requireUncached from 'require-uncached';
-import log from 'fancy-log';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
