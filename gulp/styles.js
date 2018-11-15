@@ -4,8 +4,11 @@
 // External dependencies
 import {src, dest} from 'gulp';
 import postcssPresetEnv from 'postcss-preset-env';
+import postcssCustomProperties from 'postcss-custom-properties';
+import postcssCustomMedia from 'postcss-custom-media';
 import pump from 'pump';
 import requireUncached from 'require-uncached';
+import log from 'fancy-log';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
@@ -36,19 +39,25 @@ export default function styles(done) {
 		// Log all problems that were found.
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
+			postcssCustomProperties({
+				'preserve': false,
+				'importFrom': [
+					{
+						customProperties: cssVars.variables
+					}
+				],
+			}),
+			postcssCustomMedia({
+				'preserve': false,
+				'importFrom': [
+					{
+						customMedia: cssVars.queries
+					}
+				],
+			}),
 			postcssPresetEnv({
 				stage: 3,
-				browsers: config.dev.browserslist,
-				features: {
-					'custom-properties': {
-						preserve: false,
-						variables: cssVars.variables,
-					},
-					'custom-media-queries': {
-						preserve: false,
-						extensions: cssVars.queries,
-					}
-				}
+				browsers: config.dev.browserslist
 			})
 		]),
 	];
