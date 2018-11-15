@@ -3,9 +3,8 @@
 
 // External dependencies
 export const gulpPlugins = require('gulp-load-plugins')();
-
-// Internal dependencies
-import {getThemeConfig} from './utils';
+import path from 'path';
+import requireUncached from 'require-uncached';
 
 // gulp string replace options
 export const gulpReplaceOptions = {
@@ -18,88 +17,20 @@ export const gulpReplaceOptions = {
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
 
-// get a fresh copy of the config
-export const config = getThemeConfig(true);
+// Dev or production
+export const isProd = ( process.env.NODE_ENV === 'production' );
 
-// Project paths
-export const paths = {
-    browserSync: {
-		dir: `${rootPath}/BrowserSync`,
-		cert: `${rootPath}/BrowserSync/wp-rig-browser-sync-cert.crt`,
-		caCert: `${rootPath}/BrowserSync/wp-rig-browser-sync-root-cert.crt`,
-		key: `${rootPath}/BrowserSync/wp-rig-browser-sync-key.key`
-    },
-	config: {
-		cssVars: `${rootPath}/dev/config/cssVariables.json`,
-		themeConfig: `${rootPath}/dev/config/themeConfig.js`
-	},
-	php: {
-		src: [
-			`${rootPath}/dev/**/*.php`,
-			`!${rootPath}/dev/optional/**/*.*`,
-			`!${rootPath}/dev/tests/**/*.*`,
-		],
-		dest: `${rootPath}/`
-	},
-	styles: {
-		src: [
-			`${rootPath}/dev/**/*.css`,
-			`!${rootPath}/dev/optional/**/*.*`
-		],
-		dest: `${rootPath}/`,
-		sass: [`${rootPath}/dev/**/*.scss`]
-	},
-	scripts: {
-		src: [
-			`${rootPath}/dev/**/*.js`,
-			`!${rootPath}/dev/**/*.min.js`,
-			`!${rootPath}/dev/js/libs/**/*.js`,
-			`!${rootPath}/dev/optional/**/*.*`,
-			`!${rootPath}/dev/config/**/*`,
-		],
-		min: `${rootPath}/dev/**/*.min.js`,
-		dest: `${rootPath}/`,
-		libs: `${rootPath}/dev/js/libs/**/*.js`,
-		libsDest: `${rootPath}/js/libs/`,
-		verboseLibsDest: `${rootPath}/verbose/js/libs/`,
-	},
-	images: {
-		src: [
-			`${rootPath}/dev/**/*.{jpg,JPG,png,svg,,gif,GIF}`,
-			`!${rootPath}/dev/optional/**/*.*`,
-		],
-		dest: `${rootPath}/`
-	},
-	languages: {
-		src: [
-			`${rootPath}/**/*.php`,
-			`!${rootPath}/dev/**/*.php`,
-			`!${rootPath}/verbose/**/*.php`,
-		],
-		dest: `${rootPath}/languages/${config.theme.slug}.pot`
-	},
-	verbose: `${rootPath}/verbose/`,
-	export: {
-		src: [
-			`${rootPath}/**/*`,
-			`!${rootPath}/${config.theme.slug}`,
-			`!${rootPath}/${config.theme.slug}/**/*`,
-			`!${rootPath}/dev/**/*`,
-			`!${rootPath}/node_modules`,
-			`!${rootPath}/node_modules/**/*`,
-			`!${rootPath}/vendor`,
-			`!${rootPath}/vendor/**/*`,
-			`!${rootPath}/.*`,
-			`!${rootPath}/composer.*`,
-			`!${rootPath}/gulpfile.*`,
-			`!${rootPath}/gulp/**/*`,
-			`!${rootPath}/package*.*`,
-			`!${rootPath}/phpcs.*`,
-			`!${rootPath}/*.zip`,
-		],
-		dest: `${rootPath}/`
-	}
-};
+// get a fresh copy of the config
+export const config = requireUncached(`${rootPath}/config/themeConfig.js`);
+
+// directory for the production theme
+export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}`);
+
+// directory for assets (CSS, JS, images)
+export const assetsDir = `${rootPath}/assets`;
+
+// directory for assets (CSS, JS, images) in production
+export const prodAssetsDir = `${prodThemePath}/assets`;
 
 // Theme config name fields and their defaults
 export const nameFieldDefaults = {
@@ -109,4 +40,75 @@ export const nameFieldDefaults = {
 	constant      : 'WP_RIG',
 	camelCase     : 'WpRig',
 	camelCaseVar  : 'wpRig',
+	author        : 'Morten Rand-Hendriksen',
 };
+
+// Project paths
+let paths = {
+	assetsDir: assetsDir,
+	browserSync: {
+		dir: `${rootPath}/BrowserSync`,
+		cert: `${rootPath}/BrowserSync/wp-rig-browser-sync-cert.crt`,
+		caCert: `${rootPath}/BrowserSync/wp-rig-browser-sync-root-cert.crt`,
+		key: `${rootPath}/BrowserSync/wp-rig-browser-sync-key.key`
+	},
+	config: {
+		cssVars: `${rootPath}/config/cssVariables.json`,
+		themeConfig: `${rootPath}/config/themeConfig.js`
+	},
+	php: {
+		src: [
+			`${rootPath}/**/*.php`,
+			`!${rootPath}/optional/**/*.*`,
+			`!${rootPath}/tests/**/*.*`,
+			`!${rootPath}/vendor/**/*.*`,
+		],
+		dest: `${rootPath}/`
+	},
+	styles: {
+		src: `${assetsDir}/css/src/**/*.css`,
+		sass: `${assetsDir}/css/src/**/*.scss`,
+		dest: `${assetsDir}/css/`
+	},
+	scripts: {
+		src: `${assetsDir}/js/src/**/*.js`,
+		dest: `${assetsDir}/js/`
+	},
+	images: {
+		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
+		dest: `${assetsDir}/images/`
+	},
+	languages: {
+		src: [
+			`${rootPath}/**/*.php`,
+			`!${rootPath}/optional/**/*.*`,
+			`!${rootPath}/tests/**/*.*`,
+			`!${rootPath}/vendor/**/*.*`,
+		],
+		dest: `${rootPath}/languages/${nameFieldDefaults.slug}.pot`
+	},
+	export: {
+		src: [
+			`${rootPath}/style.css`,
+			`${rootPath}/readme.txt`,
+			`${rootPath}/screenshot.png`,
+			`${rootPath}/LICENSE`,
+			`${rootPath}/pluggable/`,
+		],
+		dest: `${prodThemePath}/`
+	}
+};
+
+// Override paths for production
+if( isProd ){
+	paths.php.dest = `${prodThemePath}/`;
+	paths.styles.dest = `${prodAssetsDir}/css/`;
+	paths.scripts.dest = `${prodAssetsDir}/js/`;
+	paths.images.dest = `${prodAssetsDir}/images/`;
+	paths.languages = {
+		src: `${prodThemePath}/**/*.php`,
+		dest: `${prodThemePath}/languages/${config.theme.slug}.pot`
+	};
+}
+
+export {paths};

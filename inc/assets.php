@@ -5,8 +5,33 @@
  * @package wp_rig
  */
 
+ /**
+  * WP Rig CSS Files
+  *
+  * @return array
+  */
+function wp_rig_get_css_files() {
+
+	$wp_rig_css_files = array(
+		'global',
+		'comments',
+		'content',
+		'sidebar',
+		'widgets',
+		'front-page',
+	);
+
+	/*
+	 * Filters default CSS files.
+	 *
+	 * @param array $wp_rig_css_files array of CSS files
+	 * to register and enqueue with WordPress.
+	 */
+	return apply_filters( 'wp_rig_css_files', $wp_rig_css_files );
+}
+
 /**
- * Enqueue styles.
+ * Register and enqueue styles.
  */
 function wp_rig_styles() {
 
@@ -16,15 +41,37 @@ function wp_rig_styles() {
 		wp_enqueue_style( 'wp-rig-fonts', $fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 	}
 
-	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wp-rig-base-style', get_stylesheet_uri(), array(), '20180514' );
-
 	// Register component styles that are printed as needed.
-	wp_register_style( 'wp-rig-comments', get_theme_file_uri( '/css/comments.css' ), array(), '20180514' );
-	wp_register_style( 'wp-rig-content', get_theme_file_uri( '/css/content.css' ), array(), '20180514' );
-	wp_register_style( 'wp-rig-sidebar', get_theme_file_uri( '/css/sidebar.css' ), array(), '20180514' );
-	wp_register_style( 'wp-rig-widgets', get_theme_file_uri( '/css/widgets.css' ), array(), '20180514' );
-	wp_register_style( 'wp-rig-front-page', get_theme_file_uri( '/css/front-page.css' ), array(), '20180514' );
+	$wp_rig_theme_css_dir = get_theme_file_path( '/assets/css/' );
+	$wp_rig_theme_css_uri = get_theme_file_uri( '/assets/css/' );
+
+	$wp_rig_css_files = wp_rig_get_css_files();
+
+	foreach ( $wp_rig_css_files as $wp_rig_css_file ) {
+		$file_modified_time = filemtime( $wp_rig_theme_css_dir . $wp_rig_css_file . '.min.css' );
+
+		/*
+		* Enqueue global styles and register
+		* the rest as they are called conditionally
+		* on an as-needed basis.
+		*/
+		if ( 'global' === $wp_rig_css_file ) {
+			wp_enqueue_style(
+				'wp-rig-' . $wp_rig_css_file,
+				$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
+				array(),
+				$file_modified_time
+			);
+		} else {
+			wp_register_style(
+				'wp-rig-' . $wp_rig_css_file,
+				$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
+				array(),
+				$file_modified_time
+			);
+		}
+	}
+
 }
 add_action( 'wp_enqueue_scripts', 'wp_rig_styles' );
 
@@ -39,7 +86,13 @@ function wp_rig_scripts() {
 	}
 
 	// Enqueue the navigation script.
-	wp_enqueue_script( 'wp-rig-navigation', get_theme_file_uri( '/js/navigation.js' ), array(), '20180514', false );
+	wp_enqueue_script(
+		'wp-rig-navigation',
+		get_theme_file_uri( '/assets/js/navigation.min.js' ),
+		array(),
+		filemtime( get_stylesheet_directory() . '/assets/js/navigation.min.js' ),
+		false
+	);
 	wp_script_add_data( 'wp-rig-navigation', 'async', true );
 	wp_localize_script(
 		'wp-rig-navigation',
@@ -51,7 +104,13 @@ function wp_rig_scripts() {
 	);
 
 	// Enqueue skip-link-focus script.
-	wp_enqueue_script( 'wp-rig-skip-link-focus-fix', get_theme_file_uri( '/js/skip-link-focus-fix.js' ), array(), '20180514', false );
+	wp_enqueue_script(
+		'wp-rig-skip-link-focus-fix',
+		get_theme_file_uri( '/assets/js/skip-link-focus-fix.min.js' ),
+		array(),
+		filemtime( get_stylesheet_directory() . '/assets/js/skip-link-focus-fix.min.js' ),
+		false
+	);
 	wp_script_add_data( 'wp-rig-skip-link-focus-fix', 'defer', true );
 
 	// Enqueue comment script on singular post/page views only.
@@ -73,7 +132,7 @@ function wp_rig_gutenberg_styles() {
 	}
 
 	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wp-rig-base-style', get_theme_file_uri( '/css/editor-styles.css' ), array(), '20180514' );
+	wp_enqueue_style( 'wp-rig-editor-styles', get_theme_file_uri( '/assets/css/editor/editor-styles.min.css' ), array(), filemtime( get_stylesheet_directory() . '/assets/css/editor/editor-styles.min.css' ) );
 }
 add_action( 'enqueue_block_editor_assets', 'wp_rig_gutenberg_styles' );
 
