@@ -471,7 +471,7 @@ optgroup,
 textarea {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
-	font-size: calc(var(--global-font-size) / 16)rem;
+	font-size: calc(var(--global-font-size) / 16rem);
 	line-height: var(--global-font-line-height);
 }
 /* stylelint-enable */
