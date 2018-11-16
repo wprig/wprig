@@ -21,18 +21,18 @@
 }
 */
 
-.hentry {
+.article {
 	margin-bottom: 1rem;
 }
 
 .entry-meta,
-.entry-footer {
+.article-footer {
 	font-family: var(--highlight-font-family);
 	font-size: 80%;
 }
 
 /* Hides the update date and time. */
-.updated:not(.published) {
+.date.updated:not(.published) {
 	display: none;
 }
 
@@ -41,14 +41,14 @@
 }
 
 .page-content,
-.entry-content,
-.entry-summary {
+.article-content,
+.article-summary {
 	margin: 1.5em 0 0;
 }
 
 .page-content > *,
-.entry-content > *,
-.entry-summary > *,
+.article-content > *,
+.article-summary > *,
 .not-found > * {
 	display: block;
 	margin-right: auto;
@@ -61,8 +61,8 @@
 }
 
 .page-title,
-.entry-header,
-.entry-footer,
+.article-header,
+.article-footer,
 .site-info,
 .post-navigation,
 .page-navigation,
@@ -78,11 +78,11 @@
 @media (--content-query) {
 
 	.page-content > *,
-	.entry-content > *,
-	.entry-summary > *,
+	.article-content > *,
+	.article-summary > *,
 	.page-title,
-	.entry-header,
-	.entry-footer,
+	.article-header,
+	.article-footer,
 	.site-info,
 	.post-navigation,
 	.page-navigation,
@@ -97,11 +97,11 @@
 	margin: 0 0 1.5em;
 }
 
-.entry-footer span {
+.article-footer span {
 	margin-right: 1em;
 }
 
-.entry-footer {
+.article-footer {
 	clear: both;
 	padding: 1.5em 1.5rem 3em;
 	border-bottom: 1px solid #111;
@@ -109,7 +109,7 @@
 
 @media (--content-query) {
 
-	.entry-footer {
+	.article-footer {
 		padding-right: 0;
 		padding-left: 0;
 	}
@@ -191,14 +191,14 @@
 	padding: 0 1em;
 }
 
-.entry-content ul,
-.entry-content ol {
+.article-content ul,
+.article-content ol {
 	padding-right: 2.5em;
 	padding-left: 2.5em;
 }
 
-.entry-content ul ul,
-.entry-content ol ol {
+.article-content ul ul,
+.article-content ol ol {
 	margin-right: 0;
 	margin-left: 0;
 	padding-right: 1.5em;
@@ -220,7 +220,7 @@
 
 @media (--content-query) {
 
-	.entry-content pre {
+	.article-content pre {
 		padding: 1.5em;
 	}
 
@@ -371,7 +371,7 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 ## Media
 --------------------------------------------------------------*/
 .page-content .wp-smiley,
-.entry-content .wp-smiley,
+.article-content .wp-smiley,
 .comment-content .wp-smiley {
 	border: none;
 	margin-bottom: 0;
@@ -426,14 +426,14 @@ object {
 
 /* Override standard ul indentation. */
 
-.entry-content .wp-block-gallery {
+.article-content .wp-block-gallery {
 	padding-right: 1.5em;
 	padding-left: 1.5em;
 }
 
 @media screen and (min-width: 48em) {
 
-	.entry-content .wp-block-gallery {
+	.article-content .wp-block-gallery {
 		padding-right: 0;
 		padding-left: 0;
 	}
