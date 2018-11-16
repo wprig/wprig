@@ -1,9 +1,7 @@
-/dev/js/libs/**
+/assets/js/libs/**
 /node_modules/**
 /vendor/**
-/js/customizer.js
-/js/navigation.js
-./dev/config/**
+/config/**
 
 # Because parsing error: 'import' and 'export' may appear only with 'sourceType: module'
 /gulpfile.babel.js

@@ -3,9 +3,20 @@
 
 // External dependencies
 import requireUncached from 'require-uncached';
+import log from 'fancy-log';
+import colors from 'ansi-colors';
+import rimraf from 'rimraf';
+import mkdirp from 'mkdirp';
+import fs from 'fs';
 
 // Internal dependencies
-import {rootPath, gulpPlugins, gulpReplaceOptions, nameFieldDefaults} from './constants';
+import {
+	gulpPlugins,
+	gulpReplaceOptions,
+	nameFieldDefaults,
+	prodThemePath,
+	paths
+} from './constants';
 
 /**
  * Get theme configuration.
@@ -14,12 +25,12 @@ import {rootPath, gulpPlugins, gulpReplaceOptions, nameFieldDefaults} from './co
  * @return {object} Theme configuration data.
  */
 export function getThemeConfig( uncached=false ) {
-    let config;
+	let config;
 
 	if ( uncached ) {
-		config = requireUncached(`${rootPath}/dev/config/themeConfig.js`);
+		config = requireUncached(paths.config.themeConfig);
 	} else {
-		config = require(`${rootPath}/dev/config/themeConfig.js`);
+		config = require(paths.config.themeConfig);
 	}
 
 	if ( ! config.theme.slug ) {
@@ -60,4 +71,16 @@ export function getStringReplacementTasks() {
 	return Object.keys( nameFieldDefaults ).map( nameField => {
 		return gulpPlugins.stringReplace( nameFieldDefaults[ nameField ], config.theme[ nameField ], gulpReplaceOptions );
 	});
+}
+
+export function createProdDir() {
+	log(colors.green(`Creating the production theme directory ${prodThemePath}`));
+    // Check if the prod theme directory exists
+    if ( fs.existsSync(prodThemePath) ) {
+        // and remove it
+        rimraf.sync(prodThemePath);
+    }
+
+    // Create the prod theme directory
+	mkdirp(prodThemePath);
 }
