@@ -262,6 +262,12 @@ function wp_rig_build_attributes_string( $attributes ) {
  * Enqueue and defer lazyload script.
  */
 function wp_rig_enqueue_assets() {
-	wp_enqueue_script( 'wp-rig-lazy-load-images', get_theme_file_uri( '/pluggable/lazyload/js/lazyload.js' ), array(), '20151215', false );
+	wp_enqueue_script(
+		'wp-rig-lazy-load-images',
+		get_theme_file_uri( '/pluggable/lazyload/js/lazyload.js' ),
+		array(),
+		wp_rig_get_asset_version( get_stylesheet_directory() . '/pluggable/lazyload/js/lazyload.js' ),
+		false
+	);
 	wp_script_add_data( 'wp-rig-lazy-load-images', 'defer', true );
 }
