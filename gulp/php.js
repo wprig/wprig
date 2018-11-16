@@ -6,7 +6,7 @@ import pump from 'pump';
 import {src, dest} from 'gulp';
 
 // Internal dependencies
-import {paths, rootPath, gulpPlugins, isProd} from './constants';
+import {paths, rootPath, gulpPlugins, isProd, config} from './constants';
 import {getStringReplacementTasks} from './utils';
 
 /**
@@ -16,12 +16,15 @@ export default function php(done) {
 
 	const beforeReplacement = [
 		src(paths.php.src),
-		// Run code sniffing
-		gulpPlugins.phpcs({
-			bin: `${rootPath}/vendor/bin/phpcs`,
-			standard: 'WordPress',
-			warningSeverity: 0
-		}),
+		// Only code sniff PHP files if the debug setting is true
+		gulpPlugins.if(
+			config.dev.debug.phpcs,
+			gulpPlugins.phpcs({
+				bin: `${rootPath}/vendor/bin/phpcs`,
+				standard: 'WordPress',
+				warningSeverity: 0
+			})
+		),
 		// Log all problems that were found.
 		gulpPlugins.phpcs.reporter('log'),
 	];
