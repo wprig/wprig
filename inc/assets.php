@@ -5,6 +5,18 @@
  * @package wp_rig
  */
 
+/**
+ * Get asset version.
+ *
+ * Returns filemtime when WP_DEBUG is true, otherwise the theme version.
+ *
+ * @param string $file  Asset in the stylesheet directory.
+ * @return string       Version number.
+ */
+function wp_rig_get_asset_version( $file ) {
+	return WP_DEBUG ? filemtime( $file ) : '2.0.0';
+}
+
  /**
   * WP Rig CSS Files
   *
@@ -48,8 +60,6 @@ function wp_rig_styles() {
 	$wp_rig_css_files = wp_rig_get_css_files();
 
 	foreach ( $wp_rig_css_files as $wp_rig_css_file ) {
-		$file_modified_time = filemtime( $wp_rig_theme_css_dir . $wp_rig_css_file . '.min.css' );
-
 		/*
 		* Enqueue global styles and register
 		* the rest as they are called conditionally
@@ -60,14 +70,14 @@ function wp_rig_styles() {
 				'wp-rig-' . $wp_rig_css_file,
 				$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
 				array(),
-				$file_modified_time
+				wp_rig_get_asset_version( $wp_rig_theme_css_dir . $wp_rig_css_file . '.min.css' )
 			);
 		} else {
 			wp_register_style(
 				'wp-rig-' . $wp_rig_css_file,
 				$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
 				array(),
-				$file_modified_time
+				wp_rig_get_asset_version( $wp_rig_theme_css_dir . $wp_rig_css_file . '.min.css' )
 			);
 		}
 	}
@@ -90,7 +100,7 @@ function wp_rig_scripts() {
 		'wp-rig-navigation',
 		get_theme_file_uri( '/assets/js/navigation.min.js' ),
 		array(),
-		filemtime( get_stylesheet_directory() . '/assets/js/navigation.min.js' ),
+		wp_rig_get_asset_version( get_stylesheet_directory() . '/assets/js/navigation.min.js' ),
 		false
 	);
 	wp_script_add_data( 'wp-rig-navigation', 'async', true );
@@ -108,7 +118,7 @@ function wp_rig_scripts() {
 		'wp-rig-skip-link-focus-fix',
 		get_theme_file_uri( '/assets/js/skip-link-focus-fix.min.js' ),
 		array(),
-		filemtime( get_stylesheet_directory() . '/assets/js/skip-link-focus-fix.min.js' ),
+		wp_rig_get_asset_version( get_stylesheet_directory() . '/assets/js/skip-link-focus-fix.min.js' ),
 		false
 	);
 	wp_script_add_data( 'wp-rig-skip-link-focus-fix', 'defer', true );
