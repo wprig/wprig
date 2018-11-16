@@ -6,7 +6,7 @@
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
-	font-size: calc(var(--global-font-size) / 16)rem;
+	font-size: calc(var(--global-font-size) / 16rem);
 	/* stylelint-enable */
 	line-height: var(--global-font-line-height);
 }
@@ -32,7 +32,7 @@ body.gutenberg-editor-page .editor-post-title .editor-post-title__input {
 body.gutenberg-editor-page .edit-post-visual-editor p {
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
-	font-size: calc(var(--global-font-size) / 16)rem;
+	font-size: calc(var(--global-font-size) / 16rem);
 	/* stylelint-enable */
 }
 
@@ -161,24 +161,24 @@ body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image h2 {
 
 .has-small-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--small-font-size) / 16)rem;
+	font-size: calc(var(--small-font-size) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-regular-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--regular-font-size) / 16)rem;
+	font-size: calc(var(--regular-font-size) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-large-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--large-font-size) / 16)rem;
+	font-size: calc(var(--large-font-size) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-larger-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--larger-font-size) / 16)rem;
+	font-size: calc(var(--larger-font-size) / 16rem);
 	/* stylelint-enable */
 }

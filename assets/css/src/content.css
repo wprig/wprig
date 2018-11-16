@@ -356,25 +356,25 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 
 .has-small-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--small-font-size) / 16)rem;
+	font-size: calc(var(--small-font-size) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-regular-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--regular-font-size) / 16)rem;
+	font-size: calc(var(--regular-font-size) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-large-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--large-font-size) / 16)rem;
+	font-size: calc(var(--large-font-size) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-larger-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--larger-font-size) / 16)rem;
+	font-size: calc(var(--larger-font-size) / 16rem);
 	/* stylelint-enable */
 }
 
