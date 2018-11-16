@@ -32,7 +32,10 @@
 	<arg name="extensions" value="php,css,scss/css"/>
 
 	<!-- Check all files in this directory and the directories below it. -->
-	<file>./dev/</file>
+	<file>.</file>
+
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
 
 	<rule ref="WPThemeReview"/>
 

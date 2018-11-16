@@ -196,3 +196,19 @@ function wp_rig_add_nav_menu_aria_current( $atts, $item ) {
 }
 add_filter( 'nav_menu_link_attributes', 'wp_rig_add_nav_menu_aria_current', 10, 2 );
 add_filter( 'page_menu_link_attributes', 'wp_rig_add_nav_menu_aria_current', 10, 2 );
+
+/**
+ * Exclude any directory named optional
+ * from being scanned for theme files
+ *
+ * @link https://developer.wordpress.org/reference/hooks/theme_scandir_exclusions/
+ * @param array $exclusions the default directories to exclude.
+ * @return array
+ */
+function wp_rig_exclude_optional_templates( $exclusions ) {
+	return array_merge(
+		$exclusions,
+		array( 'optional' )
+	);
+}
+add_filter( 'theme_scandir_exclusions', 'wp_rig_exclude_optional_templates', 10, 1 );

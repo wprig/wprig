@@ -10,4 +10,4 @@ gulpfile.babel.js @ataylorme
 phpcs.xml.dist @felixarntz
 phpunit.integration.xml.dist @felixarntz
 phpunit.xml.dist @felixarntz
-/dev/tests/ @felixarntz
+/tests/ @felixarntz
