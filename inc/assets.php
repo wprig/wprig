@@ -14,7 +14,17 @@
  * @return string       Version number.
  */
 function wp_rig_get_asset_version( $file ) {
-	return WP_DEBUG ? filemtime( $file ) : '2.0.0';
+	if ( WP_DEBUG ) {
+		return filemtime( $file );
+	}
+
+	static $theme_version = null;
+
+	if ( null === $theme_version ) {
+		$theme_version = wp_get_theme( get_template() )->get( 'Version' );
+	}
+
+	return $theme_version;
 }
 
  /**
