@@ -39,33 +39,33 @@ export default function generateCert(done) {
         }
 
         // Save the key
-        fs.writeFileSync(paths.browserSync.key, keys.key, (err) => {  
-            
+        fs.writeFileSync(paths.browserSync.key, keys.key, (err) => {
+
             if (err) {
                 throw err;
               }
-        
+
         });
-        
+
         // Save the cert
-        fs.writeFileSync(paths.browserSync.cert, keys.cert, (err) => {  
-            
+        fs.writeFileSync(paths.browserSync.cert, keys.cert, (err) => {
+
             if (err) {
                 throw err;
             }
-        
+
         });
 
         // Save the CA cert
-        fs.writeFileSync(paths.browserSync.caCert, keys.caCert, (err) => {  
-            
+        fs.writeFileSync(paths.browserSync.caCert, keys.caCert, (err) => {
+
             if (err) {
                 throw err;
             }
-        
+
         });
 
-        log(colors.green('Custom SSL key and certificate generated succressfully!'));
+        log(colors.green('Custom SSL key and certificate generated successfully!'));
 
         done();
 
