@@ -2,7 +2,7 @@
  * Styles for the WordPress post/page editor.
  * Ensures a visual match between back- and front-end.
  */
- body.gutenberg-editor-page .editor-writing-flow {
+body.gutenberg-editor-page .editor-writing-flow {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
@@ -34,25 +34,6 @@ body.gutenberg-editor-page .edit-post-visual-editor p {
 	/* stylelint-disable */
 	font-size: calc(var(--global-font-size) / 16rem);
 	/* stylelint-enable */
-}
-
-body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image-text,
-body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image h2 {
-	color: #fff;
-	font-size: 2em;
-	line-height: 1.25;
-}
-
-.editor-block-list__block ol.wp-block-latest-comments,
-.editor-block-list__block ul.wp-block-latest-posts {
-	padding-top: 1.5em;
-	padding-bottom: 1.5em;
-	border: 1px solid hsl(0, 0%, 80%);
-}
-
-.editor-block-list__block ol.wp-block-latest-comments {
-	padding-right: 1.5em;
-	padding-left: 1.5em;
 }
 
 body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image-text,
