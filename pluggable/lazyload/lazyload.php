@@ -11,6 +11,8 @@
 
 namespace WP_Rig\WP_Rig;
 
+use WP_Customize_Manager;
+
 /**
  * Main function. Runs everything.
  */
@@ -45,6 +47,45 @@ function lazyload_images() {
 
 }
 add_action( 'wp', __NAMESPACE__ . '\\lazyload_images' );
+
+/**
+ * Adds a setting and control for lazy loading the Customizer.
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer manager instance.
+ */
+function lazyload_customize_register( WP_Customize_Manager $wp_customize ) {
+	$lazyload_choices = array(
+		'lazyload'    => __( 'Lazy-load on (default)', 'wp-rig' ),
+		'no-lazyload' => __( 'Lazy-load off', 'wp-rig' ),
+	);
+
+	$wp_customize->add_setting(
+		'lazy_load_media',
+		array(
+			'default'           => 'lazyload',
+			'transport'         => 'postMessage',
+			'sanitize_callback' => function( $input ) use ( $lazyload_choices ) : string {
+				if ( array_key_exists( $input, $lazyload_choices ) ) {
+					return $input;
+				}
+
+				return '';
+			},
+		)
+	);
+
+	$wp_customize->add_control(
+		'lazy_load_media',
+		array(
+			'label'           => __( 'Lazy-load images', 'wp-rig' ),
+			'section'         => 'theme_options',
+			'type'            => 'radio',
+			'description'     => __( 'Lazy-loading images means images are loaded only when they are in view. Improves performance, but can result in content jumping around on slower connections.', 'wp-rig' ),
+			'choices'         => $lazyload_choices,
+		)
+	);
+}
+add_action( 'customize_register', __NAMESPACE__ . '\\lazyload_customize_register' );
 
 /**
  * Setup filters to enable lazy-loading of images.
