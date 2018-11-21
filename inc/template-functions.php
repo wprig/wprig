@@ -31,7 +31,7 @@ function filter_body_classes( $classes ) {
 add_filter( 'body_class', __NAMESPACE__ . '\\filter_body_classes' );
 
 /**
- * Add a pingback url auto-discovery header for singularly identifiable articles.
+ * Adds a pingback url auto-discovery header for singularly identifiable articles.
  */
 function add_pingback_header() {
 	if ( is_singular() && pings_open() ) {
@@ -39,95 +39,6 @@ function add_pingback_header() {
 	}
 }
 add_action( 'wp_head', __NAMESPACE__ . '\\add_pingback_header' );
-
-/**
- * Adds async/defer attributes to enqueued / registered scripts.
- *
- * If #12009 lands in WordPress, this function can no-op since it would be handled in core.
- *
- * @link https://core.trac.wordpress.org/ticket/12009
- * @param string $tag    The script tag.
- * @param string $handle The script handle.
- * @return array
- */
-function filter_script_loader_tag( $tag, $handle ) {
-
-	foreach ( array( 'async', 'defer' ) as $attr ) {
-		if ( ! wp_scripts()->get_data( $handle, $attr ) ) {
-			continue;
-		}
-
-		// Prevent adding attribute when already added in #12009.
-		if ( ! preg_match( ":\s$attr(=|>|\s):", $tag ) ) {
-			$tag = preg_replace( ':(?=></script>):', " $attr", $tag, 1 );
-		}
-
-		// Only allow async or defer, not both.
-		break;
-	}
-
-	return $tag;
-}
-
-add_filter( 'script_loader_tag', __NAMESPACE__ . '\\filter_script_loader_tag', 10, 2 );
-
-/**
- * Generate preload markup for stylesheets.
- *
- * @param object $wp_styles Registered styles.
- * @param string $handle The style handle.
- */
-function get_preload_stylesheet_uri( $wp_styles, $handle ) {
-	$preload_uri = $wp_styles->registered[ $handle ]->src . '?ver=' . $wp_styles->registered[ $handle ]->ver;
-	return $preload_uri;
-}
-
-/**
- * Adds preload for in-body stylesheets depending on what templates are being used.
- * Disabled when AMP is active as AMP injects the stylesheets inline.
- *
- * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Preloading_content
- */
-function add_body_style() {
-
-	// If AMP is active, do nothing.
-	if ( is_amp() ) {
-		return;
-	}
-
-	// Get registered styles.
-	$wp_styles = wp_styles();
-
-	$preloads = array();
-
-	// Preload content.css.
-	$preloads['wp-rig-content'] = get_preload_stylesheet_uri( $wp_styles, 'wp-rig-content' );
-
-	// Preload sidebar.css and widget.css.
-	if ( is_active_sidebar( 'sidebar-1' ) ) {
-		$preloads['wp-rig-sidebar'] = get_preload_stylesheet_uri( $wp_styles, 'wp-rig-sidebar' );
-		$preloads['wp-rig-widgets'] = get_preload_stylesheet_uri( $wp_styles, 'wp-rig-widgets' );
-	}
-
-	// Preload comments.css.
-	if ( ! post_password_required() && is_singular() && ( comments_open() || get_comments_number() ) ) {
-		$preloads['wp-rig-comments'] = get_preload_stylesheet_uri( $wp_styles, 'wp-rig-comments' );
-	}
-
-	// Preload front-page.css.
-	global $template;
-	if ( 'front-page.php' === basename( $template ) ) {
-		$preloads['wp-rig-front-page'] = get_preload_stylesheet_uri( $wp_styles, 'wp-rig-front-page' );
-	}
-
-	// Output the preload markup in <head>.
-	foreach ( $preloads as $handle => $src ) {
-		echo '<link rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $src ) . '" as="style" />';
-		echo "\n";
-	}
-
-}
-add_action( 'wp_head', __NAMESPACE__ . '\\add_body_style' );
 
 /**
  * Adds dropdown symbol to nav menu items with children.
