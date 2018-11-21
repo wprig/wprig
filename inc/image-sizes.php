@@ -7,6 +7,8 @@
 
 namespace WP_Rig\WP_Rig;
 
+use WP_Post;
+
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
  * for content images.
@@ -51,12 +53,12 @@ add_filter( 'get_header_image_tag', __NAMESPACE__ . '\\filter_header_image_tag',
  * Add custom image sizes attribute to enhance responsive image functionality
  * for post thumbnails.
  *
- * @param array $attr       Attributes for the image markup.
- * @param int   $attachment Image attachment ID.
- * @param array $size       Registered image size or flat array of height and width dimensions.
+ * @param array        $attr       Attributes for the image markup.
+ * @param WP_Post      $attachment Attachment post object.
+ * @param string|array $size       Registered image size or flat array of height and width dimensions.
  * @return array The filtered attributes for the image markup.
  */
-function filter_post_thumbnail_sizes_attr( array $attr, int $attachment, array $size ) : array {
+function filter_post_thumbnail_sizes_attr( array $attr, WP_Post $attachment, $size ) : array {
 
 	$attr['sizes'] = '100vw';
 
