@@ -80,6 +80,7 @@ function lazyload_allow_attributes( array $allowed_tags ) : array {
 	if ( ! isset( $allowed_tags['img'] ) ) {
 		return $allowed_tags;
 	}
+
 	// But, if images are allowed, ensure that our attributes are allowed!
 	$img_attributes      = array_merge(
 		$allowed_tags['img'],
@@ -91,6 +92,7 @@ function lazyload_allow_attributes( array $allowed_tags ) : array {
 		)
 	);
 	$allowed_tags['img'] = $img_attributes;
+
 	return $allowed_tags;
 }
 
@@ -112,9 +114,29 @@ function add_image_placeholders( string $content ) : string {
 	}
 
 	// Find all <img> elements via regex, add lazy-load attributes.
-	$content = preg_replace_callback( '#<(img)([^>]+?)(>(.*?)</\\1>|[\/]?>)#si', __NAMESPACE__ . '\\lazyload_process_image', $content );
-	return $content;
+	$content = preg_replace_callback(
+		'#<(img)([^>]+?)(>(.*?)</\\1>|[\/]?>)#si',
+		function( array $matches ) : string {
+			$old_attributes_str       = $matches[2];
+			$old_attributes_kses_hair = wp_kses_hair( $old_attributes_str, wp_allowed_protocols() );
+			if ( empty( $old_attributes_kses_hair['src'] ) ) {
+				return $matches[0];
+			}
 
+			$old_attributes = flatten_kses_hair_data( $old_attributes_kses_hair );
+			$new_attributes = process_image_attributes( $old_attributes );
+			// If we didn't add lazy attributes, just return the original image source.
+			if ( empty( $new_attributes['data-src'] ) ) {
+				return $matches[0];
+			}
+			$new_attributes_str = build_attributes_string( $new_attributes );
+
+			return sprintf( '<img %1$s><noscript>%2$s</noscript>', $new_attributes_str, $matches[0] );
+		},
+		$content
+	);
+
+	return $content;
 }
 
 /**
@@ -135,29 +157,6 @@ function should_skip_image_with_blacklisted_class( string $classes ) : bool {
 		}
 	}
 	return false;
-}
-
-/**
- * Processes images in content by acting as the preg_replace_callback.
- *
- * @param array $matches <img> element to be altered.
- * @return string The image HTML with updated lazy attributes.
- */
-function lazyload_process_image( array $matches ) : string {
-	$old_attributes_str       = $matches[2];
-	$old_attributes_kses_hair = wp_kses_hair( $old_attributes_str, wp_allowed_protocols() );
-	if ( empty( $old_attributes_kses_hair['src'] ) ) {
-		return $matches[0];
-	}
-	$old_attributes = flatten_kses_hair_data( $old_attributes_kses_hair );
-	$new_attributes = process_image_attributes( $old_attributes );
-	// If we didn't add lazy attributes, just return the original image source.
-	if ( empty( $new_attributes['data-src'] ) ) {
-		return $matches[0];
-	}
-	$new_attributes_str = build_attributes_string( $new_attributes );
-
-	return sprintf( '<img %1$s><noscript>%2$s</noscript>', $new_attributes_str, $matches[0] );
 }
 
 /**

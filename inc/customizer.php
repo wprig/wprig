@@ -24,14 +24,18 @@ function customize_register( WP_Customize_Manager $wp_customize ) {
 			'blogname',
 			array(
 				'selector'        => '.site-title a',
-				'render_callback' => __NAMESPACE__ . '\\customize_partial_blogname',
+				'render_callback' => function() {
+					bloginfo( 'name' );
+				},
 			)
 		);
 		$wp_customize->selective_refresh->add_partial(
 			'blogdescription',
 			array(
 				'selector'        => '.site-description',
-				'render_callback' => __NAMESPACE__ . '\\customize_partial_blogdescription',
+				'render_callback' => function() {
+					bloginfo( 'description' );
+				},
 			)
 		);
 	}
@@ -52,8 +56,19 @@ function customize_register( WP_Customize_Manager $wp_customize ) {
 			'lazy_load_media',
 			array(
 				'default'           => 'lazyload',
-				'sanitize_callback' => __NAMESPACE__ . '\\sanitize_lazy_load_media',
 				'transport'         => 'postMessage',
+				'sanitize_callback' => function( $input ) : string {
+					$valid = array(
+						'lazyload' => __( 'Lazy-load images', 'wp-rig' ),
+						'no-lazyload' => __( 'Load images immediately', 'wp-rig' ),
+					);
+
+					if ( array_key_exists( $input, $valid ) ) {
+						return $input;
+					}
+
+					return '';
+				},
 			)
 		);
 
@@ -75,46 +90,9 @@ function customize_register( WP_Customize_Manager $wp_customize ) {
 add_action( 'customize_register', __NAMESPACE__ . '\\customize_register' );
 
 /**
- * Render the site title for the selective refresh partial.
- *
- * @return void
- */
-function customize_partial_blogname() {
-	bloginfo( 'name' );
-}
-
-/**
- * Render the site tagline for the selective refresh partial.
- *
- * @return void
- */
-function customize_partial_blogdescription() {
-	bloginfo( 'description' );
-}
-
-/**
  * Binds JS handlers to make Theme Customizer preview reload changes asynchronously.
  */
 function enqueue_customize_preview_js() {
 	wp_enqueue_script( 'wp-rig-customizer', get_theme_file_uri( '/js/customizer.js' ), array( 'customize-preview' ), '20151215', true );
 }
 add_action( 'customize_preview_init', __NAMESPACE__ . '\\enqueue_customize_preview_js' );
-
-/**
- * Sanitize the lazy-load media options.
- *
- * @param mixed $input Lazy-load setting.
- * @return string Either 'lazyload', 'no-lazyload', or empty string if none set.
- */
-function sanitize_lazy_load_media( $input ) : string {
-	$valid = array(
-		'lazyload' => __( 'Lazy-load images', 'wp-rig' ),
-		'no-lazyload' => __( 'Load images immediately', 'wp-rig' ),
-	);
-
-	if ( array_key_exists( $input, $valid ) ) {
-		return $input;
-	}
-
-	return '';
-}

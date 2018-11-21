@@ -22,8 +22,17 @@ function setup_jetpack() {
 		'infinite-scroll',
 		array(
 			'container' => 'main',
-			'render'    => __NAMESPACE__ . '\\infinite_scroll_render',
 			'footer'    => 'page',
+			'render'    => function() {
+				while ( have_posts() ) {
+					the_post();
+					if ( is_search() ) {
+						get_template_part( 'template-parts/content', 'search' );
+					} else {
+						get_template_part( 'template-parts/content', get_post_type() );
+					}
+				}
+			},
 		)
 	);
 
@@ -46,17 +55,3 @@ function setup_jetpack() {
 	);
 }
 add_action( 'after_setup_theme', __NAMESPACE__ . '\\setup_jetpack' );
-
-/**
- * Custom render function for Infinite Scroll.
- */
-function infinite_scroll_render() {
-	while ( have_posts() ) {
-		the_post();
-		if ( is_search() ) :
-			get_template_part( 'template-parts/content', 'search' );
-		else :
-			get_template_part( 'template-parts/content', get_post_type() );
-		endif;
-	}
-}
