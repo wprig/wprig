@@ -228,9 +228,9 @@ add_action( 'after_setup_theme', __NAMESPACE__ . '\\setup_theme' );
  * Set the embed width in pixels, based on the theme's design and stylesheet.
  *
  * @param array $dimensions An array of embed width and height values in pixels (in that order).
- * @return array
+ * @return array Filtered dimensions array.
  */
-function filter_embed_dimensions( array $dimensions ) {
+function filter_embed_dimensions( array $dimensions ) : array {
 	$dimensions['width'] = 720;
 	return $dimensions;
 }

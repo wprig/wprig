@@ -7,12 +7,14 @@
 
 namespace WP_Rig\WP_Rig;
 
+use WP_Customize_Manager;
+
 /**
- * Add postMessage support for site title and description for the Theme Customizer.
+ * Adds postMessage support for site title and description, plus further integration with the Customizer.
  *
- * @param WP_Customize_Manager $wp_customize Theme Customizer object.
+ * @param WP_Customize_Manager $wp_customize Customizer manager instance.
  */
-function customize_register( $wp_customize ) {
+function customize_register( WP_Customize_Manager $wp_customize ) {
 	$wp_customize->get_setting( 'blogname' )->transport         = 'postMessage';
 	$wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
 	$wp_customize->get_setting( 'header_textcolor' )->transport = 'postMessage';
@@ -101,9 +103,10 @@ add_action( 'customize_preview_init', __NAMESPACE__ . '\\enqueue_customize_previ
 /**
  * Sanitize the lazy-load media options.
  *
- * @param string $input Lazy-load setting.
+ * @param mixed $input Lazy-load setting.
+ * @return string Either 'lazyload', 'no-lazyload', or empty string if none set.
  */
-function sanitize_lazy_load_media( $input ) {
+function sanitize_lazy_load_media( $input ) : string {
 	$valid = array(
 		'lazyload' => __( 'Lazy-load images', 'wp-rig' ),
 		'no-lazyload' => __( 'Load images immediately', 'wp-rig' ),

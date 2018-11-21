@@ -74,9 +74,9 @@ function lazyload_remove_filters() {
  * Ensure that our lazy image attributes are not filtered out of image tags.
  *
  * @param array $allowed_tags The allowed tags and their attributes.
- * @return array
+ * @return array Filtered allowed tags.
  */
-function lazyload_allow_attributes( $allowed_tags ) {
+function lazyload_allow_attributes( array $allowed_tags ) : array {
 	if ( ! isset( $allowed_tags['img'] ) ) {
 		return $allowed_tags;
 	}
@@ -97,14 +97,15 @@ function lazyload_allow_attributes( $allowed_tags ) {
 /**
  * Find image elements that should be lazy-loaded.
  *
- * @param object $content The content.
- * @return object
+ * @param string $content The content.
+ * @return string Filtered content.
  */
-function add_image_placeholders( $content ) {
+function add_image_placeholders( string $content ) : string {
 	// Don't lazyload for feeds, previews.
 	if ( is_feed() || is_preview() ) {
 		return $content;
 	}
+
 	// Don't lazy-load if the content has already been run through previously.
 	if ( false !== strpos( $content, 'data-src' ) ) {
 		return $content;
@@ -121,9 +122,9 @@ function add_image_placeholders( $content ) {
  * should not be lazy-loaded
  *
  * @param string $classes A string of space-separated classes.
- * @return bool
+ * @return bool Whether the classes contain a class indicating that lazyloading should be skipped.
  */
-function should_skip_image_with_blacklisted_class( $classes ) {
+function should_skip_image_with_blacklisted_class( string $classes ) : bool {
 	$blacklisted_classes = array(
 		'skip-lazy',
 	);
@@ -140,10 +141,9 @@ function should_skip_image_with_blacklisted_class( $classes ) {
  * Processes images in content by acting as the preg_replace_callback.
  *
  * @param array $matches <img> element to be altered.
- *
- * @return string The image with updated lazy attributes
+ * @return string The image HTML with updated lazy attributes.
  */
-function lazyload_process_image( $matches ) {
+function lazyload_process_image( array $matches ) : string {
 	$old_attributes_str       = $matches[2];
 	$old_attributes_kses_hair = wp_kses_hair( $old_attributes_str, wp_allowed_protocols() );
 	if ( empty( $old_attributes_kses_hair['src'] ) ) {
@@ -165,10 +165,9 @@ function lazyload_process_image( $matches ) {
  * that they load lazily.
  *
  * @param array $attributes Attributes of the current <img> element.
- *
  * @return array The updated image attributes array with lazy load attributes.
  */
-function process_image_attributes( $attributes ) {
+function process_image_attributes( array $attributes ) : array {
 	if ( empty( $attributes['src'] ) ) {
 		return $attributes;
 	}
@@ -202,12 +201,12 @@ function process_image_attributes( $attributes ) {
 }
 
 /**
- * Append a `lazy` class to <img> elements for lazy-loading.
+ * Appends a 'lazy' class to <img> elements for lazy-loading.
  *
  * @param array $attributes <img> element attributes.
- * @return string
+ * @return string Classes string including a 'lazy' class.
  */
-function lazyload_class( $attributes ) {
+function lazyload_class( array $attributes ) : string {
 	if ( array_key_exists( 'class', $attributes ) ) {
 		$classes  = $attributes['class'];
 		$classes .= ' lazy';
@@ -219,21 +218,21 @@ function lazyload_class( $attributes ) {
 }
 
 /**
- * Set the placeholder image.
+ * Gets the placeholder image URL.
  *
  * @return string The URL to the placeholder image.
  */
-function lazyload_get_placeholder_image() {
+function lazyload_get_placeholder_image() : string {
 	return get_theme_file_uri( '/images/placeholder.svg' );
 }
 
 /**
- * Flatten attribute list into string.
+ * Flattens an attribute list into key value pairs.
  *
  * @param array $attributes Array of attributes.
- * @return string $flattened_attributes
+ * @return array Flattened attributes as $attr => $attr_value pairs.
  */
-function flatten_kses_hair_data( $attributes ) {
+function flatten_kses_hair_data( array $attributes ) : array {
 	$flattened_attributes = array();
 	foreach ( $attributes as $name => $attribute ) {
 		$flattened_attributes[ $name ] = $attribute['value'];
@@ -242,12 +241,12 @@ function flatten_kses_hair_data( $attributes ) {
 }
 
 /**
- * Build string of new attributes to be returned to the <img> element.
+ * Builds a string of attributes for an HTML element.
  *
  * @param array $attributes Array of attributes.
- * @return string
+ * @return string HTML attribute string.
  */
-function build_attributes_string( $attributes ) {
+function build_attributes_string( array $attributes ) : string {
 	$string = array();
 	foreach ( $attributes as $name => $value ) {
 		if ( '' === $value ) {

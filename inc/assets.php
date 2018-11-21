@@ -7,24 +7,26 @@
 
 namespace WP_Rig\WP_Rig;
 
+use WP_Styles;
+
 /**
- * Get asset version.
+ * Gets the asset version.
  *
  * Returns filemtime when WP_DEBUG is true, otherwise the theme version.
  *
  * @param string $file Asset in the stylesheet directory.
  * @return string Version number.
  */
-function get_asset_version( $file ) {
-	return WP_DEBUG ? filemtime( $file ) : '2.0.0';
+function get_asset_version( string $file ) : string {
+	return WP_DEBUG ? (string) filemtime( $file ) : '2.0.0';
 }
 
 /**
  * Returns the theme CSS files.
  *
- * @return array
+ * @return array List of CSS file names.
  */
-function get_css_files() {
+function get_css_files() : array {
 
 	$css_files = array(
 		'global',
@@ -35,17 +37,16 @@ function get_css_files() {
 		'front-page',
 	);
 
-	/*
+	/**
 	 * Filters default CSS files.
 	 *
-	 * @param array $css_files array of CSS files
-	 * to register and enqueue with WordPress.
+	 * @param array $css_files List of CSS file names to register and enqueue with WordPress.
 	 */
 	return apply_filters( 'wp_rig_css_files', $css_files );
 }
 
 /**
- * Register and enqueue styles.
+ * Registers and enqueues styles.
  */
 function enqueue_styles() {
 
@@ -135,18 +136,19 @@ function preload_styles() {
 add_action( 'wp_head', __NAMESPACE__ . '\\preload_styles' );
 
 /**
- * Generate preload markup for stylesheets.
+ * Gets the preload URI for a stylesheet.
  *
- * @param object $wp_styles Registered styles.
- * @param string $handle The style handle.
+ * @param WP_Styles $wp_styles Registered styles.
+ * @param string    $handle The style handle.
+ * @return string Stylesheet preload URI.
  */
-function get_preload_stylesheet_uri( $wp_styles, $handle ) {
+function get_preload_stylesheet_uri( WP_Styles $wp_styles, string $handle ) : string {
 	$preload_uri = $wp_styles->registered[ $handle ]->src . '?ver=' . $wp_styles->registered[ $handle ]->ver;
 	return $preload_uri;
 }
 
 /**
- * Enqueue scripts.
+ * Enqueues scripts.
  */
 function enqueue_scripts() {
 
@@ -198,9 +200,9 @@ add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_scripts' );
  * @link https://core.trac.wordpress.org/ticket/12009
  * @param string $tag    The script tag.
  * @param string $handle The script handle.
- * @return array
+ * @return string Script HTML string.
  */
-function filter_script_loader_tag( $tag, $handle ) {
+function filter_script_loader_tag( string $tag, string $handle ) : string {
 
 	foreach ( array( 'async', 'defer' ) as $attr ) {
 		if ( ! wp_scripts()->get_data( $handle, $attr ) ) {
@@ -221,7 +223,7 @@ function filter_script_loader_tag( $tag, $handle ) {
 add_filter( 'script_loader_tag', __NAMESPACE__ . '\\filter_script_loader_tag', 10, 2 );
 
 /**
- * Enqueue WordPress theme styles within Gutenberg.
+ * Enqueues WordPress theme styles for the block editor.
  */
 function enqueue_block_editor_styles() {
 
@@ -239,18 +241,16 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_block_edit
 /**
  * Returns Google Fonts used in theme.
  *
- * Has filter "wp_rig_google_fonts".
- *
- * @return array
+ * @return array Associative array of $font_name => $font_variants pairs.
  */
-function get_google_fonts() {
+function get_google_fonts() : array {
 
 	$fonts_default = array(
 		'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
 		'Crimson Text'     => array( '400', '400i', '600', '600i' ),
 	);
 
-	/*
+	/**
 	 * Filters default Google fonts.
 	 *
 	 * @param array $fonts_default array of fonts to use
@@ -259,9 +259,11 @@ function get_google_fonts() {
 }
 
 /**
- * Register Google Fonts
+ * Returns the Google Fonts URL to use for enqueuing Google Fonts CSS.
+ *
+ * @return string Google Fonts URL, or empty string if no Google fonts should be used.
  */
-function get_google_fonts_url() {
+function get_google_fonts_url() : string {
 
 	$fonts_register = get_google_fonts();
 
@@ -301,9 +303,9 @@ function get_google_fonts_url() {
  *
  * @param array  $urls           URLs to print for resource hints.
  * @param string $relation_type  The relation type the URLs are printed.
- * @return array $urls           URLs to print for resource hints.
+ * @return array URLs to print for resource hints.
  */
-function filter_resource_hints( $urls, $relation_type ) {
+function filter_resource_hints( array $urls, string $relation_type ) : array {
 	if ( wp_style_is( 'wp-rig-fonts', 'queue' ) && 'preconnect' === $relation_type ) {
 		$urls[] = array(
 			'href' => 'https://fonts.gstatic.com',

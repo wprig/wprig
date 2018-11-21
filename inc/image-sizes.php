@@ -16,7 +16,7 @@ namespace WP_Rig\WP_Rig;
  *                      values in pixels (in that order).
  * @return string A source size value for use in a content image 'sizes' attribute.
  */
-function filter_content_image_sizes_attr( $sizes, $size ) {
+function filter_content_image_sizes_attr( string $sizes, array $size ) : string {
 	$width = $size[0];
 
 	if ( 740 <= $width ) {
@@ -39,7 +39,7 @@ add_filter( 'wp_calculate_image_sizes', __NAMESPACE__ . '\\filter_content_image_
  * @param array  $attr   Array of the attributes for the image tag.
  * @return string The filtered header image HTML.
  */
-function filter_header_image_tag( $html, $header, $attr ) {
+function filter_header_image_tag( string $html, $header, array $attr ) : string {
 	if ( isset( $attr['sizes'] ) ) {
 		$html = str_replace( $attr['sizes'], '100vw', $html );
 	}
@@ -56,7 +56,7 @@ add_filter( 'get_header_image_tag', __NAMESPACE__ . '\\filter_header_image_tag',
  * @param array $size       Registered image size or flat array of height and width dimensions.
  * @return array The filtered attributes for the image markup.
  */
-function filter_post_thumbnail_sizes_attr( $attr, $attachment, $size ) {
+function filter_post_thumbnail_sizes_attr( array $attr, int $attachment, array $size ) : array {
 
 	$attr['sizes'] = '100vw';
 

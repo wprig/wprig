@@ -9,24 +9,26 @@
 
 namespace WP_Rig\WP_Rig;
 
+use WP_Post;
+
 /**
- * Determine whether this is an AMP response.
+ * Determines whether this is an AMP response.
  *
  * Note that this must only be called after the parse_query action.
  *
  * @link https://github.com/Automattic/amp-wp
- * @return bool Is AMP endpoint (and AMP plugin is active).
+ * @return bool Whether the AMP plugin is active and the current request is for an AMP endpoint.
  */
-function is_amp() {
+function is_amp() : bool {
 	return function_exists( 'is_amp_endpoint' ) && is_amp_endpoint();
 }
 
 /**
- * Determine whether amp-live-list should be used for the comment list.
+ * Determines whether amp-live-list should be used for the comment list.
  *
  * @return bool Whether to use amp-live-list.
  */
-function using_amp_live_list_comments() {
+function using_amp_live_list_comments() : bool {
 	if ( ! is_amp() ) {
 		return false;
 	}
@@ -35,16 +37,16 @@ function using_amp_live_list_comments() {
 }
 
 /**
- * Add pagination reference point attribute for amp-live-list when theme supports AMP.
+ * Adds a pagination reference point attribute for amp-live-list when theme supports AMP.
  *
  * This is used by the navigation_markup_template filter in the comments template.
  *
  * @link https://www.ampproject.org/docs/reference/components/amp-live-list#pagination
  *
  * @param string $markup Navigation markup.
- * @return string Markup.
+ * @return string Filtered arkup.
  */
-function add_amp_live_list_pagination_attribute( $markup ) {
+function add_amp_live_list_pagination_attribute( string $markup ) : string {
 	return preg_replace( '/(\s*<[a-z0-9_-]+)/i', '$1 pagination ', $markup, 1 );
 }
 
@@ -260,9 +262,9 @@ function post_thumbnail() {
 /**
  * Prints HTML with title and link to original post where attachment was added.
  *
- * @param object $post object.
+ * @param WP_Post $post object.
  */
-function attachment_in( $post ) {
+function attachment_in( WP_Post $post ) {
 	if ( ! empty( $post->post_parent ) ) :
 		$postlink = sprintf(
 			/* translators: %s: original post where attachment was added. */

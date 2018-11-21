@@ -7,13 +7,15 @@
 
 namespace WP_Rig\WP_Rig;
 
+use WP_Post;
+
 /**
  * Adds custom classes to the array of body classes.
  *
  * @param array $classes Classes for the body element.
- * @return array
+ * @return array Filtered body classes.
  */
-function filter_body_classes( $classes ) {
+function filter_body_classes( array $classes ) : array {
 	// Adds a class of hfeed to non-singular pages.
 	if ( ! is_singular() ) {
 		$classes[] = 'hfeed';
@@ -54,13 +56,13 @@ add_action( 'wp_head', __NAMESPACE__ . '\\add_pingback_header' );
  *   is only being added for page menus if JS is enabled.
  *   Create a ticket to add to core?
  *
- * @param string   $item_output The menu item's starting HTML output.
- * @param WP_Post  $item        Menu item data object.
- * @param int      $depth       Depth of menu item. Used for padding.
- * @param stdClass $args        An object of wp_nav_menu() arguments.
+ * @param string  $item_output The menu item's starting HTML output.
+ * @param WP_Post $item        Menu item data object.
+ * @param int     $depth       Depth of menu item. Used for padding.
+ * @param object  $args        An object of wp_nav_menu() arguments.
  * @return string Modified nav menu HTML.
  */
-function filter_primary_menu_dropdown_symbol( $item_output, $item, $depth, $args ) {
+function filter_primary_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ) : string {
 
 	// Only for our primary menu location.
 	if ( empty( $args->theme_location ) || 'primary' != $args->theme_location ) {
@@ -86,7 +88,7 @@ add_filter( 'walker_nav_menu_start_el', __NAMESPACE__ . '\\filter_primary_menu_d
  * @param WP_Post $item  The current menu item.
  * @return array Modified HTML attributes
  */
-function filter_nav_menu_link_attributes_aria_current( $atts, $item ) {
+function filter_nav_menu_link_attributes_aria_current( array $atts, WP_Post $item ) : array {
 	/*
 	 * First, check if "current" is set,
 	 * which means the item is a nav menu item.
@@ -111,14 +113,14 @@ add_filter( 'nav_menu_link_attributes', __NAMESPACE__ . '\\filter_nav_menu_link_
 add_filter( 'page_menu_link_attributes', __NAMESPACE__ . '\\filter_nav_menu_link_attributes_aria_current', 10, 2 );
 
 /**
- * Exclude any directory named optional
- * from being scanned for theme files
+ * Excludes any directory named 'optional' from being scanned for theme files
  *
  * @link https://developer.wordpress.org/reference/hooks/theme_scandir_exclusions/
+ *
  * @param array $exclusions the default directories to exclude.
- * @return array
+ * @return array Filtered exclusions.
  */
-function exclude_optional_templates( $exclusions ) {
+function exclude_optional_templates( array $exclusions ) : array {
 	return array_merge(
 		$exclusions,
 		array( 'optional' )
