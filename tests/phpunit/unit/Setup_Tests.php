@@ -10,6 +10,8 @@ namespace WP_Rig\WP_Rig\Tests\Unit;
 use WP_Rig\WP_Rig\Tests\Framework\Unit_Test_Case;
 use Brain\Monkey\Functions;
 use function WP_Rig\WP_Rig\setup_theme;
+use function WP_Rig\WP_Rig\filter_embed_dimensions;
+use function WP_Rig\WP_Rig\widgets_init;
 
 /**
  * Class unit-testing the theme setup functions.
@@ -81,10 +83,10 @@ class Setup_Tests extends Unit_Test_Case {
 	/**
 	 * Tests that the embed dimensions filter callback returns the correct value.
 	 *
-	 * @covers wp_rig_embed_dimensions()
+	 * @covers filter_embed_dimensions()
 	 */
-	public function test_wp_rig_embed_dimensions() {
-		$result = wp_rig_embed_dimensions( [] );
+	public function test_filter_embed_dimensions() {
+		$result = filter_embed_dimensions( [] );
 
 		$this->assertEquals(
 			[ 'width' => 720 ],
@@ -95,16 +97,16 @@ class Setup_Tests extends Unit_Test_Case {
 	/**
 	 * Tests that the widgets and sidebar initialization function performs the necessary logic.
 	 *
-	 * @covers wp_rig_widgets_init()
+	 * @covers widgets_init()
 	 */
-	public function test_wp_rig_widgets_init() {
+	public function test_widgets_init() {
 		Functions\when( 'register_sidebar' )->alias(
 			function( $args ) {
 				$this->data_storage[ $args['id'] ] = $args;
 			}
 		);
 
-		wp_rig_widgets_init();
+		widgets_init();
 
 		$this->assertEqualSets(
 			[ 'sidebar-1' ],
