@@ -5,26 +5,28 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 /**
  * Get asset version.
  *
  * Returns filemtime when WP_DEBUG is true, otherwise the theme version.
  *
- * @param string $file  Asset in the stylesheet directory.
- * @return string       Version number.
+ * @param string $file Asset in the stylesheet directory.
+ * @return string Version number.
  */
-function wp_rig_get_asset_version( $file ) {
+function get_asset_version( $file ) {
 	return WP_DEBUG ? filemtime( $file ) : '2.0.0';
 }
 
- /**
-  * WP Rig CSS Files
-  *
-  * @return array
-  */
-function wp_rig_get_css_files() {
+/**
+ * Returns the theme CSS files.
+ *
+ * @return array
+ */
+function get_css_files() {
 
-	$wp_rig_css_files = array(
+	$css_files = array(
 		'global',
 		'comments',
 		'content',
@@ -36,62 +38,62 @@ function wp_rig_get_css_files() {
 	/*
 	 * Filters default CSS files.
 	 *
-	 * @param array $wp_rig_css_files array of CSS files
+	 * @param array $css_files array of CSS files
 	 * to register and enqueue with WordPress.
 	 */
-	return apply_filters( 'wp_rig_css_files', $wp_rig_css_files );
+	return apply_filters( 'wp_rig_css_files', $css_files );
 }
 
 /**
  * Register and enqueue styles.
  */
-function wp_rig_styles() {
+function enqueue_styles() {
 
 	// Add custom fonts, used in the main stylesheet.
-	$fonts_url = wp_rig_fonts_url();
+	$fonts_url = get_google_fonts_url();
 	if ( ! empty( $fonts_url ) ) {
 		wp_enqueue_style( 'wp-rig-fonts', $fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 	}
 
 	// Register component styles that are printed as needed.
-	$wp_rig_theme_css_dir = get_theme_file_path( '/assets/css/' );
-	$wp_rig_theme_css_uri = get_theme_file_uri( '/assets/css/' );
+	$css_dir = get_theme_file_path( '/assets/css/' );
+	$css_uri = get_theme_file_uri( '/assets/css/' );
 
-	$wp_rig_css_files = wp_rig_get_css_files();
+	$css_files = get_css_files();
 
-	foreach ( $wp_rig_css_files as $wp_rig_css_file ) {
+	foreach ( $css_files as $css_file ) {
 		/*
 		* Enqueue global styles and register
 		* the rest as they are called conditionally
 		* on an as-needed basis.
 		*/
-		if ( 'global' === $wp_rig_css_file ) {
+		if ( 'global' === $css_file ) {
 			wp_enqueue_style(
-				'wp-rig-' . $wp_rig_css_file,
-				$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
+				'wp-rig-' . $css_file,
+				$css_uri . $css_file . '.min.css',
 				array(),
-				wp_rig_get_asset_version( $wp_rig_theme_css_dir . $wp_rig_css_file . '.min.css' )
+				get_asset_version( $css_dir . $css_file . '.min.css' )
 			);
 		} else {
 			wp_register_style(
-				'wp-rig-' . $wp_rig_css_file,
-				$wp_rig_theme_css_uri . $wp_rig_css_file . '.min.css',
+				'wp-rig-' . $css_file,
+				$css_uri . $css_file . '.min.css',
 				array(),
-				wp_rig_get_asset_version( $wp_rig_theme_css_dir . $wp_rig_css_file . '.min.css' )
+				get_asset_version( $css_dir . $css_file . '.min.css' )
 			);
 		}
 	}
 
 }
-add_action( 'wp_enqueue_scripts', 'wp_rig_styles' );
+add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_styles' );
 
 /**
  * Enqueue scripts.
  */
-function wp_rig_scripts() {
+function enqueue_scripts() {
 
 	// If the AMP plugin is active, return early.
-	if ( wp_rig_is_amp() ) {
+	if ( is_amp() ) {
 		return;
 	}
 
@@ -100,7 +102,7 @@ function wp_rig_scripts() {
 		'wp-rig-navigation',
 		get_theme_file_uri( '/assets/js/navigation.min.js' ),
 		array(),
-		wp_rig_get_asset_version( get_stylesheet_directory() . '/assets/js/navigation.min.js' ),
+		get_asset_version( get_stylesheet_directory() . '/assets/js/navigation.min.js' ),
 		false
 	);
 	wp_script_add_data( 'wp-rig-navigation', 'async', true );
@@ -118,7 +120,7 @@ function wp_rig_scripts() {
 		'wp-rig-skip-link-focus-fix',
 		get_theme_file_uri( '/assets/js/skip-link-focus-fix.min.js' ),
 		array(),
-		wp_rig_get_asset_version( get_stylesheet_directory() . '/assets/js/skip-link-focus-fix.min.js' ),
+		get_asset_version( get_stylesheet_directory() . '/assets/js/skip-link-focus-fix.min.js' ),
 		false
 	);
 	wp_script_add_data( 'wp-rig-skip-link-focus-fix', 'defer', true );
@@ -128,15 +130,15 @@ function wp_rig_scripts() {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'wp_rig_scripts' );
+add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_scripts' );
 
 /**
  * Enqueue WordPress theme styles within Gutenberg.
  */
-function wp_rig_gutenberg_styles() {
+function enqueue_block_editor_styles() {
 
 	// Add custom fonts, used in the main stylesheet.
-	$fonts_url = wp_rig_fonts_url();
+	$fonts_url = get_google_fonts_url();
 	if ( ! empty( $fonts_url ) ) {
 		wp_enqueue_style( 'wp-rig-fonts', $fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 	}
@@ -144,7 +146,7 @@ function wp_rig_gutenberg_styles() {
 	// Enqueue main stylesheet.
 	wp_enqueue_style( 'wp-rig-editor-styles', get_theme_file_uri( '/assets/css/editor/editor-styles.min.css' ), array(), filemtime( get_stylesheet_directory() . '/assets/css/editor/editor-styles.min.css' ) );
 }
-add_action( 'enqueue_block_editor_assets', 'wp_rig_gutenberg_styles' );
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_block_editor_styles' );
 
 /**
  * Returns Google Fonts used in theme.
@@ -153,7 +155,7 @@ add_action( 'enqueue_block_editor_assets', 'wp_rig_gutenberg_styles' );
  *
  * @return array
  */
-function wp_rig_get_google_fonts() {
+function get_google_fonts() {
 
 	$fonts_default = array(
 		'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
@@ -171,9 +173,9 @@ function wp_rig_get_google_fonts() {
 /**
  * Register Google Fonts
  */
-function wp_rig_fonts_url() {
+function get_google_fonts_url() {
 
-	$fonts_register = wp_rig_get_google_fonts();
+	$fonts_register = get_google_fonts();
 
 	if ( empty( $fonts_register ) ) {
 		return '';
@@ -213,7 +215,7 @@ function wp_rig_fonts_url() {
  * @param string $relation_type  The relation type the URLs are printed.
  * @return array $urls           URLs to print for resource hints.
  */
-function wp_rig_resource_hints( $urls, $relation_type ) {
+function filter_resource_hints( $urls, $relation_type ) {
 	if ( wp_style_is( 'wp-rig-fonts', 'queue' ) && 'preconnect' === $relation_type ) {
 		$urls[] = array(
 			'href' => 'https://fonts.gstatic.com',
@@ -222,4 +224,4 @@ function wp_rig_resource_hints( $urls, $relation_type ) {
 	}
 	return $urls;
 }
-add_filter( 'wp_resource_hints', 'wp_rig_resource_hints', 10, 2 );
+add_filter( 'wp_resource_hints', __NAMESPACE__ . '\\filter_resource_hints', 10, 2 );

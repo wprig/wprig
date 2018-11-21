@@ -7,12 +7,14 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 /**
  * Set up the WordPress core custom header feature.
  *
- * @uses wp_rig_header_style()
+ * @uses header_style()
  */
-function wp_rig_custom_header_setup() {
+function setup_custom_header() {
 	add_theme_support(
 		'custom-header',
 		apply_filters(
@@ -23,20 +25,20 @@ function wp_rig_custom_header_setup() {
 				'width'                  => 1600,
 				'height'                 => 250,
 				'flex-height'            => true,
-				'wp-head-callback'       => 'wp_rig_header_style',
+				'wp-head-callback'       => __NAMESPACE__ . '\\header_style',
 			)
 		)
 	);
 }
-add_action( 'after_setup_theme', 'wp_rig_custom_header_setup' );
+add_action( 'after_setup_theme', __NAMESPACE__ . '\\setup_custom_header' );
 
-if ( ! function_exists( 'wp_rig_header_style' ) ) :
+if ( ! function_exists( __NAMESPACE__ . '\\header_style' ) ) :
 	/**
 	 * Styles the header image and text displayed on the blog.
 	 *
-	 * @see wp_rig_custom_header_setup().
+	 * @see setup_custom_header().
 	 */
-	function wp_rig_header_style() {
+	function header_style() {
 		$header_text_color = get_header_textcolor();
 
 		/*

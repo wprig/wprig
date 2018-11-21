@@ -9,6 +9,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?> class="no-js">
@@ -17,7 +19,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 
-	<?php if ( ! wp_rig_is_amp() ) : ?>
+	<?php if ( ! is_amp() ) : ?>
 		<script>document.documentElement.classList.remove("no-js");</script>
 	<?php endif; ?>
 
@@ -48,11 +50,11 @@
 			</div><!-- .site-branding -->
 
 			<nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
-				<?php if ( wp_rig_is_amp() ) : ?>
+				<?php if ( is_amp() ) : ?>
 					[class]=" siteNavigationMenu.expanded ? 'main-navigation toggled-on' : 'main-navigation' "
 				<?php endif; ?>
 			>
-				<?php if ( wp_rig_is_amp() ) : ?>
+				<?php if ( is_amp() ) : ?>
 					<amp-state id="siteNavigationMenu">
 						<script type="application/json">
 							{
@@ -63,7 +65,7 @@
 				<?php endif; ?>
 
 				<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Open menu', 'wp-rig' ); ?>" aria-controls="primary-menu" aria-expanded="false"
-					<?php if ( wp_rig_is_amp() ) : ?>
+					<?php if ( is_amp() ) : ?>
 						on="tap:AMP.setState( { siteNavigationMenu: { expanded: ! siteNavigationMenu.expanded } } )"
 						[aria-expanded]="siteNavigationMenu.expanded ? 'true' : 'false'"
 					<?php endif; ?>

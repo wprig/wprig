@@ -5,12 +5,14 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 /**
  * Add postMessage support for site title and description for the Theme Customizer.
  *
  * @param WP_Customize_Manager $wp_customize Theme Customizer object.
  */
-function wp_rig_customize_register( $wp_customize ) {
+function customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'blogname' )->transport         = 'postMessage';
 	$wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
 	$wp_customize->get_setting( 'header_textcolor' )->transport = 'postMessage';
@@ -20,14 +22,14 @@ function wp_rig_customize_register( $wp_customize ) {
 			'blogname',
 			array(
 				'selector'        => '.site-title a',
-				'render_callback' => 'wp_rig_customize_partial_blogname',
+				'render_callback' => __NAMESPACE__ . '\\customize_partial_blogname',
 			)
 		);
 		$wp_customize->selective_refresh->add_partial(
 			'blogdescription',
 			array(
 				'selector'        => '.site-description',
-				'render_callback' => 'wp_rig_customize_partial_blogdescription',
+				'render_callback' => __NAMESPACE__ . '\\customize_partial_blogdescription',
 			)
 		);
 	}
@@ -43,12 +45,12 @@ function wp_rig_customize_register( $wp_customize ) {
 		)
 	);
 
-	if ( function_exists( 'wp_rig_lazyload_images' ) ) {
+	if ( function_exists( __NAMESPACE__ . '\\lazyload_images' ) ) {
 		$wp_customize->add_setting(
 			'lazy_load_media',
 			array(
 				'default'           => 'lazyload',
-				'sanitize_callback' => 'wp_rig_sanitize_lazy_load_media',
+				'sanitize_callback' => __NAMESPACE__ . '\\sanitize_lazy_load_media',
 				'transport'         => 'postMessage',
 			)
 		);
@@ -68,14 +70,14 @@ function wp_rig_customize_register( $wp_customize ) {
 		);
 	}
 }
-add_action( 'customize_register', 'wp_rig_customize_register' );
+add_action( 'customize_register', __NAMESPACE__ . '\\customize_register' );
 
 /**
  * Render the site title for the selective refresh partial.
  *
  * @return void
  */
-function wp_rig_customize_partial_blogname() {
+function customize_partial_blogname() {
 	bloginfo( 'name' );
 }
 
@@ -84,24 +86,24 @@ function wp_rig_customize_partial_blogname() {
  *
  * @return void
  */
-function wp_rig_customize_partial_blogdescription() {
+function customize_partial_blogdescription() {
 	bloginfo( 'description' );
 }
 
 /**
  * Binds JS handlers to make Theme Customizer preview reload changes asynchronously.
  */
-function wp_rig_customize_preview_js() {
+function enqueue_customize_preview_js() {
 	wp_enqueue_script( 'wp-rig-customizer', get_theme_file_uri( '/js/customizer.js' ), array( 'customize-preview' ), '20151215', true );
 }
-add_action( 'customize_preview_init', 'wp_rig_customize_preview_js' );
+add_action( 'customize_preview_init', __NAMESPACE__ . '\\enqueue_customize_preview_js' );
 
 /**
  * Sanitize the lazy-load media options.
  *
  * @param string $input Lazy-load setting.
  */
-function wp_rig_sanitize_lazy_load_media( $input ) {
+function sanitize_lazy_load_media( $input ) {
 	$valid = array(
 		'lazyload' => __( 'Lazy-load images', 'wp-rig' ),
 		'no-lazyload' => __( 'Load images immediately', 'wp-rig' ),

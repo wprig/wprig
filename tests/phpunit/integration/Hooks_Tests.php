@@ -122,52 +122,52 @@ class Hooks_Tests extends Integration_Test_Case {
 		return [
 			[
 				'embed_defaults',
-				'wp_rig_embed_dimensions',
+				'WP_Rig\\WP_Rig\\embed_dimensions',
 				10,
 			],
 			[
 				'wp_resource_hints',
-				'wp_rig_resource_hints',
+				'WP_Rig\\WP_Rig\\resource_hints',
 				10,
 			],
 			[
 				'wp_calculate_image_sizes',
-				'wp_rig_content_image_sizes_attr',
+				'WP_Rig\\WP_Rig\\content_image_sizes_attr',
 				10,
 			],
 			[
 				'get_header_image_tag',
-				'wp_rig_header_image_tag',
+				'WP_Rig\\WP_Rig\\header_image_tag',
 				10,
 			],
 			[
 				'wp_get_attachment_image_attributes',
-				'wp_rig_post_thumbnail_sizes_attr',
+				'WP_Rig\\WP_Rig\\post_thumbnail_sizes_attr',
 				10,
 			],
 			[
 				'body_class',
-				'wp_rig_body_classes',
+				'WP_Rig\\WP_Rig\\body_classes',
 				10,
 			],
 			[
 				'script_loader_tag',
-				'wp_rig_filter_script_loader_tag',
+				'WP_Rig\\WP_Rig\\filter_script_loader_tag',
 				10,
 			],
 			[
 				'walker_nav_menu_start_el',
-				'wp_rig_add_primary_menu_dropdown_symbol',
+				'WP_Rig\\WP_Rig\\add_primary_menu_dropdown_symbol',
 				10,
 			],
 			[
 				'nav_menu_link_attributes',
-				'wp_rig_add_nav_menu_aria_current',
+				'WP_Rig\\WP_Rig\\add_nav_menu_aria_current',
 				10,
 			],
 			[
 				'page_menu_link_attributes',
-				'wp_rig_add_nav_menu_aria_current',
+				'WP_Rig\\WP_Rig\\add_nav_menu_aria_current',
 				10,
 			],
 		];

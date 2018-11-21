@@ -9,6 +9,7 @@ namespace WP_Rig\WP_Rig\Tests\Unit;
 
 use WP_Rig\WP_Rig\Tests\Framework\Unit_Test_Case;
 use Brain\Monkey\Functions;
+use function WP_Rig\WP_Rig\setup_theme;
 
 /**
  * Class unit-testing the theme setup functions.
@@ -36,9 +37,9 @@ class Setup_Tests extends Unit_Test_Case {
 	/**
 	 * Tests that the theme setup function performs the necessary logic.
 	 *
-	 * @covers wp_rig_setup()
+	 * @covers setup_theme()
 	 */
-	public function test_wp_rig_setup() {
+	public function test_setup_theme() {
 		Functions\expect( 'load_theme_textdomain' )
 			->once();
 
@@ -56,7 +57,7 @@ class Setup_Tests extends Unit_Test_Case {
 			)
 			->once();
 
-		wp_rig_setup();
+		setup_theme();
 
 		$this->assertEqualSets(
 			[

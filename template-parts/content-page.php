@@ -7,6 +7,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -14,7 +16,7 @@
 		<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
 	</header><!-- .entry-header -->
 
-	<?php wp_rig_post_thumbnail(); ?>
+	<?php post_thumbnail(); ?>
 
 	<div class="entry-content">
 		<?php
@@ -32,7 +34,7 @@
 	<?php if ( get_edit_post_link() ) : ?>
 		<footer class="entry-footer">
 			<?php
-				wp_rig_edit_post_link();
+				edit_post_link();
 			?>
 		</footer><!-- .entry-footer -->
 	<?php endif; ?>

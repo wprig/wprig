@@ -7,6 +7,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 get_header(); ?>
 
 	<main id="primary" class="site-main">

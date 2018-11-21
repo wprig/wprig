@@ -7,6 +7,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 if ( ! is_active_sidebar( 'sidebar-1' ) ) {
 	return;
 }

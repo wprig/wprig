@@ -10,6 +10,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 /*
  * If the current post is protected by a password and
  * the visitor has not yet entered the password we will
@@ -49,7 +51,7 @@ if ( post_password_required() ) {
 
 		<?php the_comments_navigation(); ?>
 
-		<?php if ( wp_rig_using_amp_live_list_comments() ) : ?>
+		<?php if ( using_amp_live_list_comments() ) : ?>
 			<amp-live-list
 				id="amp-live-comments-list-<?php the_ID(); ?>"
 				<?php echo ( 'asc' === get_option( 'comment_order' ) ) ? ' sort="ascending" ' : ''; ?>
@@ -58,7 +60,7 @@ if ( post_password_required() ) {
 			>
 		<?php endif; ?>
 
-		<ol class="comment-list" <?php echo wp_rig_using_amp_live_list_comments() ? 'items' : ''; ?>>
+		<ol class="comment-list" <?php echo using_amp_live_list_comments() ? 'items' : ''; ?>>
 			<?php
 				wp_list_comments(
 					array(
@@ -70,17 +72,17 @@ if ( post_password_required() ) {
 		</ol><!-- .comment-list -->
 
 		<?php
-		if ( wp_rig_using_amp_live_list_comments() ) {
-			add_filter( 'navigation_markup_template', 'wp_rig_add_amp_live_list_pagination_attribute' );
+		if ( using_amp_live_list_comments() ) {
+			add_filter( 'navigation_markup_template', __NAMESPACE__ . '\\add_amp_live_list_pagination_attribute' );
 		}
 
 		the_comments_navigation();
 
-		if ( wp_rig_using_amp_live_list_comments() ) {
-			remove_filter( 'navigation_markup_template', 'wp_rig_add_amp_live_list_pagination_attribute' );
+		if ( using_amp_live_list_comments() ) {
+			remove_filter( 'navigation_markup_template', __NAMESPACE__ . '\\add_amp_live_list_pagination_attribute' );
 		}
 		?>
-		<?php if ( wp_rig_using_amp_live_list_comments() ) : ?>
+		<?php if ( using_amp_live_list_comments() ) : ?>
 			<div update>
 				<button class="button" on="tap:amp-live-comments-list-<?php the_ID(); ?>.update"><?php esc_html_e( 'New comment(s)', 'wp-rig' ); ?></button>
 			</div>

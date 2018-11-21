@@ -9,6 +9,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 ?>
 
 <footer id="colophon" class="site-footer">

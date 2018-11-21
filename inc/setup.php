@@ -5,6 +5,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  *
@@ -12,7 +14,7 @@
  * runs before the init hook. The init hook is too late for some features, such
  * as indicating support for post thumbnails.
  */
-function wp_rig_setup() {
+function setup_theme() {
 	/*
 	 * Make theme available for translation.
 	 * Translations can be filed in the /languages/ directory.
@@ -220,7 +222,7 @@ function wp_rig_setup() {
 	);
 
 }
-add_action( 'after_setup_theme', 'wp_rig_setup' );
+add_action( 'after_setup_theme', __NAMESPACE__ . '\\setup_theme' );
 
 /**
  * Set the embed width in pixels, based on the theme's design and stylesheet.
@@ -228,18 +230,18 @@ add_action( 'after_setup_theme', 'wp_rig_setup' );
  * @param array $dimensions An array of embed width and height values in pixels (in that order).
  * @return array
  */
-function wp_rig_embed_dimensions( array $dimensions ) {
+function filter_embed_dimensions( array $dimensions ) {
 	$dimensions['width'] = 720;
 	return $dimensions;
 }
-add_filter( 'embed_defaults', 'wp_rig_embed_dimensions' );
+add_filter( 'embed_defaults', __NAMESPACE__ . '\\filter_embed_dimensions' );
 
 /**
  * Register widget area.
  *
  * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
  */
-function wp_rig_widgets_init() {
+function widgets_init() {
 	register_sidebar(
 		array(
 			'name'          => esc_html__( 'Sidebar', 'wp-rig' ),
@@ -252,4 +254,4 @@ function wp_rig_widgets_init() {
 		)
 	);
 }
-add_action( 'widgets_init', 'wp_rig_widgets_init' );
+add_action( 'widgets_init', __NAMESPACE__ . '\\widgets_init' );

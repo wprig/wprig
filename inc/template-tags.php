@@ -7,6 +7,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 /**
  * Determine whether this is an AMP response.
  *
@@ -15,7 +17,7 @@
  * @link https://github.com/Automattic/amp-wp
  * @return bool Is AMP endpoint (and AMP plugin is active).
  */
-function wp_rig_is_amp() {
+function is_amp() {
 	return function_exists( 'is_amp_endpoint' ) && is_amp_endpoint();
 }
 
@@ -24,8 +26,8 @@ function wp_rig_is_amp() {
  *
  * @return bool Whether to use amp-live-list.
  */
-function wp_rig_using_amp_live_list_comments() {
-	if ( ! wp_rig_is_amp() ) {
+function using_amp_live_list_comments() {
+	if ( ! is_amp() ) {
 		return false;
 	}
 	$amp_theme_support = get_theme_support( 'amp' );
@@ -42,14 +44,14 @@ function wp_rig_using_amp_live_list_comments() {
  * @param string $markup Navigation markup.
  * @return string Markup.
  */
-function wp_rig_add_amp_live_list_pagination_attribute( $markup ) {
+function add_amp_live_list_pagination_attribute( $markup ) {
 	return preg_replace( '/(\s*<[a-z0-9_-]+)/i', '$1 pagination ', $markup, 1 );
 }
 
 /**
  * Prints the header of the current displayed page based on its contents.
  */
-function wp_rig_index_header() {
+function index_header() {
 	if ( is_home() && ! is_front_page() ) {
 		?>
 		<header>
@@ -82,7 +84,7 @@ function wp_rig_index_header() {
 /**
  * Prints HTML with meta information for the current post-date/time.
  */
-function wp_rig_posted_on() {
+function posted_on() {
 	$time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
 	if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
 		$time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
@@ -109,7 +111,7 @@ function wp_rig_posted_on() {
 /**
  * Prints HTML with meta information for the current author.
  */
-function wp_rig_posted_by() {
+function posted_by() {
 	$byline = sprintf(
 		/* translators: %s: post author. */
 		esc_html_x( 'by %s', 'post author', 'wp-rig' ),
@@ -124,7 +126,7 @@ function wp_rig_posted_by() {
  *
  * If additional post types should display categories, add them to the conditional statement at the top.
  */
-function wp_rig_post_categories() {
+function post_categories() {
 	// Only show categories on post types that have categories.
 	if ( 'post' === get_post_type() ) {
 		/* translators: used between list items, there is a space after the comma */
@@ -141,7 +143,7 @@ function wp_rig_post_categories() {
  *
  * If additional post types should display tags, add them to the conditional statement at the top.
  */
-function wp_rig_post_tags() {
+function post_tags() {
 	// Only show tags on post types that have categories.
 	if ( 'post' === get_post_type() ) {
 		/* translators: used between list items, there is a space after the comma */
@@ -156,7 +158,7 @@ function wp_rig_post_tags() {
 /**
  * Prints comments link when comments are enabled.
  */
-function wp_rig_comments_link() {
+function comments_link() {
 	if ( ! is_single() && ! post_password_required() && ( comments_open() || get_comments_number() ) ) {
 		echo '<span class="comments-link">';
 		comments_popup_link(
@@ -180,8 +182,8 @@ function wp_rig_comments_link() {
 /**
  * Prints edit post/page link when a user with sufficient priveleges is logged in.
  */
-function wp_rig_edit_post_link() {
-	edit_post_link(
+function edit_post_link() {
+	\edit_post_link(
 		sprintf(
 			wp_kses(
 				/* translators: %s: Name of current post. Only visible to screen readers */
@@ -205,7 +207,7 @@ function wp_rig_edit_post_link() {
  * Wraps the post thumbnail in an anchor element on index views, or a div
  * element when on single views.
  */
-function wp_rig_post_thumbnail() {
+function post_thumbnail() {
 	if ( post_password_required() || is_attachment() || ! has_post_thumbnail() ) {
 		return;
 	}
@@ -260,7 +262,7 @@ function wp_rig_post_thumbnail() {
  *
  * @param object $post object.
  */
-function wp_rig_attachment_in( $post ) {
+function attachment_in( $post ) {
 	if ( ! empty( $post->post_parent ) ) :
 		$postlink = sprintf(
 			/* translators: %s: original post where attachment was added. */
@@ -277,7 +279,7 @@ function wp_rig_attachment_in( $post ) {
 /**
  * Prints HTML with for navigation to previous and next attachment if available.
  */
-function wp_rig_the_attachment_navigation() {
+function the_attachment_navigation() {
 	?>
 	<nav class="navigation post-navigation" role="navigation">
 		<h2 class="screen-reader-text"><?php echo esc_html__( 'Post navigation', 'wp-rig' ); ?></h2>
