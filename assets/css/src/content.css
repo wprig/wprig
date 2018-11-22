@@ -159,11 +159,13 @@
 /*
  * Available block selectors:
  * .wp-block-image
+ * .wp-block-media-text
  * .wp-block-gallery
+ * .wp-block-audio
  * .wp-block-video
  * .wp-block-quote
- * .wp-block-text-columns
  * .wp-block-cover
+ * .wp-block-file
  * .wp-block-button
  * .wp-block-gallery
  * .wp-block-table
@@ -173,6 +175,13 @@
  * .wp-block-preformatted
  * .wp-block-code
  * .wp-block-verse
+ * .wp-block-table
+ * .wp-block-separator
+ * .wp-block-columns
+ * .wp-block-column
+ * .wp-block-latest-posts
+ * .wp-block-categories
+ * .wp-block-archives
  */
 
 .wp-block-quote.is-large,
