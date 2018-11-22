@@ -4,7 +4,7 @@ module.exports = {
 	theme: {
 		slug: 'wp-rig', // The slug must only consist of lowercase letters, numbers and dashes.
 		name: 'WP Rig',
-		author: 'Morten Rand-Hendriksen'
+		author: 'The WP Rig Contributors'
 	},
 	dev: {
 		browserSync: {

@@ -40,7 +40,7 @@ export const nameFieldDefaults = {
 	constant      : 'WP_RIG',
 	camelCase     : 'WpRig',
 	camelCaseVar  : 'wpRig',
-	author        : 'Morten Rand-Hendriksen',
+	author        : 'The WP Rig Contributors',
 };
 
 // Project paths
