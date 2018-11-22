@@ -196,7 +196,7 @@
 }
 
 .alignwide {
-	max-width: calc(50% + var(--content-width) rem / 2);
+	max-width: calc(50% + var(--content-width)rem / 2);
 }
 
 .alignfull {
