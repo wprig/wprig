@@ -244,7 +244,12 @@ function enqueue_block_editor_styles() {
 	}
 
 	// Enqueue main stylesheet.
-	wp_enqueue_style( 'wp-rig-editor-styles', get_theme_file_uri( '/assets/css/editor/editor-styles.min.css' ), array(), filemtime( get_stylesheet_directory() . '/assets/css/editor/editor-styles.min.css' ) );
+	wp_enqueue_style(
+		'wp-rig-editor-styles',
+		get_theme_file_uri( '/assets/css/editor/editor-styles.min.css' ),
+		array(),
+		get_asset_version( get_stylesheet_directory() . '/assets/css/editor/editor-styles.min.css' )
+	);
 }
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\enqueue_block_editor_styles' );
 
