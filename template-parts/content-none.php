@@ -7,6 +7,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 ?>
 <section class="no-results not-found">
 	<header class="page-header">

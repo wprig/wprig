@@ -7,6 +7,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -17,10 +19,10 @@
 		?>
 		<div class="entry-meta">
 			<?php
-				wp_rig_posted_on();
-				wp_rig_posted_by();
-				wp_rig_attachment_in( $post );
-				wp_rig_comments_link();
+				posted_on();
+				posted_by();
+				attachment_in( $post );
+				comments_link();
 			?>
 		</div><!-- .entry-meta -->
 
@@ -44,7 +46,7 @@
 
 	<footer class="entry-footer">
 		<?php
-			wp_rig_edit_post_link();
+			edit_post_link();
 		?>
 	</footer><!-- .entry-footer -->
 </article><!-- #post-<?php the_ID(); ?> -->
@@ -54,7 +56,7 @@
 
 // If the attachment is attached to a post, try linking to other attachments on the same post.
 if ( ! empty( $post->post_parent ) ) :
-	wp_rig_the_attachment_navigation();
+	the_attachment_navigation();
 endif;
 
 // If comments are open or we have at least one comment, load up the comment template.

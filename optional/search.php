@@ -7,6 +7,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 get_header(); ?>
 
 	<main id="primary" class="site-main">
@@ -15,7 +17,7 @@ get_header(); ?>
 	if ( have_posts() ) :
 
 		/* Display the appropriate header when required. */
-		wp_rig_index_header();
+		index_header();
 
 		/* Start the Loop */
 		while ( have_posts() ) :

@@ -7,6 +7,8 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -22,9 +24,9 @@
 			?>
 			<div class="entry-meta">
 				<?php
-					wp_rig_posted_on();
-					wp_rig_posted_by();
-					wp_rig_comments_link();
+					posted_on();
+					posted_by();
+					comments_link();
 				?>
 			</div><!-- .entry-meta -->
 			<?php
@@ -32,7 +34,7 @@
 		?>
 	</header><!-- .entry-header -->
 
-	<?php wp_rig_post_thumbnail(); ?>
+	<?php post_thumbnail(); ?>
 
 	<div class="entry-content">
 		<?php
@@ -62,9 +64,9 @@
 
 	<footer class="entry-footer">
 		<?php
-		wp_rig_post_categories();
-		wp_rig_post_tags();
-		wp_rig_edit_post_link();
+		post_categories();
+		post_tags();
+		edit_post_link();
 		?>
 	</footer><!-- .entry-footer -->
 </article><!-- #post-<?php the_ID(); ?> -->

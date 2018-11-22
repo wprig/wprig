@@ -5,6 +5,10 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
+use WP_Post;
+
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
  * for content images.
@@ -14,7 +18,7 @@
  *                      values in pixels (in that order).
  * @return string A source size value for use in a content image 'sizes' attribute.
  */
-function wp_rig_content_image_sizes_attr( $sizes, $size ) {
+function filter_content_image_sizes_attr( string $sizes, array $size ) : string {
 	$width = $size[0];
 
 	if ( 740 <= $width ) {
@@ -27,7 +31,7 @@ function wp_rig_content_image_sizes_attr( $sizes, $size ) {
 
 	return $sizes;
 }
-add_filter( 'wp_calculate_image_sizes', 'wp_rig_content_image_sizes_attr', 10, 2 );
+add_filter( 'wp_calculate_image_sizes', __NAMESPACE__ . '\\filter_content_image_sizes_attr', 10, 2 );
 
 /**
  * Filter the `sizes` value in the header image markup.
@@ -37,24 +41,24 @@ add_filter( 'wp_calculate_image_sizes', 'wp_rig_content_image_sizes_attr', 10, 2
  * @param array  $attr   Array of the attributes for the image tag.
  * @return string The filtered header image HTML.
  */
-function wp_rig_header_image_tag( $html, $header, $attr ) {
+function filter_header_image_tag( string $html, $header, array $attr ) : string {
 	if ( isset( $attr['sizes'] ) ) {
 		$html = str_replace( $attr['sizes'], '100vw', $html );
 	}
 	return $html;
 }
-add_filter( 'get_header_image_tag', 'wp_rig_header_image_tag', 10, 3 );
+add_filter( 'get_header_image_tag', __NAMESPACE__ . '\\filter_header_image_tag', 10, 3 );
 
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
  * for post thumbnails.
  *
- * @param array $attr       Attributes for the image markup.
- * @param int   $attachment Image attachment ID.
- * @param array $size       Registered image size or flat array of height and width dimensions.
+ * @param array        $attr       Attributes for the image markup.
+ * @param WP_Post      $attachment Attachment post object.
+ * @param string|array $size       Registered image size or flat array of height and width dimensions.
  * @return array The filtered attributes for the image markup.
  */
-function wp_rig_post_thumbnail_sizes_attr( $attr, $attachment, $size ) {
+function filter_post_thumbnail_sizes_attr( array $attr, WP_Post $attachment, $size ) : array {
 
 	$attr['sizes'] = '100vw';
 
@@ -64,5 +68,5 @@ function wp_rig_post_thumbnail_sizes_attr( $attr, $attachment, $size ) {
 
 	return $attr;
 }
-add_filter( 'wp_get_attachment_image_attributes', 'wp_rig_post_thumbnail_sizes_attr', 10, 3 );
+add_filter( 'wp_get_attachment_image_attributes', __NAMESPACE__ . '\\filter_post_thumbnail_sizes_attr', 10, 3 );
 

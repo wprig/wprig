@@ -5,13 +5,17 @@
  * @package wp_rig
  */
 
+namespace WP_Rig\WP_Rig;
+
+use WP_Post;
+
 /**
  * Adds custom classes to the array of body classes.
  *
  * @param array $classes Classes for the body element.
- * @return array
+ * @return array Filtered body classes.
  */
-function wp_rig_body_classes( $classes ) {
+function filter_body_classes( array $classes ) : array {
 	// Adds a class of hfeed to non-singular pages.
 	if ( ! is_singular() ) {
 		$classes[] = 'hfeed';
@@ -26,20 +30,20 @@ function wp_rig_body_classes( $classes ) {
 
 	return $classes;
 }
-add_filter( 'body_class', 'wp_rig_body_classes' );
+add_filter( 'body_class', __NAMESPACE__ . '\\filter_body_classes' );
 
 /**
- * Add a pingback url auto-discovery header for singularly identifiable articles.
+ * Adds a pingback url auto-discovery header for singularly identifiable articles.
  */
-function wp_rig_pingback_header() {
+function add_pingback_header() {
 	if ( is_singular() && pings_open() ) {
 		echo '<link rel="pingback" href="', esc_url( get_bloginfo( 'pingback_url' ) ), '">';
 	}
 }
-add_action( 'wp_head', 'wp_rig_pingback_header' );
+add_action( 'wp_head', __NAMESPACE__ . '\\add_pingback_header' );
 
 /**
- * Add dropdown symbol to nav menu items with children.
+ * Adds dropdown symbol to nav menu items with children.
  *
  * Adds the dropdown markup after the menu link element,
  * before the submenu.
@@ -52,13 +56,13 @@ add_action( 'wp_head', 'wp_rig_pingback_header' );
  *   is only being added for page menus if JS is enabled.
  *   Create a ticket to add to core?
  *
- * @param string   $item_output The menu item's starting HTML output.
- * @param WP_Post  $item        Menu item data object.
- * @param int      $depth       Depth of menu item. Used for padding.
- * @param stdClass $args        An object of wp_nav_menu() arguments.
+ * @param string  $item_output The menu item's starting HTML output.
+ * @param WP_Post $item        Menu item data object.
+ * @param int     $depth       Depth of menu item. Used for padding.
+ * @param object  $args        An object of wp_nav_menu() arguments.
  * @return string Modified nav menu HTML.
  */
-function wp_rig_add_primary_menu_dropdown_symbol( $item_output, $item, $depth, $args ) {
+function filter_primary_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ) : string {
 
 	// Only for our primary menu location.
 	if ( empty( $args->theme_location ) || 'primary' != $args->theme_location ) {
@@ -72,7 +76,7 @@ function wp_rig_add_primary_menu_dropdown_symbol( $item_output, $item, $depth, $
 
 	return $item_output;
 }
-add_filter( 'walker_nav_menu_start_el', 'wp_rig_add_primary_menu_dropdown_symbol', 10, 4 );
+add_filter( 'walker_nav_menu_start_el', __NAMESPACE__ . '\\filter_primary_menu_dropdown_symbol', 10, 4 );
 
 /**
  * Filters the HTML attributes applied to a menu item's anchor element.
@@ -84,7 +88,7 @@ add_filter( 'walker_nav_menu_start_el', 'wp_rig_add_primary_menu_dropdown_symbol
  * @param WP_Post $item  The current menu item.
  * @return array Modified HTML attributes
  */
-function wp_rig_add_nav_menu_aria_current( $atts, $item ) {
+function filter_nav_menu_link_attributes_aria_current( array $atts, WP_Post $item ) : array {
 	/*
 	 * First, check if "current" is set,
 	 * which means the item is a nav menu item.
@@ -105,21 +109,21 @@ function wp_rig_add_nav_menu_aria_current( $atts, $item ) {
 
 	return $atts;
 }
-add_filter( 'nav_menu_link_attributes', 'wp_rig_add_nav_menu_aria_current', 10, 2 );
-add_filter( 'page_menu_link_attributes', 'wp_rig_add_nav_menu_aria_current', 10, 2 );
+add_filter( 'nav_menu_link_attributes', __NAMESPACE__ . '\\filter_nav_menu_link_attributes_aria_current', 10, 2 );
+add_filter( 'page_menu_link_attributes', __NAMESPACE__ . '\\filter_nav_menu_link_attributes_aria_current', 10, 2 );
 
 /**
- * Exclude any directory named optional
- * from being scanned for theme files
+ * Excludes any directory named 'optional' from being scanned for theme files
  *
  * @link https://developer.wordpress.org/reference/hooks/theme_scandir_exclusions/
+ *
  * @param array $exclusions the default directories to exclude.
- * @return array
+ * @return array Filtered exclusions.
  */
-function wp_rig_exclude_optional_templates( $exclusions ) {
+function exclude_optional_templates( array $exclusions ) : array {
 	return array_merge(
 		$exclusions,
 		array( 'optional' )
 	);
 }
-add_filter( 'theme_scandir_exclusions', 'wp_rig_exclude_optional_templates', 10, 1 );
+add_filter( 'theme_scandir_exclusions', __NAMESPACE__ . '\\exclude_optional_templates', 10, 1 );
