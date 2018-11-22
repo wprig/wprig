@@ -18,7 +18,17 @@ use WP_Styles;
  * @return string Version number.
  */
 function get_asset_version( string $file ) : string {
-	return WP_DEBUG ? (string) filemtime( $file ) : '2.0.0';
+	if ( WP_DEBUG ) {
+		return (string) filemtime( $file );
+	}
+
+	static $theme_version = null;
+
+	if ( null === $theme_version ) {
+		$theme_version = wp_get_theme( get_template() )->get( 'Version' );
+	}
+
+	return $theme_version;
 }
 
 /**
