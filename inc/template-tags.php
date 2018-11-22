@@ -44,7 +44,7 @@ function using_amp_live_list_comments() : bool {
  * @link https://www.ampproject.org/docs/reference/components/amp-live-list#pagination
  *
  * @param string $markup Navigation markup.
- * @return string Filtered arkup.
+ * @return string Filtered markup.
  */
 function add_amp_live_list_pagination_attribute( string $markup ) : string {
 	return preg_replace( '/(\s*<[a-z0-9_-]+)/i', '$1 pagination ', $markup, 1 );
