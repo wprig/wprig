@@ -163,7 +163,7 @@
  * .wp-block-video
  * .wp-block-quote
  * .wp-block-text-columns
- * .wp-block-cover-text
+ * .wp-block-cover
  * .wp-block-button
  * .wp-block-gallery
  * .wp-block-table
@@ -204,8 +204,7 @@
 	padding: 0;
 }
 
-.wp-block-cover-image .wp-block-cover-image-text,
-.wp-block-cover-image h2 {
+.wp-block-cover .wp-block-cover-text {
 	margin-top: 0;
 }
 

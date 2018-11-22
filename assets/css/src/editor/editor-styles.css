@@ -36,8 +36,7 @@ body.gutenberg-editor-page .edit-post-visual-editor p {
 	/* stylelint-enable */
 }
 
-body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image-text,
-body.gutenberg-editor-page .wp-block-cover-image .wp-block-cover-image h2 {
+body.gutenberg-editor-page .wp-block-cover .wp-block-cover-text {
 	color: #fff;
 	font-size: 2em;
 	line-height: 1.25;
