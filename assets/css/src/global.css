@@ -34,7 +34,7 @@ Nicolas Gallagher and Jonathan Neal http://necolas.github.io/normalize.css/
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
- html {
+html {
 	line-height: 1.15; /* 1 */
 	-webkit-text-size-adjust: 100%; /* 2 */
 }
@@ -471,7 +471,7 @@ optgroup,
 textarea {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
-	font-size: calc(var(--global-font-size) / 16rem);
+	font-size: calc(1rem * var(--global-font-size) / 16);
 	line-height: var(--global-font-line-height);
 }
 /* stylelint-enable */
