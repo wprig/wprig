@@ -8,7 +8,7 @@ import colors from 'ansi-colors';
 import pump from 'pump';
 
 // Internal dependencies
-import {paths, gulpPlugins, rootPath} from './constants';
+import {paths, gulpPlugins, rootPath, config} from './constants';
 import {reload} from './browserSync';
 import images from './images';
 import php from './php';
@@ -26,24 +26,33 @@ export function themeConfigChangeAlert(done){
  */
 export default function watch() {
 	const PHPwatcher = gulpWatch(paths.php.src, reload);
-	PHPwatcher.on('change', function(path) {
-		return pump([
-			src(path),
-			// Run code sniffing
-			gulpPlugins.phpcs({
-				bin: `${rootPath}/vendor/bin/phpcs`,
-				standard: 'WordPress',
-				warningSeverity: 0
-			}),
-			// Log all problems that were found.
-			gulpPlugins.phpcs.reporter('log'),
-		]);
-	});
+
+	// Only code sniff PHP files if the debug setting is true
+	if( config.dev.debug.phpcs ) {
+		PHPwatcher.on('change', function(path) {
+			return pump([
+				src(path),
+				// Run code sniffing
+				gulpPlugins.phpcs({
+					bin: `${rootPath}/vendor/bin/phpcs`,
+					standard: 'WordPress',
+					warningSeverity: 0
+				}),
+				// Log all problems that were found.
+				gulpPlugins.phpcs.reporter('log'),
+			]);
+		});
+	}
+
 	gulpWatch(paths.config.themeConfig, series(
 		themeConfigChangeAlert, php, scripts, sassStyles, styles, images, reload
 	));
+
 	gulpWatch(paths.styles.sass, series(sassStyles, reload));
+
 	gulpWatch([paths.styles.src, paths.config.cssVars], series( styles ) );
+
 	gulpWatch(paths.scripts.src, series(scripts, reload));
+
 	gulpWatch(paths.images.src, series(images, reload));
 }

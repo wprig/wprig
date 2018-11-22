@@ -24,7 +24,8 @@ module.exports = {
 		],
 		debug: {
 			styles: false, // Render verbose CSS for debugging.
-			scripts: false // Render verbose JS for debugging.
+			scripts: false, // Render verbose JS for debugging.
+			phpcs: true // Code sniff PHP files
 		}
 	},
 	export: {
