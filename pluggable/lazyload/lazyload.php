@@ -214,6 +214,10 @@ function process_image_attributes( array $attributes ) : array {
 	if ( ! empty( $attributes['class'] ) && should_skip_image_with_blacklisted_class( $attributes['class'] ) ) {
 		return $attributes;
 	}
+	// Exclude custom logo from lazy loading.
+	if ( 'custom-logo' === $attributes['class'] ) {
+		return $attributes;
+	}
 
 	$old_attributes = $attributes;
 
