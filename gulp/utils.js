@@ -70,7 +70,7 @@ export function getStringReplacementTasks() {
 	return Object.keys( nameFieldDefaults ).map( nameField => {
 		return gulpPlugins.stringReplace(
 			// Backslashes must be double escaped for regex
-			nameFieldDefaults[ nameField ].replace('\\','\\\\'),
+			nameFieldDefaults[ nameField ].replace(/\\/g,'\\\\'),
 			config.theme[ nameField ],
 			{
 				logs: {
