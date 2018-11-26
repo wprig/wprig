@@ -190,6 +190,7 @@ function add_image_placeholders( string $content ) : string {
 function should_skip_image_with_blacklisted_class( string $classes ) : bool {
 	$blacklisted_classes = array(
 		'skip-lazy',
+		'custom-logo',
 	);
 
 	foreach ( $blacklisted_classes as $class ) {
@@ -212,10 +213,6 @@ function process_image_attributes( array $attributes ) : array {
 		return $attributes;
 	}
 	if ( ! empty( $attributes['class'] ) && should_skip_image_with_blacklisted_class( $attributes['class'] ) ) {
-		return $attributes;
-	}
-	// Exclude custom logo from lazy loading.
-	if ( preg_match( '/\bcustom-logo\b/', $attributes['class'] ) ) {
 		return $attributes;
 	}
 
