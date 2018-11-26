@@ -17,8 +17,7 @@
 .editor-styles-wrapper h3,
 .editor-styles-wrapper h4,
 .editor-styles-wrapper h5,
-.editor-styles-wrapper h6,
-.editor-styles-wrapper .wp-block-paragraph {
+.editor-styles-wrapper h6 {
 	font-family: var(--highlight-font-family);
 	color: #32373c;
 	clear: both;
@@ -27,13 +26,6 @@
 .editor-post-title .editor-post-title__input {
 	font-size: 2rem;
 	line-height: 1.4;
-}
-
-.editor-styles-wrapper .wp-block-paragraph {
-	font-family: var(--global-font-family);
-	/* stylelint-disable */
-	font-size: calc(var(--global-font-size) / 16rem);
-	/* stylelint-enable */
 }
 
 .editor-styles-wrapper .wp-block-cover .wp-block-cover-text {
