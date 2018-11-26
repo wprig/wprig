@@ -215,7 +215,7 @@ function process_image_attributes( array $attributes ) : array {
 		return $attributes;
 	}
 	// Exclude custom logo from lazy loading.
-	if ( 'custom-logo' === $attributes['class'] ) {
+	if ( preg_match( '/\bcustom-logo\b/', $attributes['class'] ) ) {
 		return $attributes;
 	}
 
