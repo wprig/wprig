@@ -15,6 +15,7 @@
 !/languages/
 !gulp/
 !style.css
+!/*.php
 !/inc/
 !/template-parts/
 !/pluggable/
