@@ -263,7 +263,7 @@ function lazyload_class( array $attributes ) : string {
  * @return string The URL to the placeholder image.
  */
 function lazyload_get_placeholder_image() : string {
-	return get_theme_file_uri( '/images/placeholder.svg' );
+	return get_theme_file_uri( '/assets/images/placeholder.svg' );
 }
 
 /**
