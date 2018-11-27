@@ -33,8 +33,9 @@ namespace WP_Rig\WP_Rig;
 			<?php if ( has_header_image() ) : ?>
 				<figure class="header-image">
 					<?php the_header_image_tag(); ?>
-				</figure>
+				</figure><!-- .header-image -->
 			<?php endif; ?>
+
 			<div class="site-branding">
 				<?php the_custom_logo(); ?>
 				<?php if ( is_front_page() && is_home() ) : ?>
@@ -49,42 +50,44 @@ namespace WP_Rig\WP_Rig;
 				<?php endif; ?>
 			</div><!-- .site-branding -->
 
-			<nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
-				<?php if ( is_amp() ) : ?>
-					[class]=" siteNavigationMenu.expanded ? 'main-navigation toggled-on' : 'main-navigation' "
-				<?php endif; ?>
-			>
-				<?php if ( is_amp() ) : ?>
-					<amp-state id="siteNavigationMenu">
-						<script type="application/json">
-							{
-								"expanded": false
-							}
-						</script>
-					</amp-state>
-				<?php endif; ?>
-
-				<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Open menu', 'wp-rig' ); ?>" aria-controls="primary-menu" aria-expanded="false"
+			<?php if ( has_nav_menu( 'primary' ) ) : ?>
+				<nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
 					<?php if ( is_amp() ) : ?>
-						on="tap:AMP.setState( { siteNavigationMenu: { expanded: ! siteNavigationMenu.expanded } } )"
-						[aria-expanded]="siteNavigationMenu.expanded ? 'true' : 'false'"
+						[class]=" siteNavigationMenu.expanded ? 'main-navigation toggled-on' : 'main-navigation' "
 					<?php endif; ?>
 				>
-					<?php esc_html_e( 'Menu', 'wp-rig' ); ?>
-				</button>
+					<?php if ( is_amp() ) : ?>
+						<amp-state id="siteNavigationMenu">
+							<script type="application/json">
+								{
+									"expanded": false
+								}
+							</script>
+						</amp-state>
+					<?php endif; ?>
 
-				<div class="primary-menu-container">
-					<?php
+					<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Open menu', 'wp-rig' ); ?>" aria-controls="primary-menu" aria-expanded="false"
+						<?php if ( is_amp() ) : ?>
+							on="tap:AMP.setState( { siteNavigationMenu: { expanded: ! siteNavigationMenu.expanded } } )"
+							[aria-expanded]="siteNavigationMenu.expanded ? 'true' : 'false'"
+						<?php endif; ?>
+					>
+						<?php esc_html_e( 'Menu', 'wp-rig' ); ?>
+					</button>
 
-					wp_nav_menu(
-						array(
-							'theme_location' => 'primary',
-							'menu_id'        => 'primary-menu',
-							'container'      => 'ul',
-						)
-					);
+					<div class="primary-menu-container">
+						<?php
 
-					?>
-				</div>
-			</nav><!-- #site-navigation -->
+						wp_nav_menu(
+							array(
+								'theme_location' => 'primary',
+								'menu_id'        => 'primary-menu',
+								'container'      => 'ul',
+							)
+						);
+
+						?>
+					</div>
+				</nav><!-- #site-navigation -->
+			<?php endif; ?>
 		</header><!-- #masthead -->
