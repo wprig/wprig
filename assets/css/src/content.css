@@ -91,6 +91,11 @@
 	}
 }
 
+/* Align .more-link with the content. */
+.entry-content > .more-link {
+	display: block;
+}
+
 .page-links {
 	clear: both;
 	margin: 0 0 1.5em;
