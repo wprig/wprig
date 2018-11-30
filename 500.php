@@ -19,9 +19,10 @@ get_header(); ?>
 			</header><!-- .page-header -->
 
 			<div class="page-content">
-				<p><?php esc_html_e( 'Something prevented the page from being rendered. Please try again.', 'wp-rig' ); ?></p>
-
 				<?php
+				if ( function_exists( 'wp_service_worker_error_message_placeholder' ) ) {
+					wp_service_worker_error_message_placeholder();
+				}
 				if ( function_exists( 'wp_service_worker_error_details_template' ) ) {
 					wp_service_worker_error_details_template();
 				}

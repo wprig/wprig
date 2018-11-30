@@ -22,8 +22,6 @@ get_header(); ?>
 			</header><!-- .page-header -->
 
 			<div class="page-content">
-				<p><?php esc_html_e( 'The page could not be loaded because you&#8217;re offline. Please try again once reconnected.', 'wp-rig' ); ?></p>
-
 				<?php
 				if ( function_exists( 'wp_service_worker_error_message_placeholder' ) ) {
 					wp_service_worker_error_message_placeholder();
