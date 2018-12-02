@@ -199,6 +199,8 @@ add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_scripts' );
  * thus it does not warrant having an entire dedicated blocking script being loaded.
  *
  * Since it will never need to be changed, it is simply printed in its minified version.
+ *
+ * @link https://git.io/vWdr2
  */
 function print_skip_link_focus_fix() {
 
