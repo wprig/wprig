@@ -2,16 +2,15 @@
 'use strict';
 
 // External dependencies
-import {watch as gulpWatch, series, parallel} from 'gulp';
+import {watch as gulpWatch, series, src} from 'gulp';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
+import pump from 'pump';
 
 // Internal dependencies
-import {paths} from './constants';
+import {paths, gulpPlugins, rootPath, config} from './constants';
 import {reload} from './browserSync';
 import images from './images';
-import jsLibs from './jsLibs';
-import jsMin from './jsMin';
 import php from './php';
 import sassStyles from './sassStyles';
 import scripts from './scripts';
@@ -26,15 +25,34 @@ export function themeConfigChangeAlert(done){
  * Watch everything
  */
 export default function watch() {
-	gulpWatch(paths.php.src, series(php, reload));
+	const PHPwatcher = gulpWatch(paths.php.src, reload);
+
+	// Only code sniff PHP files if the debug setting is true
+	if( config.dev.debug.phpcs ) {
+		PHPwatcher.on('change', function(path) {
+			return pump([
+				src(path),
+				// Run code sniffing
+				gulpPlugins.phpcs({
+					bin: `${rootPath}/vendor/bin/phpcs`,
+					standard: 'WordPress',
+					warningSeverity: 0
+				}),
+				// Log all problems that were found.
+				gulpPlugins.phpcs.reporter('log'),
+			]);
+		});
+	}
+
 	gulpWatch(paths.config.themeConfig, series(
-		themeConfigChangeAlert, php, parallel(scripts, jsMin, jsLibs), sassStyles, styles, images, reload)
-	);
-	gulpWatch(paths.config.cssVars, series(styles, reload));
+		themeConfigChangeAlert, php, scripts, sassStyles, styles, images, reload
+	));
+
 	gulpWatch(paths.styles.sass, series(sassStyles, reload));
-	gulpWatch(paths.styles.src, series(styles, reload));
+
+	gulpWatch([paths.styles.src, paths.config.cssVars], series( styles ) );
+
 	gulpWatch(paths.scripts.src, series(scripts, reload));
-	gulpWatch(paths.scripts.min, series(jsMin, reload));
-	gulpWatch(paths.scripts.libs, series(jsLibs, reload));
+
 	gulpWatch(paths.images.src, series(images, reload));
 }

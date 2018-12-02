@@ -6,7 +6,7 @@ import {src, dest} from 'gulp';
 import pump from 'pump';
 
 // Internal dependencies
-import {paths, gulpPlugins} from './constants';
+import {paths, gulpPlugins, isProd} from './constants';
 import {getThemeConfig, getStringReplacementTasks} from './utils';
 
 /**
@@ -24,12 +24,18 @@ export default function scripts(done) {
 		}),
 		gulpPlugins.eslint(),
 		gulpPlugins.eslint.format(),
-		gulpPlugins.babel(),
-		dest(paths.verbose),
+		gulpPlugins.babel({
+			presets: [
+				'@babel/preset-env'
+			]
+		}),
 		gulpPlugins.if(
 			!config.dev.debug.scripts,
 			gulpPlugins.uglify()
 		),
+		gulpPlugins.rename({
+			suffix: '.min'
+		}),
 	];
 
 	const afterReplacement = [
@@ -39,7 +45,12 @@ export default function scripts(done) {
 	pump(
 		[].concat(
 			beforeReplacement,
-			getStringReplacementTasks(),
+			// Only do string replacements when building for production
+			gulpPlugins.if(
+				isProd,
+				getStringReplacementTasks(),
+				[]
+			),
 			afterReplacement
 		),
 		done

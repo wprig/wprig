@@ -12,7 +12,7 @@ import {paths, gulpPlugins} from './constants';
  * Optimize images.
  */
 export default function images(done) {
-	pump([
+    pump([
         src(paths.images.src),
         gulpPlugins.newer(paths.images.dest),
         gulpPlugins.imagemin(),
