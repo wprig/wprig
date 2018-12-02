@@ -185,22 +185,38 @@ function enqueue_scripts() {
 		)
 	);
 
-	// Enqueue skip-link-focus script.
-	wp_enqueue_script(
-		'wp-rig-skip-link-focus-fix',
-		get_theme_file_uri( '/assets/js/skip-link-focus-fix.min.js' ),
-		array(),
-		get_asset_version( get_stylesheet_directory() . '/assets/js/skip-link-focus-fix.min.js' ),
-		false
-	);
-	wp_script_add_data( 'wp-rig-skip-link-focus-fix', 'defer', true );
-
 	// Enqueue comment script on singular post/page views only.
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
 add_action( 'wp_enqueue_scripts', __NAMESPACE__ . '\\enqueue_scripts' );
+
+/**
+ * Prints an inline script to fix skip link focus in IE11.
+ *
+ * The script is not enqueued because it is tiny and because it is only for IE11,
+ * thus it does not warrant having an entire dedicated blocking script being loaded.
+ *
+ * Since it will never need to be changed, it is simply printed in its minified version.
+ *
+ * @link https://git.io/vWdr2
+ */
+function print_skip_link_focus_fix() {
+
+	// If the AMP plugin is active, return early.
+	if ( is_amp() ) {
+		return;
+	}
+
+	// Print the minified script.
+	?>
+	<script>
+	/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
+	</script>
+	<?php
+}
+add_action( 'wp_print_footer_scripts', __NAMESPACE__ . '\\print_skip_link_focus_fix' );
 
 /**
  * Adds async/defer attributes to enqueued / registered scripts.
