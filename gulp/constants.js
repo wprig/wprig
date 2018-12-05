@@ -6,14 +6,6 @@ export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
 import requireUncached from 'require-uncached';
 
-// gulp string replace options
-export const gulpReplaceOptions = {
-	logs: {
-		enabled: false
-	},
-	searchValue: 'regex',
-};
-
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
 
@@ -34,6 +26,7 @@ export const prodAssetsDir = `${prodThemePath}/assets`;
 
 // Theme config name fields and their defaults
 export const nameFieldDefaults = {
+	PHPNamespace  : 'WP_Rig\\WP_Rig',
 	slug          : 'wp-rig',
 	name          : 'WP Rig',
 	underscoreCase: 'wp_rig',
