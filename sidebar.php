@@ -9,12 +9,12 @@
 
 namespace WP_Rig\WP_Rig;
 
-if ( ! is_active_sidebar( 'sidebar-1' ) ) {
+if ( ! wp_rig()->is_primary_sidebar_active() ) {
 	return;
 }
 ?>
 
 <?php wp_print_styles( array( 'wp-rig-sidebar', 'wp-rig-widgets' ) ); ?>
 <aside id="secondary" class="primary-sidebar widget-area">
-	<?php dynamic_sidebar( 'sidebar-1' ); ?>
+	<?php wp_rig()->display_primary_sidebar(); ?>
 </aside><!-- #secondary -->

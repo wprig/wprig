@@ -93,7 +93,6 @@ let paths = {
 			`${rootPath}/readme.txt`,
 			`${rootPath}/screenshot.png`,
 			`${rootPath}/LICENSE`,
-			`${rootPath}/pluggable/`,
 		],
 		dest: `${prodThemePath}/`
 	}
