@@ -115,6 +115,12 @@ function initMainNavigation() {
  * Initiate the mobile menu toggle button.
  */
 function initMenuToggle() {
+
+	// No point if no site nav.
+	if ( ! SITENAV ) {
+		return;
+	}
+
 	const MENUTOGGLE = SITENAV.querySelector( '.menu-toggle' );
 
 	// Return early if MENUTOGGLE is missing.
