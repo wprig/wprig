@@ -8,7 +8,7 @@ import colors from 'ansi-colors';
 import pump from 'pump';
 
 // Internal dependencies
-import {paths, gulpPlugins, rootPath, config} from './constants';
+import {paths, gulpPlugins, PHPCSOptions, config} from './constants';
 import {reload} from './browserSync';
 import images from './images';
 import php from './php';
@@ -33,11 +33,7 @@ export default function watch() {
 			return pump([
 				src(path),
 				// Run code sniffing
-				gulpPlugins.phpcs({
-					bin: `${rootPath}/vendor/bin/phpcs`,
-					standard: 'WordPress',
-					warningSeverity: 0
-				}),
+				gulpPlugins.phpcs(PHPCSOptions),
 				// Log all problems that were found.
 				gulpPlugins.phpcs.reporter('log'),
 			]);
