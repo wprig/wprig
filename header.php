@@ -19,7 +19,7 @@ namespace WP_Rig\WP_Rig;
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 
-	<?php if ( ! is_amp() ) : ?>
+	<?php if ( ! wp_rig()->is_amp() ) : ?>
 		<script>document.documentElement.classList.remove("no-js");</script>
 	<?php endif; ?>
 
@@ -50,13 +50,13 @@ namespace WP_Rig\WP_Rig;
 				<?php endif; ?>
 			</div><!-- .site-branding -->
 
-			<?php if ( has_nav_menu( 'primary' ) ) : ?>
+			<?php if ( wp_rig()->is_primary_nav_menu_active() ) : ?>
 				<nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
-					<?php if ( is_amp() ) : ?>
+					<?php if ( wp_rig()->is_amp() ) : ?>
 						[class]=" siteNavigationMenu.expanded ? 'main-navigation toggled-on' : 'main-navigation' "
 					<?php endif; ?>
 				>
-					<?php if ( is_amp() ) : ?>
+					<?php if ( wp_rig()->is_amp() ) : ?>
 						<amp-state id="siteNavigationMenu">
 							<script type="application/json">
 								{
@@ -67,7 +67,7 @@ namespace WP_Rig\WP_Rig;
 					<?php endif; ?>
 
 					<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Open menu', 'wp-rig' ); ?>" aria-controls="primary-menu" aria-expanded="false"
-						<?php if ( is_amp() ) : ?>
+						<?php if ( wp_rig()->is_amp() ) : ?>
 							on="tap:AMP.setState( { siteNavigationMenu: { expanded: ! siteNavigationMenu.expanded } } )"
 							[aria-expanded]="siteNavigationMenu.expanded ? 'true' : 'false'"
 						<?php endif; ?>
@@ -76,17 +76,7 @@ namespace WP_Rig\WP_Rig;
 					</button>
 
 					<div class="primary-menu-container">
-						<?php
-
-						wp_nav_menu(
-							array(
-								'theme_location' => 'primary',
-								'menu_id'        => 'primary-menu',
-								'container'      => 'ul',
-							)
-						);
-
-						?>
+						<?php wp_rig()->display_primary_nav_menu( array( 'menu_id' => 'primary-menu' ) ); ?>
 					</div>
 				</nav><!-- #site-navigation -->
 			<?php endif; ?>

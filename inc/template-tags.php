@@ -12,45 +12,6 @@ namespace WP_Rig\WP_Rig;
 use WP_Post;
 
 /**
- * Determines whether this is an AMP response.
- *
- * Note that this must only be called after the parse_query action.
- *
- * @link https://github.com/Automattic/amp-wp
- * @return bool Whether the AMP plugin is active and the current request is for an AMP endpoint.
- */
-function is_amp() : bool {
-	return function_exists( 'is_amp_endpoint' ) && is_amp_endpoint();
-}
-
-/**
- * Determines whether amp-live-list should be used for the comment list.
- *
- * @return bool Whether to use amp-live-list.
- */
-function using_amp_live_list_comments() : bool {
-	if ( ! is_amp() ) {
-		return false;
-	}
-	$amp_theme_support = get_theme_support( 'amp' );
-	return ! empty( $amp_theme_support[0]['comments_live_list'] );
-}
-
-/**
- * Adds a pagination reference point attribute for amp-live-list when theme supports AMP.
- *
- * This is used by the navigation_markup_template filter in the comments template.
- *
- * @link https://www.ampproject.org/docs/reference/components/amp-live-list#pagination
- *
- * @param string $markup Navigation markup.
- * @return string Filtered markup.
- */
-function add_amp_live_list_pagination_attribute( string $markup ) : string {
-	return preg_replace( '/(\s*<[a-z0-9_-]+)/i', '$1 pagination ', $markup, 1 );
-}
-
-/**
  * Prints the header of the current displayed page based on its contents.
  */
 function index_header() {

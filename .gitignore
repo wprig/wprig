@@ -18,7 +18,6 @@
 !/*.php
 !/inc/
 !/template-parts/
-!/pluggable/
 !/config/
 !/tests/
 !/optional/

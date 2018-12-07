@@ -24,6 +24,13 @@ export const assetsDir = `${rootPath}/assets`;
 // directory for assets (CSS, JS, images) in production
 export const prodAssetsDir = `${prodThemePath}/assets`;
 
+// PHPCS options
+export const PHPCSOptions = {
+	bin: `${rootPath}/vendor/bin/phpcs`,
+	standard: `${rootPath}/phpcs.xml.dist`,
+	warningSeverity: 0
+};
+
 // Theme config name fields and their defaults
 export const nameFieldDefaults = {
 	PHPNamespace  : 'WP_Rig\\WP_Rig',
@@ -86,7 +93,6 @@ let paths = {
 			`${rootPath}/readme.txt`,
 			`${rootPath}/screenshot.png`,
 			`${rootPath}/LICENSE`,
-			`${rootPath}/pluggable/`,
 		],
 		dest: `${prodThemePath}/`
 	}

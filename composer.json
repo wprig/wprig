@@ -16,6 +16,11 @@
       "php": "7.0"
     }
   },
+  "autoload": {
+    "psr-4": {
+      "WP_Rig\\WP_Rig\\": "inc"
+    }
+  },
   "scripts": {
     "install-codestandards": [
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
