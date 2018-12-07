@@ -61,6 +61,7 @@ class Component implements Component_Interface {
 			false
 		);
 		wp_script_add_data( 'wp-rig-navigation', 'async', true );
+		wp_script_add_data( 'wp-rig-navigation', 'precache', true );
 		wp_localize_script(
 			'wp-rig-navigation',
 			'wpRigScreenReaderText',

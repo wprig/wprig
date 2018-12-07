@@ -141,6 +141,7 @@ class Component implements Component_Interface {
 			false
 		);
 		wp_script_add_data( 'wp-rig-lazy-load-images', 'defer', true );
+		wp_script_add_data( 'wp-rig-lazy-load-images', 'precache', true );
 	}
 
 	/**

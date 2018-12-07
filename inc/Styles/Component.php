@@ -13,6 +13,7 @@ use function add_action;
 use function add_filter;
 use function wp_enqueue_style;
 use function wp_register_style;
+use function wp_style_add_data;
 use function get_theme_file_uri;
 use function get_theme_file_path;
 use function wp_styles;
@@ -92,14 +93,14 @@ class Component implements Component_Interface {
 			$src     = $css_uri . $data['file'];
 			$version = wp_rig()->get_asset_version( $css_dir . $data['file'] );
 
-			// Enqueue global stylesheets immediately.
+			// Enqueue global stylesheets immediately, register the ones for later use.
 			if ( $data['global'] ) {
 				wp_enqueue_style( $handle, $src, array(), $version );
-				continue;
+			} else {
+				wp_register_style( $handle, $src, array(), $version );
 			}
 
-			// Register non-global stylesheets to be manually enqueued later.
-			wp_register_style( $handle, $src, array(), $version );
+			wp_style_add_data( $handle, 'precache', true );
 		}
 	}
 
