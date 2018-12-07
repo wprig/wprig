@@ -93,6 +93,8 @@ function enqueue_styles() {
 				get_asset_version( $css_dir . $css_file . '.min.css' )
 			);
 		}
+
+		wp_style_add_data( 'wp-rig-' . $css_file, 'precache', true );
 	}
 
 }
@@ -176,6 +178,7 @@ function enqueue_scripts() {
 		false
 	);
 	wp_script_add_data( 'wp-rig-navigation', 'async', true );
+	wp_script_add_data( 'wp-rig-navigation', 'precache', true );
 	wp_localize_script(
 		'wp-rig-navigation',
 		'wpRigScreenReaderText',
