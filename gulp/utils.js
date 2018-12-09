@@ -82,6 +82,15 @@ export function getStringReplacementTasks() {
 	});
 }
 
+export function logError(errorTitle='gulp') {
+	return gulpPlugins.plumber({
+		errorHandler: gulpPlugins.notify.onError({
+			title: errorTitle,
+			message: '<%= error.message %>'
+		})
+	});
+}
+
 export function createProdDir() {
 	log(colors.green(`Creating the production theme directory ${prodThemePath}`));
     // Check if the prod theme directory exists
