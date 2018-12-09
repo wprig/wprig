@@ -23,6 +23,7 @@ module.exports = {
 			'> 1%',
 			'last 2 versions'
 		],
+		convertCSSVariables: true,
 		debug: {
 			styles: false, // Render verbose CSS for debugging.
 			scripts: false, // Render verbose JS for debugging.
