@@ -9,4 +9,3 @@ if ( fs.existsSync( custom ) ) {
 } else {
 	module.exports = defaultConfig;
 }
-
