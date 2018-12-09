@@ -1,23 +1,17 @@
 'use strict';
+const fs = require('fs');
 
-module.exports = {
+const defaultConfig = {
 	theme: {
-		slug: 'wp-rig', // The slug must only consist of lowercase letters, numbers and dashes.
+		slug: 'wprig',
 		name: 'WP Rig',
-		author: 'The WP Rig Contributors',
-		PHPNamespace: 'WP_Rig\\WP_Rig' // Backslashes must be escaped in JavaScript
+		author: 'Morten Rand-Hendriksen'
 	},
 	dev: {
 		browserSync: {
 			live: true,
 			proxyURL: 'wprig.test:8888',
-			bypassPort: '8181',
-
-			// To use HTTPS you need a cert/key
-			// Please see the README for instructions
-			// keyPath: '',
-			// certPath: '',
-			https: false
+			bypassPort: '8181'
 		},
 		browserslist: [ // See https://github.com/browserslist/browserslist
 			'> 1%',
@@ -25,11 +19,17 @@ module.exports = {
 		],
 		debug: {
 			styles: false, // Render verbose CSS for debugging.
-			scripts: false, // Render verbose JS for debugging.
-			phpcs: true // Code sniff PHP files
+			scripts: false // Render verbose JS for debugging.
 		}
 	},
 	export: {
 		compress: true
 	}
 };
+
+const custom = __dirname + '/themeConfigCustom.json';
+if ( fs.existsSync( custom ) ) {
+	module.exports = require( custom );
+} else {
+	module.exports = defaultConfig;
+}
