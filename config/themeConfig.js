@@ -19,6 +19,7 @@ module.exports = {
 			// certPath: '',
 			https: false
 		},
+		convertCSSVariables: true,
 		debug: {
 			styles: false, // Render verbose CSS for debugging.
 			scripts: false, // Render verbose JS for debugging.
