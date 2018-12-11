@@ -75,9 +75,9 @@ class Component implements Component_Interface {
 				'post-details' => array(
 					'stylesheet' => 'wp-rig-content',
 					'date'       => '.posted-on',
-					'categories' => '.cat-links',
-					'tags'       => '.tags-links',
-					'author'     => '.byline',
+					'categories' => '.category-links',
+					'tags'       => '.tag-links',
+					'author'     => '.posted-by',
 					'comment'    => '.comments-link',
 				),
 			)
