@@ -45,7 +45,7 @@ WP Rig office hours take place every other Thursday from 12:30 - 1:30 p.m. EST, 
 
 Join WP Rig core maintainers to chat about the project, work alongside other devs, discuss ideas, address bugs, and more.
 
-[Subscribe to the WP Rig Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
+[Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
 
 ## Working with WP Rig
 WP Rig can be used in any development environment. It does not require any specific platform or server setup. It also does not have an opinion about what local or virtual server solution the developer uses.
