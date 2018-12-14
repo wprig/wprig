@@ -22,7 +22,7 @@ if ( is_singular( get_post_type() ) ) {
 	// Show attachment navigation only when the attachment has a parent.
 	if ( ! empty( $post->post_parent ) ) {
 
-		// There should be a WordPress core function for this, similar to `the_post_navigation()`.
+		// TODO: There should be a WordPress core function for this, similar to `the_post_navigation()`.
 		ob_start();
 		previous_image_link( false );
 		$attachment_navigation  = '<div class="nav-previous">';
