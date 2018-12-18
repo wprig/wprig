@@ -21,7 +21,8 @@ WP Rig office hours take place every other Thursday from 12:30 - 1:30 p.m. EST, 
 
 Join WP Rig core maintainers to chat about the project, work alongside other devs, discuss ideas, address bugs, and more.
 
-[Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
+- [View the WP Rig Google Calendar](https://calendar.google.com/calendar/embed?src=wprigio%40gmail.com&ctz=America%2FChicago) to see dates and find info to join the discussion
+- [Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
 
 ## Installation
 WP Rig has been tested on Linux, Mac, and Windows.
