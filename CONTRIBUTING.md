@@ -4,7 +4,7 @@ If you have found a problem or want to suggest an improvement or new feature, pl
 If you want to contribute code to WP Rig, please follow the instructions below:
 
 ## Office Hours
-WP Rig office hours take place every other Thursday from 12:30 - 1:30 p.m. EST, starting January 10, 2019.
+WP Rig office hours take place every other Thursday from 5:30 - 6:30 p.m. UTC, starting January 10, 2019.
 
 Join WP Rig core maintainers to chat about the project, work alongside other devs, discuss ideas, address bugs, and more.
 
