@@ -16,6 +16,13 @@ A progressive theme development rig for WordPress, WP Rig is built to promote th
 - Progressive Web App enabled
 - AMP-ready
 
+## Office Hours
+WP Rig office hours take place every other Thursday from 12:30 - 1:30 p.m. EST, starting January 10, 2019.
+
+Join WP Rig core maintainers to chat about the project, work alongside other devs, discuss ideas, address bugs, and more.
+
+[Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
+
 ## Installation
 WP Rig has been tested on Linux, Mac, and Windows.
 
@@ -31,7 +38,8 @@ WP Rig requires the following dependencies. Full installation instructions are p
     - DO NOT change the name of the theme directory from the default `wprig`.
 2. Configure theme settings, including the theme slug and name, in `./config/themeConfig.js`.
 3. In command line, run `npm install` to install necessary node and Composer dependencies.
-4. In command line, run `npm run build` to process source files and build the development theme.
+4. In command line, run `npm run dev` to process source files, build the development theme, and watch files for subsequent changes.
+	- `npm run build` can be used to process the source files and build the development theme without watching files afterwards.
 5. In WordPress admin, activate the WP Rig development theme.
 
 ## How to build WP Rig for production:
