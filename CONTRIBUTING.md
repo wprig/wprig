@@ -3,6 +3,13 @@ WP Rig is an open source project built by the WordPress community for the WordPr
 If you have found a problem or want to suggest an improvement or new feature, please file an issue being careful to follow the provided template.
 If you want to contribute code to WP Rig, please follow the instructions below:
 
+## Office Hours
+WP Rig office hours take place every other Thursday from 12:30 - 1:30 p.m. EST, starting January 10, 2019.
+
+Join WP Rig core maintainers to chat about the project, work alongside other devs, discuss ideas, address bugs, and more.
+
+[Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
+
 ## Workflow
 1. Set up a local development environment with a WordPress site running on your computer.
 2. Fork the WP Rig repository.

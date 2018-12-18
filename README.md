@@ -16,6 +16,13 @@ A progressive theme development rig for WordPress, WP Rig is built to promote th
 - Progressive Web App enabled
 - AMP-ready
 
+## Office Hours
+WP Rig office hours take place every other Thursday from 12:30 - 1:30 p.m. EST, starting January 10, 2019.
+
+Join WP Rig core maintainers to chat about the project, work alongside other devs, discuss ideas, address bugs, and more.
+
+[Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
+
 ## Installation
 WP Rig has been tested on Linux, Mac, and Windows.
 
