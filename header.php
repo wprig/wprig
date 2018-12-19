@@ -46,7 +46,7 @@ namespace WP_Rig\WP_Rig;
 
 				<?php $wp_rig_description = get_bloginfo( 'description', 'display' ); ?>
 				<?php if ( $wp_rig_description || is_customize_preview() ) : ?>
-					<p class="site-description"><?php echo $wp_rig_description; /* WPCS: xss ok. */ ?></p>
+					<p class="site-description"><?php echo $wp_rig_description; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?></p>
 				<?php endif; ?>
 			</div><!-- .site-branding -->
 
