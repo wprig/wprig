@@ -13,5 +13,6 @@ Addresses issue #
 
 ## Checklist:
 - [ ] This pull request relates to a ticket.
-- [ ] My code is tested.
+- [ ] This code is tested.
+- [ ] This change has been added to CHANGELOG.md
 - [ ] I want my code added to WP Rig.
