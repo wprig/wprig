@@ -23,7 +23,6 @@ Join WP Rig core maintainers to chat about the project, work alongside other dev
 10. Submit a Pull Request to the WP Rig repository explaining your changes and referencing any related issues.
 
 ## Guidelines for pull requests
-- If your pull request has multiple commits, make sure [they are squashed](https://github.com/wprig/wprig/wiki/How-to-squash-commits).
 - Keep pull requests as concise as possible. If you're addressing a bug, only submit the fixes for that bug. 
   - Submit unrelated cleanup, e.g. fixing spaces, tabs, or any violations caught by PHPCS, as its own pull request.
 
