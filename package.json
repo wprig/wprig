@@ -69,7 +69,6 @@
       "@babel/env"
     ]
   },
-  "browserslist": "> 1%, last 2 version",
   "eslintConfig": {
     "extends": "wordpress",
     "root": true,

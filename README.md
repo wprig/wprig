@@ -85,10 +85,14 @@ WP Rig uses a [Gulp 4](https://gulpjs.com/) build process to generate and optimi
 
 For more information about the Gulp processes, what processes are available, and how to run them individually, visit the [Gulp Wiki page](https://github.com/wprig/wprig/wiki/Gulp).
 
+
+### Browser Support
+As WP Rig processes CSS and JavaScript it will support the browsers listed in `.browserslistrc`. Note that WP Rig will **not** add polyfills for missing browser support. WP Rig **will** add CSS prefixes and transpile JavaScript.
+
 ## Advanced Features
 WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), and existing tools like Sass without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
 
-Configuring the behavior of WP Rig is done by editing `./config/themeConfig.js`. Here the developer can set the theme name and theme author name (for translation files), the browser list for AutoPrefixer, and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
+Configuring the behavior of WP Rig is done by editing `./config/themeConfig.js`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
 
 WP Rig ships with advanced features including:
 - Lazy-loading images
@@ -105,6 +109,7 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 # Changelog
 
 ## 2.0.0
+- Use `.browserslistrc` for browser support definitions. See [#227](https://github.com/wprig/wprig/pull/227). Props @ataylorme.
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme.
 - Full refactor of PHP codebase, leveraging PHP7 features. See [#185](https://github.com/wprig/wprig/pull/185). Props @felixarntz.

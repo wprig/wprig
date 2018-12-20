@@ -56,8 +56,7 @@ export default function styles(done) {
 				],
 			}),
 			postcssPresetEnv({
-				stage: 3,
-				browsers: config.dev.browserslist
+				stage: 3
 			})
 		]),
 	];
