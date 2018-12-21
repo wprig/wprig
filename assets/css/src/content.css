@@ -50,6 +50,7 @@
 .entry-content > *,
 .entry-summary > *,
 .not-found > * {
+	display: block;
 	margin-right: auto;
 	margin-left: auto;
 	padding-right: 1.5rem;
