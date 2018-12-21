@@ -4,11 +4,12 @@ If you have found a problem or want to suggest an improvement or new feature, pl
 If you want to contribute code to WP Rig, please follow the instructions below:
 
 ## Office Hours
-WP Rig office hours take place every other Thursday from 12:30 - 1:30 p.m. EST, starting January 10, 2019.
+WP Rig office hours take place every other Thursday from 5:30 - 6:30 p.m. UTC, starting January 10, 2019.
 
 Join WP Rig core maintainers to chat about the project, work alongside other devs, discuss ideas, address bugs, and more.
 
-[Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
+- [View the WP Rig Google Calendar](https://calendar.google.com/calendar/embed?src=wprigio%40gmail.com&ctz=America%2FChicago) to see dates and find info to join the discussion
+- [Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
 
 ## Workflow
 1. Set up a local development environment with a WordPress site running on your computer.
@@ -22,7 +23,6 @@ Join WP Rig core maintainers to chat about the project, work alongside other dev
 10. Submit a Pull Request to the WP Rig repository explaining your changes and referencing any related issues.
 
 ## Guidelines for pull requests
-- If your pull request has multiple commits, make sure [they are squashed](https://github.com/wprig/wprig/wiki/How-to-squash-commits).
 - Keep pull requests as concise as possible. If you're addressing a bug, only submit the fixes for that bug. 
   - Submit unrelated cleanup, e.g. fixing spaces, tabs, or any violations caught by PHPCS, as its own pull request.
 

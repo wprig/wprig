@@ -25,6 +25,7 @@
 !.babelrc
 !composer.json
 !composer.lock
+!CHANGELOG.md
 !CONTRIBUTING.md
 !.editorconfig
 !.eslintignore
