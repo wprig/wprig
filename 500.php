@@ -9,28 +9,10 @@
 
 namespace WP_Rig\WP_Rig;
 
-get_header(); ?>
-
+get_header();
+?>
 	<main id="primary" class="site-main">
-
-		<section class="error-500 not-found">
-			<header class="page-header">
-				<h1 class="page-title"><?php esc_html_e( 'Oops! Something went wrong.', 'wp-rig' ); ?></h1>
-			</header><!-- .page-header -->
-
-			<div class="page-content">
-				<?php
-				if ( function_exists( 'wp_service_worker_error_message_placeholder' ) ) {
-					wp_service_worker_error_message_placeholder();
-				}
-				if ( function_exists( 'wp_service_worker_error_details_template' ) ) {
-					wp_service_worker_error_details_template();
-				}
-				?>
-			</div><!-- .page-content -->
-		</section><!-- .error-500 -->
-
+		<?php get_template_part( 'template-parts/content/error', '500' ); ?>
 	</main><!-- #primary -->
-
 <?php
 get_footer();

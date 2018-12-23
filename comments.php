@@ -24,10 +24,9 @@ if ( post_password_required() ) {
 
 <?php wp_print_styles( array( 'wp-rig-comments' ) ); ?>
 <div id="comments" class="comments-area">
-
 	<?php
 	// You can start editing here -- including this comment!
-	if ( have_comments() ) :
+	if ( have_comments() ) {
 		?>
 		<h2 class="comments-title">
 			<?php
@@ -55,16 +54,13 @@ if ( post_password_required() ) {
 		<?php wp_rig()->the_comments(); ?>
 
 		<?php
-		// If comments are closed and there are comments, let's leave a little note, shall we?
-		if ( ! comments_open() ) :
+		if ( ! comments_open() ) {
 			?>
 			<p class="no-comments"><?php esc_html_e( 'Comments are closed.', 'wp-rig' ); ?></p>
 			<?php
-		endif;
-
-	endif; // Check for have_comments().
+		}
+	}
 
 	comment_form();
 	?>
-
 </div><!-- #comments -->

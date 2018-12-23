@@ -10,18 +10,19 @@ import path from 'path';
 import {prodThemePath, gulpPlugins, config} from './constants';
 
 /**
- * Create the production directory
+ * Create the zip file
  */
 export default function prodFinish(done) {
 
-    // Copying misc files to the prod directory
+    // Bail if the compress option is false
+    if ( ! config.export.compress ) {
+        return done();
+    }
+
     return pump(
-		[
+        [
             src(`${prodThemePath}/**/*`),
-            gulpPlugins.if(
-                config.export.compress, 
-                gulpPlugins.zip(`${config.theme.slug}.zip`)
-            ),
+            gulpPlugins.zip(`${config.theme.slug}.zip`),
             dest(path.normalize(`${prodThemePath}/../`))
         ],
 		done

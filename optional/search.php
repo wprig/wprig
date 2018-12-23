@@ -9,47 +9,26 @@
 
 namespace WP_Rig\WP_Rig;
 
-get_header(); ?>
-
+get_header();
+?>
 	<main id="primary" class="site-main">
+		<?php
+		if ( have_posts() ) {
+			wp_print_styles( array( 'wp-rig-content' ) );
+			get_template_part( 'template-parts/content/page_header' );
 
-	<?php
-	if ( have_posts() ) :
+			while ( have_posts() ) {
+				the_post();
 
-		/* Display the appropriate header when required. */
-		index_header();
+				get_template_part( 'template-parts/content/entry', get_post_type() );
+			}
 
-		/* Start the Loop */
-		while ( have_posts() ) :
-			the_post();
-
-			/*
-			 * Include the component stylesheet for the content.
-			 * This call runs only once on index and archive pages.
-			 * At some point, override functionality should be built in similar to the template part below.
-			 */
-			wp_print_styles( array( 'wp-rig-content' ) ); // Note: If this was already done it will be skipped.
-
-			/**
-			 * Run the loop for the search to output the results.
-			 * If you want to overload this in a child theme then include a file
-			 * called content-search.php and that will be used instead.
-			 */
-			get_template_part( 'template-parts/content', 'search' );
-
-		endwhile;
-
-		the_posts_navigation();
-
-	else :
-
-		get_template_part( 'template-parts/content', 'none' );
-
-	endif;
-	?>
-
+			the_posts_navigation();
+		} else {
+			get_template_part( 'template-parts/content/error' );
+		}
+		?>
 	</main><!-- #primary -->
-
 <?php
 get_sidebar();
 get_footer();

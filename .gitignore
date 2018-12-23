@@ -25,6 +25,7 @@
 !.babelrc
 !composer.json
 !composer.lock
+!CHANGELOG.md
 !CONTRIBUTING.md
 !.editorconfig
 !.eslintignore
@@ -41,3 +42,4 @@
 !readme.txt
 !screenshot.png
 !.travis.yml
+!.browserslistrc

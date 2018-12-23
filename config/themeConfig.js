@@ -19,10 +19,6 @@ module.exports = {
 			// certPath: '',
 			https: false
 		},
-		browserslist: [ // See https://github.com/browserslist/browserslist
-			'> 1%',
-			'last 2 versions'
-		],
 		convertCSSVariables: true,
 		debug: {
 			styles: false, // Render verbose CSS for debugging.
