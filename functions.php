@@ -14,13 +14,13 @@ define( 'WP_RIG_MINIMUM_PHP_VERSION', '7.0' );
 
 // Bail if requirements are not met.
 if ( version_compare( $GLOBALS['wp_version'], WP_RIG_MINIMUM_WP_VERSION, '<' ) || version_compare( phpversion(), WP_RIG_MINIMUM_PHP_VERSION, '<' ) ) {
-	require get_template_directory() . '/inc/back-compat.php';
+	require get_stylesheet_directory() . '/inc/back-compat.php';
 	return;
 }
 
 // Setup autoloader (via Composer or custom).
-if ( file_exists( get_template_directory() . '/vendor/autoload.php' ) ) {
-	require get_template_directory() . '/vendor/autoload.php';
+if ( file_exists( get_stylesheet_directory() . '/vendor/autoload.php' ) ) {
+	require get_stylesheet_directory() . '/vendor/autoload.php';
 } else {
 	/**
 	 * Custom autoloader function for theme classes.
@@ -39,7 +39,7 @@ if ( file_exists( get_template_directory() . '/vendor/autoload.php' ) ) {
 
 		$parts = explode( '\\', substr( $class_name, strlen( $namespace . '\\' ) ) );
 
-		$path = get_template_directory() . '/inc';
+		$path = get_stylesheet_directory() . '/inc';
 		foreach ( $parts as $part ) {
 			$path .= '/' . $part;
 		}
@@ -57,7 +57,7 @@ if ( file_exists( get_template_directory() . '/vendor/autoload.php' ) ) {
 }
 
 // Load the `wp_rig()` entry point function.
-require get_template_directory() . '/inc/functions.php';
+require get_stylesheet_directory() . '/inc/functions.php';
 
 // Initialize the theme.
 call_user_func( 'WP_Rig\WP_Rig\wp_rig' );
