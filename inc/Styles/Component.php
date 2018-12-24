@@ -85,6 +85,18 @@ class Component implements Component_Interface {
 			wp_enqueue_style( 'wp-rig-fonts', $google_fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		}
 
+		// Enqueue parent theme style if this is a child theme.
+		if ( is_child_theme() ) {
+			$parent_theme = basename( get_parent_theme_file_path() );
+			wp_dequeue_style( "$parent_theme-style" );
+			wp_enqueue_style(
+				"$parent_theme-style",
+				get_template_directory_uri() . '/style.css',
+				array(),
+				wp_get_theme()->get( 'Version' )
+			);
+		}
+
 		$css_uri = get_theme_file_uri( '/assets/css/' );
 		$css_dir = get_theme_file_path( '/assets/css/' );
 
