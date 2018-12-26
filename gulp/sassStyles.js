@@ -7,7 +7,7 @@ import pump from 'pump';
 
 // Internal dependencies
 import {paths, gulpPlugins, isProd} from './constants';
-import {getThemeConfig, getStringReplacementTasks} from './utils';
+import {getThemeConfig, getStringReplacementTasks, logError} from './utils';
 
 /**
  * Sass, if that's being used.
@@ -18,10 +18,11 @@ export default function sassStyles(done) {
 
     const beforeReplacement = [
         src(paths.styles.sass, { sourcemaps: true }),
+        logError('sass'),
         gulpPlugins.if(
             config.dev.debug.styles, 
-            gulpPlugins.sass({outputStyle: 'nested'}).on('error', gulpPlugins.sass.logError),
-            gulpPlugins.sass({outputStyle: 'compressed'}).on('error', gulpPlugins.sass.logError)
+            gulpPlugins.sass({outputStyle: 'nested'}),
+            gulpPlugins.sass({outputStyle: 'compressed'})
         ),
         gulpPlugins.tabify(2, true),
         gulpPlugins.rename({

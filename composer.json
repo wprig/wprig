@@ -5,9 +5,9 @@
   "license": "GPL-2.0",
   "require-dev": {
     "php": ">=7.0",
-    "wp-coding-standards/wpcs": "^1.0.0",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
-    "wimg/php-compatibility": "^8.1",
+    "wp-coding-standards/wpcs": "^1",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4",
+    "wimg/php-compatibility": "^9",
     "phpunit/phpunit": "^6",
     "brain/monkey": "^2"
   },

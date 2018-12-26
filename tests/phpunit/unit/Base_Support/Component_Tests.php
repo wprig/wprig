@@ -99,6 +99,7 @@ class Component_Tests extends Unit_Test_Case {
 				'title-tag',
 				'html5',
 				'customize-selective-refresh-widgets',
+				'responsive-embeds',
 			),
 			array_keys( $features )
 		);

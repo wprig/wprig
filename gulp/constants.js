@@ -78,6 +78,10 @@ let paths = {
 		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
 		dest: `${assetsDir}/images/`
 	},
+	screenshot: {
+		src: `${rootPath}/screenshot.png`,
+		dest: `${rootPath}/`
+	},
 	languages: {
 		src: [
 			`${rootPath}/**/*.php`,
@@ -91,7 +95,6 @@ let paths = {
 		src: [
 			`${rootPath}/style.css`,
 			`${rootPath}/readme.txt`,
-			`${rootPath}/screenshot.png`,
 			`${rootPath}/LICENSE`,
 		],
 		dest: `${prodThemePath}/`
@@ -104,6 +107,7 @@ if( isProd ){
 	paths.styles.dest = `${prodAssetsDir}/css/`;
 	paths.scripts.dest = `${prodAssetsDir}/js/`;
 	paths.images.dest = `${prodAssetsDir}/images/`;
+	paths.screenshot.dest = `${prodThemePath}/`;
 	paths.languages = {
 		src: `${prodThemePath}/**/*.php`,
 		dest: `${prodThemePath}/languages/${config.theme.slug}.pot`

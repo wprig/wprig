@@ -7,7 +7,7 @@ import pump from 'pump';
 
 // Internal dependencies
 import {paths, gulpPlugins, isProd} from './constants';
-import {getThemeConfig, getStringReplacementTasks} from './utils';
+import {getThemeConfig, getStringReplacementTasks, logError} from './utils';
 
 /**
  * JavaScript via Babel, ESlint, and uglify.
@@ -18,6 +18,7 @@ export default function scripts(done) {
 
 	const beforeReplacement = [
 		src(paths.scripts.src, {sourcemaps: true}),
+		logError('JavaScript'),
 		gulpPlugins.newer({
 			dest: paths.scripts.dest,
 			extra: [paths.config.themeConfig]

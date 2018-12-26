@@ -88,6 +88,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Add support for selective refresh for widgets.
 		add_theme_support( 'customize-selective-refresh-widgets' );
+
+		// Add support for responsive embedded content.
+		add_theme_support( 'responsive-embeds' );
 	}
 
 	/**

@@ -134,5 +134,13 @@ class Component implements Component_Interface {
 				),
 			)
 		);
+
+		/*
+		 * Optional: Disable custom font sizes in block text settings.
+		 *
+		 * Uncomment the line below to disable the custom custom font sizes in the editor.
+		 *
+		 * add_theme_support( 'disable-custom-font-sizes' );
+		 */
 	}
 }

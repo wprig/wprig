@@ -6,9 +6,9 @@ import {parallel, series} from 'gulp';
 
 // Internal dependencies
 import generateCert from './gulp/generateCert';
-import images from './gulp/images';
+import images, {screenshot} from './gulp/images';
 import php from './gulp/php';
-import {reload, serve} from './gulp/browserSync';
+import {serve} from './gulp/browserSync';
 import sassStyles from './gulp/sassStyles';
 import scripts from './gulp/scripts';
 import styles from './gulp/styles';
@@ -37,7 +37,7 @@ export const buildDev = parallel(
  * Export theme for distribution.
  */
 export const bundleTheme = series(
-    prodPrep, parallel(php, scripts, styles, sassStyles, images), translate, prodFinish
+    prodPrep, parallel(php, scripts, styles, sassStyles, images, screenshot), translate, prodFinish
 );
 
 /**
