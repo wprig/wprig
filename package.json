@@ -87,6 +87,7 @@
     "dev": "gulp",
     "generateCert": "gulp generateCert",
     "install": "composer install",
+    "test": "gulp testTheme",
     "translate": "gulp translate"
   }
 }

@@ -41,6 +41,13 @@ export const bundleTheme = series(
 );
 
 /**
+ * Export theme testing.
+ */
+export const testTheme = series(
+    parallel(php)
+);
+
+/**
  * Export all imported functions as tasks
  */
 export { generateCert, images, php, sassStyles, scripts, styles, translate, watch };
