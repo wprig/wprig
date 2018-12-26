@@ -12,10 +12,6 @@
       "bypassPort": "8181",
       "https": false
     },
-    "browserslist": [
-      "> 1%",
-      "last 2 versions"
-    ],
     "debug": {
       "styles": false,
       "scripts": false,
