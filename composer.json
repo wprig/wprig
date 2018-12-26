@@ -7,9 +7,9 @@
     "php": ">=7.0",
     "wp-coding-standards/wpcs": "^1",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4",
-    "wimg/php-compatibility": "^9",
     "phpunit/phpunit": "^6",
-    "brain/monkey": "^2"
+    "brain/monkey": "^2",
+    "phpcompatibility/php-compatibility": "^9.1"
   },
   "config": {
     "platform": {
