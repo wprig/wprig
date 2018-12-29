@@ -32,7 +32,9 @@ WP Rig requires the following dependencies. Full installation instructions are p
 
 === How to install WP Rig: ===
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
-2. Configure theme settings including the theme slug and name in `./dev/config/themeConfig.js`.
+2. Configure theme settings, including the theme slug and name.
+  * View `./config/config.default.json` for the default settings.
+  * Place custom theme settings in `./config/config.json` to override default settings.
 3. In command line, run `npm install` to install necessary node and Composer dependencies.
 4. In command line, run `npm run build` to generate the theme.
 5. In WordPress admin, activate the theme.
@@ -48,7 +50,9 @@ To take full advantage of the features in WP Rig, your code editor needs support
 WP Rig can be used in any development environment. It does not require any specific platform or server setup. It also does not have an opinion about what local or virtual server solution the developer uses.
 
 === BrowserSync ===
-WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `browserSync` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `proxyURL` value is the URL to the live version of your local site.
+WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing.
+
+Before first run, visit the [BrowserSync wiki page](https://github.com/wprig/wprig/wiki/BrowserSync).
 
 === Enabling HTTPS ===
 In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. If needed, WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generateCert`.
@@ -74,7 +78,8 @@ Details on how to enable PHPCS in VS Code can be found in the [WP Rig Wiki](http
 
 === `bundle` process ===
 `npm run bundle` generates a `[themename].zip` archive containing the finished theme. This runs all relevant tasks in series ending with the translation task and the bundle task and stores a new zip archive in the root theme folder.
-To bundle the theme without creating a zip archive, change the `export:compress` setting in `./dev/config/themeConfig.js`:
+
+To bundle the theme without creating a zip archive, define the `export:compress` setting in `./config/config.json` to `false`:
 
 ```javascript
 export: {
@@ -84,7 +89,10 @@ export: {
 
 == Advanced Features ==
 WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), and existing tools like Sass without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
-Configuring the behavior of WP Rig is done by editing `./dev/config/themeConfig.js`. Here the developer can set the theme name and theme author name (for translation files), the browser list for AutoPrefixer, and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
+
+Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
+
+Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`.
 
 === Lazy-loading images ===
 WP Rig [lazy loads](https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/) all images out of the box to improve performance. When lazy-loading images is enabled in the theme, the user will see a Theme Options feature in Customizer allowing them to toggle the feature off.
