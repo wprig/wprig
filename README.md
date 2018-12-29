@@ -37,7 +37,9 @@ WP Rig requires the following dependencies. Full installation instructions are p
 ### How to install WP Rig:
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
     - DO NOT change the name of the theme directory from the default `wprig`.
-2. Configure theme settings, including the theme slug and name, in `./config/themeConfig.js`.
+2. Configure theme settings, including the theme slug and name.
+    - View `./config/config.default.json` for the default settings.
+    - Place custom theme settings in `./config/config.json` to override default settings.
 3. In command line, run `npm install` to install necessary node and Composer dependencies.
 4. In command line, run `npm run dev` to process source files, build the development theme, and watch files for subsequent changes.
 	- `npm run build` can be used to process the source files and build the development theme without watching files afterwards.
@@ -70,7 +72,8 @@ Before first run, visit the [BrowserSync wiki page](https://github.com/wprig/wpr
 
 #### `production bundle` process
 `npm run bundle` generates a production ready theme as a new theme directory and, optionally, a `.zip` archive. This builds all source files, optimizes the built files for production, does a string replacement and runs translations. Non-essential files from the `wp-rig` development theme are not copied to the production theme.
-To bundle the theme without creating a zip archive, change the `export:compress` setting in `./config/themeConfig.js`:
+
+To bundle the theme without creating a zip archive, define the `export:compress` setting in `./config/config.json` to `false`:
 
 ```javascript
 export: {
@@ -93,7 +96,9 @@ As WP Rig processes CSS and JavaScript it will support the browsers listed in `.
 ## Advanced Features
 WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), and existing tools like Sass without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
 
-Configuring the behavior of WP Rig is done by editing `./config/themeConfig.js`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
+Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
+
+Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`.
 
 WP Rig ships with advanced features including:
 - Lazy-loading images
