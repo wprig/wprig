@@ -17,7 +17,9 @@
       "scripts": false,
       "phpcs": true
     },
-    "preserveCSSVars": false
+    "styles": {
+      "preserveCSSVars": false
+    }
   },
   "export": {
     "compress": true
