@@ -170,7 +170,7 @@
 	font-family: var(--highlight-font-family);
 	font-size: 0.9em;
 	font-style: italic;
-	background: hsl(0, 0% 95%);
+	background: hsl(0, 0%, 95%);
 }
 
 /* stylelint-disable */
