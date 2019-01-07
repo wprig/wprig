@@ -40,7 +40,7 @@ export default function styles(done) {
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
 			postcssCustomProperties({
-				'preserve': ! config.dev.convertCSSVariables,
+				'preserve': config.dev.styles.preserveCSSVars,
 				'importFrom': [
 					{
 						customProperties: cssVars.variables
@@ -48,7 +48,7 @@ export default function styles(done) {
 				],
 			}),
 			postcssCustomMedia({
-				'preserve': ! config.dev.convertCSSVariables,
+				'preserve': config.dev.styles.preserveCSSVars,
 				'importFrom': [
 					{
 						customMedia: cssVars.queries
