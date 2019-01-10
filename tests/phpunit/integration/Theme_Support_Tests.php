@@ -53,6 +53,9 @@ class Theme_Support_Tests extends Integration_Test_Case {
 				'customize-selective-refresh-widgets',
 			],
 			[
+				'responsive-embeds',
+			],
+			[
 				'custom-logo',
 			],
 			[

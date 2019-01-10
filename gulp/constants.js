@@ -6,14 +6,6 @@ export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
 import requireUncached from 'require-uncached';
 
-// gulp string replace options
-export const gulpReplaceOptions = {
-	logs: {
-		enabled: false
-	},
-	searchValue: 'regex',
-};
-
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
 
@@ -32,8 +24,16 @@ export const assetsDir = `${rootPath}/assets`;
 // directory for assets (CSS, JS, images) in production
 export const prodAssetsDir = `${prodThemePath}/assets`;
 
+// PHPCS options
+export const PHPCSOptions = {
+	bin: `${rootPath}/vendor/bin/phpcs`,
+	standard: `${rootPath}/phpcs.xml.dist`,
+	warningSeverity: 0
+};
+
 // Theme config name fields and their defaults
 export const nameFieldDefaults = {
+	PHPNamespace  : 'WP_Rig\\WP_Rig',
 	slug          : 'wp-rig',
 	name          : 'WP Rig',
 	underscoreCase: 'wp_rig',
@@ -78,6 +78,10 @@ let paths = {
 		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
 		dest: `${assetsDir}/images/`
 	},
+	screenshot: {
+		src: `${rootPath}/screenshot.png`,
+		dest: `${rootPath}/`
+	},
 	languages: {
 		src: [
 			`${rootPath}/**/*.php`,
@@ -91,9 +95,7 @@ let paths = {
 		src: [
 			`${rootPath}/style.css`,
 			`${rootPath}/readme.txt`,
-			`${rootPath}/screenshot.png`,
 			`${rootPath}/LICENSE`,
-			`${rootPath}/pluggable/`,
 		],
 		dest: `${prodThemePath}/`
 	}
@@ -105,6 +107,7 @@ if( isProd ){
 	paths.styles.dest = `${prodAssetsDir}/css/`;
 	paths.scripts.dest = `${prodAssetsDir}/js/`;
 	paths.images.dest = `${prodAssetsDir}/images/`;
+	paths.screenshot.dest = `${prodThemePath}/`;
 	paths.languages = {
 		src: `${prodThemePath}/**/*.php`,
 		dest: `${prodThemePath}/languages/${config.theme.slug}.pot`

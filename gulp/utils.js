@@ -12,7 +12,6 @@ import fs from 'fs';
 // Internal dependencies
 import {
 	gulpPlugins,
-	gulpReplaceOptions,
 	nameFieldDefaults,
 	prodThemePath,
 	paths
@@ -66,10 +65,29 @@ export function getThemeConfig( uncached=false ) {
  */
 export function getStringReplacementTasks() {
 	// Get a fresh copy of the config
-    const config = getThemeConfig(true);
+	const config = getThemeConfig(true);
 
 	return Object.keys( nameFieldDefaults ).map( nameField => {
-		return gulpPlugins.stringReplace( nameFieldDefaults[ nameField ], config.theme[ nameField ], gulpReplaceOptions );
+		return gulpPlugins.stringReplace(
+			// Backslashes must be double escaped for regex
+			nameFieldDefaults[ nameField ].replace(/\\/g,'\\\\'),
+			config.theme[ nameField ],
+			{
+				logs: {
+					enabled: false
+				},
+				searchValue: 'regex'
+			}
+		);
+	});
+}
+
+export function logError(errorTitle='gulp') {
+	return gulpPlugins.plumber({
+		errorHandler: gulpPlugins.notify.onError({
+			title: errorTitle,
+			message: '<%= error.message %>'
+		})
 	});
 }
 

@@ -12,6 +12,7 @@ if ( function_exists( 'xdebug_disable' ) ) {
 
 define( 'TESTS_THEME_DIR', dirname( __DIR__, 2 ) );
 define( 'TESTS_THEME_BASENAME', basename( TESTS_THEME_DIR ) );
+define( 'TESTS_THEME_URI', 'http://example.org/wp-content/themes/' . TESTS_THEME_BASENAME );
 
 // Vendor directory is one level above 'dev' folder.
 $loader = require TESTS_THEME_DIR . '/vendor/autoload.php';

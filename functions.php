@@ -12,59 +12,52 @@
 define( 'WP_RIG_MINIMUM_WP_VERSION', '4.5' );
 define( 'WP_RIG_MINIMUM_PHP_VERSION', '7.0' );
 
-/**
- * Bail if requirements are not met.
- */
+// Bail if requirements are not met.
 if ( version_compare( $GLOBALS['wp_version'], WP_RIG_MINIMUM_WP_VERSION, '<' ) || version_compare( phpversion(), WP_RIG_MINIMUM_PHP_VERSION, '<' ) ) {
 	require get_template_directory() . '/inc/back-compat.php';
 	return;
 }
 
-/**
- * Setup and core features configuration.
- */
-require get_template_directory() . '/inc/setup.php';
+// Setup autoloader (via Composer or custom).
+if ( file_exists( get_template_directory() . '/vendor/autoload.php' ) ) {
+	require get_template_directory() . '/vendor/autoload.php';
+} else {
+	/**
+	 * Custom autoloader function for theme classes.
+	 *
+	 * @access private
+	 *
+	 * @param string $class_name Class name to load.
+	 * @return bool True if the class was loaded, false otherwise.
+	 */
+	function _wp_rig_autoload( $class_name ) {
+		$namespace = 'WP_Rig\WP_Rig';
 
-/**
- * Theme assets management.
- */
-require get_template_directory() . '/inc/assets.php';
+		if ( strpos( $class_name, $namespace . '\\' ) !== 0 ) {
+			return false;
+		}
 
-/**
- * Custom responsive image sizes.
- */
-require get_template_directory() . '/inc/image-sizes.php';
+		$parts = explode( '\\', substr( $class_name, strlen( $namespace . '\\' ) ) );
 
-/**
- * Implement the Custom Header feature.
- */
-require get_template_directory() . '/pluggable/custom-header.php';
+		$path = get_template_directory() . '/inc';
+		foreach ( $parts as $part ) {
+			$path .= '/' . $part;
+		}
+		$path .= '.php';
 
-/**
- * Custom template tags for this theme.
- */
-require get_template_directory() . '/inc/template-tags.php';
+		if ( ! file_exists( $path ) ) {
+			return false;
+		}
 
-/**
- * Functions which enhance the theme by hooking into WordPress.
- */
-require get_template_directory() . '/inc/template-functions.php';
+		require_once $path;
 
-/**
- * Customizer additions.
- */
-require get_template_directory() . '/inc/customizer.php';
-
-/**
- * Optional: Add theme support for lazyloading images.
- *
- * @link https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/
- */
-require get_template_directory() . '/pluggable/lazyload/lazyload.php';
-
-/**
- * Optional: Load Jetpack compatibility, if plugin is active.
- */
-if ( defined( 'JETPACK__VERSION' ) ) {
-	require get_template_directory() . '/pluggable/jetpack.php';
+		return true;
+	}
+	spl_autoload_register( '_wp_rig_autoload' );
 }
+
+// Load the `wp_rig()` entry point function.
+require get_template_directory() . '/inc/functions.php';
+
+// Initialize the theme.
+call_user_func( 'WP_Rig\WP_Rig\wp_rig' );

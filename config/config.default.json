@@ -1,0 +1,27 @@
+{
+  "theme": {
+    "slug": "wp-rig",
+    "name": "WP Rig",
+    "author": "The WP Rig Contributors",
+    "PHPNamespace": "WP_Rig\\WP_Rig"
+  },
+  "dev": {
+    "browserSync": {
+      "live": true,
+      "proxyURL": "wprig.test:8888",
+      "bypassPort": "8181",
+      "https": false
+    },
+    "debug": {
+      "styles": false,
+      "scripts": false,
+      "phpcs": true
+    },
+    "styles": {
+      "preserveCSSVars": false
+    }
+  },
+  "export": {
+    "compress": true
+  }
+}

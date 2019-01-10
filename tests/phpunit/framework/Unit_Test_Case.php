@@ -9,6 +9,7 @@ namespace WP_Rig\WP_Rig\Tests\Framework;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey;
+use WP_Rig\WP_Rig\Template_Tags;
 
 /**
  * Unit test case base class.
@@ -26,8 +27,10 @@ class Unit_Test_Case extends TestCase {
 		Monkey\Functions\stubs(
 			[
 				// With defined return value.
-				'get_template_directory'   => TESTS_THEME_DIR,
-				'get_stylesheet_directory' => TESTS_THEME_DIR,
+				'get_template_directory'       => TESTS_THEME_DIR,
+				'get_stylesheet_directory'     => TESTS_THEME_DIR,
+				'get_template_directory_uri'   => TESTS_THEME_URI,
+				'get_stylesheet_directory_uri' => TESTS_THEME_URI,
 
 				// With first parameter being returned.
 				'esc_attr',
@@ -41,10 +44,16 @@ class Unit_Test_Case extends TestCase {
 				'esc_attr_x',
 
 				// With return value determined by callback.
-				'_n' => function( $single, $plural, $number ) {
+				'get_theme_file_path' => function( $path ) {
+					return TESTS_THEME_DIR . '/' . ltrim( $path );
+				},
+				'get_theme_file_uri'  => function( $path ) {
+					return TESTS_THEME_URI . '/' . ltrim( $path );
+				},
+				'_n'                  => function( $single, $plural, $number ) {
 					return 1 === $number ? $single : $plural;
 				},
-				'_nx' => function( $single, $plural, $number ) {
+				'_nx'                 => function( $single, $plural, $number ) {
 					return 1 === $number ? $single : $plural;
 				},
 			]
@@ -58,6 +67,24 @@ class Unit_Test_Case extends TestCase {
 	protected function tearDown() {
 		Monkey\tearDown();
 		parent::tearDown();
+	}
+
+	/**
+	 * Returns a mock of the WP Rig template tags class for the given methods.
+	 *
+	 * Furthermore this method will set up `wp_rig()` so that when calling the function the mock will be returned.
+	 *
+	 * @param array $methods Template tag methods to mock.
+	 * @return Template_Tags Template tags mock.
+	 */
+	protected function mockTemplateTags( array $methods ) {
+		$component = $this->getMockBuilder( Template_Tags::class )
+			->setMethods( $methods )
+			->getMock();
+
+		Monkey\Functions\when( 'WP_Rig\WP_Rig\wp_rig' )->justReturn( $component );
+
+		return $component;
 	}
 
 	/**

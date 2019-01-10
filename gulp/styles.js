@@ -11,7 +11,7 @@ import requireUncached from 'require-uncached';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
-import {getThemeConfig, getStringReplacementTasks} from './utils';
+import {getThemeConfig, getStringReplacementTasks, logError} from './utils';
 import {server} from './browserSync';
 
 /**
@@ -26,6 +26,7 @@ export default function styles(done) {
 
 	const beforeReplacement = [
 		src(paths.styles.src, {sourcemaps: true}),
+		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
 			extra: [paths.config.themeConfig, paths.config.cssVars]
@@ -39,7 +40,7 @@ export default function styles(done) {
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
 			postcssCustomProperties({
-				'preserve': false,
+				'preserve': config.dev.styles.preserveCSSVars,
 				'importFrom': [
 					{
 						customProperties: cssVars.variables
@@ -47,7 +48,7 @@ export default function styles(done) {
 				],
 			}),
 			postcssCustomMedia({
-				'preserve': false,
+				'preserve': config.dev.styles.preserveCSSVars,
 				'importFrom': [
 					{
 						customMedia: cssVars.queries
@@ -55,8 +56,7 @@ export default function styles(done) {
 				],
 			}),
 			postcssPresetEnv({
-				stage: 3,
-				browsers: config.dev.browserslist
+				stage: 3
 			})
 		]),
 	];
