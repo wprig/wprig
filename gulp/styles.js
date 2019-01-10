@@ -7,7 +7,6 @@ import postcssPresetEnv from 'postcss-preset-env';
 import postcssCustomProperties from 'postcss-custom-properties';
 import postcssCustomMedia from 'postcss-custom-media';
 import pump from 'pump';
-import requireUncached from 'require-uncached';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
@@ -21,15 +20,12 @@ export default function styles(done) {
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
 
-	// Reload cssVars every time the task runs
-	const cssVars = requireUncached(paths.config.cssVars);
-
 	const beforeReplacement = [
 		src(paths.styles.src, {sourcemaps: true}),
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
-			extra: [paths.config.themeConfig, paths.config.cssVars]
+			extra: [paths.config.themeConfig, paths.styles.cssCustomProperties, paths.styles.cssCustomMedia]
 		}),
 		gulpPlugins.phpcs({
 			bin: `${rootPath}/vendor/bin/phpcs`,
@@ -41,19 +37,11 @@ export default function styles(done) {
 		gulpPlugins.postcss([
 			postcssCustomProperties({
 				'preserve': config.dev.styles.preserveCSSVars,
-				'importFrom': [
-					{
-						customProperties: cssVars.variables
-					}
-				],
+				'importFrom': paths.styles.cssCustomProperties,
 			}),
 			postcssCustomMedia({
 				'preserve': config.dev.styles.preserveCSSVars,
-				'importFrom': [
-					{
-						customMedia: cssVars.queries
-					}
-				],
+				'importFrom': paths.styles.cssCustomMedia,
 			}),
 			postcssPresetEnv({
 				stage: 3
