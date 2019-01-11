@@ -1,0 +1,20 @@
+/**
+ * Custom Properties
+ * aka CSS variables.
+ *
+ * @link: https://developer.mozilla.org/en-US/docs/Web/CSS/--*
+ **/
+
+:root {
+	--global-font-color: #333;
+	--global-font-family: "Crimson Text", serif;
+	--global-font-size: 20;
+	--global-font-line-height: 1.4;
+	--highlight-font-family: "Roboto Condensed", sans-serif;
+	--content-width: 45;
+	--dropdown-symbol-width: 0.7em;
+	--small-font-size: 16;
+	--regular-font-size: 20;
+	--large-font-size: 36;
+	--larger-font-size: 48;
+}

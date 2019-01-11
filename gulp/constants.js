@@ -53,7 +53,6 @@ let paths = {
 		key: `${rootPath}/BrowserSync/wp-rig-browser-sync-key.key`
 	},
 	config: {
-		cssVars: `${rootPath}/config/cssVariables.json`,
 		themeConfig: `${rootPath}/config/themeConfig.js`
 	},
 	php: {
@@ -66,6 +65,8 @@ let paths = {
 		dest: `${rootPath}/`
 	},
 	styles: {
+		cssCustomProperties: `${assetsDir}/css/src/custom-properties.css`,
+		cssCustomMedia: `${assetsDir}/css/src/custom-media.css`,
 		src: `${assetsDir}/css/src/**/*.css`,
 		sass: `${assetsDir}/css/src/**/*.scss`,
 		dest: `${assetsDir}/css/`

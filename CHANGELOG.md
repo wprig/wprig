@@ -1,6 +1,10 @@
 # Changelog
 
 ## 2.0.0
+- Use pure CSS files for CSS custom properties and media queries
+`/assets/css/src/custom-properties.css` for custom properties.
+`/assets/css/src/custom-media.css` for custom media queries.
+See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
 - Use `.browserslistrc` for browser support definitions. See [#227](https://github.com/wprig/wprig/pull/227). Props @ataylorme.
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme.

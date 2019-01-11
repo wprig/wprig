@@ -1,0 +1,13 @@
+/**
+ * Custom Media Queries
+ * Works like Custom Properties, except for media queries.
+ *
+ * @link: https://drafts.csswg.org/mediaqueries-5/#custom-mq
+ **/
+
+/* stylelint-disable */
+@custom-media --narrow-menu-query screen and (max-width: 37.5em);
+@custom-media --wide-menu-query screen and (min-width: 37.5em);
+@custom-media --content-query screen and (min-width: 48em);
+@custom-media --sidebar-query screen and (min-width: 60em);
+/* stylelint-enable */
