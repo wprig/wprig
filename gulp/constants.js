@@ -65,8 +65,8 @@ let paths = {
 		dest: `${rootPath}/`
 	},
 	styles: {
-		cssCustomProperties: `${rootPath}/assets/css/src/custom-properties.css`,
-		cssCustomMedia: `${rootPath}/assets/css/src/custom-media.css`,
+		cssCustomProperties: `${assetsDir}/assets/css/src/custom-properties.css`,
+		cssCustomMedia: `${assetsDir}/assets/css/src/custom-media.css`,
 		src: `${assetsDir}/css/src/**/*.css`,
 		sass: `${assetsDir}/css/src/**/*.scss`,
 		dest: `${assetsDir}/css/`
