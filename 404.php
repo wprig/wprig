@@ -12,7 +12,10 @@ namespace WP_Rig\WP_Rig;
 get_header();
 ?>
 	<main id="primary" class="site-main">
-		<?php get_template_part( 'template-parts/content/error', '404' ); ?>
+		<?php
+		wp_print_styles( array( 'wp-rig-content' ) );
+		get_template_part( 'template-parts/content/error', '404' );
+		?>
 	</main><!-- #primary -->
 <?php
 get_footer();
