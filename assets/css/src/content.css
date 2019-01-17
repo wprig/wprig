@@ -48,8 +48,7 @@
 
 .page-content > *,
 .entry-content > *,
-.entry-summary > *,
-.not-found > * {
+.entry-summary {
 	display: block;
 	margin-right: auto;
 	margin-left: auto;
