@@ -13,8 +13,23 @@
 	--highlight-font-family: "Roboto Condensed", sans-serif;
 	--content-width: 45;
 	--dropdown-symbol-width: 0.7em;
-	--small-font-size: 16;
-	--regular-font-size: 20;
-	--large-font-size: 36;
-	--larger-font-size: 48;
+
+	/* Custom editor colors */
+	--color-theme-primary: #e36d60;
+	--color-theme-secondary: #41848f;
+	--color-theme-red: #c0392b;
+	--color-theme-green: #27ae60;
+	--color-theme-blue: #2980b9;
+	--color-theme-yellow: #f1c40f;
+	--color-theme-black: #1c2833;
+	--color-theme-grey: #95a5a6;
+	--color-theme-white: #ecf0f1;
+	--color-custom-daylight: #97c0b7;
+	--color-custom-sun: #eee9d1;
+
+	/* Custom editor font sizes */
+	--font-size-small: 16;
+	--font-size-regular: 20;
+	--font-size-large: 36;
+	--font-size-larger: 48;
 }
