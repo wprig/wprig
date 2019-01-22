@@ -9,7 +9,7 @@ namespace WP_Rig\WP_Rig;
 
 ?>
 
-<div class="article-content entry-content">
+<div class="entry-content">
 	<?php
 	the_content(
 		sprintf(
@@ -33,4 +33,4 @@ namespace WP_Rig\WP_Rig;
 		)
 	);
 	?>
-</div><!-- .article-content -->
+</div><!-- .entry-content -->
