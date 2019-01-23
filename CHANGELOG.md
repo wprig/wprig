@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2.0.0
+- Replace `require-uncached` with `import-fresh`. [`require-uncached`](https://www.npmjs.com/package/require-uncached) has been deprecated in favor of [`import-fresh`](https://www.npmjs.com/package/import-fresh). See [#296](https://github.com/wprig/wprig/pull/296). Props @ataylorme
 - Use pure CSS files for CSS custom properties and media queries
 `/assets/css/src/custom-properties.css` for custom properties.
 `/assets/css/src/custom-media.css` for custom media queries.
