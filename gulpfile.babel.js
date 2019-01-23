@@ -16,6 +16,11 @@ import translate from './gulp/translate';
 import watch from './gulp/watch';
 import prodPrep from './gulp/prodPrep';
 import prodFinish from './gulp/prodFinish';
+import {
+    sourceStringReplacementPHP,
+    sourceStringReplacementJS,
+    sourceStringReplacementCSS
+} from './gulp/sourceStringReplacement';
 
 /**
  * Map out the sequence of events on first load and make it the default task
@@ -44,3 +49,10 @@ export const bundleTheme = series(
  * Export all imported functions as tasks
  */
 export { generateCert, images, php, sassStyles, scripts, styles, translate, watch };
+
+/**
+ * Replace default strings in source files
+ */
+export const sourceStringReplacement = parallel(
+    sourceStringReplacementPHP, sourceStringReplacementJS, sourceStringReplacementCSS
+);
