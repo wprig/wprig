@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2.0.0
+- Upgrade WordPress coding standards to 2.0. See [#288](https://github.com/wprig/wprig/pull/295). Props @ataylorme and @benoitchantre.
 - Use pure CSS files for CSS custom properties and media queries
 `/assets/css/src/custom-properties.css` for custom properties.
 `/assets/css/src/custom-media.css` for custom media queries.
