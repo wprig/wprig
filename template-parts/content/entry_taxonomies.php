@@ -18,7 +18,7 @@ $taxonomies = wp_list_filter(
 <div class="entry-taxonomies">
 	<?php
 	// Show terms for all taxonomies associated with the post.
-	foreach ( $taxonomies as $taxonomy ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
+	foreach ( $taxonomies as $taxonomy ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 		/* translators: separator between taxonomy terms */
 		$separator = _x( ', ', 'list item separator', 'wp-rig' );
