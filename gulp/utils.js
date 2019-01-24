@@ -2,7 +2,7 @@
 'use strict';
 
 // External dependencies
-import requireUncached from 'require-uncached';
+import importFresh from 'import-fresh';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 import rimraf from 'rimraf';
@@ -27,7 +27,7 @@ export function getThemeConfig( uncached=false ) {
 	let config;
 
 	if ( uncached ) {
-		config = requireUncached(paths.config.themeConfig);
+		config = importFresh(paths.config.themeConfig);
 	} else {
 		config = require(paths.config.themeConfig);
 	}
