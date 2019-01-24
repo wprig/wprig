@@ -487,11 +487,12 @@ h6 {
 	clear: both;
 }
 
-.page-header h1.page-title,
-.entry-header h1.entry-title {
-	font-size: 2rem;
+.entry-header h1.entry-title,
+.page-header .page-title {
+	font-size: 2.5rem;
 	line-height: 1.4;
-	margin: 1em 0;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 dfn,
