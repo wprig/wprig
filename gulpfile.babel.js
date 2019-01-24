@@ -5,37 +5,42 @@
 import {parallel, series} from 'gulp';
 
 // Internal dependencies
-import bundle from './gulp/bundle';
-import {serve, reload} from './gulp/browserSync';
-import images from './gulp/images';
-import jsLibs from './gulp/jsLibs';
-import jsMin from './gulp/jsMin';
+import generateCert from './gulp/generateCert';
+import images, {screenshot} from './gulp/images';
 import php from './gulp/php';
+import {serve} from './gulp/browserSync';
 import sassStyles from './gulp/sassStyles';
 import scripts from './gulp/scripts';
 import styles from './gulp/styles';
 import translate from './gulp/translate';
 import watch from './gulp/watch';
-import generateCert from './gulp/generateCert';
+import prodPrep from './gulp/prodPrep';
+import prodFinish from './gulp/prodFinish';
 
 /**
  * Map out the sequence of events on first load and make it the default task
  */
-export const firstRun = series(php, parallel(scripts, jsMin, jsLibs), sassStyles, styles, images, serve, watch);
+export const firstRun = series(
+    parallel(php, images, sassStyles, styles, scripts), serve, watch
+);
 
 export default firstRun;
 
 /**
- * Test the theme.
+ * Build theme for development without BrowserSync or watching
  */
-export const testTheme = series(php);
+export const buildDev = parallel(
+    php, images, sassStyles, styles, scripts, translate
+);
 
 /**
  * Export theme for distribution.
  */
-export const bundleTheme = series(testTheme, parallel(scripts, jsMin, jsLibs), styles, images, translate, bundle);
+export const bundleTheme = series(
+    prodPrep, parallel(php, scripts, styles, sassStyles, images, screenshot), translate, prodFinish
+);
 
 /**
  * Export all imported functions as tasks
  */
-export { bundle, generateCert, jsLibs, jsMin, php, sassStyles, scripts, styles, translate, watch };
+export { generateCert, images, php, sassStyles, scripts, styles, translate, watch };

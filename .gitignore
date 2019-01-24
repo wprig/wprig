@@ -1,15 +1,31 @@
 # Ignore everything:
 /*
-
-# Whitelist what you want tracked:
 !/.github/
-!/dev/
+!/assets/
+/assets/*
+!/assets/css/
+/assets/css/*
+!/assets/css/src/
+!/assets/js/
+/assets/js/*
+!/assets/js/src/
+!/assets/images/
+/assets/images/*
+!/assets/images/src/
 !/languages/
 !gulp/
+!style.css
+!/*.php
+!/inc/
+!/template-parts/
+!/config/
+!/tests/
+!/optional/
 
 !.babelrc
 !composer.json
 !composer.lock
+!CHANGELOG.md
 !CONTRIBUTING.md
 !.editorconfig
 !.eslintignore
@@ -26,3 +42,4 @@
 !readme.txt
 !screenshot.png
 !.travis.yml
+!.browserslistrc
