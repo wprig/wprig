@@ -21,7 +21,7 @@ get_header();
 			get_template_part( 'template-parts/content/entry', get_post_type() );
 		}
 
-		the_posts_navigation();
+		get_template_part( 'template-parts/content/pagination' );
 		?>
 	</main><!-- #primary -->
 <?php
