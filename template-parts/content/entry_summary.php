@@ -1,6 +1,6 @@
 <?php
 /**
- * Template part for displaying a post's summar
+ * Template part for displaying a post's summary
  *
  * @package wp_rig
  */
