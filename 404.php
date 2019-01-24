@@ -11,10 +11,6 @@ namespace WP_Rig\WP_Rig;
 
 get_header();
 
-/*
- * Include the component stylesheet for the content.
- * Note: If this was already done it will be skipped.
- */
 wp_print_styles( array( 'wp-rig-content' ) );
 
 ?>
