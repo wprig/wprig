@@ -21,7 +21,7 @@
 }
 */
 
-.hentry {
+.entry {
 	margin-bottom: 1rem;
 }
 
@@ -48,7 +48,7 @@
 
 .page-content > *,
 .entry-content > *,
-.entry-summary {
+.entry-summary > * {
 	display: block;
 	margin-right: auto;
 	margin-left: auto;
