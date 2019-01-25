@@ -95,9 +95,9 @@ class Component implements Component_Interface {
 
 			// Enqueue global stylesheets immediately, register the ones for later use.
 			if ( $data['global'] ) {
-				wp_enqueue_style( $handle, $src, array(), $version );
+				wp_enqueue_style( $handle, $src, array(), $version, $data['media'] );
 			} else {
-				wp_register_style( $handle, $src, array(), $version );
+				wp_register_style( $handle, $src, array(), $version, $data['media'] );
 			}
 
 			wp_style_add_data( $handle, 'precache', true );
@@ -256,6 +256,7 @@ class Component implements Component_Interface {
 				array(
 					'global'           => false,
 					'preload_callback' => null,
+					'media'            => 'all',
 				),
 				$data
 			);
