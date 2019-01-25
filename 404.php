@@ -19,10 +19,7 @@ wp_print_styles( array( 'wp-rig-content' ) );
 
 ?>
 	<main id="primary" class="site-main">
-		<?php
-		wp_print_styles( array( 'wp-rig-content' ) );
-		get_template_part( 'template-parts/content/error', '404' );
-		?>
+		<?php get_template_part( 'template-parts/content/error', '404' ); ?>
 	</main><!-- #primary -->
 <?php
 get_footer();
