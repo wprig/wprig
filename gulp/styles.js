@@ -20,10 +20,8 @@ export default function styles(done) {
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
 
-	const useSourceMap = !isProd;
-
 	const beforeReplacement = [
-		src(paths.styles.src, {sourcemaps: useSourceMap}),
+		src(paths.styles.src, {sourcemaps: !isProd}),
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
@@ -70,7 +68,7 @@ export default function styles(done) {
 			suffix: '.min'
 		}),
 		server.stream({match: "**/*.css"}),
-		dest(paths.styles.dest, {sourcemaps: useSourceMap}),
+		dest(paths.styles.dest, {sourcemaps: !isProd}),
 	];
 
 	pump(
