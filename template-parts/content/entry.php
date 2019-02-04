@@ -34,4 +34,3 @@ if ( is_singular( get_post_type() ) ) {
 		comments_template();
 	}
 }
-?>
