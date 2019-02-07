@@ -39,7 +39,7 @@ wp_print_styles( array( 'wp-rig-content' ) );
 			}
 
 			if ( ! is_singular() ) {
-				the_posts_navigation();
+				get_template_part( 'template-parts/content/pagination' );
 			}
 		} else {
 			get_template_part( 'template-parts/content/error' );
