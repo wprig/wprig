@@ -27,6 +27,10 @@
 	--color-custom-daylight: #97c0b7;
 	--color-custom-sun: #eee9d1;
 
+	--color-link: #0073aa;
+	--color-link-visited: #333;
+	--color-link-active: #00a0d2;
+
 	/* Custom editor font sizes */
 	--font-size-small: 16;
 	--font-size-regular: 20;
