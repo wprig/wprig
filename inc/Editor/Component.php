@@ -44,53 +44,70 @@ class Component implements Component_Interface {
 		// Add support for wide-aligned images.
 		add_theme_support( 'align-wide' );
 
-		// Add support for color palettes.
+		/**
+		 * Add support for color palettes.
+		 * To preserve color behavior across themes, use these naming conventions:
+		 * - Use primary and secondary color for main variations.
+		 * - Use `theme-[color-name]` naming standard for standard colors (red, blue, etc).
+		 * - Use `custom-[color-name]` for non-standard colors.
+		 */
+
 		add_theme_support(
 			'editor-color-palette',
 			array(
 				array(
-					'name'  => __( 'Dusty orange', 'wp-rig' ),
-					'slug'  => 'dusty-orange',
-					'color' => '#ed8f5b',
-				),
-				array(
-					'name'  => __( 'Dusty red', 'wp-rig' ),
-					'slug'  => 'dusty-red',
+					'name'  => __( 'Primary', 'wp-rig' ),
+					'slug'  => 'theme-primary',
 					'color' => '#e36d60',
 				),
 				array(
-					'name'  => __( 'Dusty wine', 'wp-rig' ),
-					'slug'  => 'dusty-wine',
-					'color' => '#9c4368',
-				),
-				array(
-					'name'  => __( 'Dark sunset', 'wp-rig' ),
-					'slug'  => 'dark-sunset',
-					'color' => '#33223b',
-				),
-				array(
-					'name'  => __( 'Almost black', 'wp-rig' ),
-					'slug'  => 'almost-black',
-					'color' => '#0a1c28',
-				),
-				array(
-					'name'  => __( 'Dusty water', 'wp-rig' ),
-					'slug'  => 'dusty-water',
+					'name'  => __( 'Secondary', 'wp-rig' ),
+					'slug'  => 'theme-secondary',
 					'color' => '#41848f',
 				),
 				array(
-					'name'  => __( 'Dusty sky', 'wp-rig' ),
-					'slug'  => 'dusty-sky',
-					'color' => '#72a7a3',
+					'name'  => __( 'Red', 'wp-rig' ),
+					'slug'  => 'theme-red',
+					'color' => '#C0392B',
+				),
+				array(
+					'name'  => __( 'Green', 'wp-rig' ),
+					'slug'  => 'theme-green',
+					'color' => '#27AE60',
+				),
+				array(
+					'name'  => __( 'Blue', 'wp-rig' ),
+					'slug'  => 'theme-blue',
+					'color' => '#2980B9',
+				),
+				array(
+					'name'  => __( 'Yellow', 'wp-rig' ),
+					'slug'  => 'theme-yellow',
+					'color' => '#F1C40F',
+				),
+				array(
+					'name'  => __( 'Black', 'wp-rig' ),
+					'slug'  => 'theme-black',
+					'color' => '#1C2833',
+				),
+				array(
+					'name'  => __( 'Grey', 'wp-rig' ),
+					'slug'  => 'theme-grey',
+					'color' => '#95A5A6',
+				),
+				array(
+					'name'  => __( 'White', 'wp-rig' ),
+					'slug'  => 'theme-white',
+					'color' => '#ECF0F1',
 				),
 				array(
 					'name'  => __( 'Dusty daylight', 'wp-rig' ),
-					'slug'  => 'dusty-daylight',
+					'slug'  => 'custom-daylight',
 					'color' => '#97c0b7',
 				),
 				array(
 					'name'  => __( 'Dusty sun', 'wp-rig' ),
-					'slug'  => 'dusty-sun',
+					'slug'  => 'custom-sun',
 					'color' => '#eee9d1',
 				),
 			)

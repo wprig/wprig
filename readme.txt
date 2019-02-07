@@ -32,7 +32,9 @@ WP Rig requires the following dependencies. Full installation instructions are p
 
 === How to install WP Rig: ===
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
-2. Configure theme settings including the theme slug and name in `./dev/config/themeConfig.js`.
+2. Configure theme settings, including the theme slug and name.
+  * View `./config/config.default.json` for the default settings.
+  * Place custom theme settings in `./config/config.json` to override default settings.
 3. In command line, run `npm install` to install necessary node and Composer dependencies.
 4. In command line, run `npm run build` to generate the theme.
 5. In WordPress admin, activate the theme.
@@ -48,7 +50,9 @@ To take full advantage of the features in WP Rig, your code editor needs support
 WP Rig can be used in any development environment. It does not require any specific platform or server setup. It also does not have an opinion about what local or virtual server solution the developer uses.
 
 === BrowserSync ===
-WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing. To take advantage of this feature, configure the `browserSync` wrapper settings in `./dev/config/themeConfig.js` to match your local development environment. The `proxyURL` value is the URL to the live version of your local site.
+WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing.
+
+Before first run, visit the [BrowserSync wiki page](https://github.com/wprig/wprig/wiki/BrowserSync).
 
 === Enabling HTTPS ===
 In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. If needed, WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generateCert`.
@@ -74,7 +78,8 @@ Details on how to enable PHPCS in VS Code can be found in the [WP Rig Wiki](http
 
 === `bundle` process ===
 `npm run bundle` generates a `[themename].zip` archive containing the finished theme. This runs all relevant tasks in series ending with the translation task and the bundle task and stores a new zip archive in the root theme folder.
-To bundle the theme without creating a zip archive, change the `export:compress` setting in `./dev/config/themeConfig.js`:
+
+To bundle the theme without creating a zip archive, define the `export:compress` setting in `./config/config.json` to `false`:
 
 ```javascript
 export: {
@@ -84,7 +89,10 @@ export: {
 
 == Advanced Features ==
 WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), and existing tools like Sass without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
-Configuring the behavior of WP Rig is done by editing `./dev/config/themeConfig.js`. Here the developer can set the theme name and theme author name (for translation files), the browser list for AutoPrefixer, and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
+
+Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
+
+Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`.
 
 === Lazy-loading images ===
 WP Rig [lazy loads](https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/) all images out of the box to improve performance. When lazy-loading images is enabled in the theme, the user will see a Theme Options feature in Customizer allowing them to toggle the feature off.
@@ -148,7 +156,6 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 = Changelog =
 
 == 2.0.0 ===
-- Use `.browserslistrc` for browser support definitions. See [#227](https://github.com/wprig/wprig/pull/227). Props @ataylorme.
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme.
 - Full refactor of PHP codebase, leveraging PHP7 features. See [#185](https://github.com/wprig/wprig/pull/185). Props @felixarntz.
@@ -167,7 +174,18 @@ WP Rig is released under [GNU General Public License v3.0](https://github.com/wp
 - Print the static `skip-link-focus-fix` script for IE11 inline instead of requiring an extra request. See [#139](https://github.com/wprig/wprig/pull/139). Props @westonruter.
 - Add gif extension to processed image paths. See [#117](https://github.com/wprig/wprig/pull/117). Props @ataylorme.
 - Add `stylelint`. See [#56](https://github.com/wprig/wprig/pull/56). Props @ataylorme.
-- Fix numerous CSS bugs and Gutenberg compatibility issues. See [#127](https://github.com/wprig/wprig/pull/127), [#179](https://github.com/wprig/wprig/pull/179), [#188](https://github.com/wprig/wprig/pull/188), [#193](https://github.com/wprig/wprig/pull/193), [#196](https://github.com/wprig/wprig/pull/196), [#197](https://github.com/wprig/wprig/pull/197), [#202](https://github.com/wprig/wprig/pull/202), [#206](https://github.com/wprig/wprig/pull/206). Props @benoitchantre, @mor10, @jdelia.
+- Update PHPCompatibility to version 9 and remove deprecated coding standards annotations. See [#249](https://github.com/wprig/wprig/pull/249). Props @felixarntz.
+- Fix numerous CSS bugs and Gutenberg compatibility issues. See [#127](https://github.com/wprig/wprig/pull/127), [#173](https://github.com/wprig/wprig/pull/173), [#179](https://github.com/wprig/wprig/pull/179), [#188](https://github.com/wprig/wprig/pull/188), [#193](https://github.com/wprig/wprig/pull/193), [#196](https://github.com/wprig/wprig/pull/196), [#197](https://github.com/wprig/wprig/pull/197), [#202](https://github.com/wprig/wprig/pull/202), [#206](https://github.com/wprig/wprig/pull/206), [#299](https://github.com/wprig/wprig/pull/299). Props @benoitchantre, @mor10, @jdelia.
+- Add abstracted theme config file. See [#233](https://github.com/wprig/wprig/pull/233). Props @Shelob9.
+- Add theme screenshot file. See [#263](https://github.com/wprig/wprig/pull/263). Props @bamadesigner.
+- Ensure `content.css` stylesheet always loads when needed. See [#141](https://github.com/wprig/wprig/pull/141). Props @bamadesigner.
+- Replace `require-uncached` with `import-fresh`. [`require-uncached`](https://www.npmjs.com/package/require-uncached) has been deprecated in favor of [`import-fresh`](https://www.npmjs.com/package/import-fresh). See [#296](https://github.com/wprig/wprig/pull/296). Props @ataylorme.
+- Upgrade WordPress coding standards to 2.0. See [#288](https://github.com/wprig/wprig/pull/295). Props @ataylorme, @benoitchantre.
+- Use pure CSS files for CSS custom properties and media queries
+`/assets/css/src/custom-properties.css` for custom properties.
+`/assets/css/src/custom-media.css` for custom media queries.
+See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
+- Use `.browserslistrc` for browser support definitions. See [#227](https://github.com/wprig/wprig/pull/227). Props @ataylorme.
 
 == 1.0.5 ==
 - Do not initialize menus until DOM is loaded. See [#140](https://github.com/wprig/wprig/pull/140). Props @bamadesigner.

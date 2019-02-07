@@ -4,7 +4,7 @@
 // External dependencies
 export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
-import requireUncached from 'require-uncached';
+import importFresh from 'import-fresh';
 
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
@@ -13,7 +13,7 @@ export const rootPath = process.env.INIT_CWD;
 export const isProd = ( process.env.NODE_ENV === 'production' );
 
 // get a fresh copy of the config
-export const config = requireUncached(`${rootPath}/config/themeConfig.js`);
+export const config = importFresh(`${rootPath}/config/themeConfig.js`);
 
 // directory for the production theme
 export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}`);
@@ -53,7 +53,6 @@ let paths = {
 		key: `${rootPath}/BrowserSync/wp-rig-browser-sync-key.key`
 	},
 	config: {
-		cssVars: `${rootPath}/config/cssVariables.json`,
 		themeConfig: `${rootPath}/config/themeConfig.js`
 	},
 	php: {
@@ -66,6 +65,8 @@ let paths = {
 		dest: `${rootPath}/`
 	},
 	styles: {
+		cssCustomProperties: `${assetsDir}/css/src/custom-properties.css`,
+		cssCustomMedia: `${assetsDir}/css/src/custom-media.css`,
 		src: `${assetsDir}/css/src/**/*.css`,
 		sass: `${assetsDir}/css/src/**/*.scss`,
 		dest: `${assetsDir}/css/`
@@ -77,6 +78,10 @@ let paths = {
 	images: {
 		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
 		dest: `${assetsDir}/images/`
+	},
+	screenshot: {
+		src: `${rootPath}/screenshot.png`,
+		dest: `${rootPath}/`
 	},
 	languages: {
 		src: [
@@ -91,7 +96,6 @@ let paths = {
 		src: [
 			`${rootPath}/style.css`,
 			`${rootPath}/readme.txt`,
-			`${rootPath}/screenshot.png`,
 			`${rootPath}/LICENSE`,
 		],
 		dest: `${prodThemePath}/`
@@ -104,6 +108,7 @@ if( isProd ){
 	paths.styles.dest = `${prodAssetsDir}/css/`;
 	paths.scripts.dest = `${prodAssetsDir}/js/`;
 	paths.images.dest = `${prodAssetsDir}/images/`;
+	paths.screenshot.dest = `${prodThemePath}/`;
 	paths.languages = {
 		src: `${prodThemePath}/**/*.php`,
 		dest: `${prodThemePath}/languages/${config.theme.slug}.pot`
