@@ -21,7 +21,7 @@
 }
 */
 
-.hentry {
+.entry {
 	margin-bottom: 1rem;
 }
 
@@ -48,8 +48,7 @@
 
 .page-content > *,
 .entry-content > *,
-.entry-summary > *,
-.not-found > * {
+.entry-summary > * {
 	display: block;
 	margin-right: auto;
 	margin-left: auto;
@@ -60,7 +59,7 @@
 	/* stylelint-enable */
 }
 
-.page-title,
+.page-header,
 .entry-header,
 .entry-footer,
 .site-info,
@@ -80,7 +79,7 @@
 	.page-content > *,
 	.entry-content > *,
 	.entry-summary > *,
-	.page-title,
+	.page-header,
 	.entry-header,
 	.entry-footer,
 	.site-info,
@@ -258,85 +257,103 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 ## Custom block colors.
 --------------------------------------------------------------*/
 
-.has-dusty-orange-color,
-.has-dusty-orange-color a {
-	color: #ed8f5b;
+.has-theme-primary-color,
+.has-theme-primary-color a {
+	color: var(--color-theme-primary);
 }
 
-.has-dusty-orange-background-color {
-	background-color: #ed8f5b;
+.has-theme-primary-background-color {
+	background-color: var(--color-theme-primary);
 }
 
-.has-dusty-red-color,
-.has-dusty-red-color a {
-	color: #e36d60;
+.has-theme-secondary-color,
+.has-theme-secondary-color a {
+	color: var(--color-theme-secondary);
 }
 
-.has-dusty-red-background-color {
-	background-color: #e36d60;
+.has-theme-secondary-background-color {
+	background-color: var(--color-theme-secondary);
 }
 
-.has-dusty-wine-color,
-.has-dusty-wine-color a {
-	color: #9c4368;
+.has-theme-red-color,
+.has-theme-red-color a {
+	color: var(--color-theme-red);
 }
 
-.has-dusty-wine-background-color {
-	background-color: #9c4368;
+.has-theme-red-background-color {
+	background-color: var(--color-theme-red);
 }
 
-.has-dark-sunset-color,
-.has-dark-sunset-color a {
-	color: #33223b;
+.has-theme-green-color,
+.has-theme-green-color a {
+	color: var(--color-theme-green);
 }
 
-.has-dark-sunset-background-color {
-	background-color: #33223b;
+.has-theme-green-background-color {
+	background-color: var(--color-theme-green);
 }
 
-.has-almost-black-color,
-.has-almost-black-color a {
-	color: #0a1c28;
+.has-theme-blue-color,
+.has-theme-blue-color a {
+	color: var(--color-theme-blue);
 }
 
-.has-almost-black-background-color {
-	background-color: #0a1c28;
+.has-theme-blue-background-color {
+	background-color: var(--color-theme-blue);
 }
 
-.has-dusty-water-color,
-.has-dusty-water-color a {
-	color: #41848f;
+.has-theme-yellow-color,
+.has-theme-yellow-color a {
+	color: var(--color-theme-yellow);
 }
 
-.has-dusty-water-background-color {
-	background-color: #41848f;
+.has-theme-yellow-background-color {
+	background-color: var(--color-theme-yellow);
 }
 
-.has-dusty-sky-color,
-.has-dusty-sky-color a {
-	color: #72a7a3;
+.has-theme-black-color,
+.has-theme-black-color a {
+	color: var(--color-theme-black);
 }
 
-.has-dusty-sky-background-color {
-	background-color: #72a7a3;
+.has-theme-black-background-color {
+	background-color: var(--color-theme-black);
 }
 
-.has-dusty-daylight-color,
-.has-dusty-daylight-color a {
-	color: #97c0b7;
+.has-theme-grey-color,
+.has-theme-grey-color a {
+	color: var(--color-theme-grey);
 }
 
-.has-dusty-daylight-background-color {
-	background-color: #97c0b7;
+.has-theme-grey-background-color {
+	background-color: var(--color-theme-grey);
 }
 
-.has-dusty-sun-color,
-.has-dusty-sun-color a {
-	color: #eee9d1;
+.has-theme-white-color,
+.has-theme-white-color a {
+	color: var(--color-theme-white);
 }
 
-.has-dusty-sun-background-color {
-	background-color: #eee9d1;
+.has-theme-white-background-color {
+	background-color: var(--color-theme-white);
+}
+
+.has-custom-daylight-color,
+.has-custom-daylight-color a {
+	color: var(--color-custom-daylight);
+}
+
+.has-custom-daylight-background-color {
+	background-color: var(--color-custom-daylight);
+}
+
+.has-custom-sun-color,
+.has-custom-sun-color a {
+	color: var(--color-custom-sun);
+}
+
+.has-custom-sun-background-color {
+	background-color: var(--color-custom-sun);
 }
 
 /*--------------------------------------------------------------
@@ -345,25 +362,25 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 
 .has-small-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--small-font-size) / 16rem);
+	font-size: calc(var(--font-size-small) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-regular-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--regular-font-size) / 16rem);
+	font-size: calc(var(--font-size-regular) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-large-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--large-font-size) / 16rem);
+	font-size: calc(var(--font-size-large) / 16rem);
 	/* stylelint-enable */
 }
 
 .has-larger-font-size {
 	/* stylelint-disable */
-	font-size: calc(var(--larger-font-size) / 16rem);
+	font-size: calc(var(--font-size-larger) / 16rem);
 	/* stylelint-enable */
 }
 

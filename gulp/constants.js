@@ -4,7 +4,7 @@
 // External dependencies
 export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
-import requireUncached from 'require-uncached';
+import importFresh from 'import-fresh';
 
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
@@ -13,7 +13,7 @@ export const rootPath = process.env.INIT_CWD;
 export const isProd = ( process.env.NODE_ENV === 'production' );
 
 // get a fresh copy of the config
-export const config = requireUncached(`${rootPath}/config/themeConfig.js`);
+export const config = importFresh(`${rootPath}/config/themeConfig.js`);
 
 // directory for the production theme
 export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}`);

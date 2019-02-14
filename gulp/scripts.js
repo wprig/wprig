@@ -17,7 +17,7 @@ export default function scripts(done) {
 	const config = getThemeConfig(true);
 
 	const beforeReplacement = [
-		src(paths.scripts.src, {sourcemaps: true}),
+		src(paths.scripts.src, {sourcemaps: !isProd}),
 		logError('JavaScript'),
 		gulpPlugins.newer({
 			dest: paths.scripts.dest,
@@ -40,7 +40,7 @@ export default function scripts(done) {
 	];
 
 	const afterReplacement = [
-		dest(paths.scripts.dest, {sourcemaps: true}),
+		dest(paths.scripts.dest, {sourcemaps: !isProd}),
 	];
 
 	pump(
