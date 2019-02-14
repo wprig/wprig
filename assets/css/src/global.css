@@ -638,18 +638,18 @@ table {
 --------------------------------------------------------------*/
 /* stylelint-disable */
 a {
-	color: #0073aa;
+	color: var(--color-link);
 }
 /* stylelint-enable */
 
 a:visited {
-	color: #333;
+	color: var(--color-link-visited);
 }
 
 a:hover,
 a:focus,
 a:active {
-	color: #00a0d2;
+	color: var(--color-link-active);
 }
 
 a:focus {
@@ -1054,7 +1054,7 @@ select {
 	display: inline-block;
 	margin-bottom: 0.5em;
 	margin-right: 1em;
-	border: 1px solid #0073aa;
+	border: 1px solid var(--color-link);
 	min-width: 1.75em;
 	line-height: 1.75;
 	text-align: center;
@@ -1062,7 +1062,7 @@ select {
 }
 
 .pagination a:visited {
-	color: #0073aa;
+	color: var(--color-link);
 }
 
 .pagination a:hover,
