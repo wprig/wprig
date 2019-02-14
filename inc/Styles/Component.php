@@ -8,6 +8,7 @@
 namespace WP_Rig\WP_Rig\Styles;
 
 use WP_Rig\WP_Rig\Component_Interface;
+use WP_Rig\WP_Rig\Templating_Component_Interface;
 use function WP_Rig\WP_Rig\wp_rig;
 use function add_action;
 use function add_filter;
@@ -20,6 +21,8 @@ use function wp_styles;
 use function esc_attr;
 use function esc_url;
 use function wp_style_is;
+use function _doing_it_wrong;
+use function wp_print_styles;
 use function post_password_required;
 use function is_singular;
 use function comments_open;
@@ -29,8 +32,11 @@ use function add_query_arg;
 
 /**
  * Class for managing stylesheets.
+ *
+ * Exposes template tags:
+ * * `wp_rig()->print_styles()`
  */
-class Component implements Component_Interface {
+class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Associative array of CSS files, as $handle => $data pairs.
@@ -73,6 +79,19 @@ class Component implements Component_Interface {
 	}
 
 	/**
+	 * Gets template tags to expose as methods on the Template_Tags class instance, accessible through `wp_rig()`.
+	 *
+	 * @return array Associative array of $method_name => $callback_info pairs. Each $callback_info must either be
+	 *               a callable or an array with key 'callable'. This approach is used to reserve the possibility of
+	 *               adding support for further arguments in the future.
+	 */
+	public function template_tags() : array {
+		return array(
+			'print_styles' => array( $this, 'print_styles' ),
+		);
+	}
+
+	/**
 	 * Registers or enqueues stylesheets.
 	 *
 	 * Stylesheets that are global are enqueued. All other stylesheets are only registered, to be enqueued later.
@@ -88,13 +107,19 @@ class Component implements Component_Interface {
 		$css_uri = get_theme_file_uri( '/assets/css/' );
 		$css_dir = get_theme_file_path( '/assets/css/' );
 
+		$preloading_styles_enabled = $this->preloading_styles_enabled();
+
 		$css_files = $this->get_css_files();
 		foreach ( $css_files as $handle => $data ) {
 			$src     = $css_uri . $data['file'];
 			$version = wp_rig()->get_asset_version( $css_dir . $data['file'] );
 
-			// Enqueue global stylesheets immediately, register the ones for later use.
-			if ( $data['global'] ) {
+			/*
+			 * Enqueue global stylesheets immediately and register the other ones for later use
+			 * (unless preloading stylesheets is disabled, in which case stylesheets should be immediately
+			 * enqueued based on whether they are necessary for the page content).
+			 */
+			if ( $data['global'] || ! $preloading_styles_enabled && is_callable( $data['preload_callback'] ) && call_user_func( $data['preload_callback'] ) ) {
 				wp_enqueue_style( $handle, $src, array(), $version );
 			} else {
 				wp_register_style( $handle, $src, array(), $version );
@@ -116,8 +141,8 @@ class Component implements Component_Interface {
 	 */
 	public function action_preload_styles() {
 
-		// If the AMP plugin is active, return early.
-		if ( wp_rig()->is_amp() ) {
+		// If preloading styles is disabled, return early.
+		if ( ! $this->preloading_styles_enabled() ) {
 			return;
 		}
 
@@ -183,6 +208,66 @@ class Component implements Component_Interface {
 		}
 
 		return $urls;
+	}
+
+	/**
+	 * Prints stylesheet link tags directly.
+	 *
+	 * This should be used for stylesheets that aren't global and thus should only be loaded if the HTML markup
+	 * they are responsible for is actually present. Template parts should use this method when the related markup
+	 * requires a specific stylesheet to be loaded. If preloading stylesheets is disabled, this method will not do
+	 * anything.
+	 *
+	 * If the `<link>` tag for a given stylesheet has already been printed, it will be skipped.
+	 *
+	 * @param string ...$handles One or more stylesheet handles.
+	 */
+	public function print_styles( string ...$handles ) {
+
+		// If preloading styles is disabled (and thus they have already been enqueued), return early.
+		if ( ! $this->preloading_styles_enabled() ) {
+			return;
+		}
+
+		$css_files = $this->get_css_files();
+		$handles   = array_filter(
+			$handles,
+			function( $handle ) use ( $css_files ) {
+				$is_valid = isset( $css_files[ $handle ] ) && ! $css_files[ $handle ]['global'];
+				if ( ! $is_valid ) {
+					/* translators: %s: stylesheet handle */
+					_doing_it_wrong( __CLASS__ . '::print_styles()', esc_html( sprintf( __( 'Invalid theme stylesheet handle: %s', 'wp-rig' ), $handle ) ), 'WP Rig 2.0.0' );
+				}
+				return $is_valid;
+			}
+		);
+
+		if ( empty( $handles ) ) {
+			return;
+		}
+
+		wp_print_styles( $handles );
+	}
+
+	/**
+	 * Determines whether to preload stylesheets and inject their link tags directly within the page content.
+	 *
+	 * Using this technique generally improves performance, however may not be preferred under certain circumstances.
+	 * For example, since AMP will include all style rules directly in the head, it must not be used in that context.
+	 * By default, this method returns true unless the page is being served in AMP. The
+	 * {@see 'wp_rig_preloading_styles_enabled'} filter can be used to tweak the return value.
+	 *
+	 * @return bool True if preloading stylesheets and injecting them is enabled, false otherwise.
+	 */
+	protected function preloading_styles_enabled() {
+		$preloading_styles_enabled = ! wp_rig()->is_amp();
+
+		/**
+		 * Filters whether to preload stylesheets and inject their link tags within the page content.
+		 *
+		 * @param bool $preloading_styles_enabled Whether preloading stylesheets and injecting them is enabled.
+		 */
+		return apply_filters( 'wp_rig_preloading_styles_enabled', $preloading_styles_enabled );
 	}
 
 	/**
