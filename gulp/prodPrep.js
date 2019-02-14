@@ -35,7 +35,7 @@ export default function prodPrep(done) {
     // Copying misc files to the prod directory
     return pump(
         [
-            src(paths.export.src),
+            src(paths.export.src, {allowEmpty: true}),
             dest(gulpRelativeDest),
         ],
 		done
