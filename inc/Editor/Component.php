@@ -38,6 +38,9 @@ class Component implements Component_Interface {
 	 * Adds support for various editor features.
 	 */
 	public function action_add_editor_support() {
+		// Add support for editor styles.
+		add_theme_support( 'editor-styles' );
+
 		// Add support for default block styles.
 		add_theme_support( 'wp-block-styles' );
 
@@ -51,7 +54,6 @@ class Component implements Component_Interface {
 		 * - Use `theme-[color-name]` naming standard for standard colors (red, blue, etc).
 		 * - Use `custom-[color-name]` for non-standard colors.
 		 */
-
 		add_theme_support(
 			'editor-color-palette',
 			array(

@@ -2,7 +2,7 @@
  * Styles for the WordPress post/page editor.
  * Ensures a visual match between back- and front-end.
  */
-.block-editor-page .editor-styles-wrapper {
+body {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
@@ -11,37 +11,37 @@
 	line-height: var(--global-font-line-height);
 }
 
-.editor-post-title__block .editor-post-title__input,
-.editor-styles-wrapper h1,
-.editor-styles-wrapper h2,
-.editor-styles-wrapper h3,
-.editor-styles-wrapper h4,
-.editor-styles-wrapper h5,
-.editor-styles-wrapper h6 {
+.editor-post-title__input,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-family: var(--highlight-font-family);
 	color: #32373c;
 	clear: both;
 }
 
-.editor-post-title .editor-post-title__input {
+.editor-post-title__input {
 	font-size: 2rem;
 	line-height: 1.4;
 }
 
-.editor-styles-wrapper .wp-block-cover .wp-block-cover-text {
+.wp-block-cover .wp-block-cover-text {
 	color: #fff;
 	font-size: 2em;
 	line-height: 1.25;
 }
 
-.editor-styles-wrapper .wp-block-latest-comments,
-.editor-styles-wrapper .wp-block-latest-posts {
+.wp-block-latest-comments,
+.wp-block-latest-posts {
 	padding-top: 1.5em;
 	padding-bottom: 1.5em;
 	border: 1px solid hsl(0, 0%, 80%);
 }
 
-.editor-styles-wrapper .wp-block-latest-comments {
+.wp-block-latest-comments {
 	padding-right: 1.5em;
 	padding-left: 1.5em;
 }
