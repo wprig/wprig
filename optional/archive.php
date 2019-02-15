@@ -11,14 +11,7 @@ namespace WP_Rig\WP_Rig;
 
 get_header();
 
-/*
- * Include the component stylesheet for the content.
- * This call runs only once on index and archive pages.
- * At some point, override functionality should be built in similar to the template part below.
- *
- * Note: If this was already done it will be skipped.
- */
-wp_print_styles( array( 'wp-rig-content' ) );
+wp_rig()->print_styles( 'wp-rig-content' );
 
 ?>
 	<main id="primary" class="site-main">
@@ -33,7 +26,7 @@ wp_print_styles( array( 'wp-rig-content' ) );
 				get_template_part( 'template-parts/content/entry', get_post_type() );
 			}
 
-			the_posts_navigation();
+			get_template_part( 'template-parts/content/pagination' );
 		} else {
 			get_template_part( 'template-parts/content/error' );
 		}

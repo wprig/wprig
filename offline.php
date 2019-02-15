@@ -14,11 +14,7 @@ add_filter( 'has_nav_menu', '__return_false' );
 
 get_header();
 
-/*
- * Include the component stylesheet for the content.
- * Note: If this was already done it will be skipped.
- */
-wp_print_styles( array( 'wp-rig-content' ) );
+wp_rig()->print_styles( 'wp-rig-content' );
 
 ?>
 	<main id="primary" class="site-main">

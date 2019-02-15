@@ -21,7 +21,7 @@ export default function styles(done) {
 	const config = getThemeConfig(true);
 
 	const beforeReplacement = [
-		src(paths.styles.src, {sourcemaps: true}),
+		src(paths.styles.src, {sourcemaps: !isProd}),
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
@@ -68,7 +68,7 @@ export default function styles(done) {
 			suffix: '.min'
 		}),
 		server.stream({match: "**/*.css"}),
-		dest(paths.styles.dest, {sourcemaps: true}),
+		dest(paths.styles.dest, {sourcemaps: !isProd}),
 	];
 
 	pump(

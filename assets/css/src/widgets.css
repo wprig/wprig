@@ -4,7 +4,13 @@
 
 /* Make sure select elements fit in widgets. */
 .widget {
-	margin: 0 0 1.5em;
+	margin-top: 0;
+	margin-bottom: 1.5em;
+}
+
+.widget-area .widget {
+	margin-left: 0;
+	margin-right: 0;
 }
 
 .widget li {

@@ -19,13 +19,3 @@ export default function images(done) {
         dest(paths.images.dest),
     ], done);
 }
-
-/**
- * Copy the screenshot.
- */
-export function screenshot(done) {
-    pump([
-        src(paths.screenshot.src),
-        dest(paths.screenshot.dest),
-    ], done);
-}

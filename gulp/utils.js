@@ -102,3 +102,8 @@ export function createProdDir() {
     // Create the prod theme directory
 	mkdirp(prodThemePath);
 }
+
+export function gulpRelativeDest( file ) {
+	const relativeProdFilePath = file.base.replace(file.cwd, prodThemePath);
+	return relativeProdFilePath;
+}
