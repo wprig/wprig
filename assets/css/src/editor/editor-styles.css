@@ -6,9 +6,15 @@ body {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
-	font-size: calc(var(--global-font-size) / 16rem);
+	font-size: calc(1rem * var(--global-font-size) / 16);
 	/* stylelint-enable */
 	line-height: var(--global-font-line-height);
+}
+
+.mce-content-body,
+p {
+	font-size: inherit;
+	line-height: inherit;
 }
 
 .editor-post-title__input,
