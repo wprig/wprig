@@ -34,6 +34,21 @@ h6 {
 	line-height: 1.4;
 }
 
+/* Main column width */
+.wp-block {
+	max-width: calc(var(--content-width)rem + 30px);
+}
+
+/* Width of "wide" blocks */
+.wp-block[data-align="wide"] {
+	max-width: calc(50% + var(--content-width)rem / 2 + 76px);
+}
+
+/* Width of "full-wide" blocks */
+.wp-block[data-align="full"] {
+	max-width: none;
+}
+
 .wp-block-cover .wp-block-cover-text {
 	color: #fff;
 	font-size: 2em;
