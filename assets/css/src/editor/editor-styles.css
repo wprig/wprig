@@ -29,6 +29,31 @@ h6 {
 	clear: both;
 }
 
+/* stylelint-disable */
+a {
+	color: var(--color-link);
+}
+/* stylelint-enable */
+
+a:visited {
+	color: var(--color-link-visited);
+}
+
+a:hover,
+a:focus,
+a:active {
+	color: var(--color-link-active);
+}
+
+a:focus {
+	outline: thin dotted;
+}
+
+a:hover,
+a:active {
+	outline: 0;
+}
+
 .editor-post-title__input {
 	font-size: 2rem;
 	line-height: 1.4;
