@@ -27,5 +27,5 @@ wp_rig()->print_styles( 'wp-rig-content', 'wp-rig-front-page' );
 		?>
 	</main><!-- #primary -->
 <?php
-get_sidebar();
+
 get_footer();
