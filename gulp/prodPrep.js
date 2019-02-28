@@ -10,7 +10,7 @@ import path from 'path';
 
 // Internal dependencies
 import {isProd, prodThemePath, rootPath, paths} from './constants';
-import {createProdDir, getStringReplacementTasks} from './utils';
+import {createProdDir, gulpRelativeDest} from './utils';
 
 /**
  * Create the production directory
@@ -34,15 +34,10 @@ export default function prodPrep(done) {
 
     // Copying misc files to the prod directory
     return pump(
-		[].concat(
-			[
-                src(paths.export.src)
-            ],
-			getStringReplacementTasks(),
-			[
-                dest(paths.export.dest)
-            ]
-		),
+        [
+            src(paths.export.src, {allowEmpty: true}),
+            dest(gulpRelativeDest),
+        ],
 		done
 	);
 }

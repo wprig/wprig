@@ -16,12 +16,15 @@
       "styles": false,
       "scripts": false,
       "phpcs": true
-    },
-    "styles": {
-      "preserveCSSVars": false
     }
   },
   "export": {
-    "compress": true
+    "compress": true,
+    "filesToCopy": [
+      "LICENSE",
+      "readme.txt",
+      "style.css",
+      "screenshot.png"
+    ]
   }
 }
