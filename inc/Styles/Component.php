@@ -179,7 +179,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function action_add_editor_styles() {
 
 		// Enqueue Google Fonts.
-		add_editor_style( $this->get_google_fonts_url() );
+		$google_fonts_url = $this->get_google_fonts_url();
+		if ( ! empty( $google_fonts_url ) ) {
+			add_editor_style( $this->get_google_fonts_url() );
+		}
 
 		// Enqueue block editor stylesheet.
 		add_editor_style( 'assets/css/editor/editor-styles.min.css' );
