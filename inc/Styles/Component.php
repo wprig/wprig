@@ -120,9 +120,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			 * enqueued based on whether they are necessary for the page content).
 			 */
 			if ( $data['global'] || ! $preloading_styles_enabled && is_callable( $data['preload_callback'] ) && call_user_func( $data['preload_callback'] ) ) {
-				wp_enqueue_style( $handle, $src, array(), $version );
+				wp_enqueue_style( $handle, $src, array(), $version, $data['media'] );
 			} else {
-				wp_register_style( $handle, $src, array(), $version );
+				wp_register_style( $handle, $src, array(), $version, $data['media'] );
 			}
 
 			wp_style_add_data( $handle, 'precache', true );
@@ -334,6 +334,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				array(
 					'global'           => false,
 					'preload_callback' => null,
+					'media'            => 'all',
 				),
 				$data
 			);
