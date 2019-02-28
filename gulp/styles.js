@@ -4,6 +4,7 @@
 // External dependencies
 import {src, dest} from 'gulp';
 import postcssPresetEnv from 'postcss-preset-env';
+import AtImport from 'postcss-import';
 import postcssCustomProperties from 'postcss-custom-properties';
 import postcssCustomMedia from 'postcss-custom-media';
 import pump from 'pump';
@@ -25,7 +26,7 @@ export default function styles(done) {
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
-			extra: [paths.config.themeConfig, paths.styles.cssCustomProperties, paths.styles.cssCustomMedia]
+			extra: [paths.config.themeConfig]
 		}),
 		gulpPlugins.phpcs({
 			bin: `${rootPath}/vendor/bin/phpcs`,
@@ -35,13 +36,12 @@ export default function styles(done) {
 		// Log all problems that were found.
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
+			AtImport(),
 			postcssCustomProperties({
-				'preserve': config.dev.styles.preserveCSSVars,
-				'importFrom': paths.styles.cssCustomProperties,
+				'preserve': true,
 			}),
 			postcssCustomMedia({
-				'preserve': config.dev.styles.preserveCSSVars,
-				'importFrom': paths.styles.cssCustomMedia,
+				'preserve': true,
 			}),
 			postcssPresetEnv({
 				stage: 3
