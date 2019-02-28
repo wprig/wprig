@@ -19,8 +19,10 @@ if ( false !== getenv( 'WP_TESTS_DIR' ) ) {
 	$test_root = '../../../../../../tests/phpunit';
 }
 
+$test_root = rtrim( $test_root, '/' );
+
 // WordPress only includes its PHPUnit 6 compatibility file since version 4.7.
-if ( ! file_exists( $test_root . '/includes/phpunit6-compat.php' ) && class_exists( 'PHPUnit\Runner\Version' ) && version_compare( PHPUnit\Runner\Version::id(), '6.0', '>=' ) ) {
+if ( ! file_exists( $test_root . '/includes/phpunit6-compat.php' ) && ! file_exists( $test_root . '/includes/phpunit6/compat.php' ) && class_exists( 'PHPUnit\Runner\Version' ) && version_compare( PHPUnit\Runner\Version::id(), '6.0', '>=' ) ) {
 	class_alias( 'PHPUnit\Framework\TestCase', 'PHPUnit_Framework_TestCase' );
 	class_alias( 'PHPUnit\Framework\Exception', 'PHPUnit_Framework_Exception' );
 	class_alias( 'PHPUnit\Framework\ExpectationFailedException', 'PHPUnit_Framework_ExpectationFailedException' );
