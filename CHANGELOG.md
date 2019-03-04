@@ -32,6 +32,7 @@
 See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
 - Use `.browserslistrc` for browser support definitions. See [#227](https://github.com/wprig/wprig/pull/227). Props @ataylorme.
 - Allow adjusting the mechanism for how stylesheets are loaded, for better compatibility with contexts like AMP or Customizer. See [#319](https://github.com/wprig/wprig/pull/319). Props @felixarntz.
+- Add a `run-phpcbf` to Composer scripts. See [#360](https://github.com/wprig/wprig/pull/360). Props @ataylorme.
 
 ## 1.0.5
 - Do not initialize menus until DOM is loaded. See [#140](https://github.com/wprig/wprig/pull/140). Props @bamadesigner.
