@@ -18,6 +18,37 @@ use function get_template_directory;
 class Component implements Component_Interface {
 
 	/**
+	 * Absolute path to the translation directory.
+	 *
+	 * @var string
+	 */
+	public $translation_directory = '';
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		// Define the translation directory.
+		$this->translation_directory = get_template_directory() . '/languages';
+	}
+
+	/**
+	 * Checks if there are .pot files in the translation directory.
+	 *
+	 * @return bool
+	 */
+	protected function pot_files_exist() {
+		// Scan the translation directory for .pot files
+		$pot_files = glob(
+			$this->translation_directory .
+			"/*.pot"
+		);
+
+		// Return true if some were found.
+		return ( ! empty( $pot_files ) );
+	}
+
+	/**
 	 * Gets the unique identifier for the theme component.
 	 *
 	 * @return string Component slug.
@@ -30,7 +61,10 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'after_setup_theme', array( $this, 'action_load_textdomain' ), 1 );
+		// Only add textdomain actions if there are .pot files.
+		if( $this->pot_files_exist() ) {
+			add_action( 'after_setup_theme', array( $this, 'action_load_textdomain' ), 1 );
+		}
 	}
 
 	/**
@@ -44,6 +78,6 @@ class Component implements Component_Interface {
 		 * should not bundle translations in your theme. In that case you also need to get rid of the
 		 * second parameter in the following function call.
 		 */
-		load_theme_textdomain( 'wp-rig', get_template_directory() . '/languages' );
+		load_theme_textdomain( 'wp-rig', $this->translation_directory );
 	}
 }
