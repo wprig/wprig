@@ -38,10 +38,10 @@ class Component implements Component_Interface {
 	 * @return bool
 	 */
 	protected function pot_files_exist() {
-		// Scan the translation directory for .pot files
+		// Scan the translation directory for .pot files.
 		$pot_files = glob(
 			$this->translation_directory .
-			"/*.pot"
+			'/*.pot'
 		);
 
 		// Return true if some were found.
@@ -62,7 +62,7 @@ class Component implements Component_Interface {
 	 */
 	public function initialize() {
 		// Only add textdomain actions if there are .pot files.
-		if( $this->pot_files_exist() ) {
+		if ( $this->pot_files_exist() ) {
 			add_action( 'after_setup_theme', array( $this, 'action_load_textdomain' ), 1 );
 		}
 	}
