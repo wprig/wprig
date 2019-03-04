@@ -11,7 +11,7 @@
 	--global-font-size: 20;
 	--global-font-line-height: 1.4;
 	--highlight-font-family: "Roboto Condensed", sans-serif;
-	--content-width: 45;
+	--content-width: 45rem;
 	--dropdown-symbol-width: 0.7em;
 
 	/* Custom editor colors */
@@ -32,8 +32,8 @@
 	--color-link-active: #00a0d2;
 
 	/* Custom editor font sizes */
-	--font-size-small: 16;
-	--font-size-regular: 20;
-	--font-size-large: 36;
-	--font-size-larger: 48;
+	--font-size-small: calc(16 / var(--global-font-size) * 1rem);
+	--font-size-regular: calc(var(--global-font-size) / 16 * 1rem);
+	--font-size-large: calc(36 / var(--global-font-size) * 1rem);
+	--font-size-larger: calc(48 / var(--global-font-size) * 1rem);
 }

@@ -96,7 +96,7 @@ optgroup,
 textarea {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
-	font-size: calc(1rem * var(--global-font-size) / 16);
+	font-size: var(--font-size-regular);
 	line-height: var(--global-font-line-height);
 }
 /* stylelint-enable */
@@ -435,7 +435,7 @@ select {
 	margin: 0 auto 2em;
 	padding: 0 1em;
 	/* stylelint-disable */
-	max-width: var(--content-width)rem;
+	max-width: var(--content-width);
 	/* stylelint-enable */
 	font-family: var(--highlight-font-family);
 }
