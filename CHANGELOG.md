@@ -32,6 +32,7 @@
 See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
 - Use `.browserslistrc` for browser support definitions. See [#227](https://github.com/wprig/wprig/pull/227). Props @ataylorme.
 - Allow adjusting the mechanism for how stylesheets are loaded, for better compatibility with contexts like AMP or Customizer. See [#319](https://github.com/wprig/wprig/pull/319). Props @felixarntz.
+- Replaces `install` with `rig-init` in the `scripts` section of `package.json` in order to decouple `npm install` and `composer install`. Added a new `npm run rig-init` command to run both `npm install` and `composer install` without being forced to do `composer install` whenever `npm install` is run. See [#357](https://github.com/wprig/wprig/pull/357). Props @ataylorme.
 
 ## 1.0.5
 - Do not initialize menus until DOM is loaded. See [#140](https://github.com/wprig/wprig/pull/140). Props @bamadesigner.
