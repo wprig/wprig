@@ -87,7 +87,7 @@
     "bundle": "NODE_ENV=production gulp bundleTheme",
     "dev": "gulp",
     "generateCert": "gulp generateCert",
-    "install": "composer install",
+    "rig-init": "npm install && composer install",
     "translate": "gulp translate"
   }
 }
