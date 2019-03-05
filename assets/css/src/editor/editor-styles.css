@@ -2,6 +2,9 @@
  * Styles for the WordPress post/page editor.
  * Ensures a visual match between back- and front-end.
  */
+
+@import "../custom-properties.css";
+
 body {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
