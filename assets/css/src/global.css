@@ -128,13 +128,13 @@ i {
 }
 
 blockquote {
-	border-left: 4px solid #000;
+	border-left: 4px solid var(--color-quote-border);
 	margin: 0 1.5em;
 	padding-left: 1em;
 }
 
 blockquote cite {
-	color: #6c7781;
+	color: var(--color-quote-citation);
 	font-size: 13px;
 	margin-top: 1em;
 	position: relative;

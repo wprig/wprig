@@ -190,6 +190,16 @@
 	padding: 0 1em;
 }
 
+.wp-block-quote:not(.is-large):not(.is-style-large) {
+	border-left-color: var(--color-quote-border);
+}
+
+.wp-block-quote__citation,
+.wp-block-quote cite,
+.wp-block-quote footer {
+	border-left-color: var(--color-quote-citation);
+}
+
 .entry-content ul,
 .entry-content ol {
 	padding-right: 2.5em;
