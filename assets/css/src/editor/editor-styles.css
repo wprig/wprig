@@ -6,7 +6,7 @@ body {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
-	font-size: calc(1rem * var(--global-font-size) / 16);
+	font-size: var(--font-size-regular);
 	/* stylelint-enable */
 	line-height: var(--global-font-line-height);
 }
@@ -61,12 +61,12 @@ a:active {
 
 /* Main column width */
 .wp-block {
-	max-width: calc(var(--content-width)rem + 30px);
+	max-width: calc(var(--content-width) + 30px);
 }
 
 /* Width of "wide" blocks */
 .wp-block[data-align="wide"] {
-	max-width: calc(50% + var(--content-width)rem / 2 + 76px);
+	max-width: calc(50% + var(--content-width) / 2 + 76px);
 }
 
 /* Width of "full-wide" blocks */
