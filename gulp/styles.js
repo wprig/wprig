@@ -22,7 +22,7 @@ export default function styles(done) {
 	const config = getThemeConfig(true);
 
 	const beforeReplacement = [
-		src(paths.styles.src, {sourcemaps: !isProd}),
+		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} ),
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,

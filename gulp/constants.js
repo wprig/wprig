@@ -6,6 +6,9 @@ export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
 import importFresh from 'import-fresh';
 
+// Internal dependencies
+import {appendIgnoredSourceFiles} from './utils';
+
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
 
@@ -66,11 +69,33 @@ let paths = {
 	},
 	styles: {
 		src: `${assetsDir}/css/src/**/*.css`,
+		srcWithIgnored: appendIgnoredSourceFiles(
+			// Start with all CSS source
+			`${assetsDir}/css/src/**/*.css`,
+			// Negate ignored files from config, if defined
+			(
+				config.dev.hasOwnProperty('styles') &&
+				config.dev.styles.hasOwnProperty('ignoredSourceFiles')
+			) ? config.dev.styles.ignoredSourceFiles : [],
+			// With the CSS source base path
+			`${assetsDir}/css/src`
+		),
 		sass: `${assetsDir}/css/src/**/*.scss`,
 		dest: `${assetsDir}/css/`
 	},
 	scripts: {
 		src: `${assetsDir}/js/src/**/*.js`,
+		srcWithIgnored: appendIgnoredSourceFiles(
+			// Start with all JS source
+			`${assetsDir}/js/src/**/*.js`,
+			// Negate ignored files from config, if defined
+			(
+				config.dev.hasOwnProperty('scripts') &&
+				config.dev.scripts.hasOwnProperty('ignoredSourceFiles')
+			) ? config.dev.scripts.ignoredSourceFiles : [],
+			// With the JS source base path
+			`${assetsDir}/js/src`
+		),
 		dest: `${assetsDir}/js/`
 	},
 	images: {

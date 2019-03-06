@@ -107,3 +107,48 @@ export function gulpRelativeDest( file ) {
 	const relativeProdFilePath = file.base.replace(file.cwd, prodThemePath);
 	return relativeProdFilePath;
 }
+
+export function appendIgnoredSourceFiles(sourceFiles, ignoredSourceFiles, sourcePath) {
+	// Require ignored source files to be an array
+	if ( ! Array.isArray(ignoredSourceFiles) ) {
+		// Alert the user
+		log(
+			colors.red(
+				`${colors.bold('Error:')} expected ignoredSourceFiles to be an array, got a ${colors.bold(typeof ignoredSourceFiles)} instead. Returning the source path as-is. Check your WP Rig configuration file.`
+			)
+		);
+
+		// Return the orginal source
+        return sourceFiles;
+	}
+
+	// If there are no files to ignore
+	if( 0 === ignoredSourceFiles.length ) {
+		// Return the orginal source
+		return sourceFiles;
+	}
+
+	// Start an output array
+	let output = [];
+
+	// If the incoming source is not an array
+	if ( ! Array.isArray(sourceFiles) ) {
+		// Push the source string to the output
+		output.push(sourceFiles);
+	} else {
+		// Otherwise, loop through each source path
+		for ( let sourceFile of sourceFiles ) {
+			// And push it to the output
+			output.push(sourceFile);
+		}
+	}
+
+	// Loop through all ignored source files
+	for ( let ignoredFile of ignoredSourceFiles ) {
+		// And push them into output with negation
+		output.push(`!${sourcePath}/${ignoredFile}`);
+	}
+
+	// Return output
+	return output;
+}
