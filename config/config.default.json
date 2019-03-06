@@ -13,7 +13,7 @@
       "https": false
     },
     "styles": {
-      "preserve": false,
+      "preserve": true,
       "customProperties": [
         "custom-properties.css"
       ],
