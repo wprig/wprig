@@ -13,7 +13,13 @@
       "https": false
     },
     "styles": {
-      "postCSSPreserve": true,
+      "preserve": true,
+      "customProperties": [
+        "custom-properties.css"
+      ],
+      "customMedia": [
+        "custom-media.css"
+      ],
       "ignoredSourceFiles": [
         "reset.css",
         "custom-properties.css",

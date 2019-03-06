@@ -148,6 +148,26 @@ export function configValueDefined(configValueLocation) {
 	return true;
 }
 
+export function appendBaseToFilePathArray(filePaths, basePath, negate = false) {
+	if ( ! Array.isArray(filePaths) ) {
+		return `${basePath}/${filePaths}`;
+	}
+
+	let output = [];
+
+	// Loop through all file paths
+	for ( let filePath of filePaths ) {
+		// And push them into output with the base added
+		if( negate ) {
+			output.push(`!${basePath}/${filePath}`);
+		} else {
+			output.push(`${basePath}/${filePath}`);
+		}
+	}
+
+	return output;
+}
+
 /**
  * Append ignored file array to an existing source path definition
  *
@@ -192,12 +212,7 @@ export function appendIgnoredSourceFiles(sourceFiles, ignoredSourceFiles, source
 		}
 	}
 
-	// Loop through all ignored source files
-	for ( let ignoredFile of ignoredSourceFiles ) {
-		// And push them into output with negation
-		output.push(`!${sourcePath}/${ignoredFile}`);
-	}
+	// Return the output with the ignored files
+	return output.concat(appendBaseToFilePathArray(ignoredSourceFiles, sourcePath, true));
 
-	// Return output
-	return output;
 }

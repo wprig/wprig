@@ -72,6 +72,7 @@ let paths = {
 	},
 	styles: {
 		src: `${assetsDir}/css/src/**/*.css`,
+		srcDir: `${assetsDir}/css/src`,
 		srcWithIgnored: appendIgnoredSourceFiles(
 			// Start with all CSS source
 			`${assetsDir}/css/src/**/*.css`,
