@@ -39,6 +39,12 @@
 	line-height: 1.4;
 }
 
+.editor-styles-wrapper .editor-writing-flow p {
+	/* stylelint-disable */
+	font-size: var(--font-size-regular);
+	/* stylelint-enable */
+}
+
 .editor-styles-wrapper .wp-block-cover .wp-block-cover-text {
 	color: #fff;
 	font-size: 2em;
