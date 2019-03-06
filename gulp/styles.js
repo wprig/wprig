@@ -45,7 +45,7 @@ export default function styles(done) {
 			config.dev.styles.preserve :
 			true
 		)
-	}
+	};
 	
 	if( configValueDefined('config.dev.styles.customMedia') ) {
 		postcssCustomMediaOptions.importFrom = appendBaseToFilePathArray(config.dev.styles.customMedia, paths.styles.srcDir);
