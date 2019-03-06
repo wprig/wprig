@@ -38,9 +38,11 @@ export default function styles(done) {
 		gulpPlugins.postcss([
 			AtImport(),
 			postcssCustomProperties({
+				'importFrom': `${paths.assetsDir}/css/src/custom-properties.css`,
 				'preserve': true,
 			}),
 			postcssCustomMedia({
+				'importFrom': `${paths.assetsDir}/css/src/custom-media.css`,
 				'preserve': true,
 			}),
 			postcssPresetEnv({
