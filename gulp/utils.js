@@ -14,7 +14,7 @@ import {
 	gulpPlugins,
 	nameFieldDefaults,
 	prodThemePath,
-	paths
+	configPath
 } from './constants';
 
 /**
@@ -27,9 +27,9 @@ export function getThemeConfig( uncached=false ) {
 	let config;
 
 	if ( uncached ) {
-		config = importFresh(paths.config.themeConfig);
+		config = importFresh(configPath);
 	} else {
-		config = require(paths.config.themeConfig);
+		config = require(configPath);
 	}
 
 	if ( ! config.theme.slug ) {
@@ -108,7 +108,56 @@ export function gulpRelativeDest( file ) {
 	return relativeProdFilePath;
 }
 
+/**
+ * Determine if a config value is defined
+ * @param {string} configValueLocation a config value path to search for, e.g. 'config.theme.slug'
+ * @return {bool}
+ */
+export function configValueDefined(configValueLocation) {
+
+	// We won't find anything if the location to search is empty
+	if( 0 === configValueLocation.length ) {
+		return false;
+	}
+
+	// Get a copy of the config
+	let config = getThemeConfig(true);
+
+	// Turn the value location given into an array
+	let configValueLocationArray = configValueLocation.split('.');
+
+	// Remove config from the array if present
+	if( 'config' === configValueLocationArray[0] ) {
+		configValueLocationArray.shift();
+	}
+
+	// Loop through the config value paths passed
+	for ( let currentValueLocation of configValueLocationArray ) {
+
+		// Check if there is a match in the current object level
+		if( ! config.hasOwnProperty(currentValueLocation) ) {
+			// Return false if no match
+			return false;
+		}
+
+		// Move the config object to the next level
+		config = config[currentValueLocation];
+	}
+
+	// If we've made it this far there is a match for the given config value path
+	return true;
+}
+
+/**
+ * Append ignored file array to an existing source path definition
+ *
+ * @param {string|array} sourceFiles the existing source path or array of paths
+ * @param {array} ignoredSourceFiles an array of additional files to ignore
+ * @param {string} sourcePath a base path to append to ignored file paths
+ * @return {array} an array of file paths, with the ignored paths appended to the source path(s)
+ */
 export function appendIgnoredSourceFiles(sourceFiles, ignoredSourceFiles, sourcePath) {
+
 	// Require ignored source files to be an array
 	if ( ! Array.isArray(ignoredSourceFiles) ) {
 		// Alert the user

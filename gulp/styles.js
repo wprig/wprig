@@ -38,10 +38,18 @@ export default function styles(done) {
 		gulpPlugins.postcss([
 			AtImport(),
 			postcssCustomProperties({
-				'preserve': true,
+				'preserve': (
+					configValueDefined('config.dev.styles.postCSSPreserve') ?
+					config.dev.styles.postCSSPreserve :
+					true
+				),
 			}),
 			postcssCustomMedia({
-				'preserve': true,
+				'preserve': (
+					configValueDefined('config.dev.styles.postCSSPreserve') ?
+					config.dev.styles.postCSSPreserve :
+					true
+				),
 			}),
 			postcssPresetEnv({
 				stage: 3

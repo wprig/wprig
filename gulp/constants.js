@@ -7,7 +7,7 @@ import path from 'path';
 import importFresh from 'import-fresh';
 
 // Internal dependencies
-import {appendIgnoredSourceFiles} from './utils';
+import {appendIgnoredSourceFiles, configValueDefined} from './utils';
 
 // Root path is where npm run commands happen
 export const rootPath = process.env.INIT_CWD;
@@ -15,8 +15,11 @@ export const rootPath = process.env.INIT_CWD;
 // Dev or production
 export const isProd = ( process.env.NODE_ENV === 'production' );
 
+// Define the config path
+export const configPath = `${rootPath}/config/themeConfig.js`;
+
 // get a fresh copy of the config
-export const config = importFresh(`${rootPath}/config/themeConfig.js`);
+export const config = importFresh(configPath);
 
 // directory for the production theme
 export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}`);
@@ -73,10 +76,9 @@ let paths = {
 			// Start with all CSS source
 			`${assetsDir}/css/src/**/*.css`,
 			// Negate ignored files from config, if defined
-			(
-				config.dev.hasOwnProperty('styles') &&
-				config.dev.styles.hasOwnProperty('ignoredSourceFiles')
-			) ? config.dev.styles.ignoredSourceFiles : [],
+			configValueDefined('config.dev.styles.ignoredSourceFiles') ?
+				config.dev.styles.ignoredSourceFiles :
+				[],
 			// With the CSS source base path
 			`${assetsDir}/css/src`
 		),
@@ -89,10 +91,9 @@ let paths = {
 			// Start with all JS source
 			`${assetsDir}/js/src/**/*.js`,
 			// Negate ignored files from config, if defined
-			(
-				config.dev.hasOwnProperty('scripts') &&
-				config.dev.scripts.hasOwnProperty('ignoredSourceFiles')
-			) ? config.dev.scripts.ignoredSourceFiles : [],
+			configValueDefined('config.dev.scripts.ignoredSourceFiles') ?
+				config.dev.scripts.ignoredSourceFiles :
+				[],
 			// With the JS source base path
 			`${assetsDir}/js/src`
 		),
