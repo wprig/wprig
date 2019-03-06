@@ -11,7 +11,7 @@ import pump from 'pump';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
-import {getThemeConfig, getStringReplacementTasks, logError} from './utils';
+import {getThemeConfig, getStringReplacementTasks, logError, configValueDefined} from './utils';
 import {server} from './browserSync';
 
 /**
