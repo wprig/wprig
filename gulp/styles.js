@@ -7,10 +7,8 @@ import postcssPresetEnv from 'postcss-preset-env';
 import AtImport from 'postcss-import';
 import postcssCustomProperties from 'postcss-custom-properties';
 import postcssCustomMedia from 'postcss-custom-media';
+import postcssUnroot from 'postcss-unroot';
 import pump from 'pump';
-import postcss from 'postcss';
-import fs from 'fs';
-import {readCustomFromRoot, transformStringWithCustomProperties, transformStringWithCustomMedia} from 'postcss-custom-utils';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
@@ -23,8 +21,10 @@ import {
 } from './utils';
 import {server} from './browserSync';
 
+// get a fresh copy of the config
+const config = getThemeConfig(true);
+
 function getPostcssCustomPropertiesOptions() {
-	const config = getThemeConfig();
 
 	let postcssCustomPropertiesOptions = {
 		'preserve': (
@@ -46,23 +46,7 @@ function getPostcssCustomPropertiesOptions() {
 	return postcssCustomPropertiesOptions;
 }
 
-function getCustomPropertiesFromFiles(customPropertyFiles) {
-
-	let customPropertiesArray = [];
-
-	for ( let customPropertyFile of customPropertyFiles ) {
-		const css = fs.readFileSync(customPropertyFile, 'utf8');
-		const rootObj = postcss.parse(css, { from: customPropertyFile });
-		const postcssCustomObj = readCustomFromRoot(rootObj, true);
-		customPropertiesArray.push(postcssCustomObj.customProperties);
-	}
-
-	return customPropertiesArray;
-
-}
-
 function getPostcssCustomMediaOptions() {
-	const config = getThemeConfig();
 
 	let postcssCustomMediaOptions = {
 		'preserve': (
@@ -84,99 +68,113 @@ function getPostcssCustomMediaOptions() {
 	return postcssCustomMediaOptions;
 }
 
-function getCustomMediaFromFiles(customMediaFiles) {
+// Fetch the options for custom properties and custom media
+const postcssCustomPropertiesOptions = getPostcssCustomPropertiesOptions();
+const postcssCustomMediaOptions = getPostcssCustomMediaOptions();
 
-	let customMediaArray = [];
+const beforeReplacementDefault = [
+	logError('CSS'),
+	gulpPlugins.newer({
+		dest: paths.styles.dest,
+		extra: [paths.config.themeConfig]
+	}),
+	gulpPlugins.phpcs({
+		bin: `${rootPath}/vendor/bin/phpcs`,
+		standard: 'WordPress',
+		warningSeverity: 0
+	}),
+	// Log all problems that were found.
+	gulpPlugins.phpcs.reporter('log'),
+];
 
-	for ( let customMediaFile of customMediaFiles ) {
-		const css = fs.readFileSync(customMediaFile, 'utf8');
-		const rootObj = postcss.parse(css, { from: customMediaFile });
-		const postcssCustomObj = readCustomFromRoot(rootObj, true);
-		customMediaArray.push(postcssCustomObj.customMedia);
-	}
+const afterReplacementDefault = [
+	gulpPlugins.stylelint({
+		failAfterError: false,
+		fix: true,
+		reporters: [
+			{
+				formatter: 'string',
+				console: true
+			}
+		]
+	}),
+	gulpPlugins.if(
+		!config.dev.debug.styles,
+		gulpPlugins.cssnano()
+	),
+	gulpPlugins.rename({
+		suffix: '.min'
+	}),
+	server.stream({match: "**/*.css"}),
+];
 
-	return customMediaArray;
+export function styles(done) {
 
+	let beforeReplacement = beforeReplacementDefault;
+	let afterReplacement = afterReplacementDefault;
+
+	beforeReplacement.unshift(
+		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} )
+	);
+
+	beforeReplacement.push(
+		gulpPlugins.postcss(
+			[
+				AtImport(),
+				postcssCustomProperties(postcssCustomPropertiesOptions),
+				postcssCustomMedia(postcssCustomMediaOptions),
+				postcssPresetEnv({
+					stage: 3
+				}),
+			]
+		)
+	);
+
+	afterReplacement.push(
+		dest(paths.styles.dest, {sourcemaps: !isProd})
+	);
+
+	pump(
+		[].concat(
+			beforeReplacement,
+			// Only do string replacements when building for production
+			gulpPlugins.if(
+				isProd,
+				getStringReplacementTasks(),
+				[]
+			),
+			afterReplacement
+		),
+		done
+	);
 }
 
-/**
-* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
-*/
-export default function styles(done) {
-	// get a fresh copy of the config
-	const config = getThemeConfig(true);
+export function editorStyles(done) {
 
-	let isEditorFile = false;
-	const postcssCustomPropertiesOptions = getPostcssCustomPropertiesOptions();
-	const postcssCustomMediaOptions = getPostcssCustomMediaOptions();
+	let beforeReplacement = beforeReplacementDefault;
+	let afterReplacement = afterReplacementDefault;
 
-	const beforeReplacement = [
-		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} ),
-		logError('CSS'),
-		gulpPlugins.newer({
-			dest: paths.styles.dest,
-			extra: [paths.config.themeConfig]
-		}),
-		gulpPlugins.tap(function(file) {
-			const relativeFilePath = file.path.replace(`${paths.styles.srcDir}/`, '');
-			isEditorFile = relativeFilePath.startsWith('editor/');
+	beforeReplacement.unshift(
+		src( paths.styles.editorSrcWithIgnored, {sourcemaps: !isProd} )
+	);
 
-			if ( isEditorFile ) {
-
-				if( postcssCustomPropertiesOptions.hasOwnProperty('importFrom') ) {
-					const customPropertiesArray = getCustomPropertiesFromFiles(postcssCustomPropertiesOptions.importFrom);
-					for ( let customProperty of customPropertiesArray ) {
-						file.contents = Buffer.from(transformStringWithCustomProperties(file.contents.toString(), customProperty));
-					}
-				}
-
-				if( postcssCustomMediaOptions.hasOwnProperty('importFrom') ) {
-					const customMediaArray = getCustomMediaFromFiles(postcssCustomMediaOptions.importFrom);
-					for ( let customMedia of customMediaArray ) {
-						file.contents = Buffer.from(transformStringWithCustomMedia(file.contents.toString(), customMedia));
-					}
-				}
-
-			}
-		}),
-		gulpPlugins.phpcs({
-			bin: `${rootPath}/vendor/bin/phpcs`,
-			standard: 'WordPress',
-			warningSeverity: 0
-		}),
-		// Log all problems that were found.
-		gulpPlugins.phpcs.reporter('log'),
-		gulpPlugins.postcss([
-			AtImport(),
-			postcssCustomProperties(postcssCustomPropertiesOptions),
-			postcssCustomMedia(postcssCustomMediaOptions),
-			postcssPresetEnv({
-				stage: 3
-			})
-		]),
-	];
-
-	const afterReplacement = [
-		gulpPlugins.stylelint({
-			failAfterError: false,
-			fix: true,
-			reporters: [
-				{
-					formatter: 'string',
-					console: true
-				}
+	beforeReplacement.push(
+		gulpPlugins.postcss(
+			[
+				AtImport(),
+				postcssUnroot(),
+				postcssCustomProperties(postcssCustomPropertiesOptions),
+				postcssCustomMedia(postcssCustomMediaOptions),
+				postcssPresetEnv({
+					stage: 3
+				}),
 			]
-		}),
-		gulpPlugins.if(
-			!config.dev.debug.styles,
-			gulpPlugins.cssnano()
-		),
-		gulpPlugins.rename({
-			suffix: '.min'
-		}),
-		server.stream({match: "**/*.css"}),
-		dest(paths.styles.dest, {sourcemaps: !isProd}),
-	];
+		)
+	);
+
+	afterReplacement.push(
+		dest(paths.styles.editorDest, {sourcemaps: !isProd})
+	);
 
 	pump(
 		[].concat(

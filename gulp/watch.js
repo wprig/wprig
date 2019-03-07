@@ -14,7 +14,7 @@ import images from './images';
 import php from './php';
 import sassStyles from './sassStyles';
 import scripts from './scripts';
-import styles from './styles';
+import {styles, editorStyles} from './styles';
 
 export function themeConfigChangeAlert(done){
 	log(colors.yellow(`Theme configuration ${colors.bold(paths.config.themeConfig)} has changed, rebuilding everything...`));
@@ -47,6 +47,8 @@ export default function watch() {
 	gulpWatch(paths.styles.sass, series(sassStyles, reload));
 
 	gulpWatch(paths.styles.src, series( styles ) );
+
+	gulpWatch(paths.styles.editorSrc, series( editorStyles ) );
 
 	gulpWatch(paths.scripts.src, series(scripts, reload));
 

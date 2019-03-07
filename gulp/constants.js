@@ -71,17 +71,33 @@ let paths = {
 		dest: `${rootPath}/`
 	},
 	styles: {
-		src: `${assetsDir}/css/src/**/*.css`,
-		srcDir: `${assetsDir}/css/src`,
-		srcWithIgnored: appendIgnoredSourceFiles(
+		editorSrc: `${assetsDir}/css/src/editor/**/*.css`,
+		editorSrcDir: `${assetsDir}/css/src/editor`,
+		editorSrcWithIgnored: appendIgnoredSourceFiles(
 			// Start with all CSS source
-			`${assetsDir}/css/src/**/*.css`,
+			`${assetsDir}/css/src/editor/**/*.css`,
 			// Negate ignored files from config, if defined
 			configValueDefined('config.dev.styles.ignoredSourceFiles') ?
 				config.dev.styles.ignoredSourceFiles :
 				[],
 			// With the CSS source base path
 			`${assetsDir}/css/src`
+		),
+		editorDest: `${assetsDir}/css/editor/`,
+		src: [`${assetsDir}/css/src/**/*.css`, `!${assetsDir}/css/src/editor/**/*.css`],
+		srcDir: `${assetsDir}/css/src`,
+		srcWithIgnored: [].concat(
+			appendIgnoredSourceFiles(
+				// Start with all CSS source
+				`${assetsDir}/css/src/**/*.css`,
+				// Negate ignored files from config, if defined
+				configValueDefined('config.dev.styles.ignoredSourceFiles') ?
+					config.dev.styles.ignoredSourceFiles :
+					[],
+				// With the CSS source base path
+				`${assetsDir}/css/src`
+			),
+			[`!${assetsDir}/css/src/editor/**/*.css`]
 		),
 		sass: `${assetsDir}/css/src/**/*.scss`,
 		dest: `${assetsDir}/css/`
