@@ -8,9 +8,6 @@ import AtImport from 'postcss-import';
 import postcssCustomProperties from 'postcss-custom-properties';
 import postcssCustomMedia from 'postcss-custom-media';
 import pump from 'pump';
-import postcss from 'postcss';
-import fs from 'fs';
-import {readCustomFromRoot, transformStringWithCustomProperties, transformStringWithCustomMedia} from 'postcss-custom-utils';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
@@ -46,21 +43,6 @@ function getPostcssCustomPropertiesOptions() {
 	return postcssCustomPropertiesOptions;
 }
 
-function getCustomPropertiesFromFiles(customPropertyFiles) {
-
-	let customPropertiesArray = [];
-
-	for ( let customPropertyFile of customPropertyFiles ) {
-		const css = fs.readFileSync(customPropertyFile, 'utf8');
-		const rootObj = postcss.parse(css, { from: customPropertyFile });
-		const postcssCustomObj = readCustomFromRoot(rootObj, true);
-		customPropertiesArray.push(postcssCustomObj.customProperties);
-	}
-
-	return customPropertiesArray;
-
-}
-
 function getPostcssCustomMediaOptions() {
 	const config = getThemeConfig();
 
@@ -84,21 +66,6 @@ function getPostcssCustomMediaOptions() {
 	return postcssCustomMediaOptions;
 }
 
-function getCustomMediaFromFiles(customMediaFiles) {
-
-	let customMediaArray = [];
-
-	for ( let customMediaFile of customMediaFiles ) {
-		const css = fs.readFileSync(customMediaFile, 'utf8');
-		const rootObj = postcss.parse(css, { from: customMediaFile });
-		const postcssCustomObj = readCustomFromRoot(rootObj, true);
-		customMediaArray.push(postcssCustomObj.customMedia);
-	}
-
-	return customMediaArray;
-
-}
-
 /**
 * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
 */
@@ -106,9 +73,12 @@ export default function styles(done) {
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
 
+	const postcssCustomPropertiesOptionsDefaults = getPostcssCustomPropertiesOptions();
+	let postcssCustomPropertiesOptions = {};
+	const postcssCustomMediaOptionsDefaults = getPostcssCustomMediaOptions();
+	let postcssCustomMediaOptions = {};
+
 	let isEditorFile = false;
-	const postcssCustomPropertiesOptions = getPostcssCustomPropertiesOptions();
-	const postcssCustomMediaOptions = getPostcssCustomMediaOptions();
 
 	const beforeReplacement = [
 		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} ),
@@ -117,25 +87,19 @@ export default function styles(done) {
 			dest: paths.styles.dest,
 			extra: [paths.config.themeConfig]
 		}),
+		// Dynamically set postcss preserve to false for editor files
+		// See https://core.trac.wordpress.org/ticket/46435#ticket
 		gulpPlugins.tap(function(file) {
+			postcssCustomPropertiesOptions = postcssCustomPropertiesOptionsDefaults;
+			postcssCustomMediaOptions = postcssCustomMediaOptionsDefaults;
+
 			const relativeFilePath = file.path.replace(`${paths.styles.srcDir}/`, '');
 			isEditorFile = relativeFilePath.startsWith('editor/');
 
 			if ( isEditorFile ) {
 
-				if( postcssCustomPropertiesOptions.hasOwnProperty('importFrom') ) {
-					const customPropertiesArray = getCustomPropertiesFromFiles(postcssCustomPropertiesOptions.importFrom);
-					for ( let customProperty of customPropertiesArray ) {
-						file.contents = Buffer.from(transformStringWithCustomProperties(file.contents.toString(), customProperty));
-					}
-				}
-
-				if( postcssCustomMediaOptions.hasOwnProperty('importFrom') ) {
-					const customMediaArray = getCustomMediaFromFiles(postcssCustomMediaOptions.importFrom);
-					for ( let customMedia of customMediaArray ) {
-						file.contents = Buffer.from(transformStringWithCustomMedia(file.contents.toString(), customMedia));
-					}
-				}
+				postcssCustomPropertiesOptions.preserve = false;
+				postcssCustomMediaOptions.preserve = false;
 
 			}
 		}),
