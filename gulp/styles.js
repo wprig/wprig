@@ -11,7 +11,13 @@ import pump from 'pump';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
-import {getThemeConfig, getStringReplacementTasks, logError} from './utils';
+import {
+	getThemeConfig,
+	getStringReplacementTasks,
+	logError,
+	configValueDefined,
+	appendBaseToFilePathArray
+} from './utils';
 import {server} from './browserSync';
 
 /**
@@ -21,8 +27,32 @@ export default function styles(done) {
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
 
+	let postcssCustomPropertiesOptions = {
+		'preserve': (
+			configValueDefined('config.dev.styles.preserve') ?
+			config.dev.styles.preserve :
+			true
+		)
+	};
+
+	if( configValueDefined('config.dev.styles.customProperties') ) {
+		postcssCustomPropertiesOptions.importFrom = appendBaseToFilePathArray(config.dev.styles.customProperties, paths.styles.srcDir);
+	}
+
+	let postcssCustomMediaOptions = {
+		'preserve': (
+			configValueDefined('config.dev.styles.postCSSPreserve') ?
+			config.dev.styles.preserve :
+			true
+		)
+	};
+	
+	if( configValueDefined('config.dev.styles.customMedia') ) {
+		postcssCustomMediaOptions.importFrom = appendBaseToFilePathArray(config.dev.styles.customMedia, paths.styles.srcDir);
+	}
+
 	const beforeReplacement = [
-		src(paths.styles.src, {sourcemaps: !isProd}),
+		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} ),
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
@@ -37,12 +67,8 @@ export default function styles(done) {
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
 			AtImport(),
-			postcssCustomProperties({
-				'preserve': true,
-			}),
-			postcssCustomMedia({
-				'preserve': true,
-			}),
+			postcssCustomProperties(postcssCustomPropertiesOptions),
+			postcssCustomMedia(postcssCustomMediaOptions),
 			postcssPresetEnv({
 				stage: 3
 			})
