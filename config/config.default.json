@@ -12,6 +12,23 @@
       "bypassPort": "8181",
       "https": false
     },
+    "styles": {
+      "preserve": true,
+      "customProperties": [
+        "custom-properties.css"
+      ],
+      "customMedia": [
+        "custom-media.css"
+      ],
+      "ignoredSourceFiles": [
+        "reset.css",
+        "custom-properties.css",
+        "custom-media.css"
+      ]
+    },
+    "scripts": {
+      "ignoredSourceFiles": []
+    },
     "debug": {
       "styles": false,
       "scripts": false,

@@ -46,7 +46,7 @@ export default function watch() {
 
 	gulpWatch(paths.styles.sass, series(sassStyles, reload));
 
-	gulpWatch([paths.styles.src, paths.styles.cssCustomProperties, paths.styles.cssCustomMedia], series( styles ) );
+	gulpWatch(paths.styles.src, series( styles ) );
 
 	gulpWatch(paths.scripts.src, series(scripts, reload));
 

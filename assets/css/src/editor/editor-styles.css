@@ -3,9 +3,16 @@
  * Ensures a visual match between back- and front-end.
  */
 
+/*--------------------------------------------------------------
+# Imports
+--------------------------------------------------------------*/
+@import "../custom-media.css";
 @import "../custom-properties.css";
 
-body {
+/*--------------------------------------------------------------
+# Editor styles
+--------------------------------------------------------------*/
+body  {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
