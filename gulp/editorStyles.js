@@ -44,11 +44,7 @@ export default function editorStyles(done) {
 		gulpPlugins.postcss([
 			AtImport(),
 			postcssCustomProperties({
-				preserve: (
-					configValueDefined('config.dev.styles.postCSSPreserve') ?
-					config.dev.styles.preserve :
-					true
-				),
+				preserve: false,
 				importFrom: (
 					configValueDefined('config.dev.styles.customProperties') ?
 					appendBaseToFilePathArray(
@@ -59,11 +55,7 @@ export default function editorStyles(done) {
 				)
 			}),
 			postcssCustomMedia({
-				preserve: (
-					configValueDefined('config.dev.styles.postCSSPreserve') ?
-					config.dev.styles.preserve :
-					true
-				),
+				preserve: false,
 				importFrom: (
 					configValueDefined('config.dev.styles.customMedia') ?
 					appendBaseToFilePathArray(
