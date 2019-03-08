@@ -87,6 +87,7 @@
     "build": "gulp buildDev",
     "bundle": "NODE_ENV=production gulp bundleTheme",
     "dev": "gulp",
+    "gulp": "gulp",
     "generateCert": "gulp generateCert",
     "install": "composer install",
     "translate": "gulp translate"
