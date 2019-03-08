@@ -20,12 +20,17 @@ import {
 } from './utils';
 import {server} from './browserSync';
 
-function getPostcssCustomPropertiesOptions() {
+// get a fresh copy of the config
+const config = getThemeConfig(true);
+
+function getPostcssCustomPropertiesOptions(forcePreserveFalse=false) {
 	const config = getThemeConfig();
 
 	let postcssCustomPropertiesOptions = {};
 
-	if ( configValueDefined('config.dev.styles.preserve') ) {
+	if( forcePreserveFalse ) {
+		postcssCustomPropertiesOptions.preserve = false;
+	} else if ( configValueDefined('config.dev.styles.preserve') ) {
 		postcssCustomPropertiesOptions.preserve = !! config.dev.styles.preserve;
 	} else {
 		postcssCustomPropertiesOptions.preserve = true;
@@ -43,12 +48,14 @@ function getPostcssCustomPropertiesOptions() {
 	return postcssCustomPropertiesOptions;
 }
 
-function getPostcssCustomMediaOptions() {
+function getPostcssCustomMediaOptions(forcePreserveFalse=false) {
 	const config = getThemeConfig();
 
 	let postcssCustomMediaOptions = {};
 
-	if ( configValueDefined('config.dev.styles.preserve') ) {
+	if( forcePreserveFalse ) {
+		postcssCustomMediaOptions.preserve = false;
+	} else if ( configValueDefined('config.dev.styles.preserve') ) {
 		postcssCustomMediaOptions.preserve = !! config.dev.styles.preserve;
 	} else {
 		postcssCustomMediaOptions.preserve = true;
@@ -66,82 +73,116 @@ function getPostcssCustomMediaOptions() {
 	return postcssCustomMediaOptions;
 }
 
-/**
-* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
-*/
-export default function styles(done) {
-	// get a fresh copy of the config
-	const config = getThemeConfig(true);
+const beforeReplacementDefault = [
+	logError('CSS'),
+	gulpPlugins.newer({
+		dest: paths.styles.dest,
+		extra: [paths.config.themeConfig]
+	}),
+	gulpPlugins.phpcs({
+		bin: `${rootPath}/vendor/bin/phpcs`,
+		standard: 'WordPress',
+		warningSeverity: 0
+	}),
+	// Log all problems that were found.
+	gulpPlugins.phpcs.reporter('log'),
+];
 
-	const postcssCustomPropertiesOptionsDefaults = getPostcssCustomPropertiesOptions();
-	let postcssCustomPropertiesOptions = postcssCustomPropertiesOptionsDefaults;
-
-	const postcssCustomMediaOptionsDefaults = getPostcssCustomMediaOptions();
-	let postcssCustomMediaOptions = postcssCustomMediaOptionsDefaults;
-
-	let isEditorFile = false;
-
-	const beforeReplacement = [
-		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} ),
-		logError('CSS'),
-		gulpPlugins.newer({
-			dest: paths.styles.dest,
-			extra: [paths.config.themeConfig]
-		}),
-		// Dynamically set postcss preserve to false for editor files
-		// See https://core.trac.wordpress.org/ticket/46435#ticket
-		gulpPlugins.tap(function(file) {
-			postcssCustomPropertiesOptions = postcssCustomPropertiesOptionsDefaults;
-			postcssCustomMediaOptions = postcssCustomMediaOptionsDefaults;
-
-			const relativeFilePath = file.path.replace(`${paths.styles.srcDir}/`, '');
-			isEditorFile = relativeFilePath.startsWith('editor/');
-
-			if ( isEditorFile ) {
-
-				postcssCustomPropertiesOptions.preserve = false;
-				postcssCustomMediaOptions.preserve = false;
-
+const afterReplacementDefault = [
+	gulpPlugins.stylelint({
+		failAfterError: false,
+		fix: true,
+		reporters: [
+			{
+				formatter: 'string',
+				console: true
 			}
-		}),
-		gulpPlugins.phpcs({
-			bin: `${rootPath}/vendor/bin/phpcs`,
-			standard: 'WordPress',
-			warningSeverity: 0
-		}),
-		// Log all problems that were found.
-		gulpPlugins.phpcs.reporter('log'),
-		gulpPlugins.postcss([
-			AtImport(),
-			postcssCustomProperties(postcssCustomPropertiesOptions),
-			postcssCustomMedia(postcssCustomMediaOptions),
-			postcssPresetEnv({
-				stage: 3
-			})
-		]),
-	];
+		]
+	}),
+	gulpPlugins.if(
+		!config.dev.debug.styles,
+		gulpPlugins.cssnano()
+	),
+	gulpPlugins.rename({
+		suffix: '.min'
+	}),
+	server.stream({match: "**/*.css"}),
+];
 
-	const afterReplacement = [
-		gulpPlugins.stylelint({
-			failAfterError: false,
-			fix: true,
-			reporters: [
-				{
-					formatter: 'string',
-					console: true
-				}
+export function styles(done) {
+
+	let beforeReplacement = beforeReplacementDefault;
+	let afterReplacement = afterReplacementDefault;
+
+	beforeReplacement.unshift(
+		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} )
+	);
+
+	beforeReplacement.push(
+		gulpPlugins.postcss(
+			[
+				AtImport(),
+				postcssCustomProperties(
+					getPostcssCustomPropertiesOptions()
+				),
+				postcssCustomMedia(
+					getPostcssCustomMediaOptions()
+				),
+				postcssPresetEnv({
+					stage: 3
+				}),
 			]
-		}),
-		gulpPlugins.if(
-			!config.dev.debug.styles,
-			gulpPlugins.cssnano()
+		)
+	);
+
+	afterReplacement.push(
+		dest(paths.styles.dest, {sourcemaps: !isProd})
+	);
+
+	pump(
+		[].concat(
+			beforeReplacement,
+			// Only do string replacements when building for production
+			gulpPlugins.if(
+				isProd,
+				getStringReplacementTasks(),
+				[]
+			),
+			afterReplacement
 		),
-		gulpPlugins.rename({
-			suffix: '.min'
-		}),
-		server.stream({match: "**/*.css"}),
-		dest(paths.styles.dest, {sourcemaps: !isProd}),
-	];
+		done
+	);
+}
+
+export function editorStyles(done) {
+
+	let beforeReplacement = beforeReplacementDefault;
+	let afterReplacement = afterReplacementDefault;
+
+	beforeReplacement.unshift(
+		src( paths.styles.editorSrcWithIgnored, {sourcemaps: !isProd} )
+	);
+
+	beforeReplacement.push(
+		gulpPlugins.postcss(
+			[
+				AtImport(),
+				postcssCustomProperties(
+					getPostcssCustomPropertiesOptions(true)
+				),
+				postcssCustomMedia(
+					getPostcssCustomMediaOptions(true)
+				),
+				postcssPresetEnv({
+					stage: 3
+				}),
+			]
+		)
+	);
+
+	afterReplacement.push(
+		dest(paths.styles.editorDest, {sourcemaps: !isProd})
+	);
 
 	pump(
 		[].concat(

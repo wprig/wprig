@@ -52,7 +52,6 @@
     "gulp-string-replace": "^1.1.2",
     "gulp-stylelint": "^8.0.0",
     "gulp-tabify": "0.0.2",
-    "gulp-tap": "^1.0.1",
     "gulp-uglify": "^3.0.1",
     "gulp-wp-pot": "^2.3.4",
     "gulp-zip": "^4.2.0",
