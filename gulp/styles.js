@@ -23,13 +23,13 @@ import {server} from './browserSync';
 function getPostcssCustomPropertiesOptions() {
 	const config = getThemeConfig();
 
-	let postcssCustomPropertiesOptions = {
-		'preserve': (
-			configValueDefined('config.dev.styles.preserve') ?
-			config.dev.styles.preserve :
-			true
-		)
-	};
+	let postcssCustomPropertiesOptions = {};
+
+	if ( configValueDefined('config.dev.styles.preserve') ) {
+		postcssCustomPropertiesOptions.preserve = !! config.dev.styles.preserve;
+	} else {
+		postcssCustomPropertiesOptions.preserve = true;
+	}
 
 	if( configValueDefined('config.dev.styles.customProperties') ) {
 
@@ -46,13 +46,13 @@ function getPostcssCustomPropertiesOptions() {
 function getPostcssCustomMediaOptions() {
 	const config = getThemeConfig();
 
-	let postcssCustomMediaOptions = {
-		'preserve': (
-			configValueDefined('config.dev.styles.preserve') ?
-			config.dev.styles.preserve :
-			true
-		)
-	};
+	let postcssCustomMediaOptions = {};
+
+	if ( configValueDefined('config.dev.styles.preserve') ) {
+		postcssCustomMediaOptions.preserve = !! config.dev.styles.preserve;
+	} else {
+		postcssCustomMediaOptions.preserve = true;
+	}
 
 	if( configValueDefined('config.dev.styles.customMedia') ) {
 
@@ -74,9 +74,10 @@ export default function styles(done) {
 	const config = getThemeConfig(true);
 
 	const postcssCustomPropertiesOptionsDefaults = getPostcssCustomPropertiesOptions();
-	let postcssCustomPropertiesOptions = {};
+	let postcssCustomPropertiesOptions = postcssCustomPropertiesOptionsDefaults;
+
 	const postcssCustomMediaOptionsDefaults = getPostcssCustomMediaOptions();
-	let postcssCustomMediaOptions = {};
+	let postcssCustomMediaOptions = postcssCustomMediaOptionsDefaults;
 
 	let isEditorFile = false;
 
