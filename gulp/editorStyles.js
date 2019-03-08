@@ -23,12 +23,12 @@ import {server} from './browserSync';
 /**
 * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
 */
-export default function styles(done) {
+export default function editorStyles(done) {
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
 
 	const beforeReplacement = [
-		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} ),
+		src( paths.styles.editorSrcWithIgnored, {sourcemaps: !isProd} ),
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
@@ -98,7 +98,7 @@ export default function styles(done) {
 			suffix: '.min'
 		}),
 		server.stream({match: "**/*.css"}),
-		dest(paths.styles.dest, {sourcemaps: !isProd}),
+		dest(paths.styles.editorDest, {sourcemaps: !isProd}),
 	];
 
 	pump(

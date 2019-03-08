@@ -83,7 +83,7 @@ let paths = {
 			// With the CSS source base path
 			`${assetsDir}/css/src`
 		),
-		editorDest: `${assetsDir}/css/editor/`,
+		editorDest: `${assetsDir}/css/editor`,
 		src: [`${assetsDir}/css/src/**/*.css`, `!${assetsDir}/css/src/editor/**/*.css`],
 		srcDir: `${assetsDir}/css/src`,
 		srcWithIgnored: [].concat(
@@ -101,7 +101,7 @@ let paths = {
 			[`!${assetsDir}/css/src/editor/**/*.css`]
 		),
 		sass: `${assetsDir}/css/src/**/*.scss`,
-		dest: `${assetsDir}/css/`
+		dest: `${assetsDir}/css`
 	},
 	scripts: {
 		src: `${assetsDir}/js/src/**/*.js`,
