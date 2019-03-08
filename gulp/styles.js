@@ -111,8 +111,8 @@ const afterReplacementDefault = [
 
 export function styles(done) {
 
-	let beforeReplacement = beforeReplacementDefault;
-	let afterReplacement = afterReplacementDefault;
+	let beforeReplacement = beforeReplacementDefault.slice(0);
+	let afterReplacement = afterReplacementDefault.slice(0);
 
 	beforeReplacement.unshift(
 		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} )
@@ -156,8 +156,8 @@ export function styles(done) {
 
 export function editorStyles(done) {
 
-	let beforeReplacement = beforeReplacementDefault;
-	let afterReplacement = afterReplacementDefault;
+	let beforeReplacement = beforeReplacementDefault.slice(0);
+	let afterReplacement = afterReplacementDefault.slice(0);
 
 	beforeReplacement.unshift(
 		src( paths.styles.editorSrcWithIgnored, {sourcemaps: !isProd} )
