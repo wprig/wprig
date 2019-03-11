@@ -12,8 +12,7 @@ import {rootPath, paths, gulpPlugins, isProd} from './constants';
 import {
 	getThemeConfig,
 	getStringReplacementTasks,
-	logError,
-	configValueDefined
+	logError
 } from './utils';
 import {server} from './browserSync';
 
