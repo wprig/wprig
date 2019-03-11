@@ -5,8 +5,6 @@
 import {src, dest} from 'gulp';
 import postcssPresetEnv from 'postcss-preset-env';
 import AtImport from 'postcss-import';
-import postcssCustomProperties from 'postcss-custom-properties';
-import postcssCustomMedia from 'postcss-custom-media';
 import pump from 'pump';
 
 // Internal dependencies
@@ -42,12 +40,6 @@ export default function editorStyles(done) {
 		gulpPlugins.postcss([
 			AtImport({
 				path: [paths.styles.srcDir, paths.styles.editorSrcDir]
-			}),
-			postcssCustomProperties({
-				preserve: false
-			}),
-			postcssCustomMedia({
-				preserve: false
 			}),
 			postcssPresetEnv({
 				stage: 3
