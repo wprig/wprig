@@ -14,9 +14,7 @@ import {rootPath, paths, gulpPlugins, isProd} from './constants';
 import {
 	getThemeConfig,
 	getStringReplacementTasks,
-	logError,
-	configValueDefined,
-	appendBaseToFilePathArray
+	logError
 } from './utils';
 import {server} from './browserSync';
 
@@ -42,28 +40,14 @@ export default function editorStyles(done) {
 		// Log all problems that were found.
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
-			AtImport(),
+			AtImport({
+				path: [paths.styles.srcDir, paths.styles.editorSrcDir]
+			}),
 			postcssCustomProperties({
-				preserve: false,
-				importFrom: (
-					configValueDefined('config.dev.styles.customProperties') ?
-					appendBaseToFilePathArray(
-						config.dev.styles.customProperties,
-						paths.styles.srcDir
-					) :
-					[]
-				)
+				preserve: false
 			}),
 			postcssCustomMedia({
-				preserve: false,
-				importFrom: (
-					configValueDefined('config.dev.styles.customMedia') ?
-					appendBaseToFilePathArray(
-						config.dev.styles.customMedia,
-						paths.styles.srcDir
-					) :
-					[]
-				)
+				preserve: false
 			}),
 			postcssPresetEnv({
 				stage: 3

@@ -41,7 +41,9 @@ export default function styles(done) {
 		// Log all problems that were found.
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
-			AtImport(),
+			AtImport({
+				path: [paths.styles.srcDir, paths.styles.editorSrcDir]
+			}),
 			postcssCustomProperties({
 				preserve: (
 					configValueDefined('config.dev.styles.postCSSPreserve') ?
