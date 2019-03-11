@@ -15,8 +15,7 @@ import {
 	getThemeConfig,
 	getStringReplacementTasks,
 	logError,
-	configValueDefined,
-	appendBaseToFilePathArray
+	configValueDefined
 } from './utils';
 import {server} from './browserSync';
 
