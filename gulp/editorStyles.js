@@ -42,7 +42,8 @@ export default function editorStyles(done) {
 				path: [paths.styles.srcDir, paths.styles.editorSrcDir]
 			}),
 			postcssPresetEnv({
-				stage: 3
+				stage: 3,
+				preserve: false
 			})
 		]),
 	];
