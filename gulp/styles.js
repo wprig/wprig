@@ -48,14 +48,6 @@ export default function styles(done) {
 					configValueDefined('config.dev.styles.postCSSPreserve') ?
 					config.dev.styles.preserve :
 					true
-				),
-				importFrom: (
-					configValueDefined('config.dev.styles.customProperties') ?
-					appendBaseToFilePathArray(
-						config.dev.styles.customProperties,
-						paths.styles.srcDir
-					) :
-					[]
 				)
 			}),
 			postcssCustomMedia({
@@ -63,14 +55,6 @@ export default function styles(done) {
 					configValueDefined('config.dev.styles.postCSSPreserve') ?
 					config.dev.styles.preserve :
 					true
-				),
-				importFrom: (
-					configValueDefined('config.dev.styles.customMedia') ?
-					appendBaseToFilePathArray(
-						config.dev.styles.customMedia,
-						paths.styles.srcDir
-					) :
-					[]
 				)
 			}),
 			postcssPresetEnv({
