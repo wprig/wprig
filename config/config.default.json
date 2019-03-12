@@ -14,6 +14,7 @@
     },
     "styles": {
       "preserve": true,
+      "stage": 3,
       "ignoredSourceFiles": [
         "reset.css",
         "custom-properties.css",

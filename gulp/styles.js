@@ -43,12 +43,21 @@ export default function styles(done) {
 				path: [paths.styles.srcDir, paths.styles.editorSrcDir]
 			}),
 			postcssPresetEnv({
-				stage: 3,
+				stage: (
+					configValueDefined('config.dev.styles.stage') ?
+					config.dev.styles.stage :
+					3
+				),
 				preserve: (
-					configValueDefined('config.dev.styles.postCSSPreserve') ?
+					configValueDefined('config.dev.styles.preserve') ?
 					config.dev.styles.preserve :
 					true
-				)
+				),
+				features: {
+					'custom-media-queries': true,
+					'custom-properties': true,
+					'nesting-rules': true
+				}
 			})
 		]),
 	];

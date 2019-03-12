@@ -12,7 +12,8 @@ import {rootPath, paths, gulpPlugins, isProd} from './constants';
 import {
 	getThemeConfig,
 	getStringReplacementTasks,
-	logError
+	logError,
+	configValueDefined
 } from './utils';
 import {server} from './browserSync';
 
@@ -42,8 +43,17 @@ export default function editorStyles(done) {
 				path: [paths.styles.srcDir, paths.styles.editorSrcDir]
 			}),
 			postcssPresetEnv({
-				stage: 3,
-				preserve: false
+				stage: (
+					configValueDefined('config.dev.styles.stage') ?
+					config.dev.styles.stage :
+					3
+				),
+				preserve: false,
+				features: {
+					'custom-media-queries': true,
+					'custom-properties': true,
+					'nesting-rules': true
+				}
 			})
 		]),
 	];
