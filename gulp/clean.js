@@ -12,7 +12,7 @@ import {paths} from './constants';
  */
 export function cleanCSS() {
 	const delPath = [
-		`${paths.styles.dest}/*.css`,
+		`${paths.styles.dest}/**/*.css`,
 		`!${paths.styles.srcDir}`,
 		`!${paths.styles.srcDir}/**`
 	];
@@ -24,7 +24,7 @@ export function cleanCSS() {
  */
 export function cleanJS() {
 	const delPath = [
-		`${paths.styles.dest}/*.css`,
+		`${paths.styles.dest}/**/*.js`,
 		`!${paths.styles.srcDir}`,
 		`!${paths.styles.srcDir}/**`
 	];

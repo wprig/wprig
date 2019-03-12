@@ -25,7 +25,7 @@ export default function styles(done) {
 	const config = getThemeConfig(true);
 
 	const beforeReplacement = [
-		src( paths.styles.srcWithIgnored, {sourcemaps: !isProd} ),
+		src( paths.styles.src, {sourcemaps: !isProd} ),
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
@@ -40,7 +40,7 @@ export default function styles(done) {
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
 			AtImport({
-				path: [paths.styles.srcDir, paths.styles.editorSrcDir]
+				path: [paths.styles.srcDir]
 			}),
 			postcssPresetEnv({
 				stage: (
@@ -53,11 +53,15 @@ export default function styles(done) {
 					config.dev.styles.preserve :
 					true
 				),
-				features: {
-					'custom-media-queries': true,
-					'custom-properties': true,
-					'nesting-rules': true
-				}
+				features: (
+					configValueDefined('config.dev.styles.features') ?
+					config.dev.styles.features :
+					{
+						'custom-media-queries': true,
+						'custom-properties': true,
+						'nesting-rules': true
+					}
+				)
 			})
 		]),
 	];

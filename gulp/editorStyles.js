@@ -25,8 +25,8 @@ export default function editorStyles(done) {
 	const config = getThemeConfig(true);
 
 	const beforeReplacement = [
-		src( paths.styles.editorSrcWithIgnored, {sourcemaps: !isProd} ),
-		logError('CSS'),
+		src( paths.styles.editorSrc, {sourcemaps: !isProd} ),
+		logError('Editor CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
 			extra: [paths.config.themeConfig]
@@ -40,7 +40,7 @@ export default function editorStyles(done) {
 		gulpPlugins.phpcs.reporter('log'),
 		gulpPlugins.postcss([
 			AtImport({
-				path: [paths.styles.srcDir, paths.styles.editorSrcDir]
+				path: [paths.styles.editorSrcDir]
 			}),
 			postcssPresetEnv({
 				stage: (
@@ -49,11 +49,15 @@ export default function editorStyles(done) {
 					3
 				),
 				preserve: false,
-				features: {
-					'custom-media-queries': true,
-					'custom-properties': true,
-					'nesting-rules': true
-				}
+				features: (
+					configValueDefined('config.dev.styles.features') ?
+					config.dev.styles.features :
+					{
+						'custom-media-queries': true,
+						'custom-properties': true,
+						'nesting-rules': true
+					}
+				)
 			})
 		]),
 	];
