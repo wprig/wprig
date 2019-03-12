@@ -123,25 +123,25 @@ class Component implements Component_Interface {
 			'editor-font-sizes',
 			array(
 				array(
-					'name'      => __( 'small', 'wp-rig' ),
+					'name'      => __( 'Small', 'wp-rig' ),
 					'shortName' => __( 'S', 'wp-rig' ),
 					'size'      => 16,
 					'slug'      => 'small',
 				),
 				array(
-					'name'      => __( 'regular', 'wp-rig' ),
+					'name'      => __( 'Medium', 'wp-rig' ),
 					'shortName' => __( 'M', 'wp-rig' ),
-					'size'      => 20,
-					'slug'      => 'regular',
+					'size'      => 25,
+					'slug'      => 'medium',
 				),
 				array(
-					'name'      => __( 'large', 'wp-rig' ),
+					'name'      => __( 'Large', 'wp-rig' ),
 					'shortName' => __( 'L', 'wp-rig' ),
 					'size'      => 36,
 					'slug'      => 'large',
 				),
 				array(
-					'name'      => __( 'larger', 'wp-rig' ),
+					'name'      => __( 'Larger', 'wp-rig' ),
 					'shortName' => __( 'XL', 'wp-rig' ),
 					'size'      => 48,
 					'slug'      => 'larger',
