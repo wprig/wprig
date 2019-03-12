@@ -114,14 +114,11 @@ class Component implements Component_Interface {
 		);
 
 		/*
-		 * Optional: Disable custom colors in color palettes.
+		 * Add support custom font sizes.
 		 *
-		 * Uncomment the line below to disable the custom color picker in the editor.
-		 *
-		 * add_theme_support( 'disable-custom-colors' );
+		 * Add the line below to disable the custom color picker in the editor.
+		 * add_theme_support( 'disable-custom-font-sizes' );
 		 */
-
-		// Add support for font sizes.
 		add_theme_support(
 			'editor-font-sizes',
 			array(
@@ -151,13 +148,5 @@ class Component implements Component_Interface {
 				),
 			)
 		);
-
-		/*
-		 * Optional: Disable custom font sizes in block text settings.
-		 *
-		 * Uncomment the line below to disable the custom custom font sizes in the editor.
-		 *
-		 * add_theme_support( 'disable-custom-font-sizes' );
-		 */
 	}
 }
