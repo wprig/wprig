@@ -2,6 +2,9 @@
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 # Post and page content
+	# Imports
+		# Custom media
+		# Custom properties
 	# Alignments
 	# Blocks
 	# Custom block colors
@@ -10,6 +13,12 @@
 		# Captions
 		# Galleries
 --------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# Imports
+--------------------------------------------------------------*/
+@import "_custom-media.css";
+@import "_custom-properties.css";
 
 /*--------------------------------------------------------------
 # Post and page content

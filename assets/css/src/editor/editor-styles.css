@@ -6,8 +6,8 @@
 /*--------------------------------------------------------------
 # Imports
 --------------------------------------------------------------*/
-@import "../custom-media.css";
-@import "../custom-properties.css";
+@import "../_custom-media.css";
+@import "../_custom-properties.css";
 
 /*--------------------------------------------------------------
 # Editor styles
