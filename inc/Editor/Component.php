@@ -137,13 +137,13 @@ class Component implements Component_Interface {
 				array(
 					'name'      => __( 'Large', 'wp-rig' ),
 					'shortName' => __( 'L', 'wp-rig' ),
-					'size'      => 36,
+					'size'      => 31,
 					'slug'      => 'large',
 				),
 				array(
 					'name'      => __( 'Larger', 'wp-rig' ),
 					'shortName' => __( 'XL', 'wp-rig' ),
-					'size'      => 48,
+					'size'      => 39,
 					'slug'      => 'larger',
 				),
 			)
