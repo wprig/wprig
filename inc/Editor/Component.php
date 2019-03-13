@@ -8,8 +8,12 @@
 namespace WP_Rig\WP_Rig\Editor;
 
 use WP_Rig\WP_Rig\Component_Interface;
+use function WP_Rig\WP_Rig\wp_rig;
 use function add_action;
 use function add_theme_support;
+use function wp_enqueue_script;
+use function get_theme_file_uri;
+use function get_theme_file_path;
 
 /**
  * Class for integrating with the block editor.
@@ -32,6 +36,7 @@ class Component implements Component_Interface {
 	 */
 	public function initialize() {
 		add_action( 'after_setup_theme', array( $this, 'action_add_editor_support' ) );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'action_enqueue_block_editor_scripts' ) );
 	}
 
 	/**
@@ -159,5 +164,17 @@ class Component implements Component_Interface {
 		 *
 		 * add_theme_support( 'disable-custom-font-sizes' );
 		 */
+	}
+
+	/**
+	 * Enqueues scripts for the block editor.
+	 */
+	public function action_enqueue_block_editor_scripts() {
+		$handle  = 'wp-rig-editor-filters';
+		$src     = get_theme_file_uri( '/assets/js/editor/editor-filters.min.js' );
+		$version = wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/editor/editor-filters.min.js' ) );
+
+		// Enqueue block editor filters.
+		wp_enqueue_script( $handle, $src, array( 'wp-blocks', 'wp-dom-ready', 'wp-edit-post' ), $version );
 	}
 }
