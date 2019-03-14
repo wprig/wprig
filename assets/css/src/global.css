@@ -129,11 +129,18 @@ i {
 
 blockquote {
 	border-left: 4px solid var(--color-quote-border);
-	margin: 0 1.5em;
+	margin: 0;
 }
 
 .entry-content > blockquote {
 	padding-left: 1em;
+	margin-left: 1.5rem;
+}
+
+@media (--content-query) {
+	.entry-content > blockquote {
+		margin-left: auto;
+	}
 }
 
 blockquote cite {
