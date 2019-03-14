@@ -130,6 +130,9 @@ i {
 blockquote {
 	border-left: 4px solid var(--color-quote-border);
 	margin: 0 1.5em;
+}
+
+.entry-content > blockquote {
 	padding-left: 1em;
 }
 
