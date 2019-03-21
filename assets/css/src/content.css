@@ -194,6 +194,28 @@
 	padding: 0 1em;
 }
 
+.entry-content > .wp-block-quote,
+.entry-content > .wp-block-quote.is-style-large {
+	margin-left: 1.5rem;
+}
+
+@media (--content-query) {
+	.entry-content > .wp-block-quote,
+	.entry-content > .wp-block-quote.is-style-large {
+		margin-left: auto;
+	}
+}
+
+.wp-block-quote:not(.is-large):not(.is-style-large) {
+	border-left-color: var(--color-quote-border);
+}
+
+.wp-block-quote__citation,
+.wp-block-quote cite,
+.wp-block-quote footer {
+	border-left-color: var(--color-quote-citation);
+}
+
 .entry-content ul,
 .entry-content ol {
 	padding-right: 2.5em;
