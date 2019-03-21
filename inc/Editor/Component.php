@@ -46,12 +46,15 @@ class Component implements Component_Interface {
 
 		/**
 		 * Add support for color palettes.
+		 *
 		 * To preserve color behavior across themes, use these naming conventions:
 		 * - Use primary and secondary color for main variations.
 		 * - Use `theme-[color-name]` naming standard for standard colors (red, blue, etc).
 		 * - Use `custom-[color-name]` for non-standard colors.
+		 *
+		 * Add the line below to disable the custom color picker in the editor.
+		 * add_theme_support( 'disable-custom-colors' );
 		 */
-
 		add_theme_support(
 			'editor-color-palette',
 			array(
