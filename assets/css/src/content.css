@@ -593,3 +593,17 @@ object {
 .gallery-caption {
 	font-size: 80%;
 }
+
+/*--------------------------------------------------------------
+### Audio
+--------------------------------------------------------------*/
+
+.entry-content > .mejs-container {
+	max-width: calc(100% - 3rem);
+}
+
+@media (--content-query) {
+	.entry-content > .mejs-container {
+		max-width: var(--content-width);
+	}
+}
