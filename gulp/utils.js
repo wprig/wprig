@@ -147,3 +147,24 @@ export function configValueDefined(configValueLocation) {
 	// If we've made it this far there is a match for the given config value path
 	return true;
 }
+
+/**
+ * Append a base file path to a list of files
+ * @param {string|array} filePaths the file or files to append the base path to
+ * @param {string} basePath the base path to append
+ */
+export function appendBaseToFilePathArray(filePaths, basePath) {
+	if ( ! Array.isArray(filePaths) ) {
+		return `${basePath}/${filePaths}`;
+	}
+
+	let output = [];
+
+	// Loop through all file paths
+	for ( let filePath of filePaths ) {
+		// And push them into output with the base added
+		output.push(`${basePath}/${filePath}`);
+	}
+
+	return output;
+}
