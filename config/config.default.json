@@ -13,7 +13,6 @@
       "https": false
     },
     "styles": {
-      "preserve": true,
       "stage": 3,
       "features": {
         "custom-media-queries": true,

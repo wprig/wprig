@@ -48,11 +48,7 @@ export default function styles(done) {
 					config.dev.styles.stage :
 					3
 				),
-				preserve: (
-					configValueDefined('config.dev.styles.preserve') ?
-					config.dev.styles.preserve :
-					true
-				),
+				preserve: true,
 				features: (
 					configValueDefined('config.dev.styles.features') ?
 					config.dev.styles.features :
