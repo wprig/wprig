@@ -54,7 +54,7 @@ export default function styles(done) {
 					config.dev.styles.stage :
 					3
 				),
-				preserve: true,
+				preserve: isProd ? false : true,
 				features: (
 					configValueDefined('config.dev.styles.features') ?
 					config.dev.styles.features :
