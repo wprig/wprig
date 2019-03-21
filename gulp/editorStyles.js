@@ -25,13 +25,6 @@ export default function editorStyles(done) {
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
 
-	// Check if we need to import from any files for custom media or custom properties
-	const postcssImportFrom = (
-		configValueDefined('config.dev.styles.importFrom') ?
-		appendBaseToFilePathArray(config.dev.styles.importFrom, paths.styles.srcDir) :
-		[]
-	);
-
 	const beforeReplacement = [
 		src( paths.styles.editorSrc, {sourcemaps: !isProd} ),
 		logError('Editor CSS'),
@@ -51,7 +44,11 @@ export default function editorStyles(done) {
 				path: [paths.styles.editorSrcDir]
 			}),
 			postcssPresetEnv({
-				importFrom: postcssImportFrom,
+				importFrom: (
+					configValueDefined('config.dev.styles.importFrom') ?
+					appendBaseToFilePathArray(config.dev.styles.importFrom, paths.styles.srcDir) :
+					[]
+				),
 				stage: (
 					configValueDefined('config.dev.styles.stage') ?
 					config.dev.styles.stage :

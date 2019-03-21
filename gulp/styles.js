@@ -25,16 +25,6 @@ export default function styles(done) {
 	// get a fresh copy of the config
 	const config = getThemeConfig(true);
 
-	// Check if we need to import from any files for custom media or custom properties
-	const postcssImportFrom = (
-		configValueDefined('config.dev.styles.importFrom') ?
-		appendBaseToFilePathArray(config.dev.styles.importFrom, paths.styles.srcDir) :
-		[]
-	);
-
-	// If there are imported files, preserve must be false to avoid undeclared variables
-	const postcssPreserve = !( postcssImportFrom.length > 0 );
-
 	const beforeReplacement = [
 		src( paths.styles.src, {sourcemaps: !isProd} ),
 		logError('CSS'),
@@ -54,13 +44,17 @@ export default function styles(done) {
 				path: [paths.styles.srcDir]
 			}),
 			postcssPresetEnv({
-				importFrom: postcssImportFrom,
+				importFrom: (
+					configValueDefined('config.dev.styles.importFrom') ?
+					appendBaseToFilePathArray(config.dev.styles.importFrom, paths.styles.srcDir) :
+					[]
+				),
 				stage: (
 					configValueDefined('config.dev.styles.stage') ?
 					config.dev.styles.stage :
 					3
 				),
-				preserve: postcssPreserve,
+				preserve: true,
 				features: (
 					configValueDefined('config.dev.styles.features') ?
 					config.dev.styles.features :
