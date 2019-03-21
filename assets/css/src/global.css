@@ -467,6 +467,128 @@ select {
 }
 
 /*--------------------------------------------------------------
+## Basic navigation menus - handles submenu and small screen toggle
+--------------------------------------------------------------*/
+.nav--toggle-small .menu-toggle {
+	display: block;
+	margin: 1.2em auto;
+	padding: 0.6em 1.2em 0.5em;
+	font-family: var(--highlight-font-family);
+	font-size: 80%;
+	text-transform: uppercase;
+	border: 2px solid #000;
+	border-radius: 0;
+	background: transparent;
+}
+
+.nav--toggle-small .menu {
+	display: none;
+}
+
+.nav--toggle-sub .dropdown,
+.nav--toggle-sub .dropdown-toggle {
+	display: none;
+}
+
+@media (--narrow-menu-query) {
+
+	.nav--toggle-small.nav--toggled-on .menu {
+		display: block;
+	}
+}
+
+@media (--wide-menu-query) {
+
+	.nav--toggle-small .menu-toggle {
+		display: none;
+	}
+
+	.nav--toggle-small .menu {
+		display: block;
+	}
+
+	.nav--toggle-sub ul ul {
+		display: none;
+		position: absolute;
+		top: 100%;
+		flex-direction: column;
+		background: #fff;
+		margin-left: 0;
+		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+		z-index: 1;
+	}
+
+	.nav--toggle-sub .dropdown,
+	.nav--toggle-sub .dropdown-toggle {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		width: var(--dropdown-symbol-width);
+		height: var(--dropdown-symbol-width);
+		font-size: inherit;
+		line-height: inherit;
+		margin: 0;
+		padding: 0;
+		border: none;
+		border-radius: 0;
+		transform: translateY(-50%);
+		overflow: visible;
+	}
+
+	.nav--toggle-sub .dropdown-symbol {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 20%;
+		top: 35%;
+		width: 60%;
+		height: 60%;
+		border: solid #000;
+		border-width: 0 2px 2px 0;
+		transform: translateY(-50%) rotate(45deg);
+	}
+
+	.nav--toggle-sub ul ul .dropdown,
+	.nav--toggle-sub ul ul .dropdown-toggle {
+		top: 40%;
+		right: 0.2em;
+	}
+
+	.nav--toggle-sub ul ul .dropdown-symbol {
+		transform: rotate(-45deg);
+	}
+
+	.nav--toggle-sub .dropdown-toggle:hover,
+	.nav--toggle-sub .menu-item--has-toggle:hover .dropdown-toggle {
+		pointer-events: none;
+	}
+
+	/* Need menu-item-has-children for non-JS */
+	.nav--toggle-sub li.menu-item-has-children,
+	.nav--toggle-sub li.menu-item--has-toggle {
+		position: relative;
+		padding-right: var(--dropdown-symbol-width);
+	}
+
+	/*
+	 * If the dropdown toggle is active with JS, then
+	 * we'll take care of showing the submenu with JS.
+	 *
+	 * "focus-within" is an alternative to focus class for
+	 * supporting browsers (all but IE/Edge) for no-JS context
+	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	 */
+	.nav--toggle-sub li:hover > ul,
+	.nav--toggle-sub li.menu-item--toggled-on > ul,
+	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul,
+	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
+		display: block;
+	}
+}
+
+/*--------------------------------------------------------------
 ## Main navigation menu
 --------------------------------------------------------------*/
 .main-navigation {
@@ -478,18 +600,6 @@ select {
 	max-width: var(--content-width);
 	/* stylelint-enable */
 	font-family: var(--highlight-font-family);
-}
-
-.menu-toggle {
-	display: block;
-	margin: 1.2em auto;
-	padding: 0.6em 1.2em 0.5em;
-	font-family: var(--highlight-font-family);
-	font-size: 80%;
-	text-transform: uppercase;
-	border: 2px solid #000;
-	border-radius: 0;
-	background: transparent;
 }
 
 .main-navigation a {
@@ -512,35 +622,11 @@ select {
 	padding: 0;
 }
 
-.main-navigation li {
-	position: relative;
-}
-
 .main-navigation ul ul li {
 	padding-left: 1em;
 }
 
-.main-navigation .dropdown,
-.main-navigation button.dropdown-toggle {
-	display: none;
-}
-
-.main-navigation .menu {
-	display: none;
-}
-
-@media (--narrow-menu-query) {
-
-	.main-navigation.toggled-on .menu {
-		display: block;
-	}
-}
-
 @media (--wide-menu-query) {
-
-	.menu-toggle {
-		display: none;
-	}
 
 	.main-navigation ul li a {
 		padding: 0.4em 0.5em;
@@ -552,17 +638,6 @@ select {
 
 	.main-navigation ul li:first-child {
 		margin-left: 0;
-	}
-
-	.main-navigation ul ul {
-		display: none;
-		position: absolute;
-		top: 100%;
-		flex-direction: column;
-		background: #fff;
-		margin-left: 0;
-		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
-		z-index: 1;
 	}
 
 	.main-navigation ul ul a {
@@ -592,70 +667,7 @@ select {
 		flex-wrap: wrap;
 		justify-content: center;
 	}
-
-	.main-navigation .menu-item-has-children,
-	.main-navigation .page_item_has_children {
-		padding-right: var(--dropdown-symbol-width);
-	}
-
-	.main-navigation .dropdown,
-	.main-navigation button.dropdown-toggle {
-		display: block;
-		background: transparent;
-		position: absolute;
-		right: 0;
-		top: 50%;
-		width: var(--dropdown-symbol-width);
-		height: var(--dropdown-symbol-width);
-		font-size: inherit;
-		line-height: inherit;
-		margin: 0;
-		padding: 0;
-		border: none;
-		border-radius: 0;
-		transform: translateY(-50%);
-		overflow: visible;
-	}
-
-	.main-navigation .dropdown-symbol {
-		display: block;
-		background: transparent;
-		position: absolute;
-		right: 20%;
-		top: 35%;
-		width: 60%;
-		height: 60%;
-		border: solid #000;
-		border-width: 0 2px 2px 0;
-		transform: translateY(-50%) rotate(45deg);
-	}
-
-	.main-navigation ul ul .dropdown,
-	.main-navigation ul ul button.dropdown-toggle {
-		top: 40%;
-		right: 0.2em;
-	}
-
-	.main-navigation ul ul .dropdown-symbol {
-		transform: rotate(-45deg);
-	}
-
-	/*
-	 * If the dropdown toggle is active with JS, then
-	 * we'll take care of showing the submenu with JS.
-	 *
-	 * "focus-within" is an alternative to focus class for
-	 * supporting browsers (all but IE/Edge) for no-JS context
-	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-	 */
-	.main-navigation li:hover > ul,
-	.main-navigation li.toggled-on > ul,
-	.main-navigation:not(.has-dropdown-toggle) li:focus > ul,
-	.main-navigation:not(.has-dropdown-toggle) li:focus-within > ul {
-		display: block;
-	}
 }
-
 
 /*--------------------------------------------------------------
 # Content navigation
