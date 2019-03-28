@@ -147,6 +147,11 @@ i {
 	font-style: italic;
 }
 
+blockquote,
+q {
+	quotes: "" "";
+}
+
 blockquote {
 	border-left: 4px solid var(--color-quote-border);
 	margin: 0;
@@ -238,11 +243,6 @@ body {
 	/* Fallback for when there is no custom background color defined. */
 }
 /* stylelint-enable */
-
-blockquote,
-q {
-	quotes: "" "";
-}
 
 /* stylelint-disable */
 hr {
