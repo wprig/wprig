@@ -33,22 +33,6 @@ class Component implements Component_Interface {
 	}
 
 	/**
-	 * Checks if there are .pot files in the translation directory.
-	 *
-	 * @return bool
-	 */
-	protected function pot_files_exist() {
-		// Scan the translation directory for .pot files.
-		$pot_files = glob(
-			$this->translation_directory .
-			'/*.pot'
-		);
-
-		// Return true if some were found.
-		return ( ! empty( $pot_files ) );
-	}
-
-	/**
 	 * Gets the unique identifier for the theme component.
 	 *
 	 * @return string Component slug.
@@ -61,10 +45,7 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		// Only add textdomain actions if there are .pot files.
-		if ( $this->pot_files_exist() ) {
-			add_action( 'after_setup_theme', array( $this, 'action_load_textdomain' ), 1 );
-		}
+		add_action( 'after_setup_theme', array( $this, 'action_load_textdomain' ), 1 );
 	}
 
 	/**
