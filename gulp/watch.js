@@ -2,7 +2,7 @@
 'use strict';
 
 // External dependencies
-import {watch as gulpWatch, series, src} from 'gulp';
+import {watch as gulpWatch, series, parallel, src} from 'gulp';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 import pump from 'pump';
@@ -15,6 +15,8 @@ import php from './php';
 import sassStyles from './sassStyles';
 import scripts from './scripts';
 import styles from './styles';
+import editorStyles from './editorStyles';
+import {cleanCSS, cleanJS} from './clean';
 
 export function themeConfigChangeAlert(done){
 	log(colors.yellow(`Theme configuration ${colors.bold(paths.config.themeConfig)} has changed, rebuilding everything...`));
@@ -41,14 +43,14 @@ export default function watch() {
 	}
 
 	gulpWatch(paths.config.themeConfig, series(
-		themeConfigChangeAlert, php, scripts, sassStyles, styles, images, reload
+		cleanCSS, cleanJS, parallel(php, images, sassStyles, series( styles, editorStyles ), scripts), reload
 	));
 
 	gulpWatch(paths.styles.sass, series(sassStyles, reload));
 
-	gulpWatch(paths.styles.src, series( styles ) );
+	gulpWatch(paths.styles.src[0], series( styles, editorStyles ) );
 
-	gulpWatch(paths.scripts.src, series(scripts, reload));
+	gulpWatch(paths.scripts.src[0], series(scripts, reload));
 
 	gulpWatch(paths.images.src, series(images, reload));
 }
