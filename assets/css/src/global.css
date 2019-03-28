@@ -4,7 +4,7 @@
 # Imports
    # Custom media
    # Custom properties
-   # Normalize
+   # Reset
 # Accessibility
 # Layout
 # Typography
@@ -21,9 +21,9 @@
 /*--------------------------------------------------------------
 # Imports
 --------------------------------------------------------------*/
-@import "custom-media.css";
-@import "custom-properties.css";
-@import "reset.css";
+@import "_custom-media.css";
+@import "_custom-properties.css";
+@import "_reset.css";
 
 /*--------------------------------------------------------------
 # Accessibility

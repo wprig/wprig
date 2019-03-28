@@ -25,6 +25,10 @@
     "install-codestandards": [
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
     ],
+    "phpcbf-dev": "\"vendor/bin/phpcbf\"",
+    "run-phpcbf": [
+      "@phpcbf-dev"
+    ],
     "phpcs-dev": "\"vendor/bin/phpcs\"",
     "run-phpcs": [
       "@phpcs-dev"

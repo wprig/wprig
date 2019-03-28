@@ -13,21 +13,13 @@
       "https": false
     },
     "styles": {
-      "preserve": true,
-      "customProperties": [
-        "custom-properties.css"
-      ],
-      "customMedia": [
-        "custom-media.css"
-      ],
-      "ignoredSourceFiles": [
-        "reset.css",
-        "custom-properties.css",
-        "custom-media.css"
-      ]
-    },
-    "scripts": {
-      "ignoredSourceFiles": []
+      "stage": 3,
+      "importFrom": [],
+      "features": {
+        "custom-media-queries": true,
+        "custom-properties": true,
+        "nesting-rules": true
+      }
     },
     "debug": {
       "styles": false,

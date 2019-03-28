@@ -2,6 +2,7 @@
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 # Post and page content
+	# Imports
 	# Alignments
 	# Blocks
 	# Custom block colors
@@ -20,6 +21,11 @@
 
 }
 */
+
+/*--------------------------------------------------------------
+# Imports
+--------------------------------------------------------------*/
+@import "_custom-media.css";
 
 .entry {
 	margin-bottom: 1rem;
@@ -604,4 +610,18 @@ object {
 
 .gallery-caption {
 	font-size: 80%;
+}
+
+/*--------------------------------------------------------------
+### Audio
+--------------------------------------------------------------*/
+
+.entry-content > .mejs-container {
+	max-width: calc(100% - 3rem);
+}
+
+@media (--content-query) {
+	.entry-content > .mejs-container {
+		max-width: var(--content-width);
+	}
 }

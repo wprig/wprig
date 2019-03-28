@@ -38,6 +38,9 @@ class Component implements Component_Interface {
 	 * Adds support for various editor features.
 	 */
 	public function action_add_editor_support() {
+		// Add support for editor styles.
+		add_theme_support( 'editor-styles' );
+
 		// Add support for default block styles.
 		add_theme_support( 'wp-block-styles' );
 
