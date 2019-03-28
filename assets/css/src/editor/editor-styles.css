@@ -4,16 +4,29 @@
  */
 
 /*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Imports
+   # Custom media
+   # Custom properties
+# Typography
+# Elements
+# Links
+# Forms
+# Blocks
+
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
 # Imports
 --------------------------------------------------------------*/
 @import "../_custom-media.css";
 @import "../_custom-properties.css";
 
 /*--------------------------------------------------------------
-# Editor styles
+# Typography
 --------------------------------------------------------------*/
-
-.block-editor-page .editor-styles-wrapper {
+body  {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
@@ -22,170 +35,99 @@
 	line-height: var(--global-font-line-height);
 }
 
-.editor-post-title__block .editor-post-title__input,
-.editor-styles-wrapper h1,
-.editor-styles-wrapper h2,
-.editor-styles-wrapper h3,
-.editor-styles-wrapper h4,
-.editor-styles-wrapper h5,
-.editor-styles-wrapper h6 {
+.mce-content-body,
+p {
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.editor-post-title__input,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-family: var(--highlight-font-family);
 	color: #32373c;
 	clear: both;
 }
 
-.editor-post-title .editor-post-title__input {
+.editor-post-title__input {
 	font-size: 2rem;
 	line-height: 1.4;
 }
 
-.editor-styles-wrapper .editor-writing-flow p {
-	/* stylelint-disable */
-	font-size: var(--font-size-regular);
-	/* stylelint-enable */
+/*--------------------------------------------------------------
+# Elements
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# Links
+--------------------------------------------------------------*/
+
+/* stylelint-disable */
+a {
+	color: var(--color-link);
+}
+/* stylelint-enable */
+
+a:visited {
+	color: var(--color-link-visited);
 }
 
-.editor-styles-wrapper .wp-block-cover .wp-block-cover-text {
+a:hover,
+a:focus,
+a:active {
+	color: var(--color-link-active);
+}
+
+a:focus {
+	outline: thin dotted;
+}
+
+a:hover,
+a:active {
+	outline: 0;
+}
+
+/*--------------------------------------------------------------
+# Forms
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# Blocks
+--------------------------------------------------------------*/
+
+/* Main column width */
+.wp-block {
+	max-width: calc(var(--content-width) + 30px);
+}
+
+/* Width of "wide" blocks */
+.wp-block[data-align="wide"] {
+	max-width: calc(50% + var(--content-width) / 2 + 76px);
+}
+
+/* Width of "full-wide" blocks */
+.wp-block[data-align="full"] {
+	max-width: none;
+}
+
+.wp-block-cover .wp-block-cover-text {
 	color: #fff;
 	font-size: 2em;
 	line-height: 1.25;
 }
 
-.editor-styles-wrapper .wp-block-latest-comments,
-.editor-styles-wrapper .wp-block-latest-posts {
+.wp-block-latest-comments,
+.wp-block-latest-posts {
 	padding-top: 1.5em;
 	padding-bottom: 1.5em;
 	border: 1px solid hsl(0, 0%, 80%);
 }
 
-.editor-styles-wrapper .wp-block-latest-comments {
+.wp-block-latest-comments {
 	padding-right: 1.5em;
 	padding-left: 1.5em;
-}
-
-/* Visualize editor color palette (defined in functions.php). */
-
-.has-theme-primary-color,
-.has-theme-primary-color a {
-	color: var(--color-theme-primary);
-}
-
-.has-theme-primary-background-color {
-	background-color: var(--color-theme-primary);
-}
-
-.has-theme-secondary-color,
-.has-theme-secondary-color a {
-	color: var(--color-theme-secondary);
-}
-
-.has-theme-secondary-background-color {
-	background-color: var(--color-theme-secondary);
-}
-
-.has-theme-red-color,
-.has-theme-red-color a {
-	color: var(--color-theme-red);
-}
-
-.has-theme-red-background-color {
-	background-color: var(--color-theme-red);
-}
-
-.has-theme-green-color,
-.has-theme-green-color a {
-	color: var(--color-theme-green);
-}
-
-.has-theme-green-background-color {
-	background-color: var(--color-theme-green);
-}
-
-.has-theme-blue-color,
-.has-theme-blue-color a {
-	color: var(--color-theme-blue);
-}
-
-.has-theme-blue-background-color {
-	background-color: var(--color-theme-blue);
-}
-
-.has-theme-yellow-color,
-.has-theme-yellow-color a {
-	color: var(--color-theme-yellow);
-}
-
-.has-theme-yellow-background-color {
-	background-color: var(--color-theme-yellow);
-}
-
-.has-theme-black-color,
-.has-theme-black-color a {
-	color: var(--color-theme-black);
-}
-
-.has-theme-black-background-color {
-	background-color: var(--color-theme-black);
-}
-
-.has-theme-grey-color,
-.has-theme-grey-color a {
-	color: var(--color-theme-grey);
-}
-
-.has-theme-grey-background-color {
-	background-color: var(--color-theme-grey);
-}
-
-.has-theme-white-color,
-.has-theme-white-color a {
-	color: var(--color-theme-white);
-}
-
-.has-theme-white-background-color {
-	background-color: var(--color-theme-white);
-}
-
-.has-custom-daylight-color,
-.has-custom-daylight-color a {
-	color: var(--color-custom-daylight);
-}
-
-.has-custom-daylight-background-color {
-	background-color: var(--color-custom-daylight);
-}
-
-.has-custom-sun-color,
-.has-custom-sun-color a {
-	color: var(--color-custom-sun);
-}
-
-.has-custom-sun-background-color {
-	background-color: var(--color-custom-sun);
-}
-
-/* Visualize editor font sizes (defined in functions.php). */
-
-.has-small-font-size {
-	/* stylelint-disable */
-	font-size: var(--font-size-small);
-	/* stylelint-enable */
-}
-
-.has-regular-font-size {
-	/* stylelint-disable */
-	font-size: var(--font-size-regular);
-	/* stylelint-enable */
-}
-
-.has-large-font-size {
-	/* stylelint-disable */
-	font-size: var(--font-size-large);
-	/* stylelint-enable */
-}
-
-.has-larger-font-size {
-	/* stylelint-disable */
-	font-size: var(--font-size-larger);
-	/* stylelint-enable */
 }
