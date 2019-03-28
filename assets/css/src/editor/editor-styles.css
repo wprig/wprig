@@ -13,7 +13,6 @@
    # Elements
    # Links
 # Adjustments for the editor
-# Blocks
 
 --------------------------------------------------------------*/
 
@@ -25,6 +24,7 @@
 @import "../_typography.css";
 @import "../_elements.css";
 @import "../_links.css";
+@import "../_blocks.css";
 
 /*--------------------------------------------------------------
 # Adjustments for the editor
@@ -52,23 +52,21 @@
 	max-width: none;
 }
 
-/*--------------------------------------------------------------
-# Blocks
---------------------------------------------------------------*/
 .wp-block-cover .wp-block-cover-text {
 	color: #fff;
 	font-size: 2em;
 	line-height: 1.25;
 }
 
-.wp-block-latest-comments,
-.wp-block-latest-posts {
-	padding-top: 1.5em;
-	padding-bottom: 1.5em;
-	border: 1px solid hsl(0, 0%, 80%);
+.wp-block-archives,
+.wp-block-categories__list,
+.wp-block-latest-posts,
+.wp-block-latest-comments {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .wp-block-latest-comments {
-	padding-right: 1.5em;
-	padding-left: 1.5em;
+	padding-left: 2.5em;
+	padding-right: 2.5em;
 }
