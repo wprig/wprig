@@ -74,7 +74,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function initialize() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_styles' ) );
 		add_action( 'wp_head', array( $this, 'action_preload_styles' ) );
-		add_action( 'enqueue_block_editor_assets', array( $this, 'action_enqueue_block_editor_styles' ) );
+		add_action( 'after_setup_theme', array( $this, 'action_add_editor_styles' ) );
 		add_filter( 'wp_resource_hints', array( $this, 'filter_resource_hints' ), 10, 2 );
 	}
 
@@ -174,22 +174,18 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
-	 * Enqueues WordPress theme styles for the block editor.
+	 * Enqueues WordPress theme styles for the editor.
 	 */
-	public function action_enqueue_block_editor_styles() {
+	public function action_add_editor_styles() {
 
 		// Enqueue Google Fonts.
 		$google_fonts_url = $this->get_google_fonts_url();
 		if ( ! empty( $google_fonts_url ) ) {
-			wp_enqueue_style( 'wp-rig-fonts', $google_fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			add_editor_style( $this->get_google_fonts_url() );
 		}
 
-		$handle  = 'wp-rig-editor-styles';
-		$src     = get_theme_file_uri( '/assets/css/editor/editor-styles.min.css' );
-		$version = wp_rig()->get_asset_version( get_theme_file_path( '/assets/css/editor/editor-styles.min.css' ) );
-
 		// Enqueue block editor stylesheet.
-		wp_enqueue_style( $handle, $src, array(), $version );
+		add_editor_style( 'assets/css/editor/editor-styles.min.css' );
 	}
 
 	/**

@@ -12,6 +12,15 @@
       "bypassPort": "8181",
       "https": false
     },
+    "styles": {
+      "stage": 3,
+      "importFrom": [],
+      "features": {
+        "custom-media-queries": true,
+        "custom-properties": true,
+        "nesting-rules": true
+      }
+    },
     "debug": {
       "styles": false,
       "scripts": false,

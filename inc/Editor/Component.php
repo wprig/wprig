@@ -38,6 +38,9 @@ class Component implements Component_Interface {
 	 * Adds support for various editor features.
 	 */
 	public function action_add_editor_support() {
+		// Add support for editor styles.
+		add_theme_support( 'editor-styles' );
+
 		// Add support for default block styles.
 		add_theme_support( 'wp-block-styles' );
 
@@ -46,12 +49,15 @@ class Component implements Component_Interface {
 
 		/**
 		 * Add support for color palettes.
+		 *
 		 * To preserve color behavior across themes, use these naming conventions:
 		 * - Use primary and secondary color for main variations.
 		 * - Use `theme-[color-name]` naming standard for standard colors (red, blue, etc).
 		 * - Use `custom-[color-name]` for non-standard colors.
+		 *
+		 * Add the line below to disable the custom color picker in the editor.
+		 * add_theme_support( 'disable-custom-colors' );
 		 */
-
 		add_theme_support(
 			'editor-color-palette',
 			array(
@@ -114,50 +120,39 @@ class Component implements Component_Interface {
 		);
 
 		/*
-		 * Optional: Disable custom colors in color palettes.
+		 * Add support custom font sizes.
 		 *
-		 * Uncomment the line below to disable the custom color picker in the editor.
-		 *
-		 * add_theme_support( 'disable-custom-colors' );
+		 * Add the line below to disable the custom color picker in the editor.
+		 * add_theme_support( 'disable-custom-font-sizes' );
 		 */
-
-		// Add support for font sizes.
 		add_theme_support(
 			'editor-font-sizes',
 			array(
 				array(
-					'name'      => __( 'small', 'wp-rig' ),
+					'name'      => __( 'Small', 'wp-rig' ),
 					'shortName' => __( 'S', 'wp-rig' ),
 					'size'      => 16,
 					'slug'      => 'small',
 				),
 				array(
-					'name'      => __( 'regular', 'wp-rig' ),
+					'name'      => __( 'Medium', 'wp-rig' ),
 					'shortName' => __( 'M', 'wp-rig' ),
-					'size'      => 20,
-					'slug'      => 'regular',
+					'size'      => 25,
+					'slug'      => 'medium',
 				),
 				array(
-					'name'      => __( 'large', 'wp-rig' ),
+					'name'      => __( 'Large', 'wp-rig' ),
 					'shortName' => __( 'L', 'wp-rig' ),
-					'size'      => 36,
+					'size'      => 31,
 					'slug'      => 'large',
 				),
 				array(
-					'name'      => __( 'larger', 'wp-rig' ),
+					'name'      => __( 'Larger', 'wp-rig' ),
 					'shortName' => __( 'XL', 'wp-rig' ),
-					'size'      => 48,
+					'size'      => 39,
 					'slug'      => 'larger',
 				),
 			)
 		);
-
-		/*
-		 * Optional: Disable custom font sizes in block text settings.
-		 *
-		 * Uncomment the line below to disable the custom custom font sizes in the editor.
-		 *
-		 * add_theme_support( 'disable-custom-font-sizes' );
-		 */
 	}
 }
