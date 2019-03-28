@@ -29,6 +29,16 @@
 /*--------------------------------------------------------------
 # Adjustments for the editor
 --------------------------------------------------------------*/
+button,
+select,
+option {
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	border-radius: inherit;
+}
+
 .editor-post-title__input {
 	font-family: var(--highlight-font-family);
 	font-size: 2.5rem;
