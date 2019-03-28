@@ -311,11 +311,12 @@ textarea {
  * 1. Correct the inability to style clickable types in iOS and Safari.
  * 2. Change font properties to `inherit` in Safari.
  */
-
+/* stylelint-disable */
 ::-webkit-file-upload-button {
 	-webkit-appearance: button; /* 1 */
 	font: inherit; /* 2 */
 }
+/* stylelint-enable */
 
 /* Interactive
    ========================================================================== */
