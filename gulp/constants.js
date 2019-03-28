@@ -12,8 +12,11 @@ export const rootPath = process.env.INIT_CWD;
 // Dev or production
 export const isProd = ( process.env.NODE_ENV === 'production' );
 
+// Define the config path
+export const configPath = `${rootPath}/config/themeConfig.js`;
+
 // get a fresh copy of the config
-export const config = importFresh(`${rootPath}/config/themeConfig.js`);
+export const config = importFresh(configPath);
 
 // directory for the production theme
 export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}`);
@@ -65,18 +68,32 @@ let paths = {
 		dest: `${rootPath}/`
 	},
 	styles: {
+		editorSrc: [
+			`${assetsDir}/css/src/editor/**/*.css`,
+			// Ignore partial files.
+			`!${assetsDir}/css/src/**/_*.css`,
+		],
+		editorSrcDir: `${assetsDir}/css/src/editor`,
+		editorDest: `${assetsDir}/css/editor`,
 		src: [
 			`${assetsDir}/css/src/**/*.css`,
-			`!${assetsDir}/css/src/custom-media.css`,
-			`!${assetsDir}/css/src/custom-properties.css`,
-			`!${assetsDir}/css/src/reset.css`,
+			// Ignore partial files.
+			`!${assetsDir}/css/src/**/_*.css`,
+			// Ignore editor source css.
+			`!${assetsDir}/css/src/editor/**/*.css`
 		],
+		srcDir: `${assetsDir}/css/src`,
 		sass: `${assetsDir}/css/src/**/*.scss`,
-		dest: `${assetsDir}/css/`
+		dest: `${assetsDir}/css`
 	},
 	scripts: {
-		src: `${assetsDir}/js/src/**/*.js`,
-		dest: `${assetsDir}/js/`
+		src: [
+			`${assetsDir}/js/src/**/*.js`,
+			// Ignore partial files.
+			`!${assetsDir}/js/src/**/_*.js`,
+		],
+		srcDir: `${assetsDir}/jss/src`,
+		dest: `${assetsDir}/js`
 	},
 	images: {
 		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,

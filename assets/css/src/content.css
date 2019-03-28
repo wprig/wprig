@@ -2,6 +2,7 @@
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 # Post and page content
+	# Imports
 	# Alignments
 	# Blocks
 	# Custom block colors
@@ -21,6 +22,11 @@
 }
 */
 
+/*--------------------------------------------------------------
+# Imports
+--------------------------------------------------------------*/
+@import "_custom-media.css";
+
 .entry {
 	margin-bottom: 1rem;
 }
@@ -29,6 +35,10 @@
 .entry-footer {
 	font-family: var(--highlight-font-family);
 	font-size: 80%;
+}
+
+.entry-meta {
+	margin: 1em 0;
 }
 
 /* Hides the update date and time. */
@@ -188,6 +198,28 @@
 .wp-block-quote.is-style-large {
 	margin: 1.5em auto;
 	padding: 0 1em;
+}
+
+.entry-content > .wp-block-quote,
+.entry-content > .wp-block-quote.is-style-large {
+	margin-left: 1.5rem;
+}
+
+@media (--content-query) {
+	.entry-content > .wp-block-quote,
+	.entry-content > .wp-block-quote.is-style-large {
+		margin-left: auto;
+	}
+}
+
+.wp-block-quote:not(.is-large):not(.is-style-large) {
+	border-left-color: var(--color-quote-border);
+}
+
+.wp-block-quote__citation,
+.wp-block-quote cite,
+.wp-block-quote footer {
+	border-left-color: var(--color-quote-citation);
 }
 
 .entry-content ul,
@@ -566,4 +598,18 @@ object {
 
 .gallery-caption {
 	font-size: 80%;
+}
+
+/*--------------------------------------------------------------
+### Audio
+--------------------------------------------------------------*/
+
+.entry-content > .mejs-container {
+	max-width: calc(100% - 3rem);
+}
+
+@media (--content-query) {
+	.entry-content > .mejs-container {
+		max-width: var(--content-width);
+	}
 }

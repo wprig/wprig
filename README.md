@@ -40,7 +40,7 @@ WP Rig requires the following dependencies. Full installation instructions are p
 2. Configure theme settings, including the theme slug and name.
     - View `./config/config.default.json` for the default settings.
     - Place custom theme settings in `./config/config.json` to override default settings.
-3. In command line, run `npm install` to install necessary node and Composer dependencies.
+3. In command line, run `npm run rig-init` to install necessary node and Composer dependencies.
 4. In command line, run `npm run dev` to process source files, build the development theme, and watch files for subsequent changes.
 	- `npm run build` can be used to process the source files and build the development theme without watching files afterwards.
 5. In WordPress admin, activate the WP Rig development theme.

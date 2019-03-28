@@ -23,6 +23,7 @@
     "browser-sync": "^2.26.3",
     "create-cert": "^1.0.6",
     "deepmerge": "^3.2.0",
+    "del": "^4.0.0",
     "eslint": "^5.14.1",
     "eslint-config-gulp": "^3.0.1",
     "eslint-config-standard": "^12.0.0",
@@ -86,8 +87,9 @@
     "build": "gulp buildDev",
     "bundle": "NODE_ENV=production gulp bundleTheme",
     "dev": "gulp",
+    "gulp": "gulp",
     "generateCert": "gulp generateCert",
-    "install": "composer install",
+    "rig-init": "npm install && composer install",
     "translate": "gulp translate"
   }
 }

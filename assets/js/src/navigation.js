@@ -5,29 +5,42 @@
  * navigation support for dropdown menus.
  */
 
-const SITENAV = document.querySelector( '.main-navigation' ),
-	KEYMAP = {
+const KEYMAP = {
 		TAB: 9
 	};
 
 // Initiate the menus when the DOM loads.
 document.addEventListener( 'DOMContentLoaded', function() {
-	initMainNavigation();
-	initMenuToggle();
+	initNavToggleSubmenus();
+	initNavToggleSmall();
 });
 
 /**
- * Initiate the main navigation script.
+ * Initiate the script to process all
+ * navigation menus with submenu toggle enabled.
  */
-function initMainNavigation() {
+function initNavToggleSubmenus() {
 
-	// No point if no site nav.
-	if ( ! SITENAV ) {
+	const navTOGGLE = document.querySelectorAll( '.nav--toggle-sub' );
+
+	// No point if no navs.
+	if ( ! navTOGGLE.length ) {
 		return;
 	}
 
+	navTOGGLE.forEach( function( nav ) {
+		initEachNavToggleSubmenu( nav );
+	});
+}
+
+/**
+ * Initiate the script to process submenu
+ * navigation toggle for a specific navigation menu.
+ */
+function initEachNavToggleSubmenu( nav ) {
+
 	// Get the submenus.
-	const SUBMENUS = SITENAV.querySelectorAll( '.menu ul' );
+	const SUBMENUS = nav.querySelectorAll( '.menu ul' );
 
 	// No point if no submenus.
 	if ( ! SUBMENUS.length ) {
@@ -78,7 +91,7 @@ function initMainNavigation() {
 
 		// When we focus on a menu link, make sure all siblings are closed.
 		parentMenuItem.querySelector( 'a' ).addEventListener( 'focus', function( event ) {
-			this.parentNode.parentNode.querySelectorAll( 'li.toggled-on' ).forEach( function( item ) {
+			this.parentNode.parentNode.querySelectorAll( 'li.menu-item--toggled-on' ).forEach( function( item ) {
 				toggleSubMenu( item, false );
 			});
 		});
@@ -105,34 +118,48 @@ function initMainNavigation() {
 				}
 			}
 		});
+
+		submenu.parentNode.classList.add( 'menu-item--has-toggle' );
+
 	});
-
-	SITENAV.classList.add( 'has-dropdown-toggle' );
-
 }
 
 /**
- * Initiate the mobile menu toggle button.
+ * Initiate the script to process all
+ * navigation menus with small toggle enabled.
  */
-function initMenuToggle() {
+function initNavToggleSmall() {
 
-	// No point if no site nav.
-	if ( ! SITENAV ) {
+	const navTOGGLE = document.querySelectorAll( '.nav--toggle-small' );
+
+	// No point if no navs.
+	if ( ! navTOGGLE.length ) {
 		return;
 	}
 
-	const MENUTOGGLE = SITENAV.querySelector( '.menu-toggle' );
+	navTOGGLE.forEach( function( nav ) {
+		initEachNavToggleSmall( nav );
+	});
+}
+
+/**
+ * Initiate the script to process small
+ * navigation toggle for a specific navigation menu.
+ */
+function initEachNavToggleSmall( nav ) {
+
+	const menuTOGGLE = nav.querySelector( '.menu-toggle' );
 
 	// Return early if MENUTOGGLE is missing.
-	if ( ! MENUTOGGLE ) {
+	if ( ! menuTOGGLE ) {
 		return;
 	}
 
 	// Add an initial values for the attribute.
-	MENUTOGGLE.setAttribute( 'aria-expanded', 'false' );
+	menuTOGGLE.setAttribute( 'aria-expanded', 'false' );
 
-	MENUTOGGLE.addEventListener( 'click', function() {
-		SITENAV.classList.toggle( 'toggled-on' );
+	menuTOGGLE.addEventListener( 'click', function() {
+		nav.classList.toggle( 'nav--toggled-on' );
 		this.setAttribute( 'aria-expanded', 'false' === this.getAttribute( 'aria-expanded' ) ? 'true' : 'false' );
 	}, false );
 }
@@ -143,7 +170,7 @@ function initMenuToggle() {
 function toggleSubMenu( parentMenuItem, forceToggle ) {
 	const toggleButton = parentMenuItem.querySelector( '.dropdown-toggle' ),
 		subMenu = parentMenuItem.querySelector( 'ul' );
-	var parentMenuItemToggled = parentMenuItem.classList.contains( 'toggled-on' );
+	var parentMenuItemToggled = parentMenuItem.classList.contains( 'menu-item--toggled-on' );
 
 	// Will be true if we want to force the toggle on, false if force toggle close.
 	if ( undefined !== forceToggle && 'boolean' == ( typeof forceToggle ) ) {
@@ -161,24 +188,24 @@ function toggleSubMenu( parentMenuItem, forceToggle ) {
 	if ( parentMenuItemToggled ) {
 
 		// Toggle "off" the submenu.
-		parentMenuItem.classList.remove( 'toggled-on' );
+		parentMenuItem.classList.remove( 'menu-item--toggled-on' );
 		subMenu.classList.remove( 'toggle-show' );
 		toggleButton.setAttribute( 'aria-label', wpRigScreenReaderText.expand );
 
 		// Make sure all children are closed.
-		parentMenuItem.querySelectorAll( '.toggled-on' ).forEach( function( item ) {
+		parentMenuItem.querySelectorAll( '.menu-item--toggled-on' ).forEach( function( item ) {
 			toggleSubMenu( item, false );
         });
 
 	} else {
 
 		// Make sure siblings are closed.
-		parentMenuItem.parentNode.querySelectorAll( 'li.toggled-on' ).forEach( function( item ) {
+		parentMenuItem.parentNode.querySelectorAll( 'li.menu-item--toggled-on' ).forEach( function( item ) {
 			toggleSubMenu( item, false );
 		});
 
 		// Toggle "on" the submenu.
-		parentMenuItem.classList.add( 'toggled-on' );
+		parentMenuItem.classList.add( 'menu-item--toggled-on' );
 		subMenu.classList.add( 'toggle-show' );
 		toggleButton.setAttribute( 'aria-label', wpRigScreenReaderText.collapse );
 
