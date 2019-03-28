@@ -17,7 +17,7 @@ export default function scripts(done) {
 	const config = getThemeConfig(true);
 
 	const beforeReplacement = [
-		src(paths.scripts.src, {sourcemaps: !isProd}),
+		src(paths.scripts.srcWithIgnored, {sourcemaps: !isProd}),
 		logError('JavaScript'),
 		gulpPlugins.newer({
 			dest: paths.scripts.dest,

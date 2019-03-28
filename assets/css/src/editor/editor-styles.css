@@ -2,6 +2,17 @@
  * Styles for the WordPress post/page editor.
  * Ensures a visual match between back- and front-end.
  */
+
+/*--------------------------------------------------------------
+# Imports
+--------------------------------------------------------------*/
+@import "../custom-media.css";
+@import "../custom-properties.css";
+
+/*--------------------------------------------------------------
+# Editor styles
+--------------------------------------------------------------*/
+
 .block-editor-page .editor-styles-wrapper {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
@@ -26,6 +37,12 @@
 .editor-post-title .editor-post-title__input {
 	font-size: 2rem;
 	line-height: 1.4;
+}
+
+.editor-styles-wrapper .editor-writing-flow p {
+	/* stylelint-disable */
+	font-size: var(--font-size-regular);
+	/* stylelint-enable */
 }
 
 .editor-styles-wrapper .wp-block-cover .wp-block-cover-text {
