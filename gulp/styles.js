@@ -6,6 +6,7 @@ import {src, dest} from 'gulp';
 import postcssPresetEnv from 'postcss-preset-env';
 import AtImport from 'postcss-import';
 import pump from 'pump';
+import { pipeline } from 'mississippi';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
@@ -18,15 +19,11 @@ import {
 } from './utils';
 import {server} from './browserSync';
 
-/**
-* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
-*/
-export default function styles(done) {
-	// get a fresh copy of the config
-	const config = getThemeConfig(true);
+export function beforeReplacementStream() {
+	// Changed to not get a fresh copy of config so modifications can be tested
+	const config = getThemeConfig();
 
-	const beforeReplacement = [
-		src( paths.styles.src, {sourcemaps: !isProd} ),
+	return pipeline.obj([
 		logError('CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
@@ -65,10 +62,15 @@ export default function styles(done) {
 					}
 				)
 			})
-		]),
-	];
+		])
+	]);
+}
 
-	const afterReplacement = [
+export function afterReplacementStream() {
+	// Changed to not get a fresh copy of config so modifications can be tested
+	const config = getThemeConfig();
+
+	return pipeline.obj([
 		gulpPlugins.stylelint({
 			failAfterError: false,
 			fix: true,
@@ -87,20 +89,23 @@ export default function styles(done) {
 			suffix: '.min'
 		}),
 		server.stream({match: "**/*.css"}),
-		dest(paths.styles.dest, {sourcemaps: !isProd}),
-	];
+	]);
+}
 
-	pump(
-		[].concat(
-			beforeReplacement,
-			// Only do string replacements when building for production
-			gulpPlugins.if(
-				isProd,
-				getStringReplacementTasks(),
-				[]
-			),
-			afterReplacement
+/**
+* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
+*/
+export default function styles(done) {
+	pump([
+		src( paths.styles.src, {sourcemaps: !isProd} ),
+		beforeReplacementStream(),
+		// Only do string replacements when building for production
+		gulpPlugins.if(
+			isProd,
+			getStringReplacementTasks(),
+			// The array was removed because it isn't a valid stream but we can rely on gulp-if's noopStream
 		),
-		done
-	);
+		afterReplacementStream(),
+		dest(paths.styles.dest, {sourcemaps: !isProd}),
+	], done);
 }
