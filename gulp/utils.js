@@ -13,8 +13,7 @@ import fs from 'fs';
 import {
 	gulpPlugins,
 	nameFieldDefaults,
-	prodThemePath,
-	configPath
+	prodThemePath
 } from './constants';
 
 /**
@@ -24,7 +23,9 @@ import {
  * @return {object} Theme configuration data.
  */
 export function getThemeConfig( uncached=false ) {
+
 	let config;
+	const configPath =`${process.env.INIT_CWD}/config/themeConfig.js`;
 
 	if ( uncached ) {
 		config = importFresh(configPath);

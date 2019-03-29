@@ -7,12 +7,14 @@ import pump from 'pump';
 import path from 'path';
 
 // Internal dependencies
-import {prodThemePath, gulpPlugins, config} from './constants';
+import {prodThemePath, gulpPlugins} from './constants';
+import {getThemeConfig} from './utils';
 
 /**
  * Create the zip file
  */
 export default function prodFinish(done) {
+    const config = getThemeConfig();
 
     // Bail if the compress option is false
     if ( ! config.export.compress ) {

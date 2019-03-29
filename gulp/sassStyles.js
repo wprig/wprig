@@ -13,8 +13,7 @@ import {getThemeConfig, getStringReplacementTasks, logError} from './utils';
  * Sass, if that's being used.
  */
 export default function sassStyles(done) {
-    // get a fresh copy of the config
-   const config = getThemeConfig(true);
+    const config = getThemeConfig();
 
     const beforeReplacement = [
         src(paths.styles.sass, { sourcemaps: true }),
