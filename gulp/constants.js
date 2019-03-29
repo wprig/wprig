@@ -6,8 +6,9 @@ export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
 import importFresh from 'import-fresh';
 
-// Root path is where npm run commands happen
-export const rootPath = process.env.INIT_CWD;
+// Root path is where npm run commands happen - fallback to process.cwd() for running tests
+// TODO: If there are `cwd` issues with gulp, please file issues so INIT_CWD doesn't need to be used
+export const rootPath = process.env.INIT_CWD || process.cwd();
 
 // Dev or production
 export const isProd = ( process.env.NODE_ENV === 'production' );
