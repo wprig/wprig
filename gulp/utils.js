@@ -25,7 +25,7 @@ import {
 export function getThemeConfig( uncached=false ) {
 
 	let config;
-	const configPath =`${process.env.INIT_CWD}/config/themeConfig.js`;
+	const configPath =`${process.cwd()}/config/themeConfig.js`;
 
 	if ( uncached ) {
 		config = importFresh(configPath);

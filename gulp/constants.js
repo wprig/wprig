@@ -9,7 +9,7 @@ import path from 'path';
 import {getThemeConfig} from './utils';
 
 // Root path is where npm run commands happen
-export const rootPath = process.env.INIT_CWD;
+export const rootPath = process.cwd();
 
 // Dev or production
 export const isProd = ( process.env.NODE_ENV === 'production' );
