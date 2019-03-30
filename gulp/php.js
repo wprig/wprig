@@ -6,13 +6,14 @@ import pump from 'pump';
 import {src, dest} from 'gulp';
 
 // Internal dependencies
-import {paths, PHPCSOptions, gulpPlugins, isProd, config} from './constants';
-import {getStringReplacementTasks} from './utils';
+import {paths, PHPCSOptions, gulpPlugins, isProd} from './constants';
+import {getStringReplacementTasks, getThemeConfig} from './utils';
 
 /**
  * PHP via PHP Code Sniffer.
  */
 export default function php(done) {
+	const config = getThemeConfig();
 
 	const beforeReplacement = [
 		src(paths.php.src),

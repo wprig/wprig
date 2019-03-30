@@ -22,8 +22,7 @@ import {server} from './browserSync';
 * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
 */
 export default function styles(done) {
-	// get a fresh copy of the config
-	const config = getThemeConfig(true);
+	const config = getThemeConfig();
 
 	const beforeReplacement = [
 		src( paths.styles.src, {sourcemaps: !isProd} ),
