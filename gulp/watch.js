@@ -2,7 +2,7 @@
 'use strict';
 
 // External dependencies
-import {watch as gulpWatch, series, parallel, src} from 'gulp';
+import {watch as gulpWatch, series, src} from 'gulp';
 import pump from 'pump';
 
 // Internal dependencies
