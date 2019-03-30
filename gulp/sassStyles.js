@@ -17,11 +17,11 @@ export default function sassStyles(done) {
    const config = getThemeConfig(true);
 
     const beforeReplacement = [
-        src(paths.styles.sass, { sourcemaps: true }),
+        src(paths.styles.sass, {sourcemaps: !isProd}),
         logError('sass'),
         gulpPlugins.if(
             config.dev.debug.styles, 
-            gulpPlugins.sass({outputStyle: 'nested'}),
+            gulpPlugins.sass({outputStyle: 'expanded'}),
             gulpPlugins.sass({outputStyle: 'compressed'})
         ),
         gulpPlugins.tabify(2, true),
@@ -31,7 +31,7 @@ export default function sassStyles(done) {
     ];
 
     const afterReplacement = [
-		dest(paths.styles.dest, {sourcemaps: true}),
+		dest(paths.styles.dest, {sourcemaps: !isProd}),
 	];
 
     return pump(
