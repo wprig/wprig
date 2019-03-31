@@ -65,8 +65,8 @@ export function getThemeConfig( uncached=false ) {
  * @return {array} List of tasks.
  */
 export function getStringReplacementTasks() {
-	// Get a fresh copy of the config
-	const config = getThemeConfig(true);
+	// Get a copy of the config
+	const config = getThemeConfig(isProd);
 
 	return Object.keys( nameFieldDefaults ).map( nameField => {
 		return gulpPlugins.stringReplace(
@@ -122,7 +122,7 @@ export function configValueDefined(configValueLocation) {
 	}
 
 	// Get a copy of the config
-	let config = getThemeConfig(true);
+	let config = getThemeConfig(isProd);
 
 	// Turn the value location given into an array
 	let configValueLocationArray = configValueLocation.split('.');
