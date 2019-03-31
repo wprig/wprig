@@ -7,6 +7,8 @@ import postcssPresetEnv from 'postcss-preset-env';
 import AtImport from 'postcss-import';
 import pump from 'pump';
 import cssnano from 'cssnano';
+import stylelint from 'stylelint';
+import reporter from 'postcss-reporter';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
@@ -26,6 +28,7 @@ export default function editorStyles(done) {
 	const config = getThemeConfig();
 
 	const postcssPlugins = [
+		stylelint(),
 		AtImport({
 			path: [paths.styles.srcDir]
 		}),
@@ -60,6 +63,11 @@ export default function editorStyles(done) {
 		postcssPlugins.push(cssnano())
 	}
 
+	// Report messages from other postcss plugins
+	postcssPlugins.push(
+		reporter({ clearReportedMessages: true })
+	);
+
 	const beforeReplacement = [
 		src( paths.styles.editorSrc, {sourcemaps: !isProd} ),
 		logError('Editor CSS'),
@@ -74,16 +82,6 @@ export default function editorStyles(done) {
 		}),
 		// Log all problems that were found.
 		gulpPlugins.phpcs.reporter('log'),
-		gulpPlugins.stylelint({
-			failAfterError: false,
-			fix: true,
-			reporters: [
-				{
-					formatter: 'string',
-					console: true
-				}
-			]
-		}),
 	];
 
 	const afterReplacement = [
