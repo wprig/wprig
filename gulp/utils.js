@@ -13,7 +13,8 @@ import fs from 'fs';
 import {
 	gulpPlugins,
 	nameFieldDefaults,
-	prodThemePath
+	prodThemePath,
+	isProd
 } from './constants';
 
 /**
