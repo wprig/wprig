@@ -163,6 +163,7 @@ blockquote {
 }
 
 @media (--content-query) {
+
 	.entry-content > blockquote {
 		margin-left: auto;
 	}
@@ -685,6 +686,7 @@ select {
 }
 
 @media (--content-query) {
+
 	.site-main .comment-navigation,
 	.site-main .posts-navigation,
 	.site-main .post-navigation,
