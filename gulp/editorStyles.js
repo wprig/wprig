@@ -60,7 +60,7 @@ export default function editorStyles(done) {
 	// Only minify if we aren't building for
 	// production and debug is not enabled
 	if( ! config.dev.debug.styles && ! isProd ) {
-		postcssPlugins.push(cssnano())
+		postcssPlugins.push(cssnano());
 	}
 
 	// Report messages from other postcss plugins
