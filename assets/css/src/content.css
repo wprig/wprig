@@ -206,6 +206,7 @@
 }
 
 @media (--content-query) {
+
 	.entry-content > .wp-block-quote,
 	.entry-content > .wp-block-quote.is-style-large {
 		margin-left: auto;
@@ -609,6 +610,7 @@ object {
 }
 
 @media (--content-query) {
+
 	.entry-content > .mejs-container {
 		max-width: var(--content-width);
 	}

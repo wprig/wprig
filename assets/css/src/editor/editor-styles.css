@@ -26,7 +26,7 @@
 /*--------------------------------------------------------------
 # Typography
 --------------------------------------------------------------*/
-body  {
+body {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	/* stylelint-disable */
