@@ -62,8 +62,13 @@ option {
 	max-width: none;
 }
 
+.wp-block-cover h2,
+.wp-block-cover h3,
+.wp-block-cover h4 {
+	color: inherit;
+}
+
 .wp-block-cover .wp-block-cover-text {
-	color: #fff;
 	font-size: 2em;
 	line-height: 1.25;
 }

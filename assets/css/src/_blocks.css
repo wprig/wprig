@@ -45,6 +45,7 @@
 }
 
 @media (--content-query) {
+
 	.entry-content > .wp-block-quote,
 	.entry-content > .wp-block-quote.is-style-large {
 		margin-left: auto;
@@ -61,7 +62,19 @@
 	border-left-color: var(--color-quote-citation);
 }
 
-.wp-block-cover .wp-block-cover-text {
+.wp-block-cover {
+	display: flex;
+	align-items: center;
+}
+
+.wp-block-cover__inner-container > * {
+	max-width: var(--content-width);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-block-cover .wp-block-cover-text,
+.wp-block-cover p {
 	margin-top: 0;
 }
 

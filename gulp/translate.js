@@ -6,12 +6,15 @@ import {src, dest} from 'gulp';
 import pump from 'pump';
 
 // Internal dependencies
-import {paths, gulpPlugins, nameFieldDefaults, isProd, config} from './constants';
+import {paths, gulpPlugins, nameFieldDefaults, isProd} from './constants';
+import {getThemeConfig} from './utils';
 
 /**
  * Generate translation files.
  */
 export default function translate(done) {
+    const config = getThemeConfig();
+
     // Don't generate .pot file on production if the config flag is false
     if ( isProd && ! config.export.generatePotFile ) {
         return done();

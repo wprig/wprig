@@ -2,17 +2,17 @@
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 # Imports
-   # Custom media
-   # Custom properties
-   # Reset
-   # Typography
-   # Elements
-   # Links
+	# Custom media
+	# Custom properties
+	# Reset
+	# Typography
+	# Elements
+	# Links
 # Accessibility
 # Layout
 # Forms
 # Header
-  # Main navigation menu
+	# Main navigation menu
 # Content navigation
 # Footer
 # Infinite scroll
@@ -466,6 +466,7 @@ select {
 }
 
 @media (--content-query) {
+
 	.site-main .comment-navigation,
 	.site-main .posts-navigation,
 	.site-main .post-navigation,
