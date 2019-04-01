@@ -114,10 +114,33 @@ a:active {
 	max-width: none;
 }
 
+.wp-block-cover__inner-container > * {
+	max-width: var(--content-width);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-block-cover h2,
+.wp-block-cover h3,
+.wp-block-cover h4 {
+	color: inherit;
+}
+
 .wp-block-cover .wp-block-cover-text {
-	color: #fff;
 	font-size: 2em;
 	line-height: 1.25;
+}
+
+.wp-block-latest-comments,
+.wp-block-latest-posts {
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
+	border: 1px solid hsl(0, 0%, 80%);
+}
+
+.wp-block-latest-comments {
+	padding-right: 1.5em;
+	padding-left: 1.5em;
 }
 
 .wp-block-latest-comments,
