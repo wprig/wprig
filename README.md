@@ -40,6 +40,7 @@ WP Rig requires the following dependencies. Full installation instructions are p
 2. Configure theme settings, including the theme slug and name.
     - View `./config/config.default.json` for the default settings.
     - Place custom theme settings in `./config/config.json` to override default settings.
+    - Place local-only theme settings in `./config/config.local.json`, e.g. potentially sensitive info like the path to your BrowserSync certificate.
 3. In command line, run `npm run rig-init` to install necessary node and Composer dependencies.
 4. In command line, run `npm run dev` to process source files, build the development theme, and watch files for subsequent changes.
 	- `npm run build` can be used to process the source files and build the development theme without watching files afterwards.
@@ -102,7 +103,7 @@ WP Rig gives the developer an out of the box environment with support for modern
 
 Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
 
-Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`.
+Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`. Place local-only theme settings in `./config/config.local.json`, e.g. potentially sensitive info like the path to your BrowserSync certificate.
 
 WP Rig ships with advanced features including:
 - Lazy-loading images

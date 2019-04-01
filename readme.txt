@@ -35,6 +35,7 @@ WP Rig requires the following dependencies. Full installation instructions are p
 2. Configure theme settings, including the theme slug and name.
   * View `./config/config.default.json` for the default settings.
   * Place custom theme settings in `./config/config.json` to override default settings.
+  * Place local-only theme settings in `./config/config.local.json`, e.g. potentially sensitive info like the path to your BrowserSync certificate.
 3. In command line, run `npm install` to install necessary node and Composer dependencies.
 4. In command line, run `npm run build` to generate the theme.
 5. In WordPress admin, activate the theme.
@@ -92,7 +93,7 @@ WP Rig gives the developer an out of the box environment with support for modern
 
 Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
 
-Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`.
+Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`. Place local-only theme settings in `./config/config.local.json`, e.g. potentially sensitive info like the path to your BrowserSync certificate.
 
 === Lazy-loading images ===
 WP Rig [lazy loads](https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/) all images out of the box to improve performance. When lazy-loading images is enabled in the theme, the user will see a Theme Options feature in Customizer allowing them to toggle the feature off.
