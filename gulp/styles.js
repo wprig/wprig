@@ -102,16 +102,13 @@ export function stylesAfterReplacementStream() {
 */
 export default function styles(done) {
 
-	// Convert the array of string replacement tasks into a single stream object
-	const stringReplacementTasks = pipeline.obj( getStringReplacementTasks() );
-
-	pump([
+	return pump([
 		src( paths.styles.src, {sourcemaps: !isProd} ),
 		stylesBeforeReplacementStream(),
 		// Only do string replacements when building for production
 		gulpPlugins.if(
 			isProd,
-			stringReplacementTasks
+			getStringReplacementTasks()
 		),
 		stylesAfterReplacementStream(),
 		dest(paths.styles.dest, {sourcemaps: !isProd}),
