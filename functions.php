@@ -12,6 +12,13 @@
 define( 'WP_RIG_MINIMUM_WP_VERSION', '4.5' );
 define( 'WP_RIG_MINIMUM_PHP_VERSION', '7.0' );
 
+//Add backwards compatibility for wp_body_open() introduced with WordPress 5.2
+if ( ! function_exists( 'wp_body_open' ) ) {
+	function wp_body_open() {
+		do_action( 'wp_body_open' );
+	}
+}
+
 // Bail if requirements are not met.
 if ( version_compare( $GLOBALS['wp_version'], WP_RIG_MINIMUM_WP_VERSION, '<' ) || version_compare( phpversion(), WP_RIG_MINIMUM_PHP_VERSION, '<' ) ) {
 	require get_template_directory() . '/inc/back-compat.php';
