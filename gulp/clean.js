@@ -24,9 +24,9 @@ export function cleanCSS() {
  */
 export function cleanJS() {
 	const delPath = [
-		`${paths.styles.dest}/**/*.js`,
-		`!${paths.styles.srcDir}`,
-		`!${paths.styles.srcDir}/**`
+		`${paths.scripts.dest}/**/*.js`,
+		`!${paths.scripts.srcDir}`,
+		`!${paths.scripts.srcDir}/**`
 	];
 	return del(delPath);
 }
