@@ -8,6 +8,7 @@ import colors from 'ansi-colors';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import fs from 'fs';
+import { pipeline } from 'mississippi';
 
 // Internal dependencies
 import {
@@ -69,7 +70,7 @@ export function getStringReplacementTasks() {
 	// Get a copy of the config
 	const config = getThemeConfig(isProd);
 
-	return Object.keys( nameFieldDefaults ).map( nameField => {
+	const stringReplacementTasks = Object.keys( nameFieldDefaults ).map( nameField => {
 		return gulpPlugins.stringReplace(
 			// Backslashes must be double escaped for regex
 			nameFieldDefaults[ nameField ].replace(/\\/g,'\\\\'),
@@ -82,6 +83,10 @@ export function getStringReplacementTasks() {
 			}
 		);
 	});
+
+	// Return a single stream containing all the
+	// string replacement tasks
+	return pipeline.obj( stringReplacementTasks );
 }
 
 export function logError(errorTitle='gulp') {
