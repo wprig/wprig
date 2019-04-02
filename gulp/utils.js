@@ -8,12 +8,14 @@ import colors from 'ansi-colors';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import fs from 'fs';
+import { pipeline } from 'mississippi';
 
 // Internal dependencies
 import {
 	gulpPlugins,
 	nameFieldDefaults,
-	prodThemePath
+	prodThemePath,
+	isProd
 } from './constants';
 
 /**
@@ -65,10 +67,10 @@ export function getThemeConfig( uncached=false ) {
  * @return {array} List of tasks.
  */
 export function getStringReplacementTasks() {
-	// Get a fresh copy of the config
-	const config = getThemeConfig(true);
+	// Get a copy of the config
+	const config = getThemeConfig(isProd);
 
-	return Object.keys( nameFieldDefaults ).map( nameField => {
+	const stringReplacementTasks = Object.keys( nameFieldDefaults ).map( nameField => {
 		return gulpPlugins.stringReplace(
 			// Backslashes must be double escaped for regex
 			nameFieldDefaults[ nameField ].replace(/\\/g,'\\\\'),
@@ -81,6 +83,10 @@ export function getStringReplacementTasks() {
 			}
 		);
 	});
+
+	// Return a single stream containing all the
+	// string replacement tasks
+	return pipeline.obj( stringReplacementTasks );
 }
 
 export function logError(errorTitle='gulp') {
@@ -122,7 +128,7 @@ export function configValueDefined(configValueLocation) {
 	}
 
 	// Get a copy of the config
-	let config = getThemeConfig(true);
+	let config = getThemeConfig(isProd);
 
 	// Turn the value location given into an array
 	let configValueLocationArray = configValueLocation.split('.');

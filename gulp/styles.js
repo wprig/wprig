@@ -9,6 +9,7 @@ import pump from 'pump';
 import cssnano from 'cssnano';
 import stylelint from 'stylelint';
 import reporter from 'postcss-reporter';
+import { pipeline } from 'mississippi';
 
 // Internal dependencies
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
@@ -21,10 +22,27 @@ import {
 } from './utils';
 import {server} from './browserSync';
 
-/**
-* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
-*/
-export default function styles(done) {
+export function stylesBeforeReplacementStream() {
+
+	// Return a single stream containing all the
+	// before replacement functionality
+	return pipeline.obj([
+		logError('CSS'),
+		gulpPlugins.newer({
+			dest: paths.styles.dest,
+			extra: [paths.config.themeConfig]
+		}),
+		gulpPlugins.phpcs({
+			bin: `${rootPath}/vendor/bin/phpcs`,
+			standard: 'WordPress',
+			warningSeverity: 0
+		}),
+		// Log all problems that were found.
+		gulpPlugins.phpcs.reporter('log'),
+	]);
+}
+
+export function stylesAfterReplacementStream() {
 	const config = getThemeConfig();
 
 	const postcssPlugins = [
@@ -53,13 +71,14 @@ export default function styles(done) {
 					'nesting-rules': true
 				}
 			)
-		})
+		}),
+		cssnano()
 	];
 
-	// Only minify if we aren't building for
-	// production and debug is not enabled
-	if( ! config.dev.debug.styles && ! isProd ) {
-		postcssPlugins.push(cssnano());
+	// Skip minifying files if we aren't building for
+	// production and debug is enabled
+	if( config.dev.debug.styles && ! isProd ) {
+		postcssPlugins.pop();
 	}
 
 	// Report messages from other postcss plugins
@@ -67,42 +86,31 @@ export default function styles(done) {
 		reporter({ clearReportedMessages: true })
 	);
 
-	const beforeReplacement = [
-		src( paths.styles.src, {sourcemaps: !isProd} ),
-		logError('CSS'),
-		gulpPlugins.newer({
-			dest: paths.styles.dest,
-			extra: [paths.config.themeConfig]
-		}),
-		gulpPlugins.phpcs({
-			bin: `${rootPath}/vendor/bin/phpcs`,
-			standard: 'WordPress',
-			warningSeverity: 0
-		}),
-		// Log all problems that were found.
-		gulpPlugins.phpcs.reporter('log'),
-	];
-
-	const afterReplacement = [
+	// Return a single stream containing all the
+	// after replacement functionality
+	return pipeline.obj([
 		gulpPlugins.postcss(postcssPlugins),
 		gulpPlugins.rename({
 			suffix: '.min'
 		}),
 		server.stream({match: "**/*.css"}),
-		dest(paths.styles.dest, {sourcemaps: !isProd}),
-	];
+	]);
+}
 
-	pump(
-		[].concat(
-			beforeReplacement,
-			// Only do string replacements when building for production
-			gulpPlugins.if(
-				isProd,
-				getStringReplacementTasks(),
-				[]
-			),
-			afterReplacement
+/**
+* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
+*/
+export default function styles(done) {
+
+	return pump([
+		src( paths.styles.src, {sourcemaps: !isProd} ),
+		stylesBeforeReplacementStream(),
+		// Only do string replacements when building for production
+		gulpPlugins.if(
+			isProd,
+			getStringReplacementTasks()
 		),
-		done
-	);
+		stylesAfterReplacementStream(),
+		dest(paths.styles.dest, {sourcemaps: !isProd}),
+	], done);
 }

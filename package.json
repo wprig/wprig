@@ -56,6 +56,7 @@
     "gulp-wp-pot": "^2.3.4",
     "gulp-zip": "^4.2.0",
     "import-fresh": "^3.0.0",
+    "mississippi": "^4.0.0",
     "mkdirp": "^0.5.1",
     "postcss-import": "^12.0.1",
     "postcss-partial-import": "^4.1.0",
