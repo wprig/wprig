@@ -1,0 +1,107 @@
+@import "_custom-media.css";
+@import "_custom-properties.css";
+
+/*--------------------------------------------------------------
+## Blocks
+--------------------------------------------------------------*/
+
+/*
+ * Available block selectors:
+ * .wp-block-image
+ * .wp-block-media-text
+ * .wp-block-gallery
+ * .wp-block-audio
+ * .wp-block-video
+ * .wp-block-quote
+ * .wp-block-cover
+ * .wp-block-file
+ * .wp-block-button
+ * .wp-block-gallery
+ * .wp-block-table
+ * .wp-block-embed
+ * .wp-block-audio
+ * .wp-block-pullquote
+ * .wp-block-preformatted
+ * .wp-block-code
+ * .wp-block-verse
+ * .wp-block-table
+ * .wp-block-separator
+ * .wp-block-columns
+ * .wp-block-column
+ * .wp-block-latest-posts
+ * .wp-block-categories
+ * .wp-block-archives
+ */
+
+.wp-block-quote.is-large,
+.wp-block-quote.is-style-large {
+	margin: 1.5em auto;
+	padding: 0 1em;
+}
+
+.entry-content > .wp-block-quote,
+.entry-content > .wp-block-quote.is-style-large {
+	margin-left: 1.5rem;
+}
+
+@media (--content-query) {
+
+	.entry-content > .wp-block-quote,
+	.entry-content > .wp-block-quote.is-style-large {
+		margin-left: auto;
+	}
+}
+
+.wp-block-quote:not(.is-large):not(.is-style-large) {
+	border-left-color: var(--color-quote-border);
+}
+
+.wp-block-quote__citation,
+.wp-block-quote cite,
+.wp-block-quote footer {
+	border-left-color: var(--color-quote-citation);
+}
+
+.wp-block-cover {
+	display: flex;
+	align-items: center;
+}
+
+.wp-block-cover__inner-container > * {
+	max-width: var(--content-width);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-block-cover .wp-block-cover-text,
+.wp-block-cover p {
+	margin-top: 0;
+}
+
+/* Columns Block */
+.wp-block-column {
+	flex-basis: 100%;
+}
+
+.wp-block-column:not(:last-child),
+.wp-block-column:nth-child(2n+1) {
+	margin-right: 0;
+}
+
+.wp-block-column:not(:first-child) {
+	margin-left: 0;
+}
+
+.wp-block-latest-posts,
+.wp-block-latest-comments {
+	padding-top: 1.5em;
+	padding-bottom: 1.5em;
+	border: 1px solid hsl(0, 0%, 80%);
+}
+
+ul.wp-block-latest-posts.alignwide,
+ul.wp-block-latest-posts.alignfull,
+ul.wp-block-latest-posts.is-grid.alignwide,
+ul.wp-block-latest-posts.is-grid.alignfull {
+	padding: 0 1.5em;
+}
