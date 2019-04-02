@@ -9,11 +9,10 @@
 # Imports
    # Custom media
    # Custom properties
-# Typography
-# Elements
-# Links
-# Forms
-# Blocks
+   # Typography
+   # Elements
+   # Links
+# Adjustments for the editor
 
 --------------------------------------------------------------*/
 
@@ -22,82 +21,31 @@
 --------------------------------------------------------------*/
 @import "../_custom-media.css";
 @import "../_custom-properties.css";
+@import "../_typography.css";
+@import "../_elements.css";
+@import "../_links.css";
+@import "../_blocks.css";
 
 /*--------------------------------------------------------------
-# Typography
+# Adjustments for the editor
 --------------------------------------------------------------*/
-body {
-	color: var(--global-font-color);
-	font-family: var(--global-font-family);
-	/* stylelint-disable */
-	font-size: var(--font-size-regular);
-	/* stylelint-enable */
-	line-height: var(--global-font-line-height);
-}
-
-.mce-content-body,
-p {
+button,
+select,
+option {
+	color: inherit;
+	font-family: inherit;
 	font-size: inherit;
 	line-height: inherit;
-}
-
-.editor-post-title__input,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-family: var(--highlight-font-family);
-	color: #32373c;
-	clear: both;
+	border-radius: inherit;
 }
 
 .editor-post-title__input {
-	font-size: 2rem;
+	font-family: var(--highlight-font-family);
+	font-size: 2.5rem;
 	line-height: 1.4;
+	margin-top: 0;
+	margin-bottom: 0;
 }
-
-/*--------------------------------------------------------------
-# Elements
---------------------------------------------------------------*/
-
-/*--------------------------------------------------------------
-# Links
---------------------------------------------------------------*/
-
-/* stylelint-disable */
-a {
-	color: var(--color-link);
-}
-/* stylelint-enable */
-
-a:visited {
-	color: var(--color-link-visited);
-}
-
-a:hover,
-a:focus,
-a:active {
-	color: var(--color-link-active);
-}
-
-a:focus {
-	outline: thin dotted;
-}
-
-a:hover,
-a:active {
-	outline: 0;
-}
-
-/*--------------------------------------------------------------
-# Forms
---------------------------------------------------------------*/
-
-/*--------------------------------------------------------------
-# Blocks
---------------------------------------------------------------*/
 
 /* Main column width */
 .wp-block {
@@ -114,12 +62,6 @@ a:active {
 	max-width: none;
 }
 
-.wp-block-cover__inner-container > * {
-	max-width: var(--content-width);
-	margin-left: auto;
-	margin-right: auto;
-}
-
 .wp-block-cover h2,
 .wp-block-cover h3,
 .wp-block-cover h4 {
@@ -131,14 +73,15 @@ a:active {
 	line-height: 1.25;
 }
 
-.wp-block-latest-comments,
-.wp-block-latest-posts {
-	padding-top: 1.5em;
-	padding-bottom: 1.5em;
-	border: 1px solid hsl(0, 0%, 80%);
+.wp-block-archives,
+.wp-block-categories__list,
+.wp-block-latest-posts,
+.wp-block-latest-comments {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .wp-block-latest-comments {
-	padding-right: 1.5em;
-	padding-left: 1.5em;
+	padding-left: 2.5em;
+	padding-right: 2.5em;
 }
