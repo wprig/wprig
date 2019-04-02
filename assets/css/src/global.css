@@ -2,17 +2,17 @@
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 # Imports
-   # Custom media
-   # Custom properties
-   # Reset
+	# Custom media
+	# Custom properties
+	# Reset
+	# Typography
+	# Elements
+	# Links
 # Accessibility
 # Layout
-# Typography
-# Elements
-# Links
 # Forms
 # Header
-  # Main navigation menu
+	# Main navigation menu
 # Content navigation
 # Footer
 # Infinite scroll
@@ -24,6 +24,9 @@
 @import "_custom-media.css";
 @import "_custom-properties.css";
 @import "_reset.css";
+@import "_typography.css";
+@import "_elements.css";
+@import "_links.css";
 
 /*--------------------------------------------------------------
 # Accessibility
@@ -102,229 +105,6 @@
 	.site-footer {
 		grid-column: span 2;
 	}
-}
-
-/*--------------------------------------------------------------
-# Typography
---------------------------------------------------------------*/
-/* stylelint-disable */
-body,
-button,
-input,
-select,
-optgroup,
-textarea {
-	color: var(--global-font-color);
-	font-family: var(--global-font-family);
-	font-size: var(--font-size-regular);
-	line-height: var(--global-font-line-height);
-}
-/* stylelint-enable */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-family: var(--highlight-font-family);
-	color: #32373c;
-	clear: both;
-}
-
-.entry-header h1.entry-title,
-.page-header .page-title {
-	font-size: 2.5rem;
-	line-height: 1.4;
-	margin-top: 1em;
-	margin-bottom: 1em;
-}
-
-dfn,
-cite,
-em,
-i {
-	font-style: italic;
-}
-
-blockquote,
-q {
-	quotes: "" "";
-}
-
-blockquote {
-	border-left: 4px solid var(--color-quote-border);
-	margin: 0;
-}
-
-.entry-content > blockquote {
-	padding-left: 1em;
-	margin-left: 1.5rem;
-}
-
-@media (--content-query) {
-
-	.entry-content > blockquote {
-		margin-left: auto;
-	}
-}
-
-blockquote cite {
-	color: var(--color-quote-citation);
-	font-size: 13px;
-	margin-top: 1em;
-	position: relative;
-	font-style: normal;
-}
-
-address {
-	margin: 0 0 1.5em;
-}
-
-/* stylelint-disable */
-pre {
-	background: #eee;
-	font-family: "Courier 10 Pitch", Courier, monospace;
-	font-size: 0.9375rem;
-	line-height: 1.6;
-	margin-bottom: 1.6em;
-	max-width: 100%;
-	overflow: auto;
-	padding: 1.6em;
-}
-/* stylelint-enable */
-
-code,
-kbd,
-tt,
-var {
-	font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
-	font-size: 0.8rem;
-}
-
-abbr,
-acronym {
-	border-bottom: 1px dotted #666;
-	cursor: help;
-}
-
-mark,
-ins {
-	background: #fff9c0;
-	text-decoration: none;
-}
-
-big {
-	font-size: 125%;
-}
-
-/*--------------------------------------------------------------
-# Elements
---------------------------------------------------------------*/
-/* stylelint-disable */
-html {
-	box-sizing: border-box;
-}
-/* stylelint-enable */
-
-/**
- * Inherit box-sizing to make it easier to change the property for
- * components that leverage other behavior; see
- * http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
- */
-*,
-*::before,
-*::after {
-	box-sizing: inherit;
-}
-
-/* stylelint-disable */
-body {
-	background: #fff;
-	/* Fallback for when there is no custom background color defined. */
-}
-/* stylelint-enable */
-
-/* stylelint-disable */
-hr {
-	background-color: #ccc;
-	border: 0;
-	height: 1px;
-	margin-bottom: 1.5em;
-}
-/* stylelint-enable */
-
-ul,
-ol {
-	margin: 0 0 1.5em 3em;
-}
-
-ul {
-	list-style: disc;
-}
-
-ol {
-	list-style: decimal;
-}
-
-li > ul,
-li > ol {
-	margin-bottom: 0;
-	margin-left: 1.5em;
-}
-
-dt {
-	font-weight: 700;
-}
-
-dd {
-	margin: 0 1.5em 1.5em;
-}
-
-/* stylelint-disable */
-img {
-	display: block;
-	height: auto;
-	max-width: 100%;
-}
-/* stylelint-enable */
-
-/* Extra wide images within figure tags don't overflow the content area. */
-figure {
-	margin: 0.5em 0;
-}
-
-table {
-	margin: 0 0 1.5em;
-	width: 100%;
-}
-
-/*--------------------------------------------------------------
-# Links
---------------------------------------------------------------*/
-/* stylelint-disable */
-a {
-	color: var(--color-link);
-}
-/* stylelint-enable */
-
-a:visited {
-	color: var(--color-link-visited);
-}
-
-a:hover,
-a:focus,
-a:active {
-	color: var(--color-link-active);
-}
-
-a:focus {
-	outline: thin dotted;
-}
-
-a:hover,
-a:active {
-	outline: 0;
 }
 
 /*--------------------------------------------------------------
