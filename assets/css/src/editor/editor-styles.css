@@ -142,15 +142,3 @@ a:active {
 	padding-right: 1.5em;
 	padding-left: 1.5em;
 }
-
-.wp-block-latest-comments,
-.wp-block-latest-posts {
-	padding-top: 1.5em;
-	padding-bottom: 1.5em;
-	border: 1px solid hsl(0, 0%, 80%);
-}
-
-.wp-block-latest-comments {
-	padding-right: 1.5em;
-	padding-left: 1.5em;
-}
