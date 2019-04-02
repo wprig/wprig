@@ -2,7 +2,6 @@
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 # Post and page content
-	# Imports
 	# Alignments
 	# Blocks
 	# Custom block colors
@@ -21,11 +20,6 @@
 
 }
 */
-
-/*--------------------------------------------------------------
-# Imports
---------------------------------------------------------------*/
-@import "_custom-media.css";
 
 .entry {
 	margin-bottom: 1rem;
