@@ -91,7 +91,7 @@ let paths = {
 			// Ignore partial files.
 			`!${assetsDir}/js/src/**/_*.js`,
 		],
-		srcDir: `${assetsDir}/jss/src`,
+		srcDir: `${assetsDir}/js/src`,
 		dest: `${assetsDir}/js`
 	},
 	images: {
