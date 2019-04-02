@@ -46,10 +46,13 @@ export function stylesAfterReplacementStream() {
 	const config = getThemeConfig();
 
 	const postcssPlugins = [
-		stylelint(),
 		AtImport({
-			path: [paths.styles.srcDir]
+			path: [paths.styles.srcDir],
+			plugins: [
+				stylelint(),
+			]
 		}),
+		stylelint(),
 		postcssPresetEnv({
 			importFrom: (
 				configValueDefined('config.dev.styles.importFrom') ?
@@ -72,7 +75,7 @@ export function stylesAfterReplacementStream() {
 				}
 			)
 		}),
-		cssnano()
+		cssnano(),
 	];
 
 	// Skip minifying files if we aren't building for

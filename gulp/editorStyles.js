@@ -28,10 +28,13 @@ export default function editorStyles(done) {
 	const config = getThemeConfig();
 
 	const postcssPlugins = [
-		stylelint(),
 		AtImport({
-			path: [paths.styles.srcDir]
+			path: [paths.styles.srcDir],
+			plugins: [
+				stylelint(),
+			]
 		}),
+		stylelint(),
 		postcssPresetEnv({
 			importFrom: (
 				configValueDefined('config.dev.styles.importFrom') ?
@@ -54,13 +57,14 @@ export default function editorStyles(done) {
 					'nesting-rules': true
 				}
 			)
-		})
+		}),
+		cssnano(),
 	];
 
-	// Only minify if we aren't building for
-	// production and debug is not enabled
-	if( ! config.dev.debug.styles && ! isProd ) {
-		postcssPlugins.push(cssnano());
+	// Skip minifying files if we aren't building for
+	// production and debug is enabled
+	if( config.dev.debug.styles && ! isProd ) {
+		postcssPlugins.pop();
 	}
 
 	// Report messages from other postcss plugins
