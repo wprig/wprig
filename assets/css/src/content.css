@@ -261,15 +261,6 @@
 	border-left-color: var(--color-quote-citation);
 }
 
-.alignwide {
-	max-width: calc(50% + var(--content-width) / 2);
-}
-
-.alignfull {
-	max-width: 100%;
-	padding: 0;
-}
-
 .wp-block-cover {
 	display: flex;
 	align-items: center;
