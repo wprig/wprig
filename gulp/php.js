@@ -4,19 +4,18 @@
 // External dependencies
 import pump from 'pump';
 import {src, dest} from 'gulp';
+import { pipeline } from 'mississippi';
 
 // Internal dependencies
 import {paths, PHPCSOptions, gulpPlugins, isProd} from './constants';
 import {getStringReplacementTasks, getThemeConfig} from './utils';
 
-/**
- * PHP via PHP Code Sniffer.
- */
-export default function php(done) {
+export function phpBeforeReplacementStream() {
 	const config = getThemeConfig();
 
-	const beforeReplacement = [
-		src(paths.php.src),
+	// Return a single stream containing all the
+	// before replacement functionality
+	return pipeline.obj([
 		// Only code sniff PHP files if the debug setting is true
 		gulpPlugins.if(
 			config.dev.debug.phpcs,
@@ -24,28 +23,31 @@ export default function php(done) {
 		),
 		// Log all problems that were found.
 		gulpPlugins.phpcs.reporter('log'),
-	];
+	]);
+}
 
-	const afterReplacement = [
-		dest( paths.php.dest )
-	];
+/**
+ * PHP via PHP Code Sniffer.
+ */
+export default function php(done) {
 
 	if( isProd ) {
 
 		// Only do string replacements and save PHP files when building for production
-		return pump(
-			[].concat(
-				beforeReplacement,
-				getStringReplacementTasks(),
-				afterReplacement
-			),
-			done
-		);
+		return pump([
+			src(paths.php.src),
+			phpBeforeReplacementStream(),
+			getStringReplacementTasks(),
+			dest( paths.php.dest )
+		], done);
 
 	} else {
 
 		// Only run code sniffing in dev, don't save PHP files
-		return pump( beforeReplacement, done );
+		return pump([
+			src(paths.php.src),
+			phpBeforeReplacementStream(),
+		], done);
 
 	}
 
