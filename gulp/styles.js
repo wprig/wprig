@@ -61,13 +61,16 @@ export function stylesAfterReplacementStream() {
 				config.dev.styles.stage :
 				3
 			),
-			preserve: true,
 			features: (
 				configValueDefined('config.dev.styles.features') ?
 				config.dev.styles.features :
 				{
-					'custom-media-queries': true,
-					'custom-properties': true,
+					'custom-media-queries': {
+						preserve: false
+					},
+					'custom-properties': {
+						preserve: true
+					},
 					'nesting-rules': true
 				}
 			)
