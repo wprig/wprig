@@ -96,6 +96,10 @@ export function stylesAfterReplacementStream() {
 	// after replacement functionality
 	return pipeline.obj([
 		gulpPlugins.postcss(postcssPlugins),
+		gulpPlugins.if(
+            config.dev.debug.styles,
+            gulpPlugins.tabify(2, true)
+        ),
 		gulpPlugins.rename({
 			suffix: '.min'
 		}),
