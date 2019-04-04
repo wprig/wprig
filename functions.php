@@ -18,7 +18,7 @@ if ( version_compare( $GLOBALS['wp_version'], WP_RIG_MINIMUM_WP_VERSION, '<' ) |
 	return;
 }
 
-// Include WordPress shims
+// Include WordPress shims.
 require get_template_directory() . '/inc/wordpress-shims.php';
 
 // Setup autoloader (via Composer or custom).
