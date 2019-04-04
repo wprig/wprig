@@ -2,7 +2,6 @@
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 # Imports
-	# Custom media
 	# Custom properties
 	# Reset
 	# Typography
@@ -21,7 +20,6 @@
 /*--------------------------------------------------------------
 # Imports
 --------------------------------------------------------------*/
-@import "_custom-media.css";
 @import "_custom-properties.css";
 @import "_reset.css";
 @import "_typography.css";

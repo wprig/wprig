@@ -14,7 +14,9 @@
     },
     "styles": {
       "stage": 3,
-      "importFrom": [],
+      "importFrom": [
+        "_custom-media.css"
+      ],
       "features": {
         "custom-media-queries": true,
         "custom-properties": true,
