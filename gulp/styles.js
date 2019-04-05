@@ -46,12 +46,6 @@ export function stylesAfterReplacementStream() {
 	const config = getThemeConfig();
 
 	const postcssPlugins = [
-		AtImport({
-			path: [paths.styles.srcDir],
-			plugins: [
-				stylelint(),
-			]
-		}),
 		stylelint(),
 		postcssPresetEnv({
 			importFrom: (
@@ -95,6 +89,14 @@ export function stylesAfterReplacementStream() {
 	// Return a single stream containing all the
 	// after replacement functionality
 	return pipeline.obj([
+		gulpPlugins.postcss([
+			AtImport({
+				path: [paths.styles.srcDir],
+				plugins: [
+					stylelint(),
+				]
+			})
+		]),
 		gulpPlugins.postcss(postcssPlugins),
 		gulpPlugins.if(
             config.dev.debug.styles,
