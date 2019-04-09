@@ -58,6 +58,7 @@ export function editorStylesAfterReplacementStream() {
 				config.dev.styles.stage :
 				3
 			),
+			preserve: false,
 			features: (
 				configValueDefined('config.dev.styles.features') ?
 				config.dev.styles.features :
