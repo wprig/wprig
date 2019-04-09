@@ -47,9 +47,6 @@ export function stylesAfterReplacementStream() {
 
 	const postcssPlugins = [
 		stylelint(),
-		AtImport({
-			path: [paths.styles.srcDir]
-		}),
 		postcssPresetEnv({
 			importFrom: (
 				configValueDefined('config.dev.styles.importFrom') ?
@@ -75,7 +72,7 @@ export function stylesAfterReplacementStream() {
 				}
 			)
 		}),
-		cssnano()
+		cssnano(),
 	];
 
 	// Skip minifying files if we aren't building for
@@ -92,7 +89,19 @@ export function stylesAfterReplacementStream() {
 	// Return a single stream containing all the
 	// after replacement functionality
 	return pipeline.obj([
+		gulpPlugins.postcss([
+			AtImport({
+				path: [paths.styles.srcDir],
+				plugins: [
+					stylelint(),
+				]
+			})
+		]),
 		gulpPlugins.postcss(postcssPlugins),
+		gulpPlugins.if(
+            config.dev.debug.styles,
+            gulpPlugins.tabify(2, true)
+        ),
 		gulpPlugins.rename({
 			suffix: '.min'
 		}),
