@@ -47,6 +47,11 @@ option {
 	margin-bottom: 0;
 }
 
+.gallery .gallery-item,
+.wp-block-freeform .gallery .gallery-item {
+	width: auto;
+}
+
 /* Main column width */
 .wp-block {
 	max-width: calc(var(--content-width) + 30px);
