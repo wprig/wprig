@@ -67,7 +67,7 @@ Place the following in your `./config/config.json` file. This config will be ver
 #### Defining custom settings for your local environment
 
 Some theme settings should only be set for your local environment. For example, if you want to set local information for BrowserSync.
- 
+
 Place the following in your `./config/config.local.json` file. This config will not be tracked in your repo and will only be executed in your local development environment.
 
 ```
@@ -135,7 +135,7 @@ For more information about the Gulp processes, what processes are available, and
 As WP Rig processes CSS and JavaScript it will support the browsers listed in `.browserslistrc`. Note that WP Rig will **not** add polyfills for missing browser support. WP Rig **will** add CSS prefixes and transpile JavaScript.
 
 ## Advanced Features
-WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), and existing tools like Sass without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
+WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), CSS nesting and more, without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
 
 Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
 

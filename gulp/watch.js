@@ -10,7 +10,6 @@ import {paths, gulpPlugins, PHPCSOptions} from './constants';
 import {getThemeConfig} from './utils';
 import {reload} from './browserSync';
 import images from './images';
-import sassStyles from './sassStyles';
 import scripts from './scripts';
 import styles from './styles';
 import editorStyles from './editorStyles';
@@ -34,8 +33,6 @@ export default function watch() {
 			]);
 		});
 	}
-
-	gulpWatch(paths.styles.sass, series(sassStyles, reload));
 
 	gulpWatch(paths.styles.src[0], series( styles, editorStyles ) );
 
