@@ -23,6 +23,7 @@
 @import "../_typography.css";
 @import "../_elements.css";
 @import "../_links.css";
+@import "../_media.css";
 @import "../_blocks.css";
 
 /*--------------------------------------------------------------
@@ -44,6 +45,11 @@ option {
 	line-height: 1.4;
 	margin-top: 0;
 	margin-bottom: 0;
+}
+
+.gallery .gallery-item,
+.wp-block-freeform .gallery .gallery-item {
+	width: auto;
 }
 
 /* Main column width */
