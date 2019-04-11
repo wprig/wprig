@@ -9,6 +9,7 @@ import pump from 'pump';
 import cssnano from 'cssnano';
 import stylelint from 'stylelint';
 import reporter from 'postcss-reporter';
+import calc from 'postcss-calc';
 import { pipeline } from 'mississippi';
 
 // Internal dependencies
@@ -72,6 +73,9 @@ export function editorStylesAfterReplacementStream() {
 					'nesting-rules': true
 				}
 			)
+		}),
+		calc({
+			preserve: false
 		}),
 		cssnano(),
 	];
