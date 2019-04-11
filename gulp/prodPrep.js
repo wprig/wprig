@@ -9,13 +9,21 @@ import colors from 'ansi-colors';
 import path from 'path';
 
 // Internal dependencies
-import {isProd, prodThemePath, rootPath, paths} from './constants';
-import {createProdDir, gulpRelativeDest} from './utils';
+import {
+    isProd,
+    prodThemePath,
+    rootPath,
+    paths,
+    nameFieldDefaults
+} from './constants';
+import {createProdDir, gulpRelativeDest, getThemeConfig} from './utils';
 
 /**
  * Create the production directory
  */
 export default function prodPrep(done) {
+
+    const config = getThemeConfig();
 
     // Error if not in a production environment
     if( ! isProd ){
@@ -28,6 +36,20 @@ export default function prodPrep(done) {
         log(colors.red(`${colors.bold('Error:')} the theme slug cannot be the same as the dev theme directory name.`));
         process.exit(1);
     }
+
+    const requiredConfigUpdates = [
+        'slug',
+        'name',
+    ];
+
+    requiredConfigUpdates.map( (requiredConfigField) => {
+        // Error if config that must be set is still the default value.
+        if ( nameFieldDefaults[requiredConfigField] === config.theme[requiredConfigField] ){
+            log(colors.red(`${colors.bold('Error:')} the theme ${requiredConfigField} must be different than the default value ${nameFieldDefaults[requiredConfigField]}.`));
+            process.exit(1);
+        }
+
+    });
 
     // Create the prod directory
     createProdDir();
