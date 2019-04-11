@@ -171,6 +171,15 @@
 	margin-right: auto;
 }
 
+.alignwide {
+	max-width: calc(50% + var(--content-width) / 2);
+}
+
+.alignfull {
+	max-width: 100%;
+	padding: 0;
+}
+
 @media (--content-query) {
 
 	.wp-caption.alignright,
