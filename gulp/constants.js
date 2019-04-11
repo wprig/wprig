@@ -82,7 +82,6 @@ let paths = {
 			`!${assetsDir}/css/src/editor/**/*.css`
 		],
 		srcDir: `${assetsDir}/css/src`,
-		sass: `${assetsDir}/css/src/**/*.scss`,
 		dest: `${assetsDir}/css`
 	},
 	scripts: {
