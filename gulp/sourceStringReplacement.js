@@ -14,14 +14,11 @@ import {getStringReplacementTasks} from './utils';
  */
 export function sourceStringReplacementPHP(done) {
 
-	return pump(
-		[].concat(
-			[src(paths.php.src)],
-			getStringReplacementTasks(),
-			[dest(paths.php.dest)]
-		),
-		done
-	);
+	return pump([
+		src(paths.php.src[0]),
+		getStringReplacementTasks(),
+		dest(paths.php.dest)
+	], done);
 
 }
 
@@ -30,15 +27,11 @@ export function sourceStringReplacementPHP(done) {
  */
 export function sourceStringReplacementCSS(done) {
 
-	return pump(
-		[].concat(
-			// CSS and Sass source files
-			[src([paths.styles.src, paths.styles.sass])],
-			getStringReplacementTasks(),
-			[dest(`${paths.assetsDir}/css/src/`)]
-		),
-		done
-	);
+	return pump([
+		src(paths.styles.src[0]),
+		getStringReplacementTasks(),
+		dest(`${paths.assetsDir}/css/src/`)
+	], done);
 
 }
 
@@ -47,13 +40,10 @@ export function sourceStringReplacementCSS(done) {
  */
 export function sourceStringReplacementJS(done) {
 
-	return pump(
-		[].concat(
-			[src(paths.scripts.src)],
-			getStringReplacementTasks(),
-			[dest(`${paths.assetsDir}/js/src/`)]
-		),
-		done
-	);
+	return pump([
+		src(paths.scripts.src[0]),
+		getStringReplacementTasks(),
+		dest(`${paths.assetsDir}/js/src/`)
+	],done);
 
 }
