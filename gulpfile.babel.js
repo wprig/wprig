@@ -47,14 +47,13 @@ export const bundleTheme = series(
 );
 
 /**
- * Export all imported functions as tasks
- */
-export { generateCert, images, php, sassStyles, scripts, styles, translate, watch };
-
-/**
  * Replace default strings in source files
  */
 export const sourceStringReplacement = parallel(
     sourceStringReplacementPHP, sourceStringReplacementJS, sourceStringReplacementCSS
 );
+
+/**
+ * Export all imported functions as tasks
+ */
 export { generateCert, images, php, scripts, styles, editorStyles, translate, watch, cleanCSS, cleanJS };
