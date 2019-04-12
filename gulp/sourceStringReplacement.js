@@ -6,7 +6,7 @@ import pump from 'pump';
 import {src, dest} from 'gulp';
 
 // Internal dependencies
-import {paths} from './constants';
+import {paths, rootPath} from './constants';
 import {getStringReplacementTasks} from './utils';
 
 /**
@@ -15,7 +15,10 @@ import {getStringReplacementTasks} from './utils';
 export function sourceStringReplacementPHP(done) {
 
 	return pump([
-		src(paths.php.src[0]),
+		src([
+			paths.php.src[0],
+			`!${rootPath}/vendor/**/*.*`
+		]),
 		getStringReplacementTasks(),
 		dest(paths.php.dest)
 	], done);
