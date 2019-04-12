@@ -1,0 +1,121 @@
+@import "_custom-properties.css";
+
+/*--------------------------------------------------------------
+# Media
+--------------------------------------------------------------*/
+.page-content .wp-smiley,
+.entry-content .wp-smiley,
+.comment-content .wp-smiley {
+	border: none;
+	margin-bottom: 0;
+	margin-top: 0;
+	padding: 0;
+}
+
+/* Make sure embeds and iframes fit their containers. */
+/* stylelint-disable */
+embed,
+iframe,
+object {
+	max-width: 100%;
+}
+/* stylelint-enable */
+
+/*--------------------------------------------------------------
+## Captions
+--------------------------------------------------------------*/
+.wp-caption {
+	margin-bottom: 1.5em;
+	max-width: 100%;
+}
+
+.wp-caption img[class*="wp-image-"] {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-caption-text {
+	text-align: center;
+}
+
+.wp-caption .wp-caption-text {
+	margin: 0.8075em 0;
+}
+
+@media (--content-query) {
+
+	.wp-caption.alignright,
+	.wp-block-image.alignright {
+		/* stylelint-disable */
+		margin-right: calc((100% - var(--content-width)) / 2);
+		/* stylelint-enable */
+	}
+
+	.wp-caption.alignleft,
+	.wp-block-image.alignleft {
+		/* stylelint-disable */
+		margin-left: calc((100% - var(--content-width)) / 2);
+		/* stylelint-enable */
+	}
+
+}
+
+/*--------------------------------------------------------------
+## Galleries (Legacy)
+--------------------------------------------------------------*/
+.gallery {
+	margin-bottom: 1.5em;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	grid-gap: 0.5em;
+}
+
+@media screen and (min-width: 40em) {
+
+	.gallery-columns-2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.gallery-columns-3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.gallery-columns-4 {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.gallery-columns-5 {
+		grid-template-columns: repeat(5, 1fr);
+	}
+
+	.gallery-columns-6 {
+		grid-template-columns: repeat(6, 1fr);
+	}
+
+	.gallery-columns-7 {
+		grid-template-columns: repeat(7, 1fr);
+	}
+
+	.gallery-columns-8 {
+		grid-template-columns: repeat(8, 1fr);
+	}
+
+	.gallery-columns-9 {
+		grid-template-columns: repeat(9, 1fr);
+	}
+}
+
+.gallery-item {
+	padding: 0.5em;
+	border: 1px solid rgb(222, 222, 222);
+}
+
+.gallery-icon {
+	display: flex;
+	justify-content: center;
+}
+
+.gallery-caption {
+	font-size: 80%;
+}

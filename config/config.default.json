@@ -12,16 +12,31 @@
       "bypassPort": "8181",
       "https": false
     },
+    "styles": {
+      "stage": 3,
+      "importFrom": [
+        "_custom-media.css"
+      ],
+      "features": {
+        "custom-media-queries": true,
+        "custom-properties": true,
+        "nesting-rules": true
+      }
+    },
     "debug": {
       "styles": false,
       "scripts": false,
       "phpcs": true
-    },
-    "styles": {
-      "preserveCSSVars": false
     }
   },
   "export": {
-    "compress": true
+    "compress": true,
+    "generatePotFile": true,
+    "filesToCopy": [
+      "LICENSE",
+      "readme.txt",
+      "style.css",
+      "screenshot.png"
+    ]
   }
 }

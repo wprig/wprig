@@ -40,10 +40,47 @@ WP Rig requires the following dependencies. Full installation instructions are p
 2. Configure theme settings, including the theme slug and name.
     - View `./config/config.default.json` for the default settings.
     - Place custom theme settings in `./config/config.json` to override default settings.
-3. In command line, run `npm install` to install necessary node and Composer dependencies.
+		- You do not have to include all settings from config.default.json. Just the settings you want to override.
+    - Place local-only theme settings in `./config/config.local.json`, e.g. potentially sensitive info like the path to your BrowserSync certificate.
+		- Again, only include the settings you want to override.
+3. In command line, run `npm run rig-init` to install necessary node and Composer dependencies.
 4. In command line, run `npm run dev` to process source files, build the development theme, and watch files for subsequent changes.
 	- `npm run build` can be used to process the source files and build the development theme without watching files afterwards.
 5. In WordPress admin, activate the WP Rig development theme.
+
+#### Defining custom settings for the project
+
+Here is an example of creating a custom theme config file for the project. In this example, we want a custom slug, name, and author.
+
+Place the following in your `./config/config.json` file. This config will be versioned in your repo so all developers use the same settings.
+
+```
+{
+  "theme": {
+    "slug": "newthemeslug",
+    "name": "New Theme Name",
+    "author": "Name of the theme author"
+  }
+}
+```
+
+#### Defining custom settings for your local environment
+
+Some theme settings should only be set for your local environment. For example, if you want to set local information for BrowserSync.
+
+Place the following in your `./config/config.local.json` file. This config will not be tracked in your repo and will only be executed in your local development environment.
+
+```
+{
+  "browserSync": {
+    "live": true,
+    "proxyURL": "localwprigenv.test",
+    "https": true,
+    "keyPath": "/path/to/my/browsersync/key",
+    "certPath": "/path/to/my/browsersync/certificate"
+  }
+}
+```
 
 ## How to build WP Rig for production:
 1. Follow the steps above to install WP Rig.
@@ -68,7 +105,11 @@ Before first run, visit the [BrowserSync wiki page](https://github.com/wprig/wpr
 `npm run build` processes source files one-time. It does not watch for changes nor start the BrowserSync server.
 
 #### `translate` process
-`npm run translate` generates a `.pot` file for the theme to enable translation. The translation file will be stored in `./languages/`.
+The translation process generates a `.pot` file for the theme in the `./languages/` directory.
+
+The translation process will run automatically during production builds unless the `export:generatePotFile` configuration value in `./config/config.json` is set to `false`.
+
+The translation process can also be run manaually with `npm run translate`. However, unless `NODE_ENV` is defined as `production` the `.pot` file will be generated against the source files, not the production files.
 
 #### `production bundle` process
 `npm run bundle` generates a production ready theme as a new theme directory and, optionally, a `.zip` archive. This builds all source files, optimizes the built files for production, does a string replacement and runs translations. Non-essential files from the `wp-rig` development theme are not copied to the production theme.
@@ -94,11 +135,11 @@ For more information about the Gulp processes, what processes are available, and
 As WP Rig processes CSS and JavaScript it will support the browsers listed in `.browserslistrc`. Note that WP Rig will **not** add polyfills for missing browser support. WP Rig **will** add CSS prefixes and transpile JavaScript.
 
 ## Advanced Features
-WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), and existing tools like Sass without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
+WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), CSS nesting and more, without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
 
 Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
 
-Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`.
+Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`. Place local-only/untracked theme settings in `./config/config.local.json`. For example, if you want to set local information for BrowserSync.
 
 WP Rig ships with advanced features including:
 - Lazy-loading images

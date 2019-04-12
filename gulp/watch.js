@@ -3,29 +3,23 @@
 
 // External dependencies
 import {watch as gulpWatch, series, src} from 'gulp';
-import log from 'fancy-log';
-import colors from 'ansi-colors';
 import pump from 'pump';
 
 // Internal dependencies
-import {paths, gulpPlugins, PHPCSOptions, config} from './constants';
+import {paths, gulpPlugins, PHPCSOptions} from './constants';
+import {getThemeConfig} from './utils';
 import {reload} from './browserSync';
 import images from './images';
-import php from './php';
-import sassStyles from './sassStyles';
 import scripts from './scripts';
 import styles from './styles';
-
-export function themeConfigChangeAlert(done){
-	log(colors.yellow(`Theme configuration ${colors.bold(paths.config.themeConfig)} has changed, rebuilding everything...`));
-	done();
-}
+import editorStyles from './editorStyles';
 
 /**
  * Watch everything
  */
 export default function watch() {
 	const PHPwatcher = gulpWatch(paths.php.src, reload);
+	const config = getThemeConfig();
 
 	// Only code sniff PHP files if the debug setting is true
 	if( config.dev.debug.phpcs ) {
@@ -40,15 +34,9 @@ export default function watch() {
 		});
 	}
 
-	gulpWatch(paths.config.themeConfig, series(
-		themeConfigChangeAlert, php, scripts, sassStyles, styles, images, reload
-	));
+	gulpWatch(paths.styles.src[0], series( styles, editorStyles ) );
 
-	gulpWatch(paths.styles.sass, series(sassStyles, reload));
-
-	gulpWatch([paths.styles.src, paths.styles.cssCustomProperties, paths.styles.cssCustomMedia], series( styles ) );
-
-	gulpWatch(paths.scripts.src, series(scripts, reload));
+	gulpWatch(paths.scripts.src[0], series(scripts, reload));
 
 	gulpWatch(paths.images.src, series(images, reload));
 }

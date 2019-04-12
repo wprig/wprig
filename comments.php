@@ -20,9 +20,10 @@ namespace WP_Rig\WP_Rig;
 if ( post_password_required() ) {
 	return;
 }
-?>
 
-<?php wp_print_styles( array( 'wp-rig-comments' ) ); ?>
+wp_rig()->print_styles( 'wp-rig-comments' );
+
+?>
 <div id="comments" class="comments-area">
 	<?php
 	// You can start editing here -- including this comment!

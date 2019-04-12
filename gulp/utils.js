@@ -2,19 +2,20 @@
 'use strict';
 
 // External dependencies
-import requireUncached from 'require-uncached';
+import importFresh from 'import-fresh';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import fs from 'fs';
+import { pipeline } from 'mississippi';
 
 // Internal dependencies
 import {
 	gulpPlugins,
 	nameFieldDefaults,
 	prodThemePath,
-	paths
+	isProd
 } from './constants';
 
 /**
@@ -24,12 +25,14 @@ import {
  * @return {object} Theme configuration data.
  */
 export function getThemeConfig( uncached=false ) {
+
 	let config;
+	const configPath =`${process.cwd()}/config/themeConfig.js`;
 
 	if ( uncached ) {
-		config = requireUncached(paths.config.themeConfig);
+		config = importFresh(configPath);
 	} else {
-		config = require(paths.config.themeConfig);
+		config = require(configPath);
 	}
 
 	if ( ! config.theme.slug ) {
@@ -64,10 +67,10 @@ export function getThemeConfig( uncached=false ) {
  * @return {array} List of tasks.
  */
 export function getStringReplacementTasks() {
-	// Get a fresh copy of the config
-	const config = getThemeConfig(true);
+	// Get a copy of the config
+	const config = getThemeConfig(isProd);
 
-	return Object.keys( nameFieldDefaults ).map( nameField => {
+	const stringReplacementTasks = Object.keys( nameFieldDefaults ).map( nameField => {
 		return gulpPlugins.stringReplace(
 			// Backslashes must be double escaped for regex
 			nameFieldDefaults[ nameField ].replace(/\\/g,'\\\\'),
@@ -80,6 +83,10 @@ export function getStringReplacementTasks() {
 			}
 		);
 	});
+
+	// Return a single stream containing all the
+	// string replacement tasks
+	return pipeline.obj( stringReplacementTasks );
 }
 
 export function logError(errorTitle='gulp') {
@@ -101,4 +108,70 @@ export function createProdDir() {
 
     // Create the prod theme directory
 	mkdirp(prodThemePath);
+}
+
+export function gulpRelativeDest( file ) {
+	const relativeProdFilePath = file.base.replace(file.cwd, prodThemePath);
+	return relativeProdFilePath;
+}
+
+/**
+ * Determine if a config value is defined
+ * @param {string} configValueLocation a config value path to search for, e.g. 'config.theme.slug'
+ * @return {bool}
+ */
+export function configValueDefined(configValueLocation) {
+
+	// We won't find anything if the location to search is empty
+	if( 0 === configValueLocation.length ) {
+		return false;
+	}
+
+	// Get a copy of the config
+	let config = getThemeConfig(isProd);
+
+	// Turn the value location given into an array
+	let configValueLocationArray = configValueLocation.split('.');
+
+	// Remove config from the array if present
+	if( 'config' === configValueLocationArray[0] ) {
+		configValueLocationArray.shift();
+	}
+
+	// Loop through the config value paths passed
+	for ( let currentValueLocation of configValueLocationArray ) {
+
+		// Check if there is a match in the current object level
+		if( ! config.hasOwnProperty(currentValueLocation) ) {
+			// Return false if no match
+			return false;
+		}
+
+		// Move the config object to the next level
+		config = config[currentValueLocation];
+	}
+
+	// If we've made it this far there is a match for the given config value path
+	return true;
+}
+
+/**
+ * Append a base file path to a list of files
+ * @param {string|array} filePaths the file or files to append the base path to
+ * @param {string} basePath the base path to append
+ */
+export function appendBaseToFilePathArray(filePaths, basePath) {
+	if ( ! Array.isArray(filePaths) ) {
+		return `${basePath}/${filePaths}`;
+	}
+
+	let output = [];
+
+	// Loop through all file paths
+	for ( let filePath of filePaths ) {
+		// And push them into output with the base added
+		output.push(`${basePath}/${filePath}`);
+	}
+
+	return output;
 }
