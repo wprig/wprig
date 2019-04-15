@@ -36,7 +36,9 @@
       "LICENSE",
       "readme.txt",
       "style.css",
-      "screenshot.png"
+      "screenshot.png",
+      "assets/css/src/**/*.css",
+      "assets/js/src/**/*.js"
     ]
   }
 }
