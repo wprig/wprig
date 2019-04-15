@@ -195,11 +195,11 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 	list-style: none;
 }
 
-.is-style-checkmark-list li {
+.is-style-checkmark-list > li {
 	position: relative;
 }
 
-.is-style-checkmark-list li::before {
+.is-style-checkmark-list > li::before {
 	content: "✓";
 	position: absolute;
 	top: 0;
