@@ -8,13 +8,14 @@ import colors from 'ansi-colors';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import fs from 'fs';
+import { pipeline } from 'mississippi';
 
 // Internal dependencies
 import {
 	gulpPlugins,
 	nameFieldDefaults,
 	prodThemePath,
-	configPath
+	isProd
 } from './constants';
 
 /**
@@ -24,7 +25,9 @@ import {
  * @return {object} Theme configuration data.
  */
 export function getThemeConfig( uncached=false ) {
+
 	let config;
+	const configPath =`${process.cwd()}/config/themeConfig.js`;
 
 	if ( uncached ) {
 		config = importFresh(configPath);
@@ -64,10 +67,10 @@ export function getThemeConfig( uncached=false ) {
  * @return {array} List of tasks.
  */
 export function getStringReplacementTasks() {
-	// Get a fresh copy of the config
-	const config = getThemeConfig(true);
+	// Get a copy of the config
+	const config = getThemeConfig(isProd);
 
-	return Object.keys( nameFieldDefaults ).map( nameField => {
+	const stringReplacementTasks = Object.keys( nameFieldDefaults ).map( nameField => {
 		return gulpPlugins.stringReplace(
 			// Backslashes must be double escaped for regex
 			nameFieldDefaults[ nameField ].replace(/\\/g,'\\\\'),
@@ -80,6 +83,10 @@ export function getStringReplacementTasks() {
 			}
 		);
 	});
+
+	// Return a single stream containing all the
+	// string replacement tasks
+	return pipeline.obj( stringReplacementTasks );
 }
 
 export function logError(errorTitle='gulp') {
@@ -121,7 +128,7 @@ export function configValueDefined(configValueLocation) {
 	}
 
 	// Get a copy of the config
-	let config = getThemeConfig(true);
+	let config = getThemeConfig(isProd);
 
 	// Turn the value location given into an array
 	let configValueLocationArray = configValueLocation.split('.');
@@ -148,7 +155,12 @@ export function configValueDefined(configValueLocation) {
 	return true;
 }
 
-export function appendBaseToFilePathArray(filePaths, basePath, negate = false) {
+/**
+ * Append a base file path to a list of files
+ * @param {string|array} filePaths the file or files to append the base path to
+ * @param {string} basePath the base path to append
+ */
+export function appendBaseToFilePathArray(filePaths, basePath) {
 	if ( ! Array.isArray(filePaths) ) {
 		return `${basePath}/${filePaths}`;
 	}
@@ -158,61 +170,8 @@ export function appendBaseToFilePathArray(filePaths, basePath, negate = false) {
 	// Loop through all file paths
 	for ( let filePath of filePaths ) {
 		// And push them into output with the base added
-		if( negate ) {
-			output.push(`!${basePath}/${filePath}`);
-		} else {
-			output.push(`${basePath}/${filePath}`);
-		}
+		output.push(`${basePath}/${filePath}`);
 	}
 
 	return output;
-}
-
-/**
- * Append ignored file array to an existing source path definition
- *
- * @param {string|array} sourceFiles the existing source path or array of paths
- * @param {array} ignoredSourceFiles an array of additional files to ignore
- * @param {string} sourcePath a base path to append to ignored file paths
- * @return {array} an array of file paths, with the ignored paths appended to the source path(s)
- */
-export function appendIgnoredSourceFiles(sourceFiles, ignoredSourceFiles, sourcePath) {
-
-	// Require ignored source files to be an array
-	if ( ! Array.isArray(ignoredSourceFiles) ) {
-		// Alert the user
-		log(
-			colors.red(
-				`${colors.bold('Error:')} expected ignoredSourceFiles to be an array, got a ${colors.bold(typeof ignoredSourceFiles)} instead. Returning the source path as-is. Check your WP Rig configuration file.`
-			)
-		);
-
-		// Return the orginal source
-        return sourceFiles;
-	}
-
-	// If there are no files to ignore
-	if( 0 === ignoredSourceFiles.length ) {
-		// Return the orginal source
-		return sourceFiles;
-	}
-
-	// Start an output array
-	let output = [];
-
-	// If the incoming source is not an array
-	if ( ! Array.isArray(sourceFiles) ) {
-		// Push the source string to the output
-		output.push(sourceFiles);
-	} else {
-		// Otherwise, loop through each source path
-		for ( let sourceFile of sourceFiles ) {
-			// And push it to the output
-			output.push(sourceFile);
-		}
-	}
-
-	// Return the output with the ignored files
-	return output.concat(appendBaseToFilePathArray(ignoredSourceFiles, sourcePath, true));
-
 }

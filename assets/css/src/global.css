@@ -2,17 +2,16 @@
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
 # Imports
-   # Custom media
-   # Custom properties
-   # Normalize
+	# Custom properties
+	# Reset
+	# Typography
+	# Elements
+	# Links
 # Accessibility
 # Layout
-# Typography
-# Elements
-# Links
 # Forms
 # Header
-  # Main navigation menu
+	# Main navigation menu
 # Content navigation
 # Footer
 # Infinite scroll
@@ -21,9 +20,11 @@
 /*--------------------------------------------------------------
 # Imports
 --------------------------------------------------------------*/
-@import "custom-media.css";
-@import "custom-properties.css";
-@import "reset.css";
+@import "_custom-properties.css";
+@import "_reset.css";
+@import "_typography.css";
+@import "_elements.css";
+@import "_links.css";
 
 /*--------------------------------------------------------------
 # Accessibility
@@ -102,208 +103,6 @@
 	.site-footer {
 		grid-column: span 2;
 	}
-}
-
-/*--------------------------------------------------------------
-# Typography
---------------------------------------------------------------*/
-/* stylelint-disable */
-body,
-button,
-input,
-select,
-optgroup,
-textarea {
-	color: var(--global-font-color);
-	font-family: var(--global-font-family);
-	font-size: var(--font-size-regular);
-	line-height: var(--global-font-line-height);
-}
-/* stylelint-enable */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-family: var(--highlight-font-family);
-	color: #32373c;
-	clear: both;
-}
-
-.entry-header h1.entry-title,
-.page-header .page-title {
-	font-size: 2.5rem;
-	line-height: 1.4;
-	margin-top: 1em;
-	margin-bottom: 1em;
-}
-
-dfn,
-cite,
-em,
-i {
-	font-style: italic;
-}
-
-blockquote {
-	margin: 0 1.5em;
-}
-
-address {
-	margin: 0 0 1.5em;
-}
-
-/* stylelint-disable */
-pre {
-	background: #eee;
-	font-family: "Courier 10 Pitch", Courier, monospace;
-	font-size: 0.9375rem;
-	line-height: 1.6;
-	margin-bottom: 1.6em;
-	max-width: 100%;
-	overflow: auto;
-	padding: 1.6em;
-}
-/* stylelint-enable */
-
-code,
-kbd,
-tt,
-var {
-	font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
-	font-size: 0.8rem;
-}
-
-abbr,
-acronym {
-	border-bottom: 1px dotted #666;
-	cursor: help;
-}
-
-mark,
-ins {
-	background: #fff9c0;
-	text-decoration: none;
-}
-
-big {
-	font-size: 125%;
-}
-
-/*--------------------------------------------------------------
-# Elements
---------------------------------------------------------------*/
-/* stylelint-disable */
-html {
-	box-sizing: border-box;
-}
-/* stylelint-enable */
-
-/**
- * Inherit box-sizing to make it easier to change the property for
- * components that leverage other behavior; see
- * http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
- */
-*,
-*::before,
-*::after {
-	box-sizing: inherit;
-}
-
-/* stylelint-disable */
-body {
-	background: #fff;
-	/* Fallback for when there is no custom background color defined. */
-}
-/* stylelint-enable */
-
-blockquote,
-q {
-	quotes: "" "";
-}
-
-/* stylelint-disable */
-hr {
-	background-color: #ccc;
-	border: 0;
-	height: 1px;
-	margin-bottom: 1.5em;
-}
-/* stylelint-enable */
-
-ul,
-ol {
-	margin: 0 0 1.5em 3em;
-}
-
-ul {
-	list-style: disc;
-}
-
-ol {
-	list-style: decimal;
-}
-
-li > ul,
-li > ol {
-	margin-bottom: 0;
-	margin-left: 1.5em;
-}
-
-dt {
-	font-weight: 700;
-}
-
-dd {
-	margin: 0 1.5em 1.5em;
-}
-
-/* stylelint-disable */
-img {
-	display: block;
-	height: auto;
-	max-width: 100%;
-}
-/* stylelint-enable */
-
-/* Extra wide images within figure tags don't overflow the content area. */
-figure {
-	margin: 0.5em 0;
-}
-
-table {
-	margin: 0 0 1.5em;
-	width: 100%;
-}
-
-/*--------------------------------------------------------------
-# Links
---------------------------------------------------------------*/
-/* stylelint-disable */
-a {
-	color: var(--color-link);
-}
-/* stylelint-enable */
-
-a:visited {
-	color: var(--color-link-visited);
-}
-
-a:hover,
-a:focus,
-a:active {
-	color: var(--color-link-active);
-}
-
-a:focus {
-	outline: thin dotted;
-}
-
-a:hover,
-a:active {
-	outline: 0;
 }
 
 /*--------------------------------------------------------------
@@ -447,6 +246,128 @@ select {
 }
 
 /*--------------------------------------------------------------
+## Basic navigation menus - handles submenu and small screen toggle
+--------------------------------------------------------------*/
+.nav--toggle-small .menu-toggle {
+	display: block;
+	margin: 1.2em auto;
+	padding: 0.6em 1.2em 0.5em;
+	font-family: var(--highlight-font-family);
+	font-size: 80%;
+	text-transform: uppercase;
+	border: 2px solid #000;
+	border-radius: 0;
+	background: transparent;
+}
+
+.nav--toggle-small .menu {
+	display: none;
+}
+
+.nav--toggle-sub .dropdown,
+.nav--toggle-sub .dropdown-toggle {
+	display: none;
+}
+
+@media (--narrow-menu-query) {
+
+	.nav--toggle-small.nav--toggled-on .menu {
+		display: block;
+	}
+}
+
+@media (--wide-menu-query) {
+
+	.nav--toggle-small .menu-toggle {
+		display: none;
+	}
+
+	.nav--toggle-small .menu {
+		display: block;
+	}
+
+	.nav--toggle-sub ul ul {
+		display: none;
+		position: absolute;
+		top: 100%;
+		flex-direction: column;
+		background: #fff;
+		margin-left: 0;
+		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+		z-index: 1;
+	}
+
+	.nav--toggle-sub .dropdown,
+	.nav--toggle-sub .dropdown-toggle {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		width: var(--dropdown-symbol-width);
+		height: var(--dropdown-symbol-width);
+		font-size: inherit;
+		line-height: inherit;
+		margin: 0;
+		padding: 0;
+		border: none;
+		border-radius: 0;
+		transform: translateY(-50%);
+		overflow: visible;
+	}
+
+	.nav--toggle-sub .dropdown-symbol {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 20%;
+		top: 35%;
+		width: 60%;
+		height: 60%;
+		border: solid #000;
+		border-width: 0 2px 2px 0;
+		transform: translateY(-50%) rotate(45deg);
+	}
+
+	.nav--toggle-sub ul ul .dropdown,
+	.nav--toggle-sub ul ul .dropdown-toggle {
+		top: 40%;
+		right: 0.2em;
+	}
+
+	.nav--toggle-sub ul ul .dropdown-symbol {
+		transform: rotate(-45deg);
+	}
+
+	.nav--toggle-sub .dropdown-toggle:hover,
+	.nav--toggle-sub .menu-item--has-toggle:hover .dropdown-toggle {
+		pointer-events: none;
+	}
+
+	/* Need menu-item-has-children for non-JS */
+	.nav--toggle-sub li.menu-item-has-children,
+	.nav--toggle-sub li.menu-item--has-toggle {
+		position: relative;
+		padding-right: var(--dropdown-symbol-width);
+	}
+
+	/*
+	 * If the dropdown toggle is active with JS, then
+	 * we'll take care of showing the submenu with JS.
+	 *
+	 * "focus-within" is an alternative to focus class for
+	 * supporting browsers (all but IE/Edge) for no-JS context
+	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	 */
+	.nav--toggle-sub li:hover > ul,
+	.nav--toggle-sub li.menu-item--toggled-on > ul,
+	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul,
+	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
+		display: block;
+	}
+}
+
+/*--------------------------------------------------------------
 ## Main navigation menu
 --------------------------------------------------------------*/
 .main-navigation {
@@ -458,18 +379,6 @@ select {
 	max-width: var(--content-width);
 	/* stylelint-enable */
 	font-family: var(--highlight-font-family);
-}
-
-.menu-toggle {
-	display: block;
-	margin: 1.2em auto;
-	padding: 0.6em 1.2em 0.5em;
-	font-family: var(--highlight-font-family);
-	font-size: 80%;
-	text-transform: uppercase;
-	border: 2px solid #000;
-	border-radius: 0;
-	background: transparent;
 }
 
 .main-navigation a {
@@ -492,35 +401,11 @@ select {
 	padding: 0;
 }
 
-.main-navigation li {
-	position: relative;
-}
-
 .main-navigation ul ul li {
 	padding-left: 1em;
 }
 
-.main-navigation .dropdown,
-.main-navigation button.dropdown-toggle {
-	display: none;
-}
-
-.main-navigation .menu {
-	display: none;
-}
-
-@media (--narrow-menu-query) {
-
-	.main-navigation.toggled-on .menu {
-		display: block;
-	}
-}
-
 @media (--wide-menu-query) {
-
-	.menu-toggle {
-		display: none;
-	}
 
 	.main-navigation ul li a {
 		padding: 0.4em 0.5em;
@@ -532,17 +417,6 @@ select {
 
 	.main-navigation ul li:first-child {
 		margin-left: 0;
-	}
-
-	.main-navigation ul ul {
-		display: none;
-		position: absolute;
-		top: 100%;
-		flex-direction: column;
-		background: #fff;
-		margin-left: 0;
-		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
-		z-index: 1;
 	}
 
 	.main-navigation ul ul a {
@@ -572,70 +446,7 @@ select {
 		flex-wrap: wrap;
 		justify-content: center;
 	}
-
-	.main-navigation .menu-item-has-children,
-	.main-navigation .page_item_has_children {
-		padding-right: var(--dropdown-symbol-width);
-	}
-
-	.main-navigation .dropdown,
-	.main-navigation button.dropdown-toggle {
-		display: block;
-		background: transparent;
-		position: absolute;
-		right: 0;
-		top: 50%;
-		width: var(--dropdown-symbol-width);
-		height: var(--dropdown-symbol-width);
-		font-size: inherit;
-		line-height: inherit;
-		margin: 0;
-		padding: 0;
-		border: none;
-		border-radius: 0;
-		transform: translateY(-50%);
-		overflow: visible;
-	}
-
-	.main-navigation .dropdown-symbol {
-		display: block;
-		background: transparent;
-		position: absolute;
-		right: 20%;
-		top: 35%;
-		width: 60%;
-		height: 60%;
-		border: solid #000;
-		border-width: 0 2px 2px 0;
-		transform: translateY(-50%) rotate(45deg);
-	}
-
-	.main-navigation ul ul .dropdown,
-	.main-navigation ul ul button.dropdown-toggle {
-		top: 40%;
-		right: 0.2em;
-	}
-
-	.main-navigation ul ul .dropdown-symbol {
-		transform: rotate(-45deg);
-	}
-
-	/*
-	 * If the dropdown toggle is active with JS, then
-	 * we'll take care of showing the submenu with JS.
-	 *
-	 * "focus-within" is an alternative to focus class for
-	 * supporting browsers (all but IE/Edge) for no-JS context
-	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-	 */
-	.main-navigation li:hover > ul,
-	.main-navigation li.toggled-on > ul,
-	.main-navigation:not(.has-dropdown-toggle) li:focus > ul,
-	.main-navigation:not(.has-dropdown-toggle) li:focus-within > ul {
-		display: block;
-	}
 }
-
 
 /*--------------------------------------------------------------
 # Content navigation
@@ -653,6 +464,7 @@ select {
 }
 
 @media (--content-query) {
+
 	.site-main .comment-navigation,
 	.site-main .posts-navigation,
 	.site-main .post-navigation,

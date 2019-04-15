@@ -23,12 +23,12 @@ import {
 } from './utils';
 import {server} from './browserSync';
 
-export function stylesBeforeReplacementStream() {
+export function editorStylesBeforeReplacementStream() {
 
 	// Return a single stream containing all the
 	// before replacement functionality
 	return pipeline.obj([
-		logError('CSS'),
+		logError('Editor CSS'),
 		gulpPlugins.newer({
 			dest: paths.styles.dest,
 			extra: [paths.config.themeConfig]
@@ -43,7 +43,7 @@ export function stylesBeforeReplacementStream() {
 	]);
 }
 
-export function stylesAfterReplacementStream() {
+export function editorStylesAfterReplacementStream() {
 	const config = getThemeConfig();
 
 	const postcssPlugins = [
@@ -59,6 +59,7 @@ export function stylesAfterReplacementStream() {
 				config.dev.styles.stage :
 				3
 			),
+			preserve: false,
 			features: (
 				configValueDefined('config.dev.styles.features') ?
 				config.dev.styles.features :
@@ -67,7 +68,8 @@ export function stylesAfterReplacementStream() {
 						preserve: false
 					},
 					'custom-properties': {
-						preserve: true
+						// Preserve must always be false for the editor
+						preserve: false
 					},
 					'nesting-rules': true
 				}
@@ -116,17 +118,17 @@ export function stylesAfterReplacementStream() {
 /**
 * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
 */
-export default function styles(done) {
+export default function editorStyles(done) {
 
 	return pump([
-		src( paths.styles.src, {sourcemaps: !isProd} ),
-		stylesBeforeReplacementStream(),
+		src( paths.styles.editorSrc, {sourcemaps: !isProd} ),
+		editorStylesBeforeReplacementStream(),
 		// Only do string replacements when building for production
 		gulpPlugins.if(
 			isProd,
 			getStringReplacementTasks()
 		),
-		stylesAfterReplacementStream(),
-		dest(paths.styles.dest, {sourcemaps: !isProd}),
+		editorStylesAfterReplacementStream(),
+		dest(paths.styles.editorDest, {sourcemaps: !isProd}),
 	], done);
 }

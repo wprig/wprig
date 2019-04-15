@@ -21,8 +21,7 @@ export const server = browserSync.create();
 
 // Initialize the BrowserSync server conditionally:
 export function serve(done) {
-    // get a fresh copy of the config
-    const config = getThemeConfig(true);
+    const config = getThemeConfig();
 
     // bail early if not serving via BrowserSync
     if (! config.dev.browserSync.live) {
@@ -80,8 +79,7 @@ export function serve(done) {
 
 // Reload the live site:
 export function reload(done) {
-	// get a fresh copy of the config
-    const config = getThemeConfig(true);
+	const config = getThemeConfig();
 
 	if (config.dev.browserSync.live) {
 		if (server.paused) {

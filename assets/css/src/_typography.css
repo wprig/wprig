@@ -1,0 +1,115 @@
+@import "_custom-properties.css";
+
+/*--------------------------------------------------------------
+# Typography
+--------------------------------------------------------------*/
+/* stylelint-disable */
+body,
+button,
+input,
+select,
+optgroup,
+textarea {
+	color: var(--global-font-color);
+	font-family: var(--global-font-family);
+	font-size: var(--font-size-regular);
+	line-height: var(--global-font-line-height);
+}
+/* stylelint-enable */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--highlight-font-family);
+	color: #32373c;
+	clear: both;
+}
+
+.entry-header h1.entry-title,
+.page-header .page-title {
+	font-size: 2.5rem;
+	line-height: 1.4;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+dfn,
+cite,
+em,
+i {
+	font-style: italic;
+}
+
+blockquote,
+q {
+	quotes: "" "";
+}
+
+blockquote {
+	border-left: 4px solid var(--color-quote-border);
+	margin: 0;
+}
+
+.entry-content > blockquote {
+	padding-left: 1em;
+	margin-left: 1.5rem;
+}
+
+@media (--content-query) {
+
+	.entry-content > blockquote {
+		margin-left: auto;
+	}
+}
+
+blockquote cite {
+	color: var(--color-quote-citation);
+	font-size: 13px;
+	margin-top: 1em;
+	position: relative;
+	font-style: normal;
+}
+
+address {
+	margin: 0 0 1.5em;
+}
+
+/* stylelint-disable */
+pre {
+	background: #eee;
+	font-family: "Courier 10 Pitch", Courier, monospace;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	margin-bottom: 1.5em;
+	max-width: 100%;
+	overflow: auto;
+	padding: 1.5em;
+}
+/* stylelint-enable */
+
+code,
+kbd,
+tt,
+var {
+	font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+	font-size: 0.8rem;
+}
+
+abbr,
+acronym {
+	border-bottom: 1px dotted #666;
+	cursor: help;
+}
+
+mark,
+ins {
+	background: #fff9c0;
+	text-decoration: none;
+}
+
+big {
+	font-size: 125%;
+}

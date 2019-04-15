@@ -13,21 +13,15 @@
       "https": false
     },
     "styles": {
-      "preserve": true,
-      "customProperties": [
-        "custom-properties.css"
+      "stage": 3,
+      "importFrom": [
+        "_custom-media.css"
       ],
-      "customMedia": [
-        "custom-media.css"
-      ],
-      "ignoredSourceFiles": [
-        "reset.css",
-        "custom-properties.css",
-        "custom-media.css"
-      ]
-    },
-    "scripts": {
-      "ignoredSourceFiles": []
+      "features": {
+        "custom-media-queries": true,
+        "custom-properties": true,
+        "nesting-rules": true
+      }
     },
     "debug": {
       "styles": false,
@@ -37,6 +31,7 @@
   },
   "export": {
     "compress": true,
+    "generatePotFile": true,
     "filesToCopy": [
       "LICENSE",
       "readme.txt",

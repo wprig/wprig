@@ -13,8 +13,12 @@ import {getThemeConfig} from './utils';
  * Generate translation files.
  */
 export default function translate(done) {
-    // Get a fresh copy of the config
     const config = getThemeConfig();
+
+    // Don't generate .pot file on production if the config flag is false
+    if ( isProd && ! config.export.generatePotFile ) {
+        return done();
+    }
 
 	pump([
         src(paths.languages.src),

@@ -4,22 +4,18 @@
 // External dependencies
 export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
-import importFresh from 'import-fresh';
 
 // Internal dependencies
-import {appendIgnoredSourceFiles, configValueDefined} from './utils';
+import {getThemeConfig} from './utils';
 
 // Root path is where npm run commands happen
-export const rootPath = process.env.INIT_CWD;
+export const rootPath = process.cwd();
 
 // Dev or production
 export const isProd = ( process.env.NODE_ENV === 'production' );
 
-// Define the config path
-export const configPath = `${rootPath}/config/themeConfig.js`;
-
-// get a fresh copy of the config
-export const config = importFresh(configPath);
+// get the config
+const config = getThemeConfig();
 
 // directory for the production theme
 export const prodThemePath = path.normalize(`${rootPath}/../${config.theme.slug}`);
@@ -71,34 +67,31 @@ let paths = {
 		dest: `${rootPath}/`
 	},
 	styles: {
-		src: `${assetsDir}/css/src/**/*.css`,
-		srcDir: `${assetsDir}/css/src`,
-		srcWithIgnored: appendIgnoredSourceFiles(
-			// Start with all CSS source
+		editorSrc: [
+			`${assetsDir}/css/src/editor/**/*.css`,
+			// Ignore partial files.
+			`!${assetsDir}/css/src/**/_*.css`,
+		],
+		editorSrcDir: `${assetsDir}/css/src/editor`,
+		editorDest: `${assetsDir}/css/editor`,
+		src: [
 			`${assetsDir}/css/src/**/*.css`,
-			// Negate ignored files from config, if defined
-			configValueDefined('config.dev.styles.ignoredSourceFiles') ?
-				config.dev.styles.ignoredSourceFiles :
-				[],
-			// With the CSS source base path
-			`${assetsDir}/css/src`
-		),
-		sass: `${assetsDir}/css/src/**/*.scss`,
-		dest: `${assetsDir}/css/`
+			// Ignore partial files.
+			`!${assetsDir}/css/src/**/_*.css`,
+			// Ignore editor source css.
+			`!${assetsDir}/css/src/editor/**/*.css`
+		],
+		srcDir: `${assetsDir}/css/src`,
+		dest: `${assetsDir}/css`
 	},
 	scripts: {
-		src: `${assetsDir}/js/src/**/*.js`,
-		srcWithIgnored: appendIgnoredSourceFiles(
-			// Start with all JS source
+		src: [
 			`${assetsDir}/js/src/**/*.js`,
-			// Negate ignored files from config, if defined
-			configValueDefined('config.dev.scripts.ignoredSourceFiles') ?
-				config.dev.scripts.ignoredSourceFiles :
-				[],
-			// With the JS source base path
-			`${assetsDir}/js/src`
-		),
-		dest: `${assetsDir}/js/`
+			// Ignore partial files.
+			`!${assetsDir}/js/src/**/_*.js`,
+		],
+		srcDir: `${assetsDir}/js/src`,
+		dest: `${assetsDir}/js`
 	},
 	images: {
 		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
