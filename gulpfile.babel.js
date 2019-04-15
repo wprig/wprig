@@ -15,7 +15,8 @@ import editorStyles from './gulp/editorStyles';
 import translate from './gulp/translate';
 import watch from './gulp/watch';
 import prodPrep from './gulp/prodPrep';
-import prodFinish from './gulp/prodFinish';
+import prodStringReplace from './gulp/prodStringReplace';
+import prodCompress from './gulp/prodCompress';
 import {cleanCSS, cleanJS} from './gulp/clean';
 
 /**
@@ -38,7 +39,7 @@ export const buildDev = parallel(
  * Export theme for distribution.
  */
 export const bundleTheme = series(
-    prodPrep, parallel(php, scripts, series( styles, editorStyles ), images), translate, prodFinish
+    prodPrep, parallel(php, scripts, series( styles, editorStyles ), images), translate, prodStringReplace, prodCompress
 );
 
 /**

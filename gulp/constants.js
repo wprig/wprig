@@ -108,7 +108,8 @@ let paths = {
 	},
 	export: {
 		src: [],
-		dest: `${prodThemePath}/`
+		dest: `${prodThemePath}/`,
+		stringReplaceSrc: [`style.css`]
 	}
 };
 

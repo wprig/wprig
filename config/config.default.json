@@ -35,7 +35,6 @@
     "filesToCopy": [
       "LICENSE",
       "readme.txt",
-      "style.css",
       "screenshot.png"
     ]
   }
