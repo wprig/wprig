@@ -9,11 +9,21 @@ const KEYMAP = {
 		TAB: 9
 	};
 
+if ( 'loading' === document.readyState ) {
+
+	// The DOM has not yet been loaded.
+	document.addEventListener( 'DOMContentLoaded', initNavigation );
+} else {
+
+	// The DOM has already been loaded.
+	initNavigation();
+}
+
 // Initiate the menus when the DOM loads.
-document.addEventListener( 'DOMContentLoaded', function() {
+function initNavigation() {
 	initNavToggleSubmenus();
 	initNavToggleSmall();
-});
+}
 
 /**
  * Initiate the script to process all
