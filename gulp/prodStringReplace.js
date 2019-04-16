@@ -6,7 +6,7 @@ import {src, dest} from 'gulp';
 import pump from 'pump';
 
 // Internal dependencies
-import {isProd, gulpPlugins, paths} from './constants';
+import {isProd, paths} from './constants';
 import {getStringReplacementTasks} from './utils';
 
 /**
