@@ -1,4 +1,5 @@
-// phpcs:disable no-undef.
+/* eslint-env es6 */
+/* global test, expect */
 import { pipe as pump, from, concat } from 'mississippi';
 import Vinyl from 'vinyl';
 

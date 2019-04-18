@@ -95,6 +95,7 @@
     "generateCert": "gulp generateCert",
     "rig-init": "npm install && composer install",
     "translate": "gulp translate",
-    "test-gulp": "jest gulp/tests"
+    "test-gulp": "jest gulp/tests",
+    "lint-gulp": "eslint gulp/"
   }
 }
