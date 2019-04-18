@@ -18,6 +18,10 @@ function makeMockFiles() {
 	margin-bottom: 1rem;
 }
 
+.grid-wrap {
+	display: grid;
+}
+
 @media (--content-query) {
 
 	.entry {
@@ -33,7 +37,7 @@ function makeMockFiles() {
 `
       )
     }),
-  ]
+  ];
 }
 
 test('nesting', (done) => {
@@ -152,6 +156,46 @@ test('debug config disables minify', (done) => {
     const fileContents = file.contents.toString('utf-8');
     // Unminified files will have newlines.
     expect(fileContents).toContain('\n');
+  }
+
+  pump([
+    from.obj(mockFiles),
+    stylesAfterReplacementStream(),
+    concat(assert)
+  ], done);
+});
+
+test('IE grid prefix if configured', (done) => {
+  const config = getThemeConfig();
+  config.dev.styles.autoprefixer = { grid: true };
+
+  const mockFiles = makeMockFiles();
+
+  function assert(files) {
+    const file = files[0];
+    const fileContents = file.contents.toString('utf-8');
+    expect(fileContents).toContain('-ms-grid');
+  }
+
+  pump([
+    from.obj(mockFiles),
+    stylesAfterReplacementStream(),
+    concat(assert)
+  ], done);
+});
+
+test('No IE grid prefix by default', (done) => {
+  const config = getThemeConfig();
+  // Set autoprefix to the default value.
+  const defaultConfig = getDefaultConfig();
+  config.dev.styles.autoprefixer = defaultConfig.dev.styles.autoprefixer;
+
+  const mockFiles = makeMockFiles();
+
+  function assert(files) {
+    const file = files[0];
+    const fileContents = file.contents.toString('utf-8');
+    expect(fileContents).not.toContain('-ms-grid');
   }
 
   pump([
