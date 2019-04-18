@@ -1,3 +1,4 @@
+// phpcs:disable no-undef.
 import { pipe as pump, from, concat } from 'mississippi';
 import Vinyl from 'vinyl';
 
