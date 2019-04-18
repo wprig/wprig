@@ -79,29 +79,59 @@
 @media (--sidebar-query) {
 
 	.has-sidebar .site {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
 		margin: 0 1em;
-		display: grid;
-		grid-template-columns: 3fr 1fr;
-		grid-gap: 2rem;
-		justify-content: center;
 	}
 
 	.site-header {
+		flex-basis: 100%;
 		grid-column: span 2;
+		margin-bottom: 2rem;
 	}
 
 	.site-main {
+		flex: 0 0 auto;
 		grid-column: 1;
+		width: calc(75% - 1rem);
 		min-width: 0;
 	}
 
 	.primary-sidebar {
+		flex: 0 0 auto;
 		grid-column: 2;
+		width: calc(25% - 1rem);
 		min-width: 0;
 	}
 
 	.site-footer {
+		flex-basis: 100%;
 		grid-column: span 2;
+		margin-top: 2rem;
+	}
+
+	@supports (display: grid) {
+		.site-header {
+			margin-bottom: 0;
+		}
+
+		.has-sidebar .site {
+			display: grid;
+			align-items: flex-start;
+			justify-content: center;
+			grid-template-columns: 3fr 1fr;
+			grid-gap: 2rem;
+		}
+
+		.site-main,
+		.primary-sidebar{
+			width: auto;
+		}
+
+		.site-footer {
+			margin-top: 0;
+		}
 	}
 }
 
