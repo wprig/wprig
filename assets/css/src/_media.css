@@ -13,13 +13,11 @@
 }
 
 /* Make sure embeds and iframes fit their containers. */
-/* stylelint-disable */
 embed,
 iframe,
 object {
 	max-width: 100%;
 }
-/* stylelint-enable */
 
 /*--------------------------------------------------------------
 ## Captions
@@ -47,16 +45,12 @@ object {
 
 	.wp-caption.alignright,
 	.wp-block-image.alignright {
-		/* stylelint-disable */
 		margin-right: calc((100% - var(--content-width)) / 2);
-		/* stylelint-enable */
 	}
 
 	.wp-caption.alignleft,
 	.wp-block-image.alignleft {
-		/* stylelint-disable */
 		margin-left: calc((100% - var(--content-width)) / 2);
-		/* stylelint-enable */
 	}
 
 }
