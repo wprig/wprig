@@ -11,7 +11,6 @@ use WP_Rig\WP_Rig\Component_Interface;
 use function WP_Rig\WP_Rig\wp_rig;
 use WP_Post;
 use function add_filter;
-use function is_active_sidebar;
 
 /**
  * Class for managing responsive image sizes.
