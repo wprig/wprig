@@ -36,7 +36,7 @@ WP Rig requires the following dependencies. Full installation instructions are p
 
 ### How to install WP Rig:
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
-      - DO NOT give the wprig development folder the same name as your production theme. This will cause issues with the `npm run bundle` command during the production process. For instance if your theme will eventually be named "Excalibur" you cannot use this as your development folder name. The 'excalibur' folder gets created during the production process and cannot exist beforehand. The default development folder name is `wprig`.
+      - DO NOT give the WP Rig theme directory the same name as your eventual production theme. Suggested directory names are `wprig` or `wprig-themeslug`.  For instance if your theme will eventually be named “Excalibur” your development directory could be named `wprig-excalibur`. The `excalibur` directory will be automatically created during the production process and should not exist beforehand.
 2. Configure theme settings, including the theme slug and name.
     - View `./config/config.default.json` for the default settings.
     - Place custom theme settings in `./config/config.json` to override default settings.
