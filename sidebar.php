@@ -9,7 +9,8 @@
 
 namespace WP_Rig\WP_Rig;
 
-if ( ! wp_rig()->is_primary_sidebar_active() ) {
+if ( ! method_exists( 'wp_rig', 'is_primary_sidebar_active' )
+	|| ! wp_rig()->is_primary_sidebar_active() ) {
 	return;
 }
 
