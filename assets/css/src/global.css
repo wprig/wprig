@@ -362,7 +362,7 @@ select {
 	}
 
 	/*
-     * "focus-within" is an alternative to focus class for
+	 * "focus-within" is an alternative to focus class for
 	 * supporting browsers (all but IE/Edge) for no-JS context
 	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
 	 *
