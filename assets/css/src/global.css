@@ -354,14 +354,21 @@ select {
 	/*
 	 * If the dropdown toggle is active with JS, then
 	 * we'll take care of showing the submenu with JS.
-	 *
-	 * "focus-within" is an alternative to focus class for
-	 * supporting browsers (all but IE/Edge) for no-JS context
-	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
 	 */
 	.nav--toggle-sub li:hover > ul,
 	.nav--toggle-sub li.menu-item--toggled-on > ul,
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul,
+	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
+		display: block;
+	}
+
+	/*
+     * "focus-within" is an alternative to focus class for
+	 * supporting browsers (all but IE/Edge) for no-JS context
+	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	 *
+	 * This selector needs to stay separated, otherwise submenus
+	 * will not be displayed with IE/Edge.
+	 */
 	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
 		display: block;
 	}
