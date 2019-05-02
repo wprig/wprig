@@ -39,7 +39,7 @@ function initNavToggleSubmenus() {
 	}
 
 	for ( let i = 0; i < navTOGGLE.length; i++ ) {
-		initEachNavToggleSubmenu( navTOGGLE[ i ] );
+		initEachNavToggleSubmenu( navTOGGLE[ i ]);
 	}
 }
 
@@ -76,7 +76,7 @@ function initEachNavToggleSubmenu( nav ) {
 			dropdown.appendChild( dropdownSymbol );
 
 			// Add before submenu.
-			SUBMENUS[ i ].parentNode.insertBefore( dropdown, SUBMENUS[ i ] );
+			SUBMENUS[ i ].parentNode.insertBefore( dropdown, SUBMENUS[ i ]);
 
 		}
 
@@ -149,7 +149,7 @@ function initNavToggleSmall() {
 	}
 
 	for ( let i = 0; i < navTOGGLE.length; i++ ) {
-		initEachNavToggleSmall( navTOGGLE[ i ] );
+		initEachNavToggleSmall( navTOGGLE[ i ]);
 	}
 }
 
