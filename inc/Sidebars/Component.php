@@ -20,6 +20,8 @@ use function dynamic_sidebar;
  * Class for managing sidebars.
  *
  * Exposes template tags:
+ * * `wp_rig()->template_has_active_sidebar()`
+ * * `wp_rig()->get_template_active_sidebars()`
  * * `wp_rig()->is_primary_sidebar_active()`
  * * `wp_rig()->display_primary_sidebar()`
  *
@@ -55,8 +57,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function template_tags() : array {
 		return array(
-			'is_primary_sidebar_active' => array( $this, 'is_primary_sidebar_active' ),
-			'display_primary_sidebar'   => array( $this, 'display_primary_sidebar' ),
+			'template_has_active_sidebar'  => array( $this, 'template_has_active_sidebar' ),
+			'get_template_active_sidebars' => array( $this, 'get_template_active_sidebars' ),
+			'is_primary_sidebar_active'    => array( $this, 'is_primary_sidebar_active' ),
+			'display_primary_sidebar'      => array( $this, 'display_primary_sidebar' ),
 		);
 	}
 
@@ -78,18 +82,54 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
+	 * Gets an array of sidebars IDs that are used by the current template.
+	 *
+	 * @return array sidebar IDs.
+	 */
+	private function get_template_sidebars() : array {
+		global $template;
+
+		switch ( basename( $template ) ) {
+			case 'front-page.php':
+			case '404.php':
+			case '500.php':
+			case 'offline.php':
+				$sidebars = array( '' );
+				break;
+			default:
+				$sidebars = array( static::PRIMARY_SIDEBAR_SLUG );
+		}
+
+		return $sidebars;
+	}
+
+	/**
+	 * Gets an array of sidebars IDs that are used by the current template and active.
+	 *
+	 * @return array sidebar IDs.
+	 */
+	public function get_template_active_sidebars() : array {
+		return array_filter( $this->get_template_sidebars(), 'is_active_sidebar' );
+	}
+
+	/**
+	 * Checks whether the current template has a sidebar that is active.
+	 *
+	 * @return bool True if the template has a sidebar that is active, false otherwise.
+	 */
+	public function template_has_active_sidebar() : bool {
+		return ! empty( $this->get_template_active_sidebars() );
+	}
+
+	/**
 	 * Adds custom classes to indicate whether a sidebar is present to the array of body classes.
 	 *
 	 * @param array $classes Classes for the body element.
 	 * @return array Filtered body classes.
 	 */
 	public function filter_body_classes( array $classes ) : array {
-		if ( $this->is_primary_sidebar_active() ) {
-			global $template;
-
-			if ( ! in_array( basename( $template ), array( 'front-page.php', '404.php', '500.php', 'offline.php' ) ) ) {
-				$classes[] = 'has-sidebar';
-			}
+		if ( in_array( static::PRIMARY_SIDEBAR_SLUG, $this->get_template_active_sidebars() ) ) {
+			$classes[] = 'has-sidebar';
 		}
 
 		return $classes;
