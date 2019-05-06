@@ -12,6 +12,7 @@ use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Post;
 use function add_action;
 use function add_filter;
+use function wp_parse_args;
 use function register_nav_menus;
 use function esc_html__;
 use function has_nav_menu;
@@ -26,7 +27,12 @@ use function wp_nav_menu;
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
-	const PRIMARY_NAV_MENU_SLUG = 'primary';
+	/**
+	 * Associative array of menu location identifiers (like a slug) and descriptive text.
+	 *
+	 * @var array $nav_menus
+	 */
+	private $nav_menus = array();
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -41,6 +47,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
+		$this->set_navs_menus();
+
 		add_action( 'after_setup_theme', array( $this, 'action_register_nav_menus' ) );
 		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_primary_nav_menu_dropdown_symbol' ), 10, 4 );
 	}
@@ -60,14 +68,54 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
+	 * Set the navs menus slugs and their description.
+	 *
+	 * @return void
+	 */
+	public function set_navs_menus() {
+		$this->nav_menus = array(
+			'primary' => esc_html__( 'Primary', 'wp-rig' ),
+		);
+	}
+
+	/**
+	 * Get the navs menus slugs and their description.
+	 *
+	 * @return array Associative array of menu location identifiers (like a slug) and descriptive text.
+	 */
+	public function get_navs_menus() : array {
+		return $this->nav_menus;
+	}
+
+	/**
+	 * Get the navs menus slugs.
+	 *
+	 * @return array Array of menu location identifiers (like a slug).
+	 */
+	public function get_menus_slugs() : array {
+		return array_keys( $this->nav_menus );
+	}
+
+	/**
+	 * Get the primary nav menu slug.
+	 *
+	 * @return string Primary menu location identifier (like a slug).
+	 */
+	public function get_primary_menu_slug() : string {
+		$menus_slugs = $this->get_menus_slugs();
+
+		return reset( $menus_slugs );
+	}
+
+	/**
 	 * Registers the navigation menus.
 	 */
 	public function action_register_nav_menus() {
-		register_nav_menus(
-			array(
-				static::PRIMARY_NAV_MENU_SLUG => esc_html__( 'Primary', 'wp-rig' ),
-			)
-		);
+		if ( empty( $this->nav_menus ) ) {
+			return;
+		}
+
+		register_nav_menus( $this->nav_menus );
 	}
 
 	/**
@@ -93,7 +141,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ) : string {
 
 		// Only for our primary menu location.
-		if ( empty( $args->theme_location ) || static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
+		if ( empty( $args->theme_location ) || $this->get_primary_menu_slug() !== $args->theme_location ) {
 			return $item_output;
 		}
 
@@ -111,7 +159,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return bool True if the primary navigation menu is active, false otherwise.
 	 */
 	public function is_primary_nav_menu_active() : bool {
-		return (bool) has_nav_menu( static::PRIMARY_NAV_MENU_SLUG );
+		return (bool) has_nav_menu( $this->get_primary_menu_slug() );
 	}
 
 	/**
@@ -121,11 +169,14 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *                    arguments.
 	 */
 	public function display_primary_nav_menu( array $args = array() ) {
-		if ( ! isset( $args['container'] ) ) {
-			$args['container'] = 'ul';
-		}
+		$args = wp_parse_args(
+			$args,
+			array(
+				'container' => 'ul',
+			)
+		);
 
-		$args['theme_location'] = static::PRIMARY_NAV_MENU_SLUG;
+		$args['theme_location'] = $this->get_primary_menu_slug();
 
 		wp_nav_menu( $args );
 	}
