@@ -32,6 +32,8 @@ class Component implements Component_Interface {
 	 */
 	public function initialize() {
 		add_action( 'after_setup_theme', array( $this, 'action_add_post_thumbnail_support' ) );
+		add_action( 'after_setup_theme', array( $this, 'action_add_image_sizes' ) );
+
 	}
 
 	/**
@@ -39,5 +41,13 @@ class Component implements Component_Interface {
 	 */
 	public function action_add_post_thumbnail_support() {
 		add_theme_support( 'post-thumbnails' );
+	}
+
+	/**
+	 * Adds custom image sizes.
+	 */
+	public function action_add_image_sizes() {
+		add_image_size( 'wp-rig-post-thumbnail', 720, 308, true );
+		add_image_size( 'wp-rig-post-thumbnail-tall', 720, 480, true );
 	}
 }
