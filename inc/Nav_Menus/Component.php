@@ -50,7 +50,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$this->set_navs_menus();
 
 		add_action( 'after_setup_theme', array( $this, 'action_register_nav_menus' ) );
-		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_primary_nav_menu_dropdown_symbol' ), 10, 4 );
+		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_nav_menu_dropdown_symbol' ), 10, 4 );
 	}
 
 	/**
@@ -138,10 +138,15 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param object  $args        An object of wp_nav_menu() arguments.
 	 * @return string Modified nav menu HTML.
 	 */
-	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ) : string {
+	public function filter_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ) : string {
 
-		// Only for our primary menu location.
-		if ( empty( $args->theme_location ) || $this->get_primary_menu_slug() !== $args->theme_location ) {
+		// Skip page menus (menus without location) and flat menus.
+		if ( empty( $args->theme_location ) || 1 === $args->depth ) {
+			return $item_output;
+		}
+
+		// Skip menus not assigned to our primary menu location.
+		if ( 'primary' !== $args->theme_location ) {
 			return $item_output;
 		}
 
