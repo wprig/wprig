@@ -394,6 +394,11 @@ select {
 	text-decoration: underline;
 }
 
+.main-navigation .current-menu-item > a,
+.main-navigation .current-menu-ancestor > a {
+	font-weight: 600;
+}
+
 .main-navigation ul {
 	display: block;
 	list-style: none;
