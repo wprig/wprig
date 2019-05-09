@@ -86,8 +86,9 @@
 		justify-content: center;
 	}
 
-	.site-header {
-		grid-column: span 2;
+	.site-header,
+	.site-footer {
+		grid-column: 1 / -1;
 	}
 
 	.site-main {
@@ -98,10 +99,6 @@
 	.primary-sidebar {
 		grid-column: 2;
 		min-width: 0;
-	}
-
-	.site-footer {
-		grid-column: span 2;
 	}
 }
 
