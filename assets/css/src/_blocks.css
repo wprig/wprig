@@ -32,6 +32,11 @@
  * .wp-block-archives
  */
 
+/* Fix default text color for WordPress 5.0 and 5.1  */
+a.wp-block-button__link {
+	color: inherit;
+}
+
 .wp-block-quote.is-large,
 .wp-block-quote.is-style-large {
 	margin: 1.5em auto;
