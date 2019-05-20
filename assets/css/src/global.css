@@ -224,6 +224,7 @@ select {
 .site-title {
 	margin: 0 1em;
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 	font-size: 38px;
 	font-weight: 700;
 	line-height: 1.2;
@@ -238,6 +239,7 @@ select {
 .site-description {
 	margin: 0.4375em 0 0;
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 	font-size: 17px;
 	font-weight: inherit;
 	line-height: 1.4;
@@ -253,6 +255,7 @@ select {
 	margin: 1.2em auto;
 	padding: 0.6em 1.2em 0.5em;
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 	font-size: 80%;
 	text-transform: uppercase;
 	border: 2px solid #000;
@@ -379,6 +382,7 @@ select {
 	max-width: var(--content-width);
 	/* stylelint-enable */
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 }
 
 .main-navigation a {
@@ -461,6 +465,7 @@ select {
 	overflow: hidden;
 	padding: 0 1.5rem 2em;
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 }
 
 @media (--content-query) {
@@ -560,6 +565,7 @@ select {
 	margin: 1em 0 0;
 	padding: 2em 0;
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 }
 
 .site-info {

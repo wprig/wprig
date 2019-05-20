@@ -399,8 +399,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		$query_args = array(
-			'family' => implode( '|', $font_families ),
-			'subset' => 'latin-ext',
+			'family'  => implode( '|', $font_families ),
+			'subset'  => 'latin-ext',
+			'display' => 'swap',
 		);
 
 		return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );

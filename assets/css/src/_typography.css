@@ -24,6 +24,7 @@ h4,
 h5,
 h6 {
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 	color: #32373c;
 	clear: both;
 }

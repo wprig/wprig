@@ -5,6 +5,7 @@
 .primary-sidebar {
 	padding: 1.5rem;
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 }
 
 @media (--sidebar-query) {
