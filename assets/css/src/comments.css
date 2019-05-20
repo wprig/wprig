@@ -145,7 +145,7 @@
 	padding: 0.5em 1.4em;
 	font-family: var(--highlight-font-family);
 	font-size: 85%;
-	color: #000;
+	color: var(--global-font-color);
 	line-height: 1.3;
 	text-decoration: none;
 	background: transparent;
@@ -157,7 +157,7 @@
 .comment-reply-link:focus,
 .comment-form .form-submit input:hover,
 .comment-form .form-submit input:focus {
-	border-color: #000;
+	border-color: var(--global-font-color);
 	cursor: pointer;
 }
 
@@ -204,7 +204,7 @@
 }
 
 .comment-form .required {
-	color: #d54e21;
+	color: var(--color-theme-red);
 }
 
 .comment-form .form-submit {

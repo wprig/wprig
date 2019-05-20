@@ -227,7 +227,6 @@ select {
 	font-size: 38px;
 	font-weight: 700;
 	line-height: 1.2;
-	color: #333332;
 }
 
 .site-title a {
@@ -255,7 +254,7 @@ select {
 	font-family: var(--highlight-font-family);
 	font-size: 80%;
 	text-transform: uppercase;
-	border: 2px solid #000;
+	border: 2px solid var(--global-font-color);
 	border-radius: 0;
 	background: transparent;
 }
@@ -324,7 +323,7 @@ select {
 		top: 35%;
 		width: 60%;
 		height: 60%;
-		border: solid #000;
+		border: solid var(--global-font-color);
 		border-width: 0 2px 2px 0;
 		transform: translateY(-50%) rotate(45deg);
 	}
@@ -386,7 +385,7 @@ select {
 	width: 100%;
 	padding: 0.5em 1em 0.5em 0;
 	text-decoration: none;
-	color: #000;
+	color: var(--global-font-color);
 }
 
 .main-navigation a:hover,
@@ -455,7 +454,7 @@ select {
 .site-main .posts-navigation,
 .site-main .post-navigation,
 .site-main .pagination {
-	border-bottom: 1px solid #111;
+	border-bottom: 1px solid var(--global-font-color);
 	margin: 0 auto 2em;
 	max-width: 720px;
 	overflow: hidden;
@@ -525,7 +524,7 @@ select {
 .pagination a:hover,
 .pagination a:focus,
 .pagination a:active {
-	border-color: #00a0d2;
+	border-color: var(--color-link-active);
 }
 
 .pagination .prev,

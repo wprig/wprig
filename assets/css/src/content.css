@@ -132,7 +132,7 @@
 .entry-footer {
 	clear: both;
 	padding: 1.5em 1.5rem 3em;
-	border-bottom: 1px solid #111;
+	border-bottom: 1px solid var(--global-font-color);
 }
 
 @media (--content-query) {
