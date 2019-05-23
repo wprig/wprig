@@ -1,4 +1,5 @@
 /* eslint-env es6 */
+/* eslint no-undef: "off" */
 'use strict';
 
 // External dependencies
