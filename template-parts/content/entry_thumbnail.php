@@ -34,7 +34,7 @@ if ( is_singular( get_post_type() ) ) {
 		global $wp_query;
 		if ( 0 === $wp_query->current_post ) {
 			the_post_thumbnail(
-				'wp-rig-post-thumbnail-tall',
+				'wp-rig-featured',
 				array(
 					'class' => 'skip-lazy',
 					'alt'   => the_title_attribute(
@@ -46,7 +46,7 @@ if ( is_singular( get_post_type() ) ) {
 			);
 		} else {
 			the_post_thumbnail(
-				'wp-rig-post-thumbnail',
+				'wp-rig-featured',
 				array(
 					'alt' => the_title_attribute(
 						array(
