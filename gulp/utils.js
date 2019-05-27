@@ -118,6 +118,10 @@ export function gulpRelativeDest( file ) {
 	return relativeProdFilePath;
 }
 
+export function backslashToForwardSlash(path) {
+	return path.replace(/\\/g, '/');
+}
+
 /**
  * Determine if a config value is defined
  * @param {string} configValueLocation a config value path to search for, e.g. 'config.theme.slug'
