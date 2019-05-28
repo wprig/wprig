@@ -121,6 +121,7 @@ for ( let filePath of config.export.filesToCopy.concat( config.export.additional
 if( isProd ){
 	paths.php.dest = `${prodThemePath}/`;
 	paths.styles.dest = `${prodAssetsDir}/css/`;
+	paths.styles.editorDest = `${prodAssetsDir}/css/editor/`;
 	paths.scripts.dest = `${prodAssetsDir}/js/`;
 	paths.images.dest = `${prodAssetsDir}/images/`;
 	paths.languages = {
