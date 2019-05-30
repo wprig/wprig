@@ -119,7 +119,13 @@ export function gulpRelativeDest( file ) {
 }
 
 export function backslashToForwardSlash(path) {
-	return path.replace(/\\/g, '/');
+	let replace_fn = ( p => p.replace(/\\/g, '/') );
+	if ( Array.isArray(path) ) {
+		let paths = [];
+		path.forEach( p => paths.push( replace_fn(p) ) );
+		return paths;
+	}
+	return replace_fn(path);
 }
 
 /**
