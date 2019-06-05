@@ -40,20 +40,13 @@ $taxonomies = wp_list_filter(
 		if ( empty( $list ) ) {
 			continue;
 		}
-
-		if ( $taxonomy->hierarchical ) {
-			/* translators: %s: list of taxonomy terms */
-			$placeholder_text = __( 'Posted in %s', 'wp-rig' );
-		} else {
-			/* translators: %s: list of taxonomy terms */
-			$placeholder_text = __( 'Tagged %s', 'wp-rig' );
-		}
-
 		?>
 		<span class="<?php echo esc_attr( $class ); ?>">
 			<?php
 			printf(
-				esc_html( $placeholder_text ),
+				/* translators: 1: taxonomy name, 2: list of taxonomy terms */
+				esc_html__( '%1$s: %2$s', 'wp-rig' ),
+				$taxonomy->labels->name, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				$list // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			);
 			?>
