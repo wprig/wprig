@@ -461,7 +461,7 @@ select {
 .site-main .pagination {
 	border-bottom: 1px solid #111;
 	margin: 0 auto 2em;
-	max-width: 720px;
+	max-width: var(--content-width);
 	overflow: hidden;
 	padding: 0 1.5rem 2em;
 	font-family: var(--highlight-font-family);
@@ -578,6 +578,7 @@ select {
 
 /* Globally hidden elements when Infinite Scroll is supported and in use. */
 .infinite-scroll .posts-navigation,
+.infinite-scroll .pagination,
 .infinite-scroll.neverending .site-footer {
 
 	/* Theme Footer (when set to scrolling) */
