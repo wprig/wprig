@@ -90,15 +90,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
-	 * Get the navs menus slugs.
-	 *
-	 * @return array Array of menu location identifiers (like a slug).
-	 */
-	public function get_menu_slugs() : array {
-		return array_keys( $this->nav_menus );
-	}
-
-	/**
 	 * Registers the navigation menus.
 	 */
 	public function action_register_nav_menus() {
