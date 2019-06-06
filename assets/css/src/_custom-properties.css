@@ -7,14 +7,10 @@
 
 :root {
 	--global-font-color: #333;
-	/* stylelint-disable */
 	--global-font-family: "Crimson Text", serif;
-	/* stylelint-enable */
 	--global-font-size: 20;
 	--global-font-line-height: 1.4;
-	/* stylelint-disable */
 	--highlight-font-family: "Roboto Condensed", sans-serif;
-	/* stylelint-enable */
 	--content-width: 45rem;
 	--dropdown-symbol-width: 0.7em;
 
