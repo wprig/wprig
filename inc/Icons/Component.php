@@ -36,8 +36,8 @@ class Component implements Component_Interface {
 			return;
 		}
 
-		add_action( 'wp_body_open', array( $this, 'action_add_icons_to_dom' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_icons_script' ) );
+		add_action( 'wp_body_open', [ $this, 'action_add_icons_to_dom' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'action_enqueue_icons_script' ] );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Component implements Component_Interface {
 		wp_enqueue_script(
 			'wp-rig-icons',
 			get_theme_file_uri( '/assets/js/icons.min.js' ),
-			array(),
+			[],
 			wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/icons.min.js' ) ),
 			false
 		);
@@ -63,9 +63,9 @@ class Component implements Component_Interface {
 		wp_localize_script(
 			'wp-rig-icons',
 			'wpRigIcons',
-			array(
+			[
 				'URI' => get_theme_file_uri( static::PATH ),
-			)
+			]
 		);
 	}
 
