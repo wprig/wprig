@@ -49,7 +49,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		$this->set_navs_menus();
+		$this->set_nav_menus();
 
 		add_action( 'after_setup_theme', array( $this, 'action_register_nav_menus' ) );
 		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_nav_menu_dropdown_symbol' ), 10, 4 );
@@ -74,7 +74,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return void
 	 */
-	public function set_navs_menus() {
+	private function set_nav_menus() {
 		$this->nav_menus = array(
 			static::PRIMARY_NAV_MENU_SLUG => esc_html__( 'Primary', 'wp-rig' ),
 		);
@@ -85,7 +85,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return array Associative array of menu location identifiers (like a slug) and descriptive text.
 	 */
-	public function get_navs_menus() : array {
+	public function get_nav_menus() : array {
 		return $this->nav_menus;
 	}
 
@@ -94,7 +94,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return array Array of menu location identifiers (like a slug).
 	 */
-	public function get_menus_slugs() : array {
+	public function get_menu_slugs() : array {
 		return array_keys( $this->nav_menus );
 	}
 
