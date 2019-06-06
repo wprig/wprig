@@ -23,6 +23,7 @@
     "babel-jest": "^24.7.1",
     "browser-sync": "^2.26.3",
     "create-cert": "^1.0.6",
+    "cross-env": "^5.2.0",
     "cssnano": "^4.1.10",
     "deepmerge": "^3.2.0",
     "del": "^4.1.0",
@@ -89,7 +90,7 @@
   },
   "scripts": {
     "build": "gulp buildDev",
-    "bundle": "NODE_ENV=production gulp bundleTheme",
+    "bundle": "cross-env NODE_ENV=production gulp bundleTheme",
     "dev": "gulp",
     "gulp": "gulp",
     "generateCert": "gulp generateCert",
