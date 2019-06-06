@@ -1,13 +1,14 @@
 <?php
 /**
  * Template Name: Custom Post Template
+ * Template Post Type: post
  *
  * When active, by adding the heading above and providing a custom name
  * this template becomes available in a drop-down panel in the editor.
  *
  * Filename can be anything.
  *
- * @link https://developer.wordpress.org/themes/template-files-section/page-template-files/#creating-custom-page-templates-for-global-use
+ * @link https://developer.wordpress.org/themes/template-files-section/page-template-files/#creating-page-templates-for-specific-post-types
  *
  * @package wp_rig
  */
