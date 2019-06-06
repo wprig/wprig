@@ -17,6 +17,11 @@ import translate from './gulp/translate';
 import watch from './gulp/watch';
 import prodPrep from './gulp/prodPrep';
 import prodFinish from './gulp/prodFinish';
+import {
+    sourceStringReplacementPHP,
+    sourceStringReplacementJS,
+    sourceStringReplacementCSS
+} from './gulp/sourceStringReplacement';
 import {cleanCSS, cleanJS} from './gulp/clean';
 
 /**
@@ -40,6 +45,13 @@ export const buildDev = parallel(
  */
 export const bundleTheme = series(
     prodPrep, parallel(php, scripts, series( styles, editorStyles ), images), translate, prodFinish
+);
+
+/**
+ * Replace default strings in source files
+ */
+export const sourceStringReplacement = parallel(
+    sourceStringReplacementPHP, sourceStringReplacementJS, sourceStringReplacementCSS
 );
 
 /**
