@@ -102,10 +102,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Registers the navigation menus.
 	 */
 	public function action_register_nav_menus() {
-		if ( empty( $this->nav_menus ) ) {
-			return;
-		}
-
 		register_nav_menus( $this->nav_menus );
 	}
 
@@ -165,12 +161,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *                    arguments.
 	 */
 	public function display_primary_nav_menu( array $args = array() ) {
-		$args = wp_parse_args(
-			$args,
-			array(
-				'container' => 'ul',
-			)
-		);
+		if ( ! isset( $args['container'] ) ) {
+			$args['container'] = 'ul';
+		}
 
 		$args['theme_location'] = static::PRIMARY_NAV_MENU_SLUG;
 
