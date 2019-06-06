@@ -27,6 +27,8 @@ use function wp_nav_menu;
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
+	const PRIMARY_NAV_MENU_SLUG = 'primary';
+
 	/**
 	 * Associative array of menu location identifiers (like a slug) and descriptive text.
 	 *
@@ -74,7 +76,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function set_navs_menus() {
 		$this->nav_menus = array(
-			'primary' => esc_html__( 'Primary', 'wp-rig' ),
+			static::PRIMARY_NAV_MENU_SLUG => esc_html__( 'Primary', 'wp-rig' ),
 		);
 	}
 
@@ -94,17 +96,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function get_menus_slugs() : array {
 		return array_keys( $this->nav_menus );
-	}
-
-	/**
-	 * Get the primary nav menu slug.
-	 *
-	 * @return string Primary menu location identifier (like a slug).
-	 */
-	public function get_primary_menu_slug() : string {
-		$menus_slugs = $this->get_menus_slugs();
-
-		return reset( $menus_slugs );
 	}
 
 	/**
@@ -146,7 +137,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		// Skip menus not assigned to our primary menu location.
-		if ( 'primary' !== $args->theme_location ) {
+		if ( static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
 			return $item_output;
 		}
 
@@ -164,7 +155,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return bool True if the primary navigation menu is active, false otherwise.
 	 */
 	public function is_primary_nav_menu_active() : bool {
-		return (bool) has_nav_menu( $this->get_primary_menu_slug() );
+		return (bool) has_nav_menu( static::PRIMARY_NAV_MENU_SLUG );
 	}
 
 	/**
@@ -181,7 +172,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			)
 		);
 
-		$args['theme_location'] = $this->get_primary_menu_slug();
+		$args['theme_location'] = static::PRIMARY_NAV_MENU_SLUG;
 
 		wp_nav_menu( $args );
 	}
