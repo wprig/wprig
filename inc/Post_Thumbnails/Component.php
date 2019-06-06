@@ -10,6 +10,7 @@ namespace WP_Rig\WP_Rig\Post_Thumbnails;
 use WP_Rig\WP_Rig\Component_Interface;
 use function add_action;
 use function add_theme_support;
+use function add_image_size;
 
 /**
  * Class for managing post thumbnail support.
