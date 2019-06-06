@@ -13,7 +13,7 @@ import {getThemeConfig} from './utils';
 /**
  * Create the zip file
  */
-export default function prodFinish(done) {
+export default function prodCompress(done) {
     const config = getThemeConfig();
 
     // Bail if the compress option is false
