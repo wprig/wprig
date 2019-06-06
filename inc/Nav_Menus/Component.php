@@ -51,8 +51,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function initialize() {
 		$this->set_nav_menus();
 
-		add_action( 'after_setup_theme', array( $this, 'action_register_nav_menus' ) );
-		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_nav_menu_dropdown_symbol' ), 10, 4 );
+		add_action( 'after_setup_theme', [ $this, 'action_register_nav_menus' ] );
+		add_filter( 'walker_nav_menu_start_el', [ $this, 'filter_primary_nav_menu_dropdown_symbol' ], 10, 4 );
 	}
 
 	/**
@@ -63,10 +63,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return array(
-			'is_primary_nav_menu_active' => array( $this, 'is_primary_nav_menu_active' ),
-			'display_primary_nav_menu'   => array( $this, 'display_primary_nav_menu' ),
-		);
+		return [
+			'is_primary_nav_menu_active' => [ $this, 'is_primary_nav_menu_active' ],
+			'display_primary_nav_menu'   => [ $this, 'display_primary_nav_menu' ],
+		];
 	}
 
 	/**
@@ -93,7 +93,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Registers the navigation menus.
 	 */
 	public function action_register_nav_menus() {
-		register_nav_menus( $this->nav_menus );
+		register_nav_menus(
+			[
+				static::PRIMARY_NAV_MENU_SLUG => esc_html__( 'Primary', 'wp-rig' ),
+			]
+		);
 	}
 
 	/**
@@ -151,7 +155,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param array $args Optional. Array of arguments. See `wp_nav_menu()` documentation for a list of supported
 	 *                    arguments.
 	 */
-	public function display_primary_nav_menu( array $args = array() ) {
+	public function display_primary_nav_menu( array $args = [] ) {
 		if ( ! isset( $args['container'] ) ) {
 			$args['container'] = 'ul';
 		}

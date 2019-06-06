@@ -7,7 +7,7 @@ import pump from 'pump';
 
 // Internal dependencies
 import {paths, gulpPlugins, PHPCSOptions} from './constants';
-import {getThemeConfig} from './utils';
+import {getThemeConfig, backslashToForwardSlash} from './utils';
 import {reload} from './browserSync';
 import images from './images';
 import scripts from './scripts';
@@ -18,7 +18,12 @@ import editorStyles from './editorStyles';
  * Watch everything
  */
 export default function watch() {
-	const PHPwatcher = gulpWatch(paths.php.src, reload);
+	/**
+	 * gulp watch uses chokidar, which doesn't play well with backslashes
+	 * in file paths, so they are replaced with forward slashes, which are
+	 * valid for Windows paths in a NodeJS context.
+	 */
+	const PHPwatcher = gulpWatch(backslashToForwardSlash(paths.php.src), reload);
 	const config = getThemeConfig();
 
 	// Only code sniff PHP files if the debug setting is true
@@ -34,9 +39,9 @@ export default function watch() {
 		});
 	}
 
-	gulpWatch(paths.styles.src[0], series( styles, editorStyles ) );
+	gulpWatch(backslashToForwardSlash(paths.styles.src[0]), series( styles, editorStyles ) );
 
-	gulpWatch(paths.scripts.src[0], series(scripts, reload));
+	gulpWatch(backslashToForwardSlash(paths.scripts.src[0]), series(scripts, reload));
 
-	gulpWatch(paths.images.src, series(images, reload));
+	gulpWatch(backslashToForwardSlash(paths.images.src), series(images, reload));
 }
