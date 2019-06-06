@@ -12,7 +12,6 @@ use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Post;
 use function add_action;
 use function add_filter;
-use function wp_parse_args;
 use function register_nav_menus;
 use function esc_html__;
 use function has_nav_menu;
