@@ -44,8 +44,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'widgets_init', array( $this, 'action_register_sidebars' ) );
-		add_filter( 'body_class', array( $this, 'filter_body_classes' ) );
+		add_action( 'widgets_init', [ $this, 'action_register_sidebars' ] );
+		add_filter( 'body_class', [ $this, 'filter_body_classes' ] );
 	}
 
 	/**
@@ -56,12 +56,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return array(
-			'template_has_active_sidebar'  => array( $this, 'template_has_active_sidebar' ),
-			'get_template_active_sidebars' => array( $this, 'get_template_active_sidebars' ),
-			'is_primary_sidebar_active'    => array( $this, 'is_primary_sidebar_active' ),
-			'display_primary_sidebar'      => array( $this, 'display_primary_sidebar' ),
-		);
+		return [
+			'template_has_active_sidebar'  => [ $this, 'template_has_active_sidebar' ],
+			'get_template_active_sidebars' => [ $this, 'get_template_active_sidebars' ],
+			'is_primary_sidebar_active'    => [ $this, 'is_primary_sidebar_active' ],
+			'display_primary_sidebar'      => [ $this, 'display_primary_sidebar' ],
+		];
 	}
 
 	/**
@@ -69,7 +69,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function action_register_sidebars() {
 		register_sidebar(
-			array(
+			[
 				'name'          => esc_html__( 'Sidebar', 'wp-rig' ),
 				'id'            => static::PRIMARY_SIDEBAR_SLUG,
 				'description'   => esc_html__( 'Add widgets here.', 'wp-rig' ),
@@ -77,7 +77,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				'after_widget'  => '</section>',
 				'before_title'  => '<h2 class="widget-title">',
 				'after_title'   => '</h2>',
-			)
+			]
 		);
 	}
 
@@ -94,10 +94,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			case '404.php':
 			case '500.php':
 			case 'offline.php':
-				$sidebars = array( '' );
+				$sidebars = [ '' ];
 				break;
 			default:
-				$sidebars = array( static::PRIMARY_SIDEBAR_SLUG );
+				$sidebars = [ static::PRIMARY_SIDEBAR_SLUG ];
 		}
 
 		return $sidebars;
