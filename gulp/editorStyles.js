@@ -59,6 +59,11 @@ export function editorStylesAfterReplacementStream() {
 				config.dev.styles.stage :
 				3
 			),
+			autoprefixer: (
+				configValueDefined('config.dev.styles.autoprefixer') ?
+				config.dev.styles.autoprefixer :
+				{}
+			),
 			preserve: false,
 			features: (
 				configValueDefined('config.dev.styles.features') ?
