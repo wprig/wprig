@@ -374,6 +374,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	/**
 	 * Returns the Google Fonts URL to use for enqueuing Google Fonts CSS.
 	 *
+	 * Uses `latin` subset by default. To use other subsets, add a `subset` key to $query_args and the desired value.
+	 *
 	 * @return string Google Fonts URL, or empty string if no Google Fonts should be used.
 	 */
 	protected function get_google_fonts_url() : string {
@@ -400,7 +402,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		$query_args = array(
 			'family' => implode( '|', $font_families ),
-			'subset' => 'latin-ext',
 		);
 
 		return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );

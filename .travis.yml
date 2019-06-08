@@ -21,7 +21,7 @@ matrix:
 
   include:
     - php: 7.2
-      env: UNIT=1 SNIFF=1
+      env: UNIT=1 SNIFF=1 TEST_GULP=1
     - php: 7.0
       env: UNIT=1
     - php: 'nightly'
@@ -51,7 +51,7 @@ before_install:
 
   # Install NPM dependencies.
   - |
-    if [[ "$SNIFF" == "1" ]]; then
+    if [[ ( "$SNIFF" == "1" ) || ( "$TEST_GULP" == "1" ) ]]; then
       npm install;
     fi
 
@@ -121,6 +121,13 @@ script:
   - |
     if [[ "$INTEGRATION" == "1" ]]; then
       composer run-script phpunit-integration-dev
+    fi
+
+  # Run the gulp tests.
+  - |
+    if [[ "$TEST_GULP" == "1" ]]; then
+      npm run lint-gulp
+      npm run test-gulp
     fi
 
 # Receive notifications for build results.
