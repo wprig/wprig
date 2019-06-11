@@ -128,4 +128,14 @@ class Template_Tags {
 			$this->template_tags[ $method_name ] = $callback;
 		}
 	}
+
+	/**
+	 * Checks whether a template tag exist.
+	 *
+	 * @param string $method Template tag name.
+	 * @return bool
+	 */
+	public function template_tag_exists( string $method ) : bool {
+		return isset( $this->template_tags[ $method ] );
+	}
 }

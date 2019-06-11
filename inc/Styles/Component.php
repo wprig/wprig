@@ -300,7 +300,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			),
 		);
 
-		if ( method_exists( 'wp_rig', 'is_primary_sidebar_active' ) ) {
+		if ( wp_rig()->template_tag_exists( 'is_primary_sidebar_active' ) ) {
 			$css_files = array_merge(
 				$css_files,
 				array(
