@@ -5,13 +5,14 @@
  * navigation support for dropdown menus.
  */
 
-const SITENAV = document.querySelector( '.main-navigation' ),
-	KEYMAP = {
+var SITENAV;
+const KEYMAP = {
 		TAB: 9
 	};
 
 // Initiate the menus when the DOM loads.
 document.addEventListener( 'DOMContentLoaded', function() {
+	SITENAV = document.querySelector( '.main-navigation' );
 	initMainNavigation();
 	initMenuToggle();
 });
