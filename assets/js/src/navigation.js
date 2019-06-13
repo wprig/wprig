@@ -39,7 +39,7 @@ function initNavToggleSubmenus() {
 	}
 
 	for ( let i = 0; i < navTOGGLE.length; i++ ) {
-		initEachNavToggleSubmenu( navTOGGLE[ i ]);
+		initEachNavToggleSubmenu( navTOGGLE[i] );
 	}
 }
 
@@ -61,7 +61,7 @@ function initEachNavToggleSubmenu( nav ) {
 	const dropdownButton = getDropdownButton();
 
 	for ( let i = 0; i < SUBMENUS.length; i++ ) {
-		const parentMenuItem = SUBMENUS[ i ].parentNode;
+		const parentMenuItem = SUBMENUS[i].parentNode;
 		let dropdown = parentMenuItem.querySelector( '.dropdown' );
 
 		// If no dropdown, create one.
@@ -76,7 +76,7 @@ function initEachNavToggleSubmenu( nav ) {
 			dropdown.appendChild( dropdownSymbol );
 
 			// Add before submenu.
-			SUBMENUS[ i ].parentNode.insertBefore( dropdown, SUBMENUS[ i ]);
+			SUBMENUS[i].parentNode.insertBefore( dropdown, SUBMENUS[i] );
 
 		}
 
@@ -103,7 +103,7 @@ function initEachNavToggleSubmenu( nav ) {
 		parentMenuItem.querySelector( 'a' ).addEventListener( 'focus', function( event ) {
 			const parentMenuItemsToggled = this.parentNode.parentNode.querySelectorAll( 'li.menu-item--toggled-on' );
 			for ( let i = 0; i < parentMenuItemsToggled.length; i++ ) {
-				toggleSubMenu( parentMenuItemsToggled[ i ], false );
+				toggleSubMenu( parentMenuItemsToggled[i], false );
 			}
 		});
 
@@ -130,7 +130,7 @@ function initEachNavToggleSubmenu( nav ) {
 			}
 		});
 
-		SUBMENUS[ i ].parentNode.classList.add( 'menu-item--has-toggle' );
+		SUBMENUS[i].parentNode.classList.add( 'menu-item--has-toggle' );
 
 	}
 }
@@ -149,7 +149,7 @@ function initNavToggleSmall() {
 	}
 
 	for ( let i = 0; i < navTOGGLE.length; i++ ) {
-		initEachNavToggleSmall( navTOGGLE[ i ]);
+		initEachNavToggleSmall( navTOGGLE[i] );
 	}
 }
 
@@ -206,16 +206,15 @@ function toggleSubMenu( parentMenuItem, forceToggle ) {
 		// Make sure all children are closed.
 		const subMenuItemsToggled = parentMenuItem.querySelectorAll( '.menu-item--toggled-on' );
 		for ( let i = 0; i < subMenuItemsToggled.length; i++ ) {
-			toggleSubMenu( subMenuItemsToggled[ i ], false );
+			toggleSubMenu( subMenuItemsToggled[i], false );
 		}
-
 
 	} else {
 
 		// Make sure siblings are closed.
 		const parentMenuItemsToggled = parentMenuItem.parentNode.querySelectorAll( 'li.menu-item--toggled-on' );
 		for ( let i = 0; i < parentMenuItemsToggled.length; i++ ) {
-			toggleSubMenu( parentMenuItemsToggled[ i ], false );
+			toggleSubMenu( parentMenuItemsToggled[i], false );
 		}
 
 		// Toggle "on" the submenu.
