@@ -378,9 +378,7 @@ select {
 	display: block;
 	margin: 0 auto 2em;
 	padding: 0 1em;
-	/* stylelint-disable */
 	max-width: var(--content-width);
-	/* stylelint-enable */
 	font-family: var(--highlight-font-family);
 	font-stretch: condensed;
 }

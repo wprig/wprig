@@ -65,9 +65,7 @@
 	margin-left: auto;
 	padding-right: 1.5rem;
 	padding-left: 1.5rem;
-	/* stylelint-disable */
 	max-width: var(--content-width);
-	/* stylelint-enable */
 }
 
 .page-header,
@@ -80,9 +78,7 @@
 	margin: 1.5em auto;
 	padding-right: 1.5rem;
 	padding-left: 1.5rem;
-	/* stylelint-disable */
 	max-width: var(--content-width);
-	/* stylelint-enable */
 }
 
 @media (--content-query) {
@@ -282,25 +278,17 @@
 --------------------------------------------------------------*/
 
 .has-small-font-size {
-	/* stylelint-disable */
 	font-size: var(--font-size-small);
-	/* stylelint-enable */
 }
 
 .has-regular-font-size {
-	/* stylelint-disable */
 	font-size: var(--font-size-regular);
-	/* stylelint-enable */
 }
 
 .has-large-font-size {
-	/* stylelint-disable */
 	font-size: var(--font-size-large);
-	/* stylelint-enable */
 }
 
 .has-larger-font-size {
-	/* stylelint-disable */
 	font-size: var(--font-size-larger);
-	/* stylelint-enable */
 }
