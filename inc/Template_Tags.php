@@ -28,7 +28,7 @@ class Template_Tags {
 	 *
 	 * @var array
 	 */
-	protected $template_tags = array();
+	protected $template_tags = [];
 
 	/**
 	 * Constructor.
@@ -41,7 +41,7 @@ class Template_Tags {
 	 * @throws InvalidArgumentException Thrown if one of the $components does not implement
 	 *                                  Templating_Component_Interface.
 	 */
-	public function __construct( array $components = array() ) {
+	public function __construct( array $components = [] ) {
 
 		// Set the template tags for the components.
 		foreach ( $components as $component ) {
@@ -100,7 +100,7 @@ class Template_Tags {
 
 		foreach ( $tags as $method_name => $callback ) {
 			if ( is_callable( $callback ) ) {
-				$callback = array( 'callback' => $callback );
+				$callback = [ 'callback' => $callback ];
 			}
 
 			if ( ! is_array( $callback ) || ! isset( $callback['callback'] ) ) {

@@ -34,7 +34,7 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'after_setup_theme', array( $this, 'action_add_jetpack_support' ) );
+		add_action( 'after_setup_theme', [ $this, 'action_add_jetpack_support' ] );
 	}
 
 	/**
@@ -49,20 +49,20 @@ class Component implements Component_Interface {
 		// Add theme support for Infinite Scroll.
 		add_theme_support(
 			'infinite-scroll',
-			array(
-				'container' => 'main',
+			[
+				'container' => 'primary',
 				'footer'    => 'page',
 				'render'    => function() {
 					while ( have_posts() ) {
 						the_post();
 						if ( is_search() ) {
-							get_template_part( 'template-parts/content', 'search' );
+							get_template_part( 'template-parts/content/entry', 'search' );
 						} else {
-							get_template_part( 'template-parts/content', get_post_type() );
+							get_template_part( 'template-parts/content/entry', get_post_type() );
 						}
 					}
 				},
-			)
+			]
 		);
 
 		// Add theme support for Responsive Videos.
@@ -71,16 +71,16 @@ class Component implements Component_Interface {
 		// Add theme support for Content Options.
 		add_theme_support(
 			'jetpack-content-options',
-			array(
-				'post-details' => array(
+			[
+				'post-details' => [
 					'stylesheet' => 'wp-rig-content',
 					'date'       => '.posted-on',
 					'categories' => '.category-links',
 					'tags'       => '.tag-links',
 					'author'     => '.posted-by',
 					'comment'    => '.comments-link',
-				),
-			)
+				],
+			]
 		);
 	}
 }
