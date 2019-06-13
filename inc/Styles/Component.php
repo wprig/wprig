@@ -401,7 +401,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		$query_args = [
-			'family' => implode( '|', $font_families ),
+			'family'  => implode( '|', $font_families ),
+			'display' => 'swap',
 		];
 
 		return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
