@@ -72,16 +72,25 @@
 # Layouts
 --------------------------------------------------------------*/
 .site {
+	display: flex;
+	flex-direction: column;
 	margin: 0 auto;
+	min-height: 100vh;
 	max-width: 100%;
+}
+
+.site-main {
+	flex: 1;
 }
 
 @media (--sidebar-query) {
 
 	.has-sidebar .site {
 		margin: 0 1em;
+		min-height: 100vh;
 		display: grid;
 		grid-template-columns: 3fr 1fr;
+		grid-template-rows: auto 1fr auto;
 		grid-gap: 2rem;
 		justify-content: center;
 	}
