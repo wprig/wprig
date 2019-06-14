@@ -27,7 +27,7 @@ use function esc_html_e;
  * Class for managing comments UI.
  *
  * Exposes template tags:
- * * `wp_rig()->the_comments( array $args = array() )`
+ * * `wp_rig()->the_comments( array $args = [] )`
  *
  * @link https://wordpress.org/plugins/amp/
  */

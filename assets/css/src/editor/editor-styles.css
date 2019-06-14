@@ -41,6 +41,7 @@ option {
 
 .editor-post-title__input {
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 	font-size: 2.5rem;
 	line-height: 1.4;
 	margin-top: 0;

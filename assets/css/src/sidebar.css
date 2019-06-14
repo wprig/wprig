@@ -5,6 +5,7 @@
 .primary-sidebar {
 	padding: 1.5rem;
 	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
 	max-width: var(--content-width);
 	margin-left: auto;
 	margin-right: auto;
