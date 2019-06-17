@@ -77,20 +77,6 @@
 	margin-top: 0;
 }
 
-/* Columns Block */
-.wp-block-column {
-	flex-basis: 100%;
-}
-
-.wp-block-column:not(:last-child),
-.wp-block-column:nth-child(2n+1) {
-	margin-right: 0;
-}
-
-.wp-block-column:not(:first-child) {
-	margin-left: 0;
-}
-
 .wp-block-latest-posts,
 .wp-block-latest-comments {
 	padding-top: 1.5em;
