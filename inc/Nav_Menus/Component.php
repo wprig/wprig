@@ -33,7 +33,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @var array $nav_menus
 	 */
-	private $nav_menus = array();
+	private $nav_menus = [];
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -74,9 +74,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return void
 	 */
 	private function set_nav_menus() {
-		$this->nav_menus = array(
+		$this->nav_menus = [
 			static::PRIMARY_NAV_MENU_SLUG => esc_html__( 'Primary', 'wp-rig' ),
-		);
+		];
 	}
 
 	/**
