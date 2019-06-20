@@ -20,23 +20,19 @@ matrix:
   fast_finish: true
 
   include:
-    - php: 7.2
+    - php: 7.3
       env: UNIT=1 SNIFF=1 TEST_GULP=1
     - php: 7.0
       env: UNIT=1
-    - php: 'nightly'
-      env: UNIT=1
-    - php: 7.2
+    - php: 7.3
       env: INTEGRATION=1 WP_VERSION=latest
-    - php: 7.2
+    - php: 7.3
       env: INTEGRATION=1 WP_VERSION=4.5
-    - php: 7.2
-      env: INTEGRATION=1 WP_VERSION=master
 
   allow_failures:
     - php: 'nightly'
       env: UNIT=1
-    - php: 7.2
+    - php: 7.3
       env: INTEGRATION=1 WP_VERSION=master
 
 # Use this to prepare the system to install prerequisites or dependencies.
