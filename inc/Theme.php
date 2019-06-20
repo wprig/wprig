@@ -145,7 +145,7 @@ class Theme {
 			new PWA\Component(),
 			new Comments\Component(),
 			new Nav_Menus\Component(),
-			new Sidebars\Component(),
+			new Widget_Areas\Component(),
 			new Custom_Background\Component(),
 			new Custom_Header\Component(),
 			new Custom_Logo\Component(),

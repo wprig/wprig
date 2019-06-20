@@ -294,13 +294,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			'wp-rig-sidebar'    => [
 				'file'             => 'sidebar.min.css',
 				'preload_callback' => function() {
-					return wp_rig()->is_primary_sidebar_active();
+					return wp_rig()->is_widget_area_active( 'sidebar-1' );
 				},
 			],
 			'wp-rig-widgets'    => [
 				'file'             => 'widgets.min.css',
 				'preload_callback' => function() {
-					return wp_rig()->is_primary_sidebar_active();
+					return wp_rig()->is_widget_area_active();
 				},
 			],
 			'wp-rig-front-page' => [
