@@ -118,7 +118,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param string $slug The widget area ID.
 	 * @return bool True if the widget area is active, false otherwise.
 	 */
-	public function is_widget_area_active( $slug = 'sidebar-1' ) : bool {
+	public function is_widget_area_active( $slug ) : bool {
 		return (bool) is_active_sidebar( $slug );
 	}
 
@@ -127,7 +127,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @param string $slug The widget area ID.
 	 */
-	public function display_widget_area( $slug = 'sidebar-1' ) {
+	public function display_widget_area( $slug ) {
 		dynamic_sidebar( $slug );
 	}
 }
