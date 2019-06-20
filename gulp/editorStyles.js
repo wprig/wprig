@@ -1,7 +1,6 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
 /**
  * External dependencies
  */
@@ -15,7 +14,6 @@ import reporter from 'postcss-reporter';
 import calc from 'postcss-calc';
 import { pipeline } from 'mississippi';
 
-// Internal dependencies
 /**
  * Internal dependencies
  */

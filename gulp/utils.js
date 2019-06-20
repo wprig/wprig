@@ -1,7 +1,6 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
 /**
  * External dependencies
  */
@@ -13,7 +12,6 @@ import mkdirp from 'mkdirp';
 import fs from 'fs';
 import { pipeline } from 'mississippi';
 
-// Internal dependencies
 /**
  * Internal dependencies
  */

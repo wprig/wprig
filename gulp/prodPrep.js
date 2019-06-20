@@ -1,7 +1,6 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
 /**
  * External dependencies
  */
@@ -11,7 +10,6 @@ import log from 'fancy-log';
 import colors from 'ansi-colors';
 import path from 'path';
 
-// Internal dependencies
 /**
  * Internal dependencies
  */

@@ -9,7 +9,6 @@ import {src, dest} from 'gulp';
 import pump from 'pump';
 import { pipeline } from 'mississippi';
 
-// Internal dependencies
 /**
  * Internal dependencies
  */

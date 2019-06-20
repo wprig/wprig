@@ -1,14 +1,12 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
-export const gulpPlugins = require('gulp-load-plugins')();
 /**
  * External dependencies
  */
+export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
 
-// Internal dependencies
 /**
  * Internal dependencies
  */
