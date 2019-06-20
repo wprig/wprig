@@ -22,7 +22,7 @@ use function wp_nav_menu;
  *
  * Exposes template tags:
  * * `wp_rig()->is_primary_nav_menu_active()`
- * * `wp_rig()->display_primary_nav_menu()`
+ * * `wp_rig()->display_primary_nav_menu( array $args )`
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
