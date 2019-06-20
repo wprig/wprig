@@ -51,7 +51,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$this->set_nav_menus();
 
 		add_action( 'after_setup_theme', [ $this, 'action_register_nav_menus' ] );
-		add_filter( 'walker_nav_menu_start_el', [ $this, 'filter_primary_nav_menu_dropdown_symbol' ], 10, 4 );
+		add_filter( 'walker_nav_menu_start_el', [ $this, 'filter_nav_menu_dropdown_symbol' ], 10, 4 );
 	}
 
 	/**
