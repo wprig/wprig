@@ -1,0 +1,17 @@
+@import "_custom-properties.css";
+
+.wp-block-cover {
+	display: flex;
+	align-items: center;
+}
+
+.wp-block-cover__inner-container > * {
+	max-width: var(--content-width);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-block-cover .wp-block-cover-text,
+.wp-block-cover p {
+	margin-top: 0;
+}
