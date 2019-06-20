@@ -20,8 +20,9 @@ use function dynamic_sidebar;
  * Class for managing widget areas.
  *
  * Exposes template tags:
- * * `wp_rig()->is_widget_area_active()`
- * * `wp_rig()->display_widget_area()`
+ * * `wp_rig()->has_active_widget_areas()`
+ * * `wp_rig()->is_widget_area_active( $slug )`
+ * * `wp_rig()->display_widget_area( $slug )`
  *
  * @link https://developer.wordpress.org/themes/functionality/sidebars/
  */
@@ -53,8 +54,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function template_tags() : array {
 		return [
-			'is_widget_area_active' => [ $this, 'is_widget_area_active' ],
-			'display_widget_area'   => [ $this, 'display_widget_area' ],
+			'has_active_widget_areas' => [ $this, 'has_active_widget_areas' ],
+			'is_widget_area_active'   => [ $this, 'is_widget_area_active' ],
+			'display_widget_area'     => [ $this, 'display_widget_area' ],
 		];
 	}
 
@@ -95,6 +97,23 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Checks whether a widget area is active.
+	 *
+	 * @return bool True if a widget area is active, false otherwise.
+	 */
+	public function has_active_widget_areas() : bool {
+		global $wp_registered_sidebars;
+
+		foreach ( $wp_registered_sidebars as $slug => $data ) {
+			if ( is_active_sidebar( $slug ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks whether a specific widget area is active.
 	 *
 	 * @param string $slug The widget area ID.
 	 * @return bool True if the widget area is active, false otherwise.

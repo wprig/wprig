@@ -300,7 +300,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			'wp-rig-widgets'    => [
 				'file'             => 'widgets.min.css',
 				'preload_callback' => function() {
-					return wp_rig()->is_widget_area_active();
+					return wp_rig()->has_active_widget_areas();
 				},
 			],
 			'wp-rig-front-page' => [
