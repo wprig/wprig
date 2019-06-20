@@ -32,6 +32,8 @@ matrix:
       env: INTEGRATION=1 WP_VERSION=4.5
     - php: 7.2
       env: INTEGRATION=1 WP_VERSION=master
+    - php: 7.3
+      env: INTEGRATION=1 UNIT=1 SNIFF=1 TEST_GULP=1 WP_VERSION=latest
 
   allow_failures:
     - php: 'nightly'
