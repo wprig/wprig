@@ -7,7 +7,7 @@ import pump from 'pump';
 import { pipeline } from 'mississippi';
 
 // Internal dependencies
-import {paths, gulpPlugins, isProd} from './constants';
+import {paths, gulpPlugins, isProd, rootPath} from './constants';
 import {getThemeConfig, getStringReplacementTasks, logError} from './utils';
 
 export function scriptsBeforeReplacementStream() {
@@ -20,8 +20,13 @@ export function scriptsBeforeReplacementStream() {
 			dest: paths.scripts.dest,
 			extra: [paths.config.themeConfig]
 		}),
-		gulpPlugins.eslint(),
-		gulpPlugins.eslint.format(),
+		gulpPlugins.phpcs({
+			bin: `${rootPath}/vendor/bin/phpcs`,
+			standard: 'WordPress',
+			warningSeverity: 0
+		}),
+		// Log all problems that were found.
+		gulpPlugins.phpcs.reporter('log'),
 	]);
 }
 
