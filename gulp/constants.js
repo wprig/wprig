@@ -3,9 +3,15 @@
 
 // External dependencies
 export const gulpPlugins = require('gulp-load-plugins')();
+/**
+ * External dependencies
+ */
 import path from 'path';
 
 // Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {getThemeConfig} from './utils';
 
 // Root path is where npm run commands happen

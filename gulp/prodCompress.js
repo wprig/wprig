@@ -2,11 +2,17 @@
 'use strict';
 
 // External dependencies
+/**
+ * External dependencies
+ */
 import {src, dest} from 'gulp';
 import pump from 'pump';
 import path from 'path';
 
 // Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {prodThemePath, gulpPlugins} from './constants';
 import {getThemeConfig} from './utils';
 

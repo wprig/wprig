@@ -84,7 +84,8 @@
       "es6": true
     },
     "globals": {
-      "jQuery": "readonly"
+      "jQuery": "readonly",
+      "wp": "readonly"
     }
   },
   "stylelint": {
@@ -99,6 +100,7 @@
     "rig-init": "npm install && composer install",
     "translate": "gulp translate",
     "test-gulp": "jest gulp/tests",
+    "lint": "eslint assets/js/src/",
     "lint-gulp": "eslint gulp/"
   }
 }

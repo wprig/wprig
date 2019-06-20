@@ -2,6 +2,9 @@
 'use strict';
 
 // External dependencies
+/**
+ * External dependencies
+ */
 import {src, dest} from 'gulp';
 import pump from 'pump';
 import log from 'fancy-log';
@@ -9,6 +12,9 @@ import colors from 'ansi-colors';
 import path from 'path';
 
 // Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {
     isProd,
     prodThemePath,
