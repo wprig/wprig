@@ -48,6 +48,5 @@ class Component implements Component_Interface {
 	 */
 	public function action_add_image_sizes() {
 		add_image_size( 'wp-rig-featured', 720, 480, true );
-		add_image_size( 'wp-rig-thumbnail', 720, 308, true );
 	}
 }
