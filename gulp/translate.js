@@ -1,11 +1,15 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import {src, dest} from 'gulp';
 import pump from 'pump';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {paths, gulpPlugins, nameFieldDefaults, isProd} from './constants';
 import {getThemeConfig} from './utils';
 

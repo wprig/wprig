@@ -1,11 +1,15 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {getThemeConfig} from './utils';
 
 // Root path is where npm run commands happen
@@ -35,6 +39,7 @@ export const PHPCSOptions = {
 
 // Theme config name fields and their defaults
 export const nameFieldDefaults = {
+	author        : 'The WP Rig Contributors',
 	PHPNamespace  : 'WP_Rig\\WP_Rig',
 	slug          : 'wp-rig',
 	name          : 'WP Rig',
@@ -42,7 +47,6 @@ export const nameFieldDefaults = {
 	constant      : 'WP_RIG',
 	camelCase     : 'WpRig',
 	camelCaseVar  : 'wpRig',
-	author        : 'The WP Rig Contributors',
 };
 
 // Project paths
@@ -108,7 +112,8 @@ let paths = {
 	},
 	export: {
 		src: [],
-		dest: `${prodThemePath}/`
+		dest: `${prodThemePath}/`,
+		stringReplaceSrc: [`style.css`]
 	}
 };
 
@@ -121,6 +126,7 @@ for ( let filePath of config.export.filesToCopy.concat( config.export.additional
 if( isProd ){
 	paths.php.dest = `${prodThemePath}/`;
 	paths.styles.dest = `${prodAssetsDir}/css/`;
+	paths.styles.editorDest = `${prodAssetsDir}/css/editor/`;
 	paths.scripts.dest = `${prodAssetsDir}/js/`;
 	paths.images.dest = `${prodAssetsDir}/images/`;
 	paths.languages = {
