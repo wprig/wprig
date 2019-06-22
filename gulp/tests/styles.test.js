@@ -1,8 +1,14 @@
 /* eslint-env es6 */
 /* global test, expect */
+/**
+ * External dependencies
+ */
 import { pipe as pump, from, concat } from 'mississippi';
 import Vinyl from 'vinyl';
 
+/**
+ * Internal dependencies
+ */
 import { getThemeConfig, getDefaultConfig } from '../utils';
 import { stylesAfterReplacementStream } from '../styles';
 
