@@ -23,6 +23,8 @@ use function remove_filter;
 use function is_feed;
 use function is_preview;
 use function wp_kses_hair;
+use function wp_allowed_protocols;
+use function esc_attr;
 
 /**
  * Class for managing lazy-loading images.
