@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.1
+- Fix missing PHP imports. See [#543](https://github.com/wprig/wprig/pull/543). Props @benoitchantre.
+
 ## 2.0.0
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme.
