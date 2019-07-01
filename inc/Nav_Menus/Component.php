@@ -22,11 +22,18 @@ use function wp_nav_menu;
  *
  * Exposes template tags:
  * * `wp_rig()->is_primary_nav_menu_active()`
- * * `wp_rig()->display_primary_nav_menu( array $args = [] )`
+ * * `wp_rig()->display_primary_nav_menu( array $args )`
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
 	const PRIMARY_NAV_MENU_SLUG = 'primary';
+
+	/**
+	 * Associative array of menu location identifiers (like a slug) and descriptive text.
+	 *
+	 * @var array $nav_menus
+	 */
+	private $nav_menus = [];
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -41,8 +48,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
+		$this->set_nav_menus();
+
 		add_action( 'after_setup_theme', [ $this, 'action_register_nav_menus' ] );
-		add_filter( 'walker_nav_menu_start_el', [ $this, 'filter_primary_nav_menu_dropdown_symbol' ], 10, 4 );
+		add_filter( 'walker_nav_menu_start_el', [ $this, 'filter_nav_menu_dropdown_symbol' ], 10, 4 );
 	}
 
 	/**
@@ -57,6 +66,26 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			'is_primary_nav_menu_active' => [ $this, 'is_primary_nav_menu_active' ],
 			'display_primary_nav_menu'   => [ $this, 'display_primary_nav_menu' ],
 		];
+	}
+
+	/**
+	 * Set the navs menus slugs and their description.
+	 *
+	 * @return void
+	 */
+	private function set_nav_menus() {
+		$this->nav_menus = [
+			static::PRIMARY_NAV_MENU_SLUG => esc_html__( 'Primary', 'wp-rig' ),
+		];
+	}
+
+	/**
+	 * Get the navs menus slugs and their description.
+	 *
+	 * @return array Associative array of menu location identifiers (like a slug) and descriptive text.
+	 */
+	public function get_nav_menus() : array {
+		return $this->nav_menus;
 	}
 
 	/**
@@ -90,10 +119,15 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param object  $args        An object of wp_nav_menu() arguments.
 	 * @return string Modified nav menu HTML.
 	 */
-	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ) : string {
+	public function filter_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ) : string {
 
-		// Only for our primary menu location.
-		if ( empty( $args->theme_location ) || static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
+		// Skip page menus (menus without location) and flat menus.
+		if ( empty( $args->theme_location ) || 1 === $args->depth ) {
+			return $item_output;
+		}
+
+		// Skip menus not assigned to our primary menu location.
+		if ( static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
 			return $item_output;
 		}
 
