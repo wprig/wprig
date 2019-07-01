@@ -1,11 +1,11 @@
 <?php
 /**
- * WP_Rig\WP_Rig\Sidebars\Component class
+ * WP_Rig\WP_Rig\Widget_Areas\Component class
  *
  * @package wp_rig
  */
 
-namespace WP_Rig\WP_Rig\Sidebars;
+namespace WP_Rig\WP_Rig\Widget_Areas;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
@@ -17,17 +17,16 @@ use function is_active_sidebar;
 use function dynamic_sidebar;
 
 /**
- * Class for managing sidebars.
+ * Class for managing widget areas.
  *
  * Exposes template tags:
- * * `wp_rig()->is_primary_sidebar_active()`
- * * `wp_rig()->display_primary_sidebar()`
+ * * `wp_rig()->has_active_widget_areas()`
+ * * `wp_rig()->is_widget_area_active( $slug )`
+ * * `wp_rig()->display_widget_area( $slug )`
  *
  * @link https://developer.wordpress.org/themes/functionality/sidebars/
  */
 class Component implements Component_Interface, Templating_Component_Interface {
-
-	const PRIMARY_SIDEBAR_SLUG = 'sidebar-1';
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -35,14 +34,14 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string Component slug.
 	 */
 	public function get_slug() : string {
-		return 'sidebars';
+		return 'widget_areas';
 	}
 
 	/**
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'widgets_init', [ $this, 'action_register_sidebars' ] );
+		add_action( 'widgets_init', [ $this, 'action_register_widget_areas' ] );
 		add_filter( 'body_class', [ $this, 'filter_body_classes' ] );
 	}
 
@@ -55,19 +54,20 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function template_tags() : array {
 		return [
-			'is_primary_sidebar_active' => [ $this, 'is_primary_sidebar_active' ],
-			'display_primary_sidebar'   => [ $this, 'display_primary_sidebar' ],
+			'has_active_widget_areas' => [ $this, 'has_active_widget_areas' ],
+			'is_widget_area_active'   => [ $this, 'is_widget_area_active' ],
+			'display_widget_area'     => [ $this, 'display_widget_area' ],
 		];
 	}
 
 	/**
-	 * Registers the sidebars.
+	 * Registers the widget areas.
 	 */
-	public function action_register_sidebars() {
+	public function action_register_widget_areas() {
 		register_sidebar(
 			[
 				'name'          => esc_html__( 'Sidebar', 'wp-rig' ),
-				'id'            => static::PRIMARY_SIDEBAR_SLUG,
+				'id'            => 'sidebar-1',
 				'description'   => esc_html__( 'Add widgets here.', 'wp-rig' ),
 				'before_widget' => '<section id="%1$s" class="widget %2$s">',
 				'after_widget'  => '</section>',
@@ -84,7 +84,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return array Filtered body classes.
 	 */
 	public function filter_body_classes( array $classes ) : array {
-		if ( $this->is_primary_sidebar_active() ) {
+		if ( $this->is_widget_area_active( 'sidebar-1' ) ) {
 			global $template;
 
 			if ( ! in_array( basename( $template ), [ 'front-page.php', '404.php', '500.php', 'offline.php' ] ) ) {
@@ -96,18 +96,38 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
-	 * Checks whether the primary sidebar is active.
+	 * Checks whether a widget area is active.
 	 *
-	 * @return bool True if the primary sidebar is active, false otherwise.
+	 * @return bool True if a widget area is active, false otherwise.
 	 */
-	public function is_primary_sidebar_active() : bool {
-		return (bool) is_active_sidebar( static::PRIMARY_SIDEBAR_SLUG );
+	public function has_active_widget_areas() : bool {
+		global $wp_registered_sidebars;
+
+		foreach ( $wp_registered_sidebars as $slug => $data ) {
+			if ( is_active_sidebar( $slug ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
-	 * Displays the primary sidebar.
+	 * Checks whether a specific widget area is active.
+	 *
+	 * @param string $slug The widget area ID.
+	 * @return bool True if the widget area is active, false otherwise.
 	 */
-	public function display_primary_sidebar() {
-		dynamic_sidebar( static::PRIMARY_SIDEBAR_SLUG );
+	public function is_widget_area_active( $slug ) : bool {
+		return (bool) is_active_sidebar( $slug );
+	}
+
+	/**
+	 * Displays a specific widget area.
+	 *
+	 * @param string $slug The widget area ID.
+	 */
+	public function display_widget_area( $slug ) {
+		dynamic_sidebar( $slug );
 	}
 }
