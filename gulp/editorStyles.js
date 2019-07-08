@@ -1,7 +1,9 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import {src, dest} from 'gulp';
 import postcssPresetEnv from 'postcss-preset-env';
 import AtImport from 'postcss-import';
@@ -12,7 +14,9 @@ import reporter from 'postcss-reporter';
 import calc from 'postcss-calc';
 import { pipeline } from 'mississippi';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {rootPath, paths, gulpPlugins, isProd} from './constants';
 import {
 	getThemeConfig,

@@ -1,11 +1,15 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import {watch as gulpWatch, series, src} from 'gulp';
 import pump from 'pump';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {paths, gulpPlugins, PHPCSOptions} from './constants';
 import {getThemeConfig, backslashToForwardSlash} from './utils';
 import {reload} from './browserSync';

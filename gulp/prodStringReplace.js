@@ -1,11 +1,15 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import {src, dest} from 'gulp';
 import pump from 'pump';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {isProd, paths} from './constants';
 import {getStringReplacementTasks} from './utils';
 

@@ -1,11 +1,15 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 export const gulpPlugins = require('gulp-load-plugins')();
 import path from 'path';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {getThemeConfig} from './utils';
 
 // Root path is where npm run commands happen

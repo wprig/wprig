@@ -17,19 +17,20 @@
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/register": "^7.4.0",
+    "@wordpress/eslint-plugin": "^2.3.0",
     "ajv": "^6.10.0",
     "ansi-colors": "^3.2.4",
     "autoprefixer": "^9.5.1",
     "babel-jest": "^24.7.1",
-    "browser-sync": "^2.26.3",
+    "browser-sync": "^2.26.7",
     "create-cert": "^1.0.6",
+    "cross-env": "^5.2.0",
     "cssnano": "^4.1.10",
     "deepmerge": "^3.2.0",
     "del": "^4.1.0",
     "eslint": "^5.16.0",
     "eslint-config-gulp": "^3.0.1",
     "eslint-config-standard": "^12.0.0",
-    "eslint-config-wordpress": "^2.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.1.1",
@@ -41,7 +42,7 @@
     "gulp-eslint": "^5.0.0",
     "gulp-if": "^2.0.2",
     "gulp-imagemin": "^5.0.3",
-    "gulp-load-plugins": "^1.5.0",
+    "gulp-load-plugins": "^1.6.0",
     "gulp-newer": "^1.4.0",
     "gulp-notify": "^3.2.0",
     "gulp-phpcs": "^2.2.0",
@@ -76,12 +77,16 @@
     ]
   },
   "eslintConfig": {
-    "extends": "wordpress",
+    "extends": "plugin:@wordpress/eslint-plugin/recommended",
     "root": true,
     "env": {
       "browser": true,
       "node": true,
       "es6": true
+    },
+    "globals": {
+      "jQuery": "readonly",
+      "wp": "readonly"
     }
   },
   "stylelint": {
@@ -89,13 +94,14 @@
   },
   "scripts": {
     "build": "gulp buildDev",
-    "bundle": "NODE_ENV=production gulp bundleTheme",
+    "bundle": "cross-env NODE_ENV=production gulp bundleTheme",
     "dev": "gulp",
     "gulp": "gulp",
     "generateCert": "gulp generateCert",
     "rig-init": "npm install && composer install",
     "translate": "gulp translate",
     "test-gulp": "jest gulp/tests",
+    "lint": "eslint assets/js/src/",
     "lint-gulp": "eslint gulp/"
   }
 }
