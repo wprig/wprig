@@ -14,6 +14,9 @@ use function add_theme_support;
 use function wp_enqueue_script;
 use function get_theme_file_uri;
 use function get_theme_file_path;
+use function function_exists;
+use function wp_set_script_translations;
+use function get_stylesheet_directory;
 
 /**
  * Class for integrating with the block editor.
@@ -170,6 +173,16 @@ class Component implements Component_Interface {
 		$version = wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/editor/editor-filters.min.js' ) );
 
 		// Enqueue block editor filters.
-		wp_enqueue_script( $handle, $src, array( 'wp-blocks', 'wp-dom-ready', 'wp-edit-post' ), $version );
+		wp_enqueue_script( $handle, $src, [ 'wp-i18n', 'wp-blocks', 'wp-dom-ready', 'wp-edit-post' ], $version );
+
+		if ( function_exists( 'wp_set_script_translations' ) ) {
+			/**
+			 * Adds internationalization support.
+			 *
+			 * @link https://developer.wordpress.org/block-editor/developers/internationalization/
+			 * @link https://make.wordpress.org/core/2018/11/09/new-javascript-i18n-support-in-wordpress/
+			 */
+			wp_set_script_translations( $handle, 'wp-rig', get_stylesheet_directory() . '/languages' );
+		}
 	}
 }
