@@ -12,6 +12,8 @@
 # Forms
 # Header
 	# Main navigation menu
+# Icons
+# Social links
 # Content navigation
 # Footer
 # Infinite scroll
@@ -455,6 +457,41 @@ select {
 		flex-wrap: wrap;
 		justify-content: center;
 	}
+}
+
+/*--------------------------------------------------------------
+# Icons
+--------------------------------------------------------------*/
+.svg-icon {
+	fill: currentColor;
+}
+
+/*--------------------------------------------------------------
+# Social links
+--------------------------------------------------------------*/
+.social-links-menu {
+	display: flex;
+	justify-content: center;
+	list-style: none;
+	margin: 0.5em 0;
+	padding: 0;
+}
+
+/* stylelint-disable */
+.social-links-menu a {
+	display: inline-flex;
+	padding: 0.5em;
+	color: var(--global-font-color);
+}
+/* stylelint-enable */
+
+.social-links-menu a:visited {
+	color: inherit;
+}
+
+.social-links-menu a:hover,
+.social-links-menu a:focus {
+	color: var(--color-link-active);
 }
 
 /*--------------------------------------------------------------

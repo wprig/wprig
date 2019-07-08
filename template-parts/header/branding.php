@@ -33,5 +33,7 @@ namespace WP_Rig\WP_Rig;
 		</p>
 		<?php
 	}
+
+	wp_rig()->display_social_menu();
 	?>
 </div><!-- .site-branding -->
