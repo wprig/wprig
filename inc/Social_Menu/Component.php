@@ -28,6 +28,7 @@ use function wp_nav_menu;
 class Component implements Component_Interface, Templating_Component_Interface {
 
 	const SOCIAL_MENU_SLUG = 'social';
+	const TRANSIENT_NAME   = 'nav_menu-social';
 	const ICON_SIZE        = 26;
 
 	/**
@@ -44,6 +45,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function initialize() {
 		add_action( 'after_setup_theme', [ $this, 'action_register_social_menu' ] );
+		add_action( 'wp_update_nav_menu', [ $this, 'action_delete_transient' ] );
 		add_filter( 'walker_nav_menu_start_el', [ $this, 'filter_social_menu_icons' ], 10, 4 );
 	}
 
@@ -72,6 +74,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		);
 	}
 
+	/**
+	 * Deletes the transient used to cache this menu.
+	 */
+	public function action_delete_transient() {
+		delete_transient( self::TRANSIENT_NAME );
+	}
 
 	/**
 	 * Display SVG icons in social links menu.
@@ -126,7 +134,15 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$args['link_before']    = '<span class="screen-reader-text">';
 		$args['link_after']     = '</span>' . wp_rig()->get_svg( 'ui', 'link', self::ICON_SIZE );
 		$args['theme_location'] = static::SOCIAL_MENU_SLUG;
+		$args['echo']           = 0;
 
-		wp_nav_menu( $args );
+		$nav_menu = get_transient( static::TRANSIENT_NAME );
+
+		if ( false === $nav_menu ) {
+			$nav_menu = wp_nav_menu( $args );
+			set_transient( static::TRANSIENT_NAME, $nav_menu, YEAR_IN_SECONDS );
+		}
+
+		echo $nav_menu; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }
