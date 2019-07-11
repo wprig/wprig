@@ -46,6 +46,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function initialize() {
 		add_action( 'after_setup_theme', [ $this, 'action_register_social_menu' ] );
 		add_action( 'wp_update_nav_menu', [ $this, 'action_delete_transient' ] );
+		add_action( 'switch_theme', [ $this, 'action_delete_transient' ] );
 		add_filter( 'walker_nav_menu_start_el', [ $this, 'filter_social_menu_icons' ], 10, 4 );
 	}
 
