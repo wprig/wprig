@@ -65,7 +65,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
-	 * Registers the navigation menus.
+	 * Registers the social menu.
 	 */
 	public function action_register_social_menu() {
 		register_nav_menus(
