@@ -2,6 +2,7 @@
 
 ## 2.0.1
 - Fix missing PHP imports. See [#543](https://github.com/wprig/wprig/pull/543). Props @benoitchantre.
+- Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
 
 ## 2.0.0
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
