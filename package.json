@@ -23,6 +23,7 @@
     "autoprefixer": "^9.5.1",
     "babel-jest": "^24.7.1",
     "browser-sync": "^2.26.7",
+    "concurrently": "^4.1.1",
     "create-cert": "^1.0.6",
     "cross-env": "^5.2.0",
     "cssnano": "^4.1.10",
@@ -100,8 +101,9 @@
     "generateCert": "gulp generateCert",
     "rig-init": "npm install && composer install",
     "translate": "gulp translate",
-    "test-gulp": "jest gulp/tests --testPathIgnorePatterns gulp/tests/prod-build && NODE_ENV=production jest gulp/tests/prod-build",
-    "test-gulp-bundle": "NODE_ENV=production jest gulp/tests/prod-build",
+    "test-gulp-dev": "jest gulp/tests --testPathIgnorePatterns gulp/tests/prod-build",
+    "test-gulp-prod": "NODE_ENV=production jest gulp/tests/prod-build",
+    "test-gulp": "concurrently \"npm run test-gulp-dev\" \"npm run test-gulp-prod\"",
     "lint": "eslint assets/js/src/",
     "lint-gulp": "eslint gulp/"
   }
