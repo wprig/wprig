@@ -57,6 +57,12 @@
 	margin: 1.5em 0 0;
 }
 
+.entry-content > ul,
+.entry-content > ol {
+	padding-right: 2.5em;
+	padding-left: 2.5em;
+}
+
 .page-content > *,
 .entry-content > *,
 .entry-summary > * {
@@ -67,12 +73,6 @@
 	/* stylelint-disable */
 	max-width: var(--content-width);
 	/* stylelint-enable */
-}
-
-.entry-content > ul,
-.entry-content > ol {
-	padding-right: 2.5em;
-	padding-left: 2.5em;
 }
 
 .page-header,
