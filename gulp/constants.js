@@ -10,7 +10,10 @@ import path from 'path';
 /**
  * Internal dependencies
  */
-import {getThemeConfig} from './utils';
+import {
+	getThemeConfig,
+	configValueDefined
+} from './utils';
 
 // Root path is where npm run commands happen
 export const rootPath = process.cwd();
@@ -121,7 +124,10 @@ let paths = {
 };
 
 // Add rootPath to filesToCopy and additionalFilesToCopy
-for ( let filePath of config.export.filesToCopy.concat( config.export.additionalFilesToCopy ) ) {
+const additionalFilesToCopy = configValueDefined( 'export.additionalFilesToCopy' ) ? config.export.additionalFilesToCopy : [];
+const filesToCopy = configValueDefined( 'export.filesToCopy' ) ? config.export.filesToCopy : [];
+for ( let filePath of filesToCopy.concat( additionalFilesToCopy ) ) {
+	// Add the files to export src
 	paths.export.src.push(`${rootPath}/${filePath}`);
 }
 

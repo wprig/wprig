@@ -5,8 +5,6 @@
  * External dependencies
  */
 import {
-  pipe as pump,
-  from,
   concat
 } from 'mississippi';
 import Vinyl from 'vinyl';
@@ -59,19 +57,25 @@ function makeMockFiles() {
 }
 
 beforeAll( (done) => {
+  // Copy the mock files to their destination before testing.
   filesToMock.forEach((file) => {
     fs.copyFileSync(file.mock, file.dest);
   });
+
+  // Run the theme bundle task.
   bundleTheme(done);
 }, 60000);
 
 
 afterAll((done) => {
+  // Delete the mock files after testing.
   filesToMock.forEach((file) => {
     if ( fs.existsSync(file.dest) ) {
       fs.unlinkSync(file.dest);
     }
   });
+
+  // Delete the prod theme directory after testing.
   if ( fs.existsSync(prodThemePath) ) {
     rimraf.sync(prodThemePath);
   }
@@ -79,21 +83,17 @@ afterAll((done) => {
 });
 
 test('gulp runs in production mode', (done) => {
-  const mockFiles = makeMockFiles();
   
   function assert() {
     expect(isProd).toBe(true);
   }
 
-  pump([
-    from.obj(mockFiles),
-    concat(assert)
-  ], done);
+  concat(assert);
+  done();
 });
 
 test('the production theme directory exists', (done) => {
-  const mockFiles = makeMockFiles();
-  const config = getThemeConfig();
+  const config = getThemeConfig(true);
   
   function assert() {
     const prodThemeDirExists = fs.existsSync(prodThemePath);
@@ -101,15 +101,18 @@ test('the production theme directory exists', (done) => {
     expect(prodThemeDirExists).toBe(true);
   }
 
-  pump([
-    from.obj(mockFiles),
-    concat(assert)
-  ], done);
+  concat(assert);
+  done();
 });
 
 test('files are copied to the production theme with strings replaced', (done) => {
-  const mockFiles = makeMockFiles();
   const copiedFiles = [];
+
+  for( let filePath of paths.export.src ) {
+    copiedFiles.push(
+      filePath.replace(rootPath, prodThemePath)
+    );
+  }
 
   filesToMock.forEach( (file) => {
     if( file.hasOwnProperty('prodDest') ) {
@@ -141,8 +144,6 @@ test('files are copied to the production theme with strings replaced', (done) =>
     });
   }
 
-  pump([
-    from.obj(mockFiles),
-    concat(assert)
-  ], done);
+  concat(assert);
+  done();
 });

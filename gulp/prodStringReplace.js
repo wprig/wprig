@@ -12,11 +12,12 @@ import pump from 'pump';
  */
 import {
     isProd,
-    paths,
-    rootPath,
-    prodThemePath
+    paths
 } from './constants';
-import {getStringReplacementTasks} from './utils';
+import {
+    getStringReplacementTasks,
+    gulpRelativeDest
+} from './utils';
 
 /**
  * Run string replacement on production files
@@ -32,10 +33,7 @@ export default function prodStringReplace(done) {
         [
             src(paths.export.stringReplaceSrc),
             getStringReplacementTasks(),
-            dest( (file) => {
-                const filePath = file.base.replace(rootPath,prodThemePath);
-                return filePath;
-            })
+            dest( gulpRelativeDest ),
         ],
 		done
 	);

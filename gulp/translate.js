@@ -62,7 +62,7 @@ export default function translate(done) {
             return done();
         }
 
-		// Only do string replacements and save PHP files when building for production
+		// Only do string replacements and save files when building for production
 		return pump([
 			src(paths.languages.src),
             translationStream(),

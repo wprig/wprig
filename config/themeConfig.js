@@ -17,7 +17,7 @@ if ( hasCustom || hasLocal ) {
 	if ( hasLocal ) {
 		config = merge(config,require( local ));
     }
-    module.exports = config
+    module.exports = config;
 } else {
 	module.exports = defaultConfig;
 }

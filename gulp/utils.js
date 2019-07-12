@@ -36,7 +36,7 @@ export function getThemeConfig( uncached=false ) {
 	let config;
 	const configPath =`${process.cwd()}/config/themeConfig.js`;
 
-	if ( uncached && ! isProd ) {
+	if ( uncached ) {
 		config = importFresh(configPath);
 	} else {
 		config = require(configPath);
@@ -145,7 +145,7 @@ export function configValueDefined(configValueLocation) {
 	}
 
 	// Get a copy of the config
-	let config = getThemeConfig(isProd);
+	let config = getThemeConfig();
 
 	// Turn the value location given into an array
 	let configValueLocationArray = configValueLocation.split('.');

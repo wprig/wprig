@@ -20,7 +20,11 @@ import {
     paths,
     nameFieldDefaults
 } from './constants';
-import {createProdDir, gulpRelativeDest, getThemeConfig} from './utils';
+import {
+    createProdDir,
+    gulpRelativeDest,
+    getThemeConfig
+} from './utils';
 
 /**
  * Create the production directory
@@ -36,11 +40,7 @@ export default function prodPrep(done) {
     }
 
     // The dev theme and the prod theme can't have the same name
-    if (
-        typeof process.env.JEST_WORKER_ID === undefined &&
-        isProd &&
-        path.basename(prodThemePath) === path.basename(rootPath)
-    ) {
+    if ( path.basename(prodThemePath) === path.basename(rootPath) ) {
         log(colors.red(`${colors.bold('Error:')} the theme slug cannot be the same as the dev theme directory name.`));
         process.exit(1);
     }
@@ -50,14 +50,13 @@ export default function prodPrep(done) {
         'name',
     ];
 
-    requiredConfigUpdates.map( (requiredConfigField) => {
-        // Error if config that must be set is still the default value.
+    // Error if config that must be set is still the default value.
+    for( let requiredConfigField of requiredConfigUpdates ) {
         if ( nameFieldDefaults[requiredConfigField] === config.theme[requiredConfigField] ){
             log(colors.red(`${colors.bold('Error:')} the theme ${requiredConfigField} must be different than the default value ${nameFieldDefaults[requiredConfigField]}.`));
             process.exit(1);
         }
-
-    });
+    };
 
     // Create the prod directory
     createProdDir();
