@@ -27,7 +27,7 @@ import {createProdDir, gulpRelativeDest, getThemeConfig} from './utils';
  */
 export default function prodPrep(done) {
 
-    const config = getThemeConfig();
+    const config = getThemeConfig(true);
 
     // Error if not in a production environment
     if( ! isProd ){
@@ -36,7 +36,7 @@ export default function prodPrep(done) {
     }
 
     // The dev theme and the prod theme can't have the same name
-    if ( path.basename(prodThemePath) === path.basename(rootPath) ){
+    if ( path.basename(prodThemePath) === path.basename(rootPath) && process.env.JEST_WORKER_ID === undefined ){
         log(colors.red(`${colors.bold('Error:')} the theme slug cannot be the same as the dev theme directory name.`));
         process.exit(1);
     }

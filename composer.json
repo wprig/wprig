@@ -9,7 +9,9 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4",
     "phpunit/phpunit": "^6",
     "brain/monkey": "^2",
-    "phpcompatibility/php-compatibility": "^9"
+    "phpcompatibility/php-compatibility": "^9",
+    "wp-cli/wp-cli": "^2.2",
+    "wp-cli/i18n-command": "^2.1"
   },
   "config": {
     "platform": {
@@ -34,6 +36,10 @@
       "@phpcs-dev"
     ],
     "phpunit-dev": "\"vendor/bin/phpunit\"",
-    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
+    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\"",
+    "wp": "\"vendor/wp-cli/wp-cli/bin/wp\"",
+    "run-make-pot": [
+      "@wp i18n make-pot . languages/wp-rig.pot --exclude=vendor,node_modules,.git,gulp,tests,config,assets/js/src,assets/css/src,optional"
+    ]
   }
 }

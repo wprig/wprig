@@ -15,6 +15,10 @@ import {getThemeConfig} from './utils';
 // Root path is where npm run commands happen
 export const rootPath = process.cwd();
 
+export const gulpPath = `${rootPath}/gulp`;
+
+export const gulpTestPath = `${rootPath}/gulp/tests`;
+
 // Dev or production
 export const isProd = ( process.env.NODE_ENV === 'production' );
 
@@ -101,19 +105,18 @@ let paths = {
 		src: `${assetsDir}/images/src/**/*.{jpg,JPG,png,svg,gif,GIF}`,
 		dest: `${assetsDir}/images/`
 	},
-	languages: {
-		src: [
-			`${rootPath}/**/*.php`,
-			`!${rootPath}/optional/**/*.*`,
-			`!${rootPath}/tests/**/*.*`,
-			`!${rootPath}/vendor/**/*.*`,
-		],
-		dest: `${rootPath}/languages/${nameFieldDefaults.slug}.pot`
-	},
 	export: {
 		src: [],
-		dest: `${prodThemePath}/`,
-		stringReplaceSrc: [`style.css`]
+		stringReplaceSrc: [
+			`${rootPath}/style.css`,
+			`${rootPath}/languages/*.po`,
+			`${rootPath}/languages/*.mo`,
+		]
+	},
+	languages: {
+		src: rootPath,
+		exclude: 'vendor,node_modules,.git,gulp,tests,config,assets/js/src,assets/css/src,optional',
+		dest: `${rootPath}/languages/${nameFieldDefaults.slug}.pot`
 	}
 };
 
@@ -130,7 +133,7 @@ if( isProd ){
 	paths.scripts.dest = `${prodAssetsDir}/js/`;
 	paths.images.dest = `${prodAssetsDir}/images/`;
 	paths.languages = {
-		src: `${prodThemePath}/**/*.php`,
+		src: prodThemePath,
 		dest: `${prodThemePath}/languages/${config.theme.slug}.pot`
 	};
 }

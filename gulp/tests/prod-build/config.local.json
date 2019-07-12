@@ -1,0 +1,12 @@
+{
+  "theme": {
+    "slug": "ataylorme",
+    "name": "ataylor.me",
+    "author": "Andrew Taylor",
+    "PHPNamespace": "ataylorme\\Theme"
+  },
+  "export": {
+    "generatePotFile": true,
+    "compress": false
+  }
+}

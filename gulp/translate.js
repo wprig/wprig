@@ -5,13 +5,51 @@
  * External dependencies
  */
 import {src, dest} from 'gulp';
+import fs from 'fs';
 import pump from 'pump';
+import map from 'map-stream';
+
 
 /**
  * Internal dependencies
  */
-import {paths, gulpPlugins, nameFieldDefaults, isProd} from './constants';
-import {getThemeConfig} from './utils';
+import {
+    rootPath,
+    paths,
+    isProd
+} from './constants';
+import {
+    getThemeConfig,
+    getStringReplacementTasks
+} from './utils';
+
+export function translationStream() {
+
+    const config = getThemeConfig();
+
+    return map( (data, callback) => {
+
+        if( fs.existsSync(paths.languages.dest) ) {
+            fs.unlinkSync(
+                paths.languages.dest,
+                (err) => {
+                if (err) throw err;
+                }
+            );
+        }
+
+        const composerCommand = `composer wp -- i18n make-pot ${paths.languages.src} ${paths.languages.dest} --exclude=${paths.languages.exclude}`;
+        
+        require('child_process').execSync(
+            composerCommand,
+            {
+                cwd: rootPath
+            }
+        );
+
+        callback();
+    });
+}
 
 /**
  * Generate translation files.
@@ -19,20 +57,27 @@ import {getThemeConfig} from './utils';
 export default function translate(done) {
     const config = getThemeConfig();
 
-    // Don't generate .pot file on production if the config flag is false
-    if ( isProd && ! config.export.generatePotFile ) {
-        return done();
-    }
+    if( isProd ) {
 
-	pump([
-        src(paths.languages.src),
-        gulpPlugins.sort(),
-        gulpPlugins.wpPot({
-            domain: (isProd) ? config.theme.slug : nameFieldDefaults.slug,
-            package: (isProd) ? config.theme.name : nameFieldDefaults.name,
-            bugReport: (isProd) ? config.theme.name : nameFieldDefaults.name,
-            lastTranslator: (isProd) ? config.theme.author : nameFieldDefaults.author
-        }),
-        dest(paths.languages.dest),
-    ], done);
+        // Don't generate .pot file on production if the config flag is false
+        if ( ! config.export.generatePotFile ) {
+            return done();
+        }
+
+		// Only do string replacements and save PHP files when building for production
+		return pump([
+			src(paths.languages.src),
+            translationStream(),
+			getStringReplacementTasks(),
+			dest( paths.languages.dest )
+		], done);
+
+	} else {
+
+		return pump([
+			src(paths.languages.src),
+            translationStream(),
+		], done);
+
+	}
 }

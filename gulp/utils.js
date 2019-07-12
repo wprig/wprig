@@ -36,7 +36,7 @@ export function getThemeConfig( uncached=false ) {
 	let config;
 	const configPath =`${process.cwd()}/config/themeConfig.js`;
 
-	if ( uncached ) {
+	if ( uncached && ! isProd ) {
 		config = importFresh(configPath);
 	} else {
 		config = require(configPath);

@@ -1,0 +1,415 @@
+# Copyright (C) 2019 S agence
+# This file is distributed under the GNU General Public License v3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Rig\n"
+"Report-Msgid-Bugs-To: WP Rig\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2019-07-11 17:41+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"X-Domain: wp-rig\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. translators: 1: title.
+#: comments.php:38
+msgid "One thought on &ldquo;%1$s&rdquo;"
+msgstr "Un commentaire sur &ldquo; %1$s&rdquo;"
+
+#. translators: 1: comment count number, 2: title.
+#: comments.php:44
+msgctxt "comments title"
+msgid "%1$s thought on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
+msgstr[0] "%1$s commentaire sur &ldquo;%2$s&rdquo;"
+msgstr[1] "%1$s commentaires sur &ldquo;%2$s&rdquo;"
+
+#: comments.php:60
+msgid "Comments are closed."
+msgstr "Les commentaires sont fermés."
+
+#: header.php:36
+msgid "Skip to content"
+msgstr "Passer au contenu"
+
+#. translators: 1: required WP version number, 2: required PHP version number, 3: available WP version number, 4: available PHP version number
+#: inc/back-compat.php:25
+msgid ""
+"WP Rig requires at least WordPress version %1$s and PHP version %2$s. You "
+"are running versions %3$s and %3$s respectively. Please update and try again."
+msgstr ""
+"WP Rig nécessite au moins la version WordPress %1$s et la version PHP%2$s. "
+"Vous exécutez respectivement les versions %3$s et%3$s. Veuillez mettre à "
+"jour et réessayer."
+
+#. translators: 1: required WP version number, 2: available WP version number
+#: inc/back-compat.php:30
+msgid ""
+"WP Rig requires at least WordPress version %1$s. You are running version "
+"%2$s. Please update and try again."
+msgstr ""
+"WP Rig nécessite au moins la version WordPress %1$s. Vous exécutez la version"
+"%2$s. Veuillez mettre à jour et réessayer."
+
+#. translators: 1: required PHP version number, 2: available PHP version number
+#: inc/back-compat.php:35
+msgid ""
+"WP Rig requires at least PHP version %1$s. You are running version %2$s. "
+"Please update and try again."
+msgstr ""
+"WP Rig nécessite au moins la version PHP%1$s. Vous exécutez la version%2$s. "
+"Veuillez mettre à jour et réessayer."
+
+#. translators: 1: classname/type of the variable, 2: interface name
+#: inc/Template_Tags.php:54
+msgid ""
+"The theme templating component %1$s does not implement the %2$s interface."
+msgstr ""
+
+#. translators: %s: template tag name
+#: inc/Template_Tags.php:81
+msgid "The template tag %s does not exist."
+msgstr ""
+
+#. translators: 1: template tag method name, 2: component class name
+#: inc/Template_Tags.php:110
+msgid ""
+"The template tag method %1$s registered by theme component %2$s must either "
+"be a callable or an array."
+msgstr ""
+
+#. translators: 1: template tag method name, 2: component class name
+#: inc/Template_Tags.php:121
+msgid ""
+"The template tag method %1$s registered by theme component %2$s conflicts "
+"with an already registered template tag of the same name."
+msgstr ""
+
+#. translators: 1: classname/type of the variable, 2: interface name
+#: inc/Theme.php:57
+msgid "The theme component %1$s does not implement the %2$s interface."
+msgstr "Le composant de thème%1$s n’implémente pas l’interface%2$s."
+
+#. translators: %s: slug
+#: inc/Theme.php:120
+msgid "No theme component with the slug %s exists."
+msgstr "Aucun composant de thème avec l'identifiant %s n’existe."
+
+#: inc/Accessibility/Component.php:69
+msgid "Expand child menu"
+msgstr "Développer le menu enfant"
+
+#: inc/Accessibility/Component.php:70
+msgid "Collapse child menu"
+msgstr "Réduire le menu enfant"
+
+#: inc/Comments/Component.php:132
+msgid "New comment(s)"
+msgstr "Nouveau commentaire(s)"
+
+#: inc/Customizer/Component.php:77
+msgid "Theme Options"
+msgstr "Options du thème"
+
+#: inc/Editor/Component.php:65, inc/Nav_Menus/Component.php:68
+msgid "Primary"
+msgstr "Principal"
+
+#: inc/Editor/Component.php:70
+msgid "Secondary"
+msgstr "Secondaire"
+
+#: inc/Editor/Component.php:75
+msgid "Red"
+msgstr "Rouge"
+
+#: inc/Editor/Component.php:80
+msgid "Green"
+msgstr "Vert"
+
+#: inc/Editor/Component.php:85
+msgid "Blue"
+msgstr "Bleu"
+
+#: inc/Editor/Component.php:90
+msgid "Yellow"
+msgstr "Jaune"
+
+#: inc/Editor/Component.php:95
+msgid "Black"
+msgstr "Noir"
+
+#: inc/Editor/Component.php:100
+msgid "Grey"
+msgstr "Gris"
+
+#: inc/Editor/Component.php:105
+msgid "White"
+msgstr "Blanc"
+
+#: inc/Editor/Component.php:110
+msgid "Dusty daylight"
+msgstr "Lumière du jour poussiéreuse"
+
+#: inc/Editor/Component.php:115
+msgid "Dusty sun"
+msgstr "Soleil poussiéreux"
+
+#: inc/Editor/Component.php:132
+msgid "Small"
+msgstr "Petit"
+
+#: inc/Editor/Component.php:133
+msgid "S"
+msgstr "S"
+
+#: inc/Editor/Component.php:138
+msgid "Medium"
+msgstr "Moyen"
+
+#: inc/Editor/Component.php:139
+msgid "M"
+msgstr "M"
+
+#: inc/Editor/Component.php:144
+msgid "Large"
+msgstr "Large"
+
+#: inc/Editor/Component.php:145
+msgid "L"
+msgstr "L"
+
+#: inc/Editor/Component.php:150
+msgid "Larger"
+msgstr "Plus large"
+
+#: inc/Editor/Component.php:151
+msgid "XL"
+msgstr "XL"
+
+#: inc/Lazyload/Component.php:89
+msgid "Lazy-load on (default)"
+msgstr "Chargement différé des images activé (par défaut)"
+
+#: inc/Lazyload/Component.php:90
+msgid "Lazy-load off"
+msgstr "Chargement différé des images désactivé"
+
+#: inc/Lazyload/Component.php:111
+msgid "Lazy-load images"
+msgstr "Différer le chargement des images"
+
+#: inc/Lazyload/Component.php:114
+msgid ""
+"Lazy-loading images means images are loaded only when they are in view. "
+"Improves performance, but can result in content jumping around on slower "
+"connections."
+msgstr ""
+"Les images de chargement différé signifient que les images sont chargées "
+"uniquement lorsqu'elles sont en vue. Améliore les performances, mais peut "
+"entraîner un saut de contenu autour de connexions plus lentes."
+
+#: inc/Sidebars/Component.php:69
+msgid "Sidebar"
+msgstr "Barre latérale"
+
+#: inc/Sidebars/Component.php:71
+msgid "Add widgets here."
+msgstr "Ajouter des widgets ici."
+
+#. translators: %s: stylesheet handle
+#: inc/Styles/Component.php:235
+msgid "Invalid theme stylesheet handle: %s"
+msgstr ""
+
+#: template-parts/content/entry-attachment.php:33,
+#: template-parts/content/entry.php:32
+msgid "Previous:"
+msgstr "Précédent :"
+
+#: template-parts/content/entry-attachment.php:43,
+#: template-parts/content/entry.php:33
+msgid "Next:"
+msgstr "Suivant :"
+
+#: template-parts/content/entry-attachment.php:49
+msgid "Post navigation"
+msgstr "Navigation des articles"
+
+#. translators: %s: post title
+#: template-parts/content/entry_actions.php:21
+msgid "Leave a Comment<span class=\"screen-reader-text\"> on %s</span>"
+msgstr ""
+"Laisser un commentaire <span class=\"screen-reader-text\">sur %s</span>"
+
+#. translators: %s: post title
+#: template-parts/content/entry_actions.php:40
+msgid "Edit <span class=\"screen-reader-text\">%s</span>"
+msgstr "Modifier <span class=\"screen-reader-text\">%s</span>"
+
+#. translators: %s: Name of current post. Only visible to screen readers
+#: template-parts/content/entry_content.php:18
+msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr ""
+"Poursuivre la lecture <span class=\"screen-reader-text”> \"%s\" </span>"
+
+#: template-parts/content/entry_content.php:31
+msgid "Pages:"
+msgstr "Pages :"
+
+#. translators: %s: post date
+#: template-parts/content/entry_meta.php:63
+msgctxt "post date"
+msgid "Posted on %s"
+msgstr "Publié le %s"
+
+#. translators: %s: post author
+#: template-parts/content/entry_meta.php:76
+msgctxt "post author"
+msgid "By %s"
+msgstr "Par %s"
+
+#. translators: %s: post author
+#: template-parts/content/entry_meta.php:79
+msgctxt "post author"
+msgid "by %s"
+msgstr "par %s"
+
+#. translators: %s: post parent title
+#: template-parts/content/entry_meta.php:95
+msgctxt "post parent"
+msgid "In %s"
+msgstr "Dans %s"
+
+#. translators: %s: post parent title
+#: template-parts/content/entry_meta.php:98
+msgctxt "post parent"
+msgid "in %s"
+msgstr "dans %s"
+
+#. translators: separator between taxonomy terms
+#: template-parts/content/entry_taxonomies.php:24
+msgctxt "list item separator"
+msgid ", "
+msgstr ", "
+
+#. translators: %s: list of taxonomy terms
+#: template-parts/content/entry_taxonomies.php:31
+msgid "Posted in %s"
+msgstr "Publié dans %s"
+
+#. translators: %s: list of taxonomy terms
+#: template-parts/content/entry_taxonomies.php:37
+msgid "Tagged %s"
+msgstr "Etiqueté %s"
+
+#. translators: %s: taxonomy name
+#: template-parts/content/entry_taxonomies.php:44
+msgid "%s:"
+msgstr "%s :"
+
+#: template-parts/content/error-404.php:16
+msgid ""
+"It looks like nothing was found at this location. Maybe try one of the links "
+"below or a search?"
+msgstr ""
+"Il semble qu'il n'y ait rien par ici, essayez peut-être un des liens ci-"
+"dessous ou une recherche ?"
+
+#: template-parts/content/error-404.php:27
+msgid "Most Used Categories"
+msgstr "Catégories les plus utilisées"
+
+#. translators: %1$s: smiley
+#: template-parts/content/error-404.php:45
+msgid "Try looking in the monthly archives. %1$s"
+msgstr "Tentez de regarder dans les archives mensuelles. %1$s"
+
+#: template-parts/content/error-500.php:14
+msgid "Oops! Something went wrong."
+msgstr "Oops! Un problème s'est produit."
+
+#: template-parts/content/error-offline.php:14
+msgid "Oops! It looks like you&#8217;re offline."
+msgstr "Oups! On dirait que vous êtes déconnecté."
+
+#. translators: 1: link to WP admin new post page.
+#: template-parts/content/error.php:23
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+"Prêt à publier votre premier article? <a href=« %1$s »>Commencez-ici</a>."
+
+#: template-parts/content/error.php:38
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+"Désolé, mais rien ne correspond à vos termes de recherche. Veuillez essayer "
+"de nouveau d’autres mots-clés."
+
+#: template-parts/content/error.php:44
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+"Il semble que nous ne pouvons pas trouver ce que vous cherchez. Peut-être "
+"que la recherche peut vous aider."
+
+#: template-parts/content/page_header.php:14
+msgid "Oops! That page can&rsquo;t be found."
+msgstr "Désolé! Cette page n’existe pas."
+
+#: template-parts/content/page_header.php:22
+msgid "Nothing Found"
+msgstr "Aucun résultat"
+
+#. translators: %s: search query
+#: template-parts/content/page_header.php:41
+msgid "Search Results for: %s"
+msgstr "Résultats de la recherche pour: %s"
+
+#: template-parts/content/pagination.php:13
+msgctxt "previous set of search results"
+msgid "Previous"
+msgstr "Précédent"
+
+#: template-parts/content/pagination.php:14
+msgctxt "next set of search results"
+msgid "Next"
+msgstr "Suivant"
+
+#: template-parts/content/pagination.php:15
+msgid "Page navigation"
+msgstr "Navigation de page"
+
+#: template-parts/footer/info.php:13
+msgid "https://wordpress.org/"
+msgstr "https://wordpress.org/"
+
+#. translators: %s: CMS name, i.e. WordPress.
+#: template-parts/footer/info.php:16
+msgid "Proudly powered by %s"
+msgstr "Fièrement propulsé par %s"
+
+#. translators: Theme name.
+#: template-parts/footer/info.php:22
+msgid "Theme: %s by the contributors."
+msgstr "Thème: %s par les contributeurs."
+
+#: template-parts/header/navigation.php:16
+msgid "Main menu"
+msgstr "Menu principal"
+
+#: template-parts/header/navigation.php:39
+msgid "Open menu"
+msgstr "Ouvrir le menu"
+
+#: template-parts/header/navigation.php:49
+msgid "Menu"
+msgstr "Menu"

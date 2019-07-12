@@ -10,7 +10,12 @@ import pump from 'pump';
 /**
  * Internal dependencies
  */
-import {isProd, paths} from './constants';
+import {
+    isProd,
+    paths,
+    rootPath,
+    prodThemePath
+} from './constants';
 import {getStringReplacementTasks} from './utils';
 
 /**
@@ -27,7 +32,10 @@ export default function prodStringReplace(done) {
         [
             src(paths.export.stringReplaceSrc),
             getStringReplacementTasks(),
-            dest(paths.export.dest)
+            dest( (file) => {
+                const filePath = file.base.replace(rootPath,prodThemePath);
+                return filePath;
+            })
         ],
 		done
 	);

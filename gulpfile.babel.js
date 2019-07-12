@@ -40,7 +40,19 @@ export const buildDev = parallel(
  * Export theme for distribution.
  */
 export const bundleTheme = series(
-    prodPrep, parallel(php, scripts, series( styles, editorStyles ), images), translate, prodStringReplace, prodCompress
+    prodPrep,
+    parallel(
+        php,
+        scripts,
+        series(
+            styles,
+            editorStyles
+            ),
+            images
+            ),
+    translate,
+    prodStringReplace,
+    prodCompress
 );
 
 /**

@@ -3,47 +3,26 @@
 /**
  * External dependencies
  */
-import { pipe as pump, from, concat } from 'mississippi';
+import {
+  pipe as pump,
+  from,
+  concat
+} from 'mississippi';
 import Vinyl from 'vinyl';
+import fs from 'fs';
 
 /**
  * Internal dependencies
  */
-import { getThemeConfig, getDefaultConfig } from '../utils';
-import { stylesAfterReplacementStream } from '../styles';
+import { gulpTestPath } from '../../constants';
+import { getThemeConfig, getDefaultConfig } from '../../utils';
+import { stylesAfterReplacementStream } from '../../styles';
 
 function makeMockFiles() {
   return [
     new Vinyl({
       path: 'mock.css',
-      contents: Buffer.from(
-`
-@import "_custom-properties.css";
-
-.entry {
-	font-family: var(--global-font-family);
-	color: var(--color-theme-primary);
-	margin-bottom: 1rem;
-}
-
-.grid-wrap {
-	display: grid;
-}
-
-@media (--content-query) {
-
-	.entry {
-		padding: 0;
-
-		& .inner {
-			margin: 1rem;
-		}
-
-	}
-
-}
-`
-      )
+      contents: fs.readFileSync(`${gulpTestPath}/styles/mock.css`)
     }),
   ];
 }
