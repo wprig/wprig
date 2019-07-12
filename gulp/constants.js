@@ -132,10 +132,8 @@ if( isProd ){
 	paths.styles.editorDest = `${prodAssetsDir}/css/editor/`;
 	paths.scripts.dest = `${prodAssetsDir}/js/`;
 	paths.images.dest = `${prodAssetsDir}/images/`;
-	paths.languages = {
-		src: prodThemePath,
-		dest: `${prodThemePath}/languages/${config.theme.slug}.pot`
-	};
+	paths.languages.src = prodThemePath;
+	paths.languages.dest = `${prodThemePath}/languages/${config.theme.slug}.pot`;
 }
 
 export {paths};

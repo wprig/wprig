@@ -1,5 +1,5 @@
 /* eslint-env es6 */
-/* global test, expect */
+/* global test, expect, beforeAll, afterAll */
 
 /**
  * External dependencies
@@ -42,7 +42,7 @@ const filesToMock = [
     dest: `${rootPath}/languages/fr_FR.mo`,
     prodDest: `${prodThemePath}/languages/fr_FR.mo`
   },
-]
+];
 
 function makeMockFiles() {
 
@@ -73,7 +73,7 @@ afterAll((done) => {
     }
   });
   if ( fs.existsSync(prodThemePath) ) {
-    // rimraf.sync(prodThemePath);
+    rimraf.sync(prodThemePath);
   }
   done();
 });
@@ -135,9 +135,9 @@ test('files are copied to the production theme with strings replaced', (done) =>
         { encoding: 'utf-8' }
       );
       // And that they don't have any default strings.
-      for (let [key, defaultString] of Object.entries(nameFieldDefaults)) {
-        expect(fileContents).not.toContain(defaultString);
-      };
+      Object.keys(nameFieldDefaults).forEach(key => {
+        expect(fileContents).not.toContain(nameFieldDefaults[key]);
+      });
     });
   }
 

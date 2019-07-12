@@ -14,7 +14,6 @@ import fs from 'fs';
 /**
  * Internal dependencies
  */
-import { getThemeConfig } from '../../utils';
 import {
   gulpTestPath,
   paths
@@ -37,7 +36,6 @@ function makeMockFiles() {
 }
 
 test('pot file generation', (done) => {
-  const config = getThemeConfig();
   const mockFiles = makeMockFiles();
   
   function assert() {

@@ -25,15 +25,13 @@ import {
 
 export function translationStream() {
 
-    const config = getThemeConfig();
-
     return map( (data, callback) => {
 
         if( fs.existsSync(paths.languages.dest) ) {
             fs.unlinkSync(
                 paths.languages.dest,
                 (err) => {
-                if (err) throw err;
+                    if (err) throw err;
                 }
             );
         }
