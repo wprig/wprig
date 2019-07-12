@@ -38,7 +38,7 @@ export default function prodPrep(done) {
     // The dev theme and the prod theme can't have the same name
     if (
         process.env.JEST_WORKER_ID === undefined &&
-        ! isProd &&
+        isProd &&
         path.basename(prodThemePath) === path.basename(rootPath)
     ) {
         log(colors.red(`${colors.bold('Error:')} the theme slug cannot be the same as the dev theme directory name.`));
