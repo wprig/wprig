@@ -59,8 +59,7 @@
 
 .entry-content > ul,
 .entry-content > ol {
-	padding-right: 2.5em;
-	padding-left: 2.5em;
+	padding-left: 3.5em;
 }
 
 .page-content > *,
@@ -91,6 +90,12 @@
 }
 
 @media (--content-query) {
+
+	.entry-content > ul,
+	.entry-content > ol {
+		padding-left: 2.5em;
+		padding-right: 2.5em;
+	}
 
 	.page-content > *,
 	.entry-content > *,
