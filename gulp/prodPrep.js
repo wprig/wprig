@@ -37,7 +37,7 @@ export default function prodPrep(done) {
 
     // The dev theme and the prod theme can't have the same name
     if (
-        process.env.JEST_WORKER_ID === undefined &&
+        typeof process.env.JEST_WORKER_ID === undefined &&
         isProd &&
         path.basename(prodThemePath) === path.basename(rootPath)
     ) {

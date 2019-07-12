@@ -103,7 +103,7 @@
     "translate": "gulp translate",
     "test-gulp-dev": "jest gulp/tests --testPathIgnorePatterns gulp/tests/prod-build",
     "test-gulp-prod": "NODE_ENV=production jest gulp/tests/prod-build",
-    "test-gulp": "concurrently \"npm run test-gulp-dev\" \"npm run test-gulp-prod\"",
+    "test-gulp": "concurrently 'npm run test-gulp-dev' 'npm run test-gulp-prod'",
     "lint": "eslint assets/js/src/",
     "lint-gulp": "eslint gulp/"
   }
