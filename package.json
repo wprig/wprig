@@ -105,6 +105,7 @@
     "test:gulp:prod": "NODE_ENV=production jest gulp/tests/prod-build",
     "test:gulp": "run-s test:gulp:dev test:gulp:prod",
     "lint": "eslint assets/js/src/",
-    "lint:gulp": "eslint gulp/"
+    "lint:gulp": "eslint gulp/",
+    "lint:gulp:fix": "eslint --fix gulp/"
   }
 }
