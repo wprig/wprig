@@ -2,6 +2,10 @@
 # Widgets
 --------------------------------------------------------------*/
 
+.widget-title {
+	font-size: 1.5em;
+}
+
 /* Make sure select elements fit in widgets. */
 .widget {
 	margin-top: 0;

@@ -47,6 +47,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function initialize() {
 		add_action( 'wp_enqueue_scripts', [ $this, 'action_enqueue_comment_reply_script' ] );
+		add_filter( 'comment_form_defaults', [ $this, 'filter_comment_form_defaults' ] );
 	}
 
 	/**
@@ -76,6 +77,23 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 			wp_enqueue_script( 'comment-reply' );
 		}
+	}
+
+	/**
+	 * Filters the comment form default arguments.
+	 *
+	 * Change the heading level to h2 when there are no comments.
+	 *
+	 * @param array $args The default comment form arguments.
+	 * @return array      Modified comment form arguments.
+	 */
+	public function filter_comment_form_defaults( array $args ) : array {
+		if ( get_comments_number() === 0 ) {
+			$args['title_reply_before'] = '<h2 id="reply-title" class="comment-reply-title">';
+			$args['title_reply_after']  = '</h2>';
+		}
+
+		return $args;
 	}
 
 	/**
