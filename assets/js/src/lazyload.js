@@ -4,13 +4,13 @@
  * @link https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/
  */
 document.addEventListener( 'DOMContentLoaded', function() {
-	var lazyImages = [].slice.call( document.querySelectorAll( 'img.lazy' ) );
+	let lazyImages = [].slice.call( document.querySelectorAll( 'img.lazy' ) );
 
 	if ( 'IntersectionObserver' in window ) {
-		let lazyImageObserver = new IntersectionObserver( function( entries, observer ) {
+		const lazyImageObserver = new IntersectionObserver( function( entries ) {
 			entries.forEach( function( entry ) {
 				if ( entry.isIntersecting ) {
-					let lazyImage = entry.target;
+					const lazyImage = entry.target;
 					lazyImage.src = lazyImage.dataset.src;
 					if ( lazyImage.dataset.srcset ) {
 						lazyImage.srcset = lazyImage.dataset.srcset;
@@ -21,14 +21,13 @@ document.addEventListener( 'DOMContentLoaded', function() {
 					lazyImage.classList.remove( 'lazy' );
 					lazyImageObserver.unobserve( lazyImage );
 				}
-			});
-		});
+			} );
+		} );
 
 		lazyImages.forEach( function( lazyImage ) {
-		lazyImageObserver.observe( lazyImage );
-		});
+			lazyImageObserver.observe( lazyImage );
+		} );
 	} else {
-
 		// For older browsers lacking IntersectionObserver support.
 		// See https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/
 		let active = false;
@@ -39,7 +38,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 
 				setTimeout( function() {
 					lazyImages.forEach( function( lazyImage ) {
-						if ( ( lazyImage.getBoundingClientRect().top <= window.innerHeight &&  0 <= lazyImage.getBoundingClientRect().bottom ) && 'none' !== getComputedStyle( lazyImage ).display ) {
+						if ( ( lazyImage.getBoundingClientRect().top <= window.innerHeight && 0 <= lazyImage.getBoundingClientRect().bottom ) && 'none' !== getComputedStyle( lazyImage ).display ) {
 							lazyImage.src = lazyImage.dataset.src;
 							if ( lazyImage.dataset.srcset ) {
 								lazyImage.srcset = lazyImage.dataset.srcset;
@@ -51,7 +50,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 
 							lazyImages = lazyImages.filter( function( image ) {
 								return image !== lazyImage;
-							});
+							} );
 
 							if ( 0 === lazyImages.length ) {
 								document.removeEventListener( 'scroll', lazyLoad );
@@ -59,7 +58,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
 								window.removeEventListener( 'orientationchange', lazyLoad );
 							}
 						}
-					});
+					} );
 
 					active = false;
 				}, 200 );
@@ -70,4 +69,4 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		window.addEventListener( 'resize', lazyLoad );
 		window.addEventListener( 'orientationchange', lazyLoad );
 	}
-});
+} );
