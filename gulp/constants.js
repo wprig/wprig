@@ -118,6 +118,7 @@ const paths = {
 	},
 	languages: {
 		src: rootPath,
+		dir: `${ rootPath }/languages`,
 		exclude: 'vendor,node_modules,.git,gulp,tests,config,assets/js/src,assets/css/src,optional',
 		dest: `${ rootPath }/languages/${ nameFieldDefaults.slug }.pot`,
 	},
@@ -140,6 +141,7 @@ if ( isProd ) {
 	paths.images.dest = `${ prodAssetsDir }/images/`;
 	paths.languages.src = prodThemePath;
 	paths.languages.dest = `${ prodThemePath }/languages/${ config.theme.slug }.pot`;
+	paths.languages.dir = `${ prodThemePath }/languages`;
 }
 
 export { paths };

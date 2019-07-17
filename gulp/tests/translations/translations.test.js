@@ -1,5 +1,6 @@
 /* eslint-env es6 */
 /* global test, expect */
+
 /**
  * External dependencies
  */

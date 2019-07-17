@@ -35,10 +35,19 @@ export function translationStream() {
 			);
 		}
 
-		const composerCommand = `composer wp -- i18n make-pot ${ paths.languages.src } ${ paths.languages.dest } --exclude=${ paths.languages.exclude }`;
-
+		// Create the .pot file
+		const makePotCommand = `composer wp -- i18n make-pot ${ paths.languages.src } ${ paths.languages.dest } --exclude=${ paths.languages.exclude }`;
 		require( 'child_process' ).execSync(
-			composerCommand,
+			makePotCommand,
+			{
+				cwd: rootPath,
+			}
+		);
+
+		// Create .json files from .po files
+		const makeJSONCommand = isProd ? `composer wp -- i18n make-json ${ paths.languages.dir } --no-purge` : `composer wp -- i18n make-json ${ paths.languages.dir } --no-purge`;
+		require( 'child_process' ).execSync(
+			makeJSONCommand,
 			{
 				cwd: rootPath,
 			}

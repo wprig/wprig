@@ -1,6 +1,10 @@
 /* eslint-env es6 */
 /* global test, expect */
 /**
+ * @jest-environment jsdom
+ */
+
+/**
  * External dependencies
  */
 import {
