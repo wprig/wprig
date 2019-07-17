@@ -100,7 +100,7 @@ class Template_Tags {
 
 		foreach ( $tags as $method_name => $callback ) {
 			if ( is_callable( $callback ) ) {
-				$callback = [ 'callback' => $callback ];
+				$callback = array( 'callback' => $callback );
 			}
 
 			if ( ! is_array( $callback ) || ! isset( $callback['callback'] ) ) {

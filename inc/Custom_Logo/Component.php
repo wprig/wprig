@@ -32,7 +32,7 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'after_setup_theme', [ $this, 'action_add_custom_logo_support' ] );
+		add_action( 'after_setup_theme', array( $this, 'action_add_custom_logo_support' ) );
 	}
 
 	/**

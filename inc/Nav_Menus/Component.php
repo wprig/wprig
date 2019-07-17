@@ -41,8 +41,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'after_setup_theme', [ $this, 'action_register_nav_menus' ] );
-		add_filter( 'walker_nav_menu_start_el', [ $this, 'filter_primary_nav_menu_dropdown_symbol' ], 10, 4 );
+		add_action( 'after_setup_theme', array( $this, 'action_register_nav_menus' ) );
+		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_primary_nav_menu_dropdown_symbol' ), 10, 4 );
 	}
 
 	/**
@@ -54,8 +54,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function template_tags() : array {
 		return [
-			'is_primary_nav_menu_active' => [ $this, 'is_primary_nav_menu_active' ],
-			'display_primary_nav_menu'   => [ $this, 'display_primary_nav_menu' ],
+			'is_primary_nav_menu_active' => array( $this, 'is_primary_nav_menu_active' ),
+			'display_primary_nav_menu'   => array( $this, 'display_primary_nav_menu' ),
 		];
 	}
 

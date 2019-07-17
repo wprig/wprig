@@ -72,10 +72,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'wp_enqueue_scripts', [ $this, 'action_enqueue_styles' ] );
-		add_action( 'wp_head', [ $this, 'action_preload_styles' ] );
-		add_action( 'after_setup_theme', [ $this, 'action_add_editor_styles' ] );
-		add_filter( 'wp_resource_hints', [ $this, 'filter_resource_hints' ], 10, 2 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_styles' ) );
+		add_action( 'wp_head', array( $this, 'action_preload_styles' ) );
+		add_action( 'after_setup_theme', array( $this, 'action_add_editor_styles' ) );
+		add_filter( 'wp_resource_hints', array( $this, 'filter_resource_hints' ), 10, 2 );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function template_tags() : array {
 		return [
-			'print_styles' => [ $this, 'print_styles' ],
+			'print_styles' => array( $this, 'print_styles' ),
 		];
 	}
 
@@ -326,7 +326,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$this->css_files = [];
 		foreach ( $css_files as $handle => $data ) {
 			if ( is_string( $data ) ) {
-				$data = [ 'file' => $data ];
+				$data = array( 'file' => $data );
 			}
 
 			if ( empty( $data['file'] ) ) {
@@ -357,8 +357,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		$google_fonts = [
-			'Roboto Condensed' => [ '400', '400i', '700', '700i' ],
-			'Crimson Text'     => [ '400', '400i', '600', '600i' ],
+			'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
+			'Crimson Text'     => array( '400', '400i', '600', '600i' ),
 		];
 
 		/**
