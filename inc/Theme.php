@@ -21,7 +21,7 @@ class Theme {
 	 *
 	 * @var array
 	 */
-	protected $components = [];
+	protected $components = array();
 
 	/**
 	 * The template tags instance, providing access to all available template tags.
@@ -41,7 +41,7 @@ class Theme {
 	 *
 	 * @throws InvalidArgumentException Thrown if one of the $components does not implement Component_Interface.
 	 */
-	public function __construct( array $components = [] ) {
+	public function __construct( array $components = array() ) {
 		if ( empty( $components ) ) {
 			$components = $this->get_default_components();
 		}

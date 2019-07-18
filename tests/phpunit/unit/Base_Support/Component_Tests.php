@@ -83,7 +83,7 @@ class Component_Tests extends Unit_Test_Case {
 	 * @covers Component::action_essential_theme_support()
 	 */
 	public function test_action_essential_theme_support() {
-		$features = [];
+		$features = array();
 
 		Functions\when( 'add_theme_support' )->alias(
 			function( $feature, ...$args ) use ( &$features ) {

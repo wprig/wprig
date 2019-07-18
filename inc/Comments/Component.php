@@ -27,7 +27,7 @@ use function esc_html_e;
  * Class for managing comments UI.
  *
  * Exposes template tags:
- * * `wp_rig()->the_comments( array $args = [] )`
+ * * `wp_rig()->the_comments( array $args = array() )`
  *
  * @link https://wordpress.org/plugins/amp/
  */
@@ -88,7 +88,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param array $args Optional. Array of arguments. See `wp_list_comments()` documentation for a list of supported
 	 *                    arguments.
 	 */
-	public function the_comments( array $args = [] ) {
+	public function the_comments( array $args = array() ) {
 		$args = array_merge(
 			$args,
 			[

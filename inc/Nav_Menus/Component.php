@@ -22,7 +22,7 @@ use function wp_nav_menu;
  *
  * Exposes template tags:
  * * `wp_rig()->is_primary_nav_menu_active()`
- * * `wp_rig()->display_primary_nav_menu( array $args = [] )`
+ * * `wp_rig()->display_primary_nav_menu( array $args = array() )`
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
@@ -120,7 +120,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param array $args Optional. Array of arguments. See `wp_nav_menu()` documentation for a list of supported
 	 *                    arguments.
 	 */
-	public function display_primary_nav_menu( array $args = [] ) {
+	public function display_primary_nav_menu( array $args = array() ) {
 		if ( ! isset( $args['container'] ) ) {
 			$args['container'] = 'ul';
 		}

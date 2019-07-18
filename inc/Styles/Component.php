@@ -101,7 +101,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		// Enqueue Google Fonts.
 		$google_fonts_url = $this->get_google_fonts_url();
 		if ( ! empty( $google_fonts_url ) ) {
-			wp_enqueue_style( 'wp-rig-fonts', $google_fonts_url, [], null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+			wp_enqueue_style( 'wp-rig-fonts', $google_fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		}
 
 		$css_uri = get_theme_file_uri( '/assets/css/' );
@@ -120,9 +120,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			 * enqueued based on whether they are necessary for the page content).
 			 */
 			if ( $data['global'] || ! $preloading_styles_enabled && is_callable( $data['preload_callback'] ) && call_user_func( $data['preload_callback'] ) ) {
-				wp_enqueue_style( $handle, $src, [], $version, $data['media'] );
+				wp_enqueue_style( $handle, $src, array(), $version, $data['media'] );
 			} else {
-				wp_register_style( $handle, $src, [], $version, $data['media'] );
+				wp_register_style( $handle, $src, array(), $version, $data['media'] );
 			}
 
 			wp_style_add_data( $handle, 'precache', true );
@@ -323,7 +323,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		 */
 		$css_files = apply_filters( 'wp_rig_css_files', $css_files );
 
-		$this->css_files = [];
+		$this->css_files = array();
 		foreach ( $css_files as $handle => $data ) {
 			if ( is_string( $data ) ) {
 				$data = array( 'file' => $data );
@@ -385,7 +385,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			return '';
 		}
 
-		$font_families = [];
+		$font_families = array();
 
 		foreach ( $google_fonts as $font_name => $font_variants ) {
 			if ( ! empty( $font_variants ) ) {

@@ -157,7 +157,7 @@ class Component_Tests extends Unit_Test_Case {
 	 * @covers Component::filter_nav_menu_link_attributes_aria_current()
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current() {
-		$atts = [];
+		$atts = array();
 		$item = $this->getMockBuilder( 'WP_Post' )->getMock();
 
 		$atts = $this->component->filter_nav_menu_link_attributes_aria_current( $atts, $item );
@@ -170,7 +170,7 @@ class Component_Tests extends Unit_Test_Case {
 	 * @covers Component::filter_nav_menu_link_attributes_aria_current()
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current_with_current_item() {
-		$atts          = [];
+		$atts          = array();
 		$item          = $this->getMockBuilder( 'WP_Post' )->getMock();
 		$item->current = true;
 
@@ -184,7 +184,7 @@ class Component_Tests extends Unit_Test_Case {
 	 * @covers Component::filter_nav_menu_link_attributes_aria_current()
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current_with_current_post() {
-		$atts     = [];
+		$atts     = array();
 		$item     = $this->getMockBuilder( 'WP_Post' )->getMock();
 		$item->ID = 1;
 

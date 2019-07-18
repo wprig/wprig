@@ -323,7 +323,7 @@ class Component implements Component_Interface {
 	 * @return array Flattened attributes as $attr => $attr_value pairs.
 	 */
 	protected function flatten_kses_hair_data( array $attributes ) : array {
-		$flattened_attributes = [];
+		$flattened_attributes = array();
 		foreach ( $attributes as $name => $attribute ) {
 			$flattened_attributes[ $name ] = $attribute['value'];
 		}
@@ -337,7 +337,7 @@ class Component implements Component_Interface {
 	 * @return string HTML attribute string.
 	 */
 	protected function build_attributes_string( array $attributes ) : string {
-		$string = [];
+		$string = array();
 		foreach ( $attributes as $name => $value ) {
 			if ( '' === $value ) {
 				$string[] = sprintf( '%s', $name );
