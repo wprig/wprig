@@ -112,7 +112,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$sidebars      = [];
 		$template_path = trailingslashit( get_template_directory() ) . $template;
 
-		// Search for get_sidebar() calls in template.
+		// Return early if there's no file.
+		if ( ! file_exists( $template_path ) ) {
+			return [];
+		}
+
+		// Search for get_sidebar() calls in template file.
 		if ( ! preg_match_all( '/get_sidebar[(]\s*\'?([\w-]*)\'?\s*[)]/', file_get_contents( $template_path ), $sidebar_calls ) ) {
 			return $sidebars;
 		};
