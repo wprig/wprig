@@ -87,14 +87,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		if ( $this->is_primary_sidebar_active() ) {
 			global $template;
 
-			$sidebars = $this->find_sidebars( basename( $template ) );
-
-			// Return early if template has no sidebars.
-			if ( empty( $sidebars ) ) {
-				return $classes;
+			if ( ! empty( $this->find_sidebars( basename( $template ) ) ) ) {
+				$classes[] = 'has-sidebar';
 			}
-
-			$classes[] = 'has-sidebar';
 		}
 
 		return $classes;
