@@ -1,6 +1,9 @@
 /* eslint-env es6 */
 'use strict';
 
+/**
+ * Internal dependencies
+ */
 import {
 	gulpTestPath,
 	prodThemePath,

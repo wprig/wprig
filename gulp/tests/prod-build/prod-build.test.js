@@ -1,5 +1,5 @@
 /* eslint-env es6 */
-/* global test, expect, beforeAll, afterAll */
+/* global test, expect */
 
 /**
  * External dependencies
@@ -8,7 +8,6 @@ import {
 	concat,
 } from 'mississippi';
 import fs from 'fs';
-import rimraf from 'rimraf';
 
 /**
  * Internal dependencies
@@ -23,23 +22,7 @@ import {
 	paths,
 } from '../../constants';
 
-afterAll( ( done ) => {
-	// Delete the mock files after testing.
-	filesToMock.forEach( ( file ) => {
-		if ( fs.existsSync( file.dest ) ) {
-			fs.unlinkSync( file.dest );
-		}
-	} );
-
-	// Delete the prod theme directory after testing.
-	if ( fs.existsSync( prodThemePath ) ) {
-		rimraf.sync( prodThemePath );
-	}
-	done();
-} );
-
 test( 'gulp runs in production mode', ( done ) => {
-	const config = getThemeConfig( true );
 	function assert() {
 		expect( isProd ).toBe( true );
 	}

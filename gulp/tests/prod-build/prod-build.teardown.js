@@ -24,6 +24,5 @@ filesToMock.forEach( ( file ) => {
 
 // Delete the prod theme directory after testing.
 if ( fs.existsSync( prodThemePath ) ) {
-	console.log(`Deleting the production theme ${prodThemePath}`);
 	rimraf.sync( prodThemePath );
 }
