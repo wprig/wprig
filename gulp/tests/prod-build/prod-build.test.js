@@ -127,8 +127,18 @@ test( 'if .po files exist in the dev theme then .mo files are generated in the p
 	// Make sure each prod .mo file exist.
 	moFilePathsArray.forEach( ( filePath ) => {
 		const fileExists = fs.existsSync( filePath );
-		const failMessage = `The expected .mo file ${ filePath } does not exist`;
+		let failMessage = `The expected .mo file ${ filePath } does not exist`;
 		expect( fileExists, failMessage ).toBe( true );
+		
+		// And that it doesn't have any default strings.
+		const fileContents = fs.readFileSync(
+			filePath,
+			{ encoding: 'utf-8' }
+		);
+		Object.keys( nameFieldDefaults ).forEach( ( key ) => {
+			failMessage = `The file ${ filePath } contains the default string ${ nameFieldDefaults[ key ] }`;
+			expect( fileContents, failMessage ).not.toContain( nameFieldDefaults[ key ] );
+		} );
 	} );
 
 	done();
