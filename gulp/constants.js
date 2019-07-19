@@ -113,7 +113,6 @@ const paths = {
 		stringReplaceSrc: [
 			`${ rootPath }/style.css`,
 			`${ rootPath }/languages/*.po`,
-			`${ rootPath }/languages/*.mo`,
 		],
 	},
 	languages: {

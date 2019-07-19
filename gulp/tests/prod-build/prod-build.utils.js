@@ -23,6 +23,5 @@ export const filesToMock = [
 	{
 		mock: `${ gulpTestPath }/translations/fr_FR.mo`,
 		dest: `${ rootPath }/languages/fr_FR.mo`,
-		prodDest: `${ prodThemePath }/languages/fr_FR.mo`,
 	},
 ];

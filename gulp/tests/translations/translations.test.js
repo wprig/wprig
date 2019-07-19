@@ -41,7 +41,8 @@ test( 'pot file generation', ( done ) => {
 
 	function assert() {
 		const potFileExists = fs.existsSync( paths.languages.dest );
-		expect( potFileExists ).toBe( true );
+		const failMessage = `The expected .pot file ${ paths.languages.dest } does not exist`;
+		expect( potFileExists ).toBe( true, failMessage );
 	}
 
 	pump( [
