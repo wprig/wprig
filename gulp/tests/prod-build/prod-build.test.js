@@ -109,25 +109,55 @@ test( 'string replacement files to copy exist in the production theme and do not
 } );
 
 test( 'if .po files exist in the dev theme then .mo files are generated in the production theme', ( done ) => {
-	const moFilePathsArray = [];
-
 	// Get any .po files that exist
 	const poFilePathsArray = glob.sync( `${ rootPath }/languages/*.po` );
 
-	poFilePathsArray.forEach( ( filePath ) => {
-		moFilePathsArray.push(
-			filePath
-				// Update the file path from dev to prod
-				.replace( rootPath, prodThemePath )
-				// And replace .po with .mo
-				.replace( '.po', '.mo' )
-		);
+	// Create an array of .mo files from .po files
+	const moFilePathsArray = poFilePathsArray.map( ( filePath ) => {
+		return filePath
+			// Update the file path from dev to prod
+			.replace( rootPath, prodThemePath )
+			// And replace .po with .mo
+			.replace( '.po', '.mo' );
 	} );
 
 	// Make sure each prod .mo file exist.
 	moFilePathsArray.forEach( ( filePath ) => {
 		const fileExists = fs.existsSync( filePath );
 		let failMessage = `The expected .mo file ${ filePath } does not exist`;
+		expect( fileExists, failMessage ).toBe( true );
+
+		// And that it doesn't have any default strings.
+		const fileContents = fs.readFileSync(
+			filePath,
+			{ encoding: 'utf-8' }
+		);
+		Object.keys( nameFieldDefaults ).forEach( ( key ) => {
+			failMessage = `The file ${ filePath } contains the default string ${ nameFieldDefaults[ key ] }`;
+			expect( fileContents, failMessage ).not.toContain( nameFieldDefaults[ key ] );
+		} );
+	} );
+
+	done();
+} );
+
+test( 'if .po files exist in the dev theme then .json files are generated in the production theme', ( done ) => {
+	// Get any .po files that exist
+	const poFilePathsArray = glob.sync( `${ rootPath }/languages/*.po` );
+
+	// Create an array of .json files from .po files
+	const JSONFilePathsArray = poFilePathsArray.map( ( filePath ) => {
+		return filePath
+			// Update the file path from dev to prod
+			.replace( rootPath, prodThemePath )
+			// And replace .po with .json
+			.replace( '.po', '.json' );
+	} );
+
+	// Make sure each prod .mo file exist.
+	JSONFilePathsArray.forEach( ( filePath ) => {
+		const fileExists = fs.existsSync( filePath );
+		let failMessage = `The expected .json file ${ filePath } does not exist`;
 		expect( fileExists, failMessage ).toBe( true );
 
 		// And that it doesn't have any default strings.
