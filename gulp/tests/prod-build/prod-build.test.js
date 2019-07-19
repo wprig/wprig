@@ -129,7 +129,7 @@ test( 'if .po files exist in the dev theme then .mo files are generated in the p
 		const fileExists = fs.existsSync( filePath );
 		let failMessage = `The expected .mo file ${ filePath } does not exist`;
 		expect( fileExists, failMessage ).toBe( true );
-		
+
 		// And that it doesn't have any default strings.
 		const fileContents = fs.readFileSync(
 			filePath,
