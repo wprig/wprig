@@ -118,7 +118,7 @@ const paths = {
 	languages: {
 		src: rootPath,
 		dir: `${ rootPath }/languages`,
-		poSrc: `${ rootPath }/languages/*.po`,
+		poSrc: `${ prodThemePath }/languages/*.po`,
 		moDest: `${ prodThemePath }/languages`,
 		exclude: 'vendor,node_modules,.git,gulp,tests,config,assets/js/src,assets/css/src,optional',
 		dest: `${ rootPath }/languages/${ nameFieldDefaults.slug }.pot`,
