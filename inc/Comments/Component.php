@@ -88,7 +88,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return array      Modified comment form arguments.
 	 */
 	public function filter_comment_form_defaults( array $args ) : array {
-		if ( get_comments_number() === 0 ) {
+		if ( ! get_comments_number() ) {
 			$args['title_reply_before'] = '<h2 id="reply-title" class="comment-reply-title">';
 			$args['title_reply_after']  = '</h2>';
 		}
