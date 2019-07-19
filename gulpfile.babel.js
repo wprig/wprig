@@ -18,6 +18,7 @@ import watch from './gulp/watch';
 import prodPrep from './gulp/prodPrep';
 import prodStringReplace from './gulp/prodStringReplace';
 import prodCompress from './gulp/prodCompress';
+import generateMOfiles from './gulp/generateMOfiles';
 import { cleanCSS, cleanJS } from './gulp/clean';
 
 /**
@@ -52,6 +53,7 @@ export const bundleTheme = series(
     ),
     prodStringReplace,
     translate,
+    generateMOfiles,
     prodCompress
 );
 
