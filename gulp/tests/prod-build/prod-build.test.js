@@ -5,6 +5,7 @@
  * External dependencies
  */
 import fs from 'fs';
+import path from 'path';
 import glob from 'glob';
 
 /**
@@ -142,19 +143,54 @@ test( 'if .po files exist in the dev theme then .mo files are generated in the p
 } );
 
 test( 'if .po files exist in the dev theme then .json files are generated in the production theme', ( done ) => {
-	// Get any .po files that exist
-	const poFilePathsArray = glob.sync( `${ rootPath }/languages/*.po` );
+	// Get any .po files that have JavaScript translations
+	const poFilePathsArray = glob.sync( `${ rootPath }/languages/*.po` )
+		/**
+		 * Skip the .po file if it does not have JavaScript strings
+		 * as wp-cli will not generate a JSON file.
+		 * See https://github.com/wp-cli/i18n-command/issues/136#issuecomment-453006359
+		 */
+		.filter( function( filePath ) {
+			// Get the file contents
+			const fileContents = fs.readFileSync(
+				filePath,
+				{ encoding: 'utf-8' }
+			);
 
-	// Create an array of .json files from .po files
-	const JSONFilePathsArray = poFilePathsArray.map( ( filePath ) => {
-		return filePath
-			// Update the file path from dev to prod
-			.replace( rootPath, prodThemePath )
-			// And replace .po with .json
-			.replace( '.po', '.json' );
+			return fileContents.includes( '.js' );
+		} );
+
+	let JSONFilePathsArray = [];
+
+	// For each .po file found
+	poFilePathsArray.forEach( ( poFilePath ) => {
+		// Stash the .po file base name
+		const poFileBaseName = path.basename( poFilePath, '.po' );
+		// Get all corresponding .json files
+		const currentJSONFilePathsArray = glob.sync( `${ prodThemePath }/languages/*.json` )
+			/**
+			 * Skip the .json file if it is unrelated
+			 * to the .po file we are checking.
+			 */
+			.filter( function( jsonFilePath ) {
+				// Get the file base name
+				const jsonFileBaseName = path.basename( jsonFilePath, '.json' );
+
+				/**
+				 * The generated JSON files have a hash in the file name
+				 * but always start with the same file base name as the
+				 * .po file they were generated from. So we can check if
+				 * the .json file base name starts with the .po file base name
+				 * to determine which .po file it came from.
+				 */
+				return jsonFileBaseName.startsWith( poFileBaseName );
+			} );
+
+		// Add the current .po files .json files to the main array
+		JSONFilePathsArray = JSONFilePathsArray.concat( currentJSONFilePathsArray );
 	} );
 
-	// Make sure each prod .mo file exist.
+	// Make sure each prod .json file exist.
 	JSONFilePathsArray.forEach( ( filePath ) => {
 		const fileExists = fs.existsSync( filePath );
 		let failMessage = `The expected .json file ${ filePath } does not exist`;

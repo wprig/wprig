@@ -36,7 +36,7 @@ function makeMockFiles() {
 	];
 }
 
-test( 'pot file generation', ( done ) => {
+test( 'pot and JSON file generation', ( done ) => {
 	const mockFiles = makeMockFiles();
 
 	function assert() {

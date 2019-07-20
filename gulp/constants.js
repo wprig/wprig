@@ -118,8 +118,8 @@ const paths = {
 	languages: {
 		src: rootPath,
 		dir: `${ rootPath }/languages`,
-		poSrc: `${ prodThemePath }/languages/*.po`,
-		moDest: `${ prodThemePath }/languages`,
+		poSrc: `${ rootPath }/languages/*.po`,
+		moDest: `${ rootPath }/languages`,
 		exclude: 'vendor,node_modules,.git,gulp,tests,config,assets/js/src,assets/css/src,optional',
 		dest: `${ rootPath }/languages/${ nameFieldDefaults.slug }.pot`,
 	},
@@ -143,6 +143,8 @@ if ( isProd ) {
 	paths.languages.src = prodThemePath;
 	paths.languages.dest = `${ prodThemePath }/languages/${ config.theme.slug }.pot`;
 	paths.languages.dir = `${ prodThemePath }/languages`;
+	paths.languages.poSrc = `${ prodThemePath }/languages/*.po`;
+	paths.languages.moDest = `${ prodThemePath }/languages`;
 }
 
 export { paths };

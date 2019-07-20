@@ -24,4 +24,13 @@ export const filesToMock = [
 		mock: `${ gulpTestPath }/translations/fr_FR.mo`,
 		dest: `${ rootPath }/languages/fr_FR.mo`,
 	},
+	{
+		mock: `${ gulpTestPath }/translations/wp-5.1.x-fr.po`,
+		dest: `${ rootPath }/languages/wp-5.1.x-fr.po`,
+		prodDest: `${ prodThemePath }/languages/wp-5.1.x-fr.po`,
+	},
+	{
+		mock: `${ gulpTestPath }/translations/wp-5.1.x-fr.mo`,
+		dest: `${ rootPath }/languages/wp-5.1.x-fr.mo`,
+	},
 ];
