@@ -13,7 +13,7 @@ import pump from 'pump';
 import { paths, gulpPlugins } from './constants';
 
 /**
-* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
+* Generate .mo files from .po files.
 * @param {function} done function to call when async processes finish
 * @return {Stream} single stream
 */
