@@ -169,8 +169,8 @@ class Component implements Component_Interface {
 	 */
 	public function action_enqueue_block_editor_scripts() {
 		$handle  = 'wp-rig-editor-filters';
-		$src     = get_theme_file_uri( '/assets/js/editor/editor-filters.min.js' );
-		$version = wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/editor/editor-filters.min.js' ) );
+		$src     = get_theme_file_uri( '/assets/js/editor-filters.min.js' );
+		$version = wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/editor-filters.min.js' ) );
 
 		// Enqueue block editor filters.
 		wp_enqueue_script( $handle, $src, [ 'wp-i18n', 'wp-blocks', 'wp-dom-ready', 'wp-edit-post' ], $version );
