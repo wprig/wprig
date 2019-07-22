@@ -4,35 +4,29 @@
 /**
  * External dependencies
  */
-import {src, dest} from 'gulp';
-import pump from 'pump';
+import { series } from 'gulp';
 
 /**
  * Internal dependencies
  */
-import {paths, gulpPlugins, nameFieldDefaults, isProd} from './constants';
-import {getThemeConfig} from './utils';
+import generateMOFiles from './translate/generateMOFiles';
+import generatePotFile from './translate/generatePotFile';
+import generateJSONFiles from './translate/generateJSONFiles';
 
 /**
- * Generate translation files.
+ * Export other translation tasks
  */
-export default function translate(done) {
-    const config = getThemeConfig();
+export {default as generateMOFiles } from './translate/generateMOFiles';
+export {default as generatePotFile } from './translate/generatePotFile';
+export {default as generateJSONFiles } from './translate/generateJSONFiles';
 
-    // Don't generate .pot file on production if the config flag is false
-    if ( isProd && ! config.export.generatePotFile ) {
-        return done();
-    }
+/**
+ * Export default translate task.
+ */
+export const translate = series(
+	generatePotFile,
+	generateJSONFiles,
+	generateMOFiles
+);
 
-	pump([
-        src(paths.languages.src),
-        gulpPlugins.sort(),
-        gulpPlugins.wpPot({
-            domain: (isProd) ? config.theme.slug : nameFieldDefaults.slug,
-            package: (isProd) ? config.theme.name : nameFieldDefaults.name,
-            bugReport: (isProd) ? config.theme.name : nameFieldDefaults.name,
-            lastTranslator: (isProd) ? config.theme.author : nameFieldDefaults.author
-        }),
-        dest(paths.languages.dest),
-    ], done);
-}
+export default translate;
