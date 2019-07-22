@@ -34,7 +34,7 @@
   },
   "export": {
     "compress": true,
-    "generatePotFile": true,
+    "generateTranslationFiles": true,
     "filesToCopy": [
       "LICENSE",
       "readme.txt",

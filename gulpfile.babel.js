@@ -13,12 +13,16 @@ import { serve } from './gulp/browserSync';
 import scripts from './gulp/scripts';
 import styles from './gulp/styles';
 import editorStyles from './gulp/editorStyles';
-import translate from './gulp/translate';
 import watch from './gulp/watch';
 import prodPrep from './gulp/prodPrep';
 import prodStringReplace from './gulp/prodStringReplace';
 import prodCompress from './gulp/prodCompress';
-import generateMOfiles from './gulp/generateMOfiles';
+import {
+    translate,
+    generateJSONFiles,
+    generateMOFiles,
+    generatePotFile
+ } from './gulp/translate';
 import { cleanCSS, cleanJS } from './gulp/clean';
 
 /**
@@ -52,9 +56,7 @@ export const buildDev = parallel(
         styles,
         editorStyles
     ),
-    scripts,
-    translate,
-    generateMOfiles
+    scripts
 );
 
 /**
@@ -72,8 +74,9 @@ export const bundleTheme = series(
         images
     ),
     prodStringReplace,
-    translate,
-    generateMOfiles,
+    generatePotFile,
+    generateMOFiles,
+    generateJSONFiles,
     prodCompress
 );
 
@@ -87,9 +90,10 @@ export {
     scripts,
     styles,
     editorStyles,
-    translate,
     watch,
     cleanCSS,
-    cleanJS,
-    generateMOfiles
-};
+    translate,
+    generateMOFiles,
+    generatePotFile,
+    generateJSONFiles
+}

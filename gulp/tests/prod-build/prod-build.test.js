@@ -209,3 +209,27 @@ test( 'if .po files exist in the dev theme then .json files are generated in the
 
 	done();
 } );
+
+test( 'pot file generation', ( done ) => {
+
+	const filePath = paths.languages.potDest;
+	// Test that the .pot file exists
+	const potFileExists = fs.existsSync( filePath );
+	let failMessage = `The expected .pot file ${ filePath } does not exist`;
+	expect( potFileExists, failMessage ).toBe( true );
+
+	const fileContents = fs.readFileSync(
+		filePath,
+		{ encoding: 'utf-8' }
+	);
+
+	// Test that the .pot file contains .php translations
+	failMessage = `The .pot file ${ filePath } does not contain any .php translations`;
+	expect( fileContents, failMessage ).toContain( '.php' );
+	
+	// Test that the .pot file contains .js translations
+	failMessage = `The .pot file ${ filePath } does not contain any .js translations`;
+	expect( fileContents, failMessage ).toContain( '.js' );
+
+	done();
+} );

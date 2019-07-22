@@ -117,11 +117,11 @@ const paths = {
 	},
 	languages: {
 		src: rootPath,
-		dir: `${ rootPath }/languages`,
+		dir: `${ rootPath }/languages/`,
 		poSrc: `${ rootPath }/languages/*.po`,
 		moDest: `${ rootPath }/languages`,
-		exclude: 'vendor,node_modules,.git,gulp,tests,config,assets/js/src,assets/css/src,optional',
-		dest: `${ rootPath }/languages/${ nameFieldDefaults.slug }.pot`,
+		potDest: `${ rootPath }/languages/${ nameFieldDefaults.slug }.pot`,
+		exclude: 'vendor,node_modules,.git,gulp,tests,config,optional',
 	},
 };
 
@@ -141,10 +141,11 @@ if ( isProd ) {
 	paths.scripts.dest = `${ prodAssetsDir }/js/`;
 	paths.images.dest = `${ prodAssetsDir }/images/`;
 	paths.languages.src = prodThemePath;
-	paths.languages.dest = `${ prodThemePath }/languages/${ config.theme.slug }.pot`;
-	paths.languages.dir = `${ prodThemePath }/languages`;
+	paths.languages.dir = `${ prodThemePath }/languages/`;
 	paths.languages.poSrc = `${ prodThemePath }/languages/*.po`;
 	paths.languages.moDest = `${ prodThemePath }/languages`;
+	paths.languages.potSrc = `${ rootPath }/languages/${ nameFieldDefaults.slug }.pot`;
+	paths.languages.potDest = `${ prodThemePath }/languages/${ config.theme.slug }.pot`;
 }
 
 export { paths };
