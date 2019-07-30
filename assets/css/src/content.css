@@ -81,12 +81,6 @@
 	max-width: var(--content-width);
 }
 
-.wp-block-group__inner-container > * {
-	margin-right: auto;
-	margin-left: auto;
-	max-width: var(--content-width);
-}
-
 @media (--content-query) {
 
 	.page-content > *,
@@ -167,6 +161,7 @@
 	margin-right: auto;
 }
 
+/* stylelint-disable */
 .alignwide {
 	max-width: calc(50% + var(--content-width) / 2);
 }
@@ -175,12 +170,7 @@
 	max-width: 100%;
 	padding: 0;
 }
-
-.wp-block-group .alignfull,
-.wp-block-group.alignwide .alignwide,
-.wp-block-group.alignwide .alignfull {
-	max-width: 100%;
-}
+/* stylelint-ensable */
 
 /*--------------------------------------------------------------
 ## Custom block colors.

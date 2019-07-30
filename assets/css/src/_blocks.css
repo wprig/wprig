@@ -30,6 +30,7 @@
  * .wp-block-latest-posts
  * .wp-block-categories
  * .wp-block-archives
+ * .wp-block-group
  */
 
 .wp-block-quote.is-large,
@@ -105,8 +106,20 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 	padding: 0 1.5em;
 }
 
+.wp-block-group__inner-container > * {
+	margin-right: auto;
+	margin-left: auto;
+	max-width: var(--content-width);
+}
+
+.wp-block-group .alignfull,
+.wp-block-group.alignwide .alignwide,
+.wp-block-group.alignwide .alignfull {
+	max-width: 100%;
+}
+
 /*--------------------------------------------------------------
-# Gallery Block - overrides core styles
+## Gallery Block - overrides core styles
 --------------------------------------------------------------*/
 
 .wp-block-gallery {
