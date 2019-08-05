@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2.0.1
+- Prevent gallery block from breaking unexpectedly if the number of images is a multiple of the number of columns. See [#571](https://github.com/wprig/wprig/pull/571). Props @felixarntz.
 - Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
 
 ## 2.0.0
