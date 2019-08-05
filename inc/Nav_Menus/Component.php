@@ -122,7 +122,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function display_primary_nav_menu( array $args = [] ) {
 		if ( ! isset( $args['container'] ) ) {
-			$args['container'] = 'ul';
+			$args['container'] = false;
 		}
 
 		$args['theme_location'] = static::PRIMARY_NAV_MENU_SLUG;
