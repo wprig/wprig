@@ -170,6 +170,37 @@
 	padding: 0;
 }
 
+.page-content > .alignleft,
+.entry-content > .alignleft,
+.entry-summary > .alignleft {
+	margin-left: 1.5rem;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.page-content > .alignright,
+.entry-content > .alignright,
+.entry-summary > .alignright {
+	margin-right: 1.5rem;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+@media (--content-query) {
+
+	.page-content > .alignleft,
+	.entry-content > .alignleft,
+	.entry-summary > .alignleft {
+		margin-left: calc((100vw - var(--content-width)) / 2);
+	}
+
+	.page-content > .alignright,
+	.entry-content > .alignright,
+	.entry-summary > .alignright {
+		margin-right: calc((100vw - var(--content-width)) / 2);
+	}
+}
+
 /*--------------------------------------------------------------
 ## Custom block colors.
 --------------------------------------------------------------*/
