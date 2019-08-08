@@ -72,7 +72,8 @@ class Component implements Component_Interface {
 		}
 
 		add_action( 'wp_head', [ $this, 'action_add_lazyload_filters' ], PHP_INT_MAX );
-		add_action( 'wp_enqueue_scripts', [ $this, 'action_enqueue_lazyload_assets' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'action_register_lazyload_assets' ] );
+		add_action( 'wp_head', [ $this, 'action_print_lazyload_script' ], 8 );
 
 		// Do not lazy load avatar in admin bar.
 		add_action( 'admin_bar_menu', [ $this, 'action_remove_lazyload_filters' ], 0 );
@@ -130,10 +131,13 @@ class Component implements Component_Interface {
 	}
 
 	/**
-	 * Enqueues and defer lazy-loading JavaScript.
+	 * Registers and defers lazy-loading JavaScript.
+	 *
+	 * Although the script isn't directly enqueued via WordPress, it should still be registered so that it can be
+	 * precached by the service worker.
 	 */
-	public function action_enqueue_lazyload_assets() {
-		wp_enqueue_script(
+	public function action_register_lazyload_assets() {
+		wp_register_script(
 			'wp-rig-lazy-load-images',
 			get_theme_file_uri( '/assets/js/lazyload.min.js' ),
 			[],
@@ -142,6 +146,44 @@ class Component implements Component_Interface {
 		);
 		wp_script_add_data( 'wp-rig-lazy-load-images', 'defer', true );
 		wp_script_add_data( 'wp-rig-lazy-load-images', 'precache', true );
+	}
+
+	/**
+	 * Prints the lazy-loading script.
+	 *
+	 * If the browser supports native lazy-loading via the 'loading' attribute, values of data attributes on the images
+	 * will be written back into their real attributes. If the browser does not support native lazy-loading, the script
+	 * bundled in the theme will be loaded.
+	 *
+	 * @see https://web.dev/native-lazy-loading
+	 */
+	public function action_print_lazyload_script() {
+		?>
+		<script type="text/javascript">
+			if ( 'loading' in HTMLImageElement.prototype ) {
+				document.addEventListener( 'DOMContentLoaded', function() {
+					var images = [].slice.call( document.querySelectorAll( 'img.lazy' ) );
+					images.forEach( function( img ) {
+						img.src = img.dataset.src;
+						if ( img.dataset.srcset ) {
+							img.srcset = img.dataset.srcset;
+						}
+						if ( img.dataset.sizes ) {
+							img.sizes = img.dataset.sizes;
+						}
+					} );
+				} );
+			} else {
+				( function() {
+					var script = document.createElement( 'script' );
+					script.type = 'text/javascript';
+					script.src = '<?php echo esc_js( get_theme_file_uri( '/assets/js/lazyload.min.js' ) ); ?>';
+					script.defer = true;
+					document.head.appendChild( script );
+				} )();
+			}
+		</script>
+		<?php
 	}
 
 	/**
@@ -265,6 +307,9 @@ class Component implements Component_Interface {
 			$attributes['data-sizes'] = $old_attributes['sizes'];
 			unset( $attributes['sizes'] );
 		}
+
+		// Native browser lazy-loading.
+		$attributes['loading'] = 'lazy';
 
 		return $attributes;
 	}
