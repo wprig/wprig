@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1.0
+- Implement native lazy-loading via the `loading` attribute, gracefully falling back to the existing script mechanism. See [#577](https://github.com/wprig/wprig/pull/577). Props @felixarntz.
+
 ## 2.0.1
 - Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
 
