@@ -106,13 +106,19 @@ class Component implements Component_Interface {
 			]
 		);
 
+		if ( function_exists( 'is_amp_endpoint' ) ) {
+			$description = __( 'Lazy-loading images means images are loaded only when they are in view. This setting will be ignored on AMP pages since AMP has lazy-loading built-in.', 'wp-rig' );
+		} else {
+			$description = __( 'Lazy-loading images means images are loaded only when they are in view. Improves performance, but can result in content jumping around on slower connections.', 'wp-rig' );
+		}
+
 		$wp_customize->add_control(
 			'lazy_load_media',
 			[
 				'label'           => __( 'Lazy-load images', 'wp-rig' ),
 				'section'         => 'theme_options',
 				'type'            => 'radio',
-				'description'     => __( 'Lazy-loading images means images are loaded only when they are in view. Improves performance, but can result in content jumping around on slower connections.', 'wp-rig' ),
+				'description'     => $description,
 				'choices'         => $lazyload_choices,
 			]
 		);
