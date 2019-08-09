@@ -82,9 +82,8 @@ test( 'custom properties processed', ( done ) => {
 	function assert( files ) {
 		const file = files[ 0 ];
 		const fileContents = file.contents.toString( 'utf-8' );
-		const failMessage = ``;
-		expect( fileContents ).toContain( 'color:#e36d60', failMessage );
-		expect( fileContents ).toContain( 'font-family:"Crimson Text",serif', failMessage );
+		expect( fileContents ).toContain( 'color:#e36d60' );
+		expect( fileContents ).toContain( 'font-family:"Crimson Text",serif' );
 	}
 
 	pump( [
