@@ -1,8 +1,8 @@
 {
   "theme": {
-    "slug": "wp-rig-prod-theme",
-    "name": "WP Rig Prod Theme",
-    "author": "WP Rig Bot",
-    "PHPNamespace": "WPRig_Bot\\Theme"
+    "slug": "gulp-test-prod-theme",
+    "name": "Gulp Test Prod Theme",
+    "author": "Gulp Bot",
+    "PHPNamespace": "Gulp_Bot\\Theme"
   }
 }
