@@ -1,8 +1,8 @@
 {
   "theme": {
-    "slug": "ataylorme",
-    "name": "ataylor.me",
-    "author": "Andrew Taylor",
-    "PHPNamespace": "ataylorme\\Theme"
+    "slug": "wp-rig-prod-theme",
+    "name": "WP Rig Prod Theme",
+    "author": "WP Rig Bot",
+    "PHPNamespace": "WPRig_Bot\\Theme"
   }
 }
