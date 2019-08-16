@@ -31,18 +31,18 @@ This theme is licensed under the [GNU General Public License v3](http://www.gnu.
 
 == Changelog ==
 
-<you should use this section to include a changelog for each version>
+<use this section to include a changelog for each version>
 
 = 2.0.0 (example) =
 * Initial release based on WP Rig.
 
 == Upgrade Notice ==
 
-<you can use this optional section to inform users about important version changes prior to an update>
+<use this optional section to inform users about important version changes prior to an update>
 
 = 3.0.0 (example) =
 * This release breaks backward-compatibility, so update with caution.
 
 == Credit ==
 
-<in this optional section you can give credit to the authors of third-party resources the theme uses>
+<use this optional section to give credit to the authors of third-party resources the theme uses>
