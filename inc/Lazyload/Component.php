@@ -147,7 +147,7 @@ class Component implements Component_Interface {
 			'wp-rig-lazy-load-images',
 			get_theme_file_uri( '/assets/js/lazyload.min.js' ),
 			[],
-			wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/lazyload.min.js' ) ),
+			null,
 			false
 		);
 		wp_script_add_data( 'wp-rig-lazy-load-images', 'defer', true );
