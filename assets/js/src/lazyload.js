@@ -3,7 +3,7 @@
  *
  * @link https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/
  */
-document.addEventListener( 'DOMContentLoaded', function() {
+( function() {
 	let lazyImages = [].slice.call( document.querySelectorAll( 'img.lazy' ) );
 
 	if ( 'IntersectionObserver' in window ) {
@@ -69,4 +69,4 @@ document.addEventListener( 'DOMContentLoaded', function() {
 		window.addEventListener( 'resize', lazyLoad );
 		window.addEventListener( 'orientationchange', lazyLoad );
 	}
-} );
+} )();

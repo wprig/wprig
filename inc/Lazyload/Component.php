@@ -73,7 +73,7 @@ class Component implements Component_Interface {
 
 		add_action( 'wp_head', [ $this, 'action_add_lazyload_filters' ], PHP_INT_MAX );
 		add_action( 'wp_enqueue_scripts', [ $this, 'action_register_lazyload_assets' ] );
-		add_action( 'wp_head', [ $this, 'action_print_lazyload_script' ], 8 );
+		add_action( 'wp_footer', [ $this, 'action_print_lazyload_script' ] );
 
 		// Do not lazy load avatar in admin bar.
 		add_action( 'admin_bar_menu', [ $this, 'action_remove_lazyload_filters' ], 0 );
@@ -143,12 +143,13 @@ class Component implements Component_Interface {
 	 * precached by the service worker.
 	 */
 	public function action_register_lazyload_assets() {
+		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters
 		wp_register_script(
 			'wp-rig-lazy-load-images',
 			get_theme_file_uri( '/assets/js/lazyload.min.js' ),
 			[],
 			null,
-			false
+			true
 		);
 		wp_script_add_data( 'wp-rig-lazy-load-images', 'defer', true );
 		wp_script_add_data( 'wp-rig-lazy-load-images', 'precache', true );
@@ -167,7 +168,7 @@ class Component implements Component_Interface {
 		?>
 		<script type="text/javascript">
 			if ( 'loading' in HTMLImageElement.prototype ) {
-				document.addEventListener( 'DOMContentLoaded', function() {
+				( function() {
 					var images = [].slice.call( document.querySelectorAll( 'img.lazy' ) );
 					images.forEach( function( img ) {
 						img.src = img.dataset.src;
@@ -178,14 +179,14 @@ class Component implements Component_Interface {
 							img.sizes = img.dataset.sizes;
 						}
 					} );
-				} );
+				} )();
 			} else {
 				( function() {
 					var script = document.createElement( 'script' );
 					script.type = 'text/javascript';
 					script.src = '<?php echo esc_js( get_theme_file_uri( '/assets/js/lazyload.min.js' ) ); ?>';
 					script.defer = true;
-					document.head.appendChild( script );
+					document.body.appendChild( script );
 				} )();
 			}
 		</script>
