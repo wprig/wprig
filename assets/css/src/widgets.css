@@ -37,7 +37,7 @@
 
 /* Archive and Categories widgets */
 .widget_archive li {
-	color: #7d7d7d;
+	color: #808080;
 }
 
 .widget_categories .children {
@@ -128,7 +128,7 @@
 	box-sizing: border-box;
 	width: 100%;
 	padding: 0.5em 1em;
-	border: 1px solid #c3c3c3;
+	border: 1px solid #ccc;
 	border-radius: 0;
 }
 
