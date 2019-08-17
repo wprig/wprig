@@ -257,7 +257,7 @@ select {
 	font-stretch: condensed;
 	font-size: 80%;
 	text-transform: uppercase;
-	border: 2px solid var(--global-font-color);
+	border: 2px solid var(--global-border-color);
 	border-radius: 0;
 	background: transparent;
 }
@@ -326,7 +326,7 @@ select {
 		top: 35%;
 		width: 60%;
 		height: 60%;
-		border: solid var(--global-font-color);
+		border: solid var(--global-border-color);
 		border-width: 0 2px 2px 0;
 		transform: translateY(-50%) rotate(45deg);
 	}
@@ -456,7 +456,7 @@ select {
 .site-main .posts-navigation,
 .site-main .post-navigation,
 .site-main .pagination {
-	border-bottom: 1px solid var(--global-font-color);
+	border-bottom: 1px solid var(--global-border-color);
 	margin: 0 auto 2em;
 	max-width: var(--content-width);
 	overflow: hidden;
@@ -552,7 +552,7 @@ select {
 }
 
 .pagination .current {
-	border-color: var(--global-font-color);
+	border-color: var(--global-border-color);
 }
 
 /*--------------------------------------------------------------
