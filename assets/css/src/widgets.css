@@ -35,11 +35,7 @@
 	text-overflow: ellipsis;
 }
 
-/* Archive and Categories widgets */
-.widget_archive li {
-	color: #808080;
-}
-
+/* Categories widget */
 .widget_categories .children {
 	padding-top: 0;
 }
