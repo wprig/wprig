@@ -3,6 +3,7 @@
 ## 2.0.1
 - Fix Editor toolbar icons may be unreadable. See [#547](https://github.com/wprig/wprig/pull/547). Props @benoitchantre.
 - Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
+- Add automated tests for the gulp task that builds the production theme. See [#579](https://github.com/wprig/wprig/pull/579). Props @ataylorme.
 
 ## 2.0.0
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
