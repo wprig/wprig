@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.1
+- Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
+
 ## 2.0.0
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme.
@@ -35,6 +38,7 @@ See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
 - Add a `run-phpcbf` to Composer scripts. See [#360](https://github.com/wprig/wprig/pull/360). Props @ataylorme.
 - Replaces `install` with `rig-init` in the `scripts` section of `package.json` in order to decouple `npm install` and `composer install`. Added a new `npm run rig-init` command to run both `npm install` and `composer install` with one command. `npm install` now only installs NPM packages. See [#357](https://github.com/wprig/wprig/pull/357). Props @ataylorme.
 - Remove Sass support to fully rely on PostCSS. See [#425](https://github.com/wprig/wprig/pull/425). Props @ataylorme.
+- Add theme support for latest `service_worker` integrations. See [#506](https://github.com/wprig/wprig/pull/506). Props @felixarntz.
 
 ## 1.0.5
 - Do not initialize menus until DOM is loaded. See [#140](https://github.com/wprig/wprig/pull/140). Props @bamadesigner.

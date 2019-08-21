@@ -1,19 +1,23 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import {src, dest} from 'gulp';
 import pump from 'pump';
 import path from 'path';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {prodThemePath, gulpPlugins} from './constants';
 import {getThemeConfig} from './utils';
 
 /**
  * Create the zip file
  */
-export default function prodFinish(done) {
+export default function prodCompress(done) {
     const config = getThemeConfig();
 
     // Bail if the compress option is false

@@ -1,13 +1,17 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import browserSync from 'browser-sync';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 import fs from 'fs';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {paths} from './constants';
 import {getThemeConfig} from './utils';
 

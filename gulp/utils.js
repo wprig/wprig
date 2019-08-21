@@ -1,7 +1,9 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import importFresh from 'import-fresh';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
@@ -10,13 +12,18 @@ import mkdirp from 'mkdirp';
 import fs from 'fs';
 import { pipeline } from 'mississippi';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {
 	gulpPlugins,
 	nameFieldDefaults,
 	prodThemePath,
-	isProd
+	isProd,
+	rootPath
 } from './constants';
+
+export const getDefaultConfig = () => require(`${rootPath}/config/config.default.json`);
 
 /**
  * Get theme configuration.
@@ -113,6 +120,16 @@ export function createProdDir() {
 export function gulpRelativeDest( file ) {
 	const relativeProdFilePath = file.base.replace(file.cwd, prodThemePath);
 	return relativeProdFilePath;
+}
+
+export function backslashToForwardSlash(path) {
+	let replace_fn = ( p => p.replace(/\\/g, '/') );
+	if ( Array.isArray(path) ) {
+		let paths = [];
+		path.forEach( p => paths.push( replace_fn(p) ) );
+		return paths;
+	}
+	return replace_fn(path);
 }
 
 /**

@@ -1,10 +1,14 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import del from 'del';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {paths} from './constants';
 
 /**
