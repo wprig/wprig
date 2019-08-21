@@ -159,7 +159,7 @@
 .comment-reply-link:focus,
 .comment-form .form-submit input:hover,
 .comment-form .form-submit input:focus {
-	border-color: var(--global-border-color);
+	border-color: var(--border-color-dark);
 	cursor: pointer;
 }
 

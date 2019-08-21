@@ -23,7 +23,7 @@
 
 	/* Colors */
 	--global-font-color: #333;
-	--global-border-color: #333;
+	--border-color-dark: #333;
 	--color-link: #0073aa;
 	--color-link-visited: #333;
 	--color-link-active: #00a0d2;
