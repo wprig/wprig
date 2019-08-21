@@ -124,7 +124,7 @@
 	box-sizing: border-box;
 	width: 100%;
 	padding: 0.5em 1em;
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color-light);
 	border-radius: 0;
 }
 
@@ -159,7 +159,7 @@
 	font-size: 0.8em;
 	text-align: center;
 	background: #fff;
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color-light);
 }
 
 .widget_calendar .pad {

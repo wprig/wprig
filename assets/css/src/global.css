@@ -120,7 +120,7 @@ input[type="button"],
 input[type="reset"],
 input[type="submit"] {
 	border: 1px solid;
-	border-color: #ccc #ccc #bbb;
+	border-color: var(--border-color-light) var(--border-color-light) #bbb;
 	border-radius: 3px;
 	background: #eee;
 	color: rgba(0, 0, 0, 0.8);
@@ -135,7 +135,7 @@ button:hover,
 input[type="button"]:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover {
-	border-color: #ccc #bbb #aaa;
+	border-color: var(--border-color-light) #bbb #aaa;
 }
 
 button:active,
@@ -166,7 +166,7 @@ input[type="datetime-local"],
 input[type="color"],
 textarea {
 	color: #666;
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color-light);
 	border-radius: 3px;
 	padding: 3px;
 }
@@ -191,7 +191,7 @@ textarea:focus {
 }
 
 select {
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color-light);
 }
 
 /*--------------------------------------------------------------
