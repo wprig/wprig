@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2.0.1
+- Fix Editor toolbar icons may be unreadable. See [#547](https://github.com/wprig/wprig/pull/547). Props @benoitchantre.
 - Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
 
 ## 2.0.0
