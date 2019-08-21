@@ -1,13 +1,17 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import createCert from 'create-cert';
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 import fs from 'fs';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {paths} from './constants';
 
 export default function generateCert(done) {

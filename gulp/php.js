@@ -1,12 +1,16 @@
 /* eslint-env es6 */
 'use strict';
 
-// External dependencies
+/**
+ * External dependencies
+ */
 import pump from 'pump';
 import {src, dest} from 'gulp';
 import { pipeline } from 'mississippi';
 
-// Internal dependencies
+/**
+ * Internal dependencies
+ */
 import {paths, PHPCSOptions, gulpPlugins, isProd} from './constants';
 import {getStringReplacementTasks, getThemeConfig} from './utils';
 
