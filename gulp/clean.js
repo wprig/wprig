@@ -18,7 +18,9 @@ export function cleanCSS() {
 	const delPath = [
 		`${paths.styles.dest}/**/*.css`,
 		`!${paths.styles.srcDir}`,
-		`!${paths.styles.srcDir}/**`
+		`!${paths.styles.srcDir}/**`,
+		`!${paths.styles.vendorDir}`,
+		`!${paths.styles.vendorDir}/**`
 	];
 	return del(delPath);
 }
@@ -30,7 +32,9 @@ export function cleanJS() {
 	const delPath = [
 		`${paths.scripts.dest}/**/*.js`,
 		`!${paths.scripts.srcDir}`,
-		`!${paths.scripts.srcDir}/**`
+		`!${paths.scripts.srcDir}/**`,
+		`!${paths.scripts.vendorDir}`,
+		`!${paths.scripts.vendorDir}/**`
 	];
 	return del(delPath);
 }

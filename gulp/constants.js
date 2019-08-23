@@ -86,6 +86,7 @@ let paths = {
 			`!${assetsDir}/css/src/editor/**/*.css`
 		],
 		srcDir: `${assetsDir}/css/src`,
+		vendorDir: `${assetsDir}/css/vendor`,
 		dest: `${assetsDir}/css`
 	},
 	scripts: {
@@ -95,6 +96,7 @@ let paths = {
 			`!${assetsDir}/js/src/**/_*.js`,
 		],
 		srcDir: `${assetsDir}/js/src`,
+		vendorDir: `${assetsDir}/js/vendor`,
 		dest: `${assetsDir}/js`
 	},
 	images: {
