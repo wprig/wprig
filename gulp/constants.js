@@ -17,6 +17,7 @@ import {
 
 // Root path is where npm run commands happen
 export const rootPath = process.cwd();
+export const devThemeDirName = rootPath.replace(/\/$/, '').split('/').pop();
 
 export const gulpPath = `${ rootPath }/gulp`;
 
@@ -30,6 +31,7 @@ const config = getThemeConfig();
 
 // directory for the production theme
 export const prodThemePath = path.normalize( `${ rootPath }/../${ config.theme.slug }` );
+export const prodThemeDirName = prodThemePath.replace(/\/$/, '').split('/').pop();
 
 // directory for assets (CSS, JS, images)
 export const assetsDir = `${ rootPath }/assets`;

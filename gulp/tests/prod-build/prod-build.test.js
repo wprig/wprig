@@ -17,6 +17,7 @@ import {
 	rootPath,
 	nameFieldDefaults,
 	paths,
+	devThemeDirName,
 } from '../../constants';
 
 test( 'gulp runs in production mode', ( done ) => {
@@ -103,6 +104,32 @@ test( 'string replacement files to copy exist in the production theme and do not
 			failMessage = `The file ${ filePath } contains the default string ${ nameFieldDefaults[ key ] }`;
 			expect( fileContents, failMessage ).not.toContain( nameFieldDefaults[ key ] );
 		} );
+		// Or that it doesn't contain the dev theme directory
+		failMessage = `The file ${ filePath } contains the dev theme directory ${ prodThemePath }`;
+		expect( fileContents, failMessage ).not.toContain( prodThemePath );
+	} );
+
+	done();
+} );
+
+test( 'PHP files in the production theme do not contain default strings', ( done ) => {
+	// Get the array of PHP file paths
+	const filePathsArray = glob.sync( prodThemePath + '/**/*.php' );
+	let failMessage;
+	// Loop over each one
+	filePathsArray.forEach( ( filePath ) => {
+		// Ensure that it doesn't have any default strings.
+		const fileContents = fs.readFileSync(
+			filePath,
+			{ encoding: 'utf-8' }
+		);
+		Object.keys( nameFieldDefaults ).forEach( ( key ) => {
+			failMessage = `The file ${ filePath } contains the default string ${ nameFieldDefaults[ key ] }`;
+			expect( fileContents, failMessage ).not.toContain( nameFieldDefaults[ key ] );
+		} );
+		// And that it doesn't contain the dev theme directory
+		failMessage = `The file ${ filePath } contains the dev theme directory ${ devThemeDirName }`;
+		expect( fileContents, failMessage ).not.toContain( devThemeDirName );
 	} );
 
 	done();
