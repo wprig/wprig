@@ -16,6 +16,9 @@ A progressive theme development rig for WordPress, WP Rig is built to promote th
 - Progressive Web App enabled
 - AMP-ready
 
+## Documentation
+Documentation for the WP Rig Open Source Project can be found at the dedicated [Docs](https://github.com/wprig/docs/) repo.
+
 ## Office Hours
 WP Rig office hours take place every other Thursday from 5:30 - 6:30 p.m. UTC, starting January 10, 2019.
 
@@ -80,6 +83,12 @@ Place the following in your `./config/config.local.json` file. This config will 
     "certPath": "/path/to/my/browsersync/certificate"
   }
 }
+```
+
+If your local environment uses a specific port number, for example `8888`, add it to the `proxyURL` setting as follows:
+
+```
+"proxyURL": "localwprigenv.test:8888"
 ```
 
 ## How to build WP Rig for production:
