@@ -78,7 +78,7 @@ export function getStringReplacementTasks() {
 	// Get a copy of the config
 	const config = getThemeConfig( isProd );
 
-	let stringReplacementTasks = Object.keys( nameFieldDefaults ).map( ( nameField ) => {
+	const stringReplacementTasks = Object.keys( nameFieldDefaults ).map( ( nameField ) => {
 		return gulpPlugins.stringReplace(
 			// Backslashes must be double escaped for regex
 			nameFieldDefaults[ nameField ].replace( /\\/g, '\\\\' ),
