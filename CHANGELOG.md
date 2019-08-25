@@ -3,6 +3,7 @@
 ## 2.0.1
 - Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
 - Add automated tests for the gulp task that builds the production theme. See [#579](https://github.com/wprig/wprig/pull/579). Props @ataylorme.
+- Replaces the dev theme directory with the prod theme directory when building for production. Adds corresponding gulp tests for PHP, CSS and JS files. See [#559](https://github.com/wprig/wprig/issues/559). Props @ataylorme
 
 ## 2.0.0
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
