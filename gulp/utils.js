@@ -21,6 +21,8 @@ import {
 	prodThemePath,
 	isProd,
 	rootPath,
+	devThemeDirName,
+	prodThemeDirName,
 } from './constants';
 
 export const getDefaultConfig = () => require( `${ rootPath }/config/config.default.json` );
@@ -76,7 +78,7 @@ export function getStringReplacementTasks() {
 	// Get a copy of the config
 	const config = getThemeConfig( isProd );
 
-	const stringReplacementTasks = Object.keys( nameFieldDefaults ).map( ( nameField ) => {
+	let stringReplacementTasks = Object.keys( nameFieldDefaults ).map( ( nameField ) => {
 		return gulpPlugins.stringReplace(
 			// Backslashes must be double escaped for regex
 			nameFieldDefaults[ nameField ].replace( /\\/g, '\\\\' ),
@@ -89,6 +91,21 @@ export function getStringReplacementTasks() {
 			}
 		);
 	} );
+
+	if ( isProd ) {
+		stringReplacementTasks.push(
+			gulpPlugins.stringReplace(
+				devThemeDirName,
+				prodThemeDirName,
+				{
+					logs: {
+						enabled: false,
+					},
+					searchValue: 'regex',
+				}
+			)
+		);
+	}
 
 	// Return a single stream containing all the
 	// string replacement tasks
