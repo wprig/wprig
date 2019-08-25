@@ -76,6 +76,7 @@ const paths = {
 			`!${ rootPath }/optional/**/*.*`,
 			`!${ rootPath }/tests/**/*.*`,
 			`!${ rootPath }/vendor/**/*.*`,
+			`!${ rootPath }/gulp/**/*.*`,
 		],
 		dest: `${ rootPath }/`,
 	},

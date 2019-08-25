@@ -134,3 +134,49 @@ test( 'PHP files in the production theme do not contain default strings', ( done
 
 	done();
 } );
+
+test( 'CSS files in the production theme do not contain default strings', ( done ) => {
+	// Get the array of CSS file paths
+	const filePathsArray = glob.sync( prodThemePath + '/**/*.css' );
+	let failMessage;
+	// Loop over each one
+	filePathsArray.forEach( ( filePath ) => {
+		// Ensure that it doesn't have any default strings.
+		const fileContents = fs.readFileSync(
+			filePath,
+			{ encoding: 'utf-8' }
+		);
+		Object.keys( nameFieldDefaults ).forEach( ( key ) => {
+			failMessage = `The file ${ filePath } contains the default string ${ nameFieldDefaults[ key ] }`;
+			expect( fileContents, failMessage ).not.toContain( nameFieldDefaults[ key ] );
+		} );
+		// And that it doesn't contain the dev theme directory
+		failMessage = `The file ${ filePath } contains the dev theme directory ${ devThemeDirName }`;
+		expect( fileContents, failMessage ).not.toContain( devThemeDirName );
+	} );
+
+	done();
+} );
+
+test( 'JS files in the production theme do not contain default strings', ( done ) => {
+	// Get the array of JS file paths
+	const filePathsArray = glob.sync( prodThemePath + '/**/*.js' );
+	let failMessage;
+	// Loop over each one
+	filePathsArray.forEach( ( filePath ) => {
+		// Ensure that it doesn't have any default strings.
+		const fileContents = fs.readFileSync(
+			filePath,
+			{ encoding: 'utf-8' }
+		);
+		Object.keys( nameFieldDefaults ).forEach( ( key ) => {
+			failMessage = `The file ${ filePath } contains the default string ${ nameFieldDefaults[ key ] }`;
+			expect( fileContents, failMessage ).not.toContain( nameFieldDefaults[ key ] );
+		} );
+		// And that it doesn't contain the dev theme directory
+		failMessage = `The file ${ filePath } contains the dev theme directory ${ devThemeDirName }`;
+		expect( fileContents, failMessage ).not.toContain( devThemeDirName );
+	} );
+
+	done();
+} );
