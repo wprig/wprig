@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "A progressive theme development rig for WordPress.",
   "author": "The WP Rig Contributors",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "main": "index.php",
   "homepage": "https://github.com/wprig/wprig#readme",
   "repository": {

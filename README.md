@@ -3,7 +3,7 @@
      title="WP Rig logo by Morten Rand-Hendriksen">
 # WP Rig: WordPress Theme Boilerplate
 [![Build Status](https://travis-ci.com/wprig/wprig.svg?branch=master)](https://travis-ci.com/wprig/wprig)
-[![License: GPL](https://img.shields.io/aur/license/yaourt.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![License: GPL](https://img.shields.io/github/license/wprig/wprig)](https://www.gnu.org/licenses/gpl-3.0.html)
 ![WP Rig version 2.0.0](https://img.shields.io/badge/version-2.0.0-blue.svg)
 
 ## Your Performance-Focused Development Rig
@@ -160,4 +160,4 @@ WP Rig ships with advanced features including:
 For more information about the advanced features in WP Rig and how to use them, visit the [Advanced Features Wiki page](https://github.com/wprig/wprig/wiki/Advanced-Features-(and-how-to-use-them)).
 
 ## License
-WP Rig is released under [GNU General Public License v3.0](https://github.com/wprig/wprig/blob/master/LICENSE).
+WP Rig is released under [GNU General Public License v3.0 (or later)](https://github.com/wprig/wprig/blob/master/LICENSE).
