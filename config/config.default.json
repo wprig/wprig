@@ -39,8 +39,8 @@
       "LICENSE",
       "readme.txt",
       "screenshot.png",
-      "assets/css/vendor/*",
-      "assets/js/vendor/*"
+      "assets/css/vendor/**/*.css",
+      "assets/js/vendor/**/*.js"
     ]
   }
 }
