@@ -5,29 +5,28 @@
 /**
  * External dependencies
  */
-import {src, dest} from 'gulp';
+import { src, dest } from 'gulp';
 import pump from 'pump';
 import { pipeline } from 'mississippi';
 
 /**
  * Internal dependencies
  */
-import {paths, gulpPlugins, isProd} from './constants';
-import {getThemeConfig, getStringReplacementTasks, logError} from './utils';
+import { paths, gulpPlugins, isProd } from './constants';
+import { getThemeConfig, getStringReplacementTasks, logError } from './utils';
 
 export function scriptsBeforeReplacementStream() {
-
 	// Return a single stream containing all the
 	// before replacement functionality
-	return pipeline.obj([
-		logError('JavaScript'),
-		gulpPlugins.newer({
+	return pipeline.obj( [
+		logError( 'JavaScript' ),
+		gulpPlugins.newer( {
 			dest: paths.scripts.dest,
-			extra: [paths.config.themeConfig]
-		}),
+			extra: [ paths.config.themeConfig ],
+		} ),
 		gulpPlugins.eslint(),
 		gulpPlugins.eslint.format(),
-	]);
+	] );
 }
 
 export function scriptsAfterReplacementStream() {
@@ -35,29 +34,30 @@ export function scriptsAfterReplacementStream() {
 
 	// Return a single stream containing all the
 	// after replacement functionality
-	return pipeline.obj([
-		gulpPlugins.babel({
+	return pipeline.obj( [
+		gulpPlugins.babel( {
 			presets: [
-				'@babel/preset-env'
-			]
-		}),
+				'@babel/preset-env',
+			],
+		} ),
 		gulpPlugins.if(
-			!config.dev.debug.scripts,
+			! config.dev.debug.scripts,
 			gulpPlugins.uglify()
 		),
-		gulpPlugins.rename({
-			suffix: '.min'
-		}),
-	]);
+		gulpPlugins.rename( {
+			suffix: '.min',
+		} ),
+	] );
 }
 
 /**
  * JavaScript via Babel, ESlint, and uglify.
+ * @param {function} done function to call when async processes finish
+ * @return {Stream} single stream
  */
-export default function scripts(done) {
-
-	return pump([
-		src(paths.scripts.src, {sourcemaps: !isProd}),
+export default function scripts( done ) {
+	return pump( [
+		src( paths.scripts.src, { sourcemaps: ! isProd } ),
 		scriptsBeforeReplacementStream(),
 		// Only do string replacements when building for production
 		gulpPlugins.if(
@@ -65,6 +65,6 @@ export default function scripts(done) {
 			getStringReplacementTasks()
 		),
 		scriptsAfterReplacementStream(),
-		dest(paths.scripts.dest, {sourcemaps: !isProd}),
-	], done);
+		dest( paths.scripts.dest, { sourcemaps: ! isProd } ),
+	], done );
 }
