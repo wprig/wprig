@@ -4,33 +4,35 @@
 /**
  * External dependencies
  */
-import {src, dest} from 'gulp';
+import { src, dest } from 'gulp';
 import pump from 'pump';
 import path from 'path';
 
 /**
  * Internal dependencies
  */
-import {prodThemePath, gulpPlugins} from './constants';
-import {getThemeConfig} from './utils';
+import { prodThemePath, gulpPlugins } from './constants';
+import { getThemeConfig } from './utils';
 
 /**
  * Create the zip file
+ * @param {function} done function to call when async processes finish
+ * @return {Stream} single stream
  */
-export default function prodCompress(done) {
-    const config = getThemeConfig();
+export default function prodCompress( done ) {
+	const config = getThemeConfig();
 
-    // Bail if the compress option is false
-    if ( ! config.export.compress ) {
-        return done();
-    }
+	// Bail if the compress option is false
+	if ( ! config.export.compress ) {
+		return done();
+	}
 
-    return pump(
-        [
-            src(`${prodThemePath}/**/*`),
-            gulpPlugins.zip(`${config.theme.slug}.zip`),
-            dest(path.normalize(`${prodThemePath}/../`))
-        ],
+	return pump(
+		[
+			src( `${ prodThemePath }/**/*` ),
+			gulpPlugins.zip( `${ config.theme.slug }.zip` ),
+			dest( path.normalize( `${ prodThemePath }/../` ) ),
+		],
 		done
 	);
 }
