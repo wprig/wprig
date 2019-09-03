@@ -19,10 +19,13 @@ export function cleanCSS() {
 		`${paths.styles.dest}/**/*.css`,
 		`!${paths.styles.srcDir}`,
 		`!${paths.styles.srcDir}/**`,
-		`!${paths.styles.vendorDir}`,
-		`!${paths.styles.vendorDir}/**`
 	];
-	return del(delPath);
+
+	const keepExportPath = paths.export.src
+		.filter( path => path.indexOf( '/css/' ) !== -1 )
+		.map( path => `!${path}` );
+
+	return del(delPath.concat(keepExportPath));
 }
 
 /**
@@ -33,8 +36,11 @@ export function cleanJS() {
 		`${paths.scripts.dest}/**/*.js`,
 		`!${paths.scripts.srcDir}`,
 		`!${paths.scripts.srcDir}/**`,
-		`!${paths.scripts.vendorDir}`,
-		`!${paths.scripts.vendorDir}/**`
 	];
-	return del(delPath);
+
+	const keepExportPath = paths.export.src
+		.filter( path => path.indexOf( '/js/' ) !== -1 )
+		.map( path => `!${path}` );
+
+	return del(delPath.concat(keepExportPath));
 }
