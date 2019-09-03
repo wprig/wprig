@@ -4,7 +4,7 @@ Contributors:      <comma-separated list of WordPress.org user names>
 Requires at least: 4.5
 Tested up to:      5.2
 Requires PHP:      7.0
-Stable tag:        2.0.0
+Stable tag:        2.0.1
 License:           GPLv3 or later
 License URI:       http://www.gnu.org/licenses/gpl-3.0.html
 Tags:              <theme tags (see https://make.wordpress.org/themes/handbook/review/required/theme-tags/)>
@@ -21,7 +21,7 @@ Tags:              <theme tags (see https://make.wordpress.org/themes/handbook/r
 
 = License =
 
-This theme is licensed under the [GNU General Public License v3](http://www.gnu.org/licenses/gpl-3.0.html).
+WP Rig is released under [GNU General Public License v3.0 (or later)](https://github.com/wprig/wprig/blob/master/LICENSE).
 
 == Frequently Asked Questions ==
 
@@ -33,7 +33,7 @@ This theme is licensed under the [GNU General Public License v3](http://www.gnu.
 
 <use this section to include a changelog for each version>
 
-= 2.0.0 (example) =
+= 2.0.1 (example) =
 * Initial release based on WP Rig.
 
 == Upgrade Notice ==

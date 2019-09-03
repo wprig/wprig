@@ -1,6 +1,8 @@
 # Changelog
 
 ## 2.0.1
+- Fix inconsistent license references in various areas. See [#575](https://github.com/wprig/wprig/pull/575). Props @felixarntz.
+- Add automated tests for the gulp task that builds the production theme. See [#579](https://github.com/wprig/wprig/pull/579). Props @ataylorme.
 - Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
 
 ## 2.0.0
