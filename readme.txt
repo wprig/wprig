@@ -4,9 +4,9 @@ Tags:
 Requires at least: 4.8
 Tested up to: 4.9.8
 Requires PHP: 7.0
-Stable tag: 2.0
-License: GPLv3 or later
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+Stable tag: 2.0.1
+License: GNU General Public License v3.0 (or later)
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 A progressive theme development rig for WordPress, WP Rig is built to promote the latest best practices for progressive web content and optimization.
 
@@ -184,7 +184,7 @@ The CSS philosophy of WP Rig breaks down as follows:
 - In-content wrapping using float and clear.
 
 == License ==
-WP Rig is released under [GNU General Public License v3.0](https://github.com/wprig/wprig/blob/master/LICENSE).
+WP Rig is released under [GNU General Public License v3.0 (or later)](https://github.com/wprig/wprig/blob/master/LICENSE).
 
 = Changelog =
 
