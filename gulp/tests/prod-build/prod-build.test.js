@@ -44,7 +44,7 @@ test( 'config defined files to copy exist in the production theme', ( done ) => 
 		// Check if the path is a glob
 		if ( prodFilePath.includes( '*' ) ) {
 			// Get the array of paths from the glob
-			const filePathsArray = glob.sync( filePath );
+			const filePathsArray = glob.sync( prodFilePath );
 			// And add each one to the copied files array
 			filePathsArray.forEach( ( globFilePath ) => {
 				copiedFiles.push(
