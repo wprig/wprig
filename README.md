@@ -3,8 +3,8 @@
      title="WP Rig logo by Morten Rand-Hendriksen">
 # WP Rig: WordPress Theme Boilerplate
 [![Build Status](https://travis-ci.com/wprig/wprig.svg?branch=master)](https://travis-ci.com/wprig/wprig)
-[![License: GPL](https://img.shields.io/aur/license/yaourt.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-![WP Rig version 2.0.0](https://img.shields.io/badge/version-2.0.0-blue.svg)
+[![License: GPL](https://img.shields.io/github/license/wprig/wprig)](https://www.gnu.org/licenses/gpl-3.0.html)
+![WP Rig version 2.0.1](https://img.shields.io/badge/version-2.0.1-blue.svg)
 
 ## Your Performance-Focused Development Rig
 A progressive theme development rig for WordPress, WP Rig is built to promote the latest best practices for progressive web content and optimization. Building a theme from WP Rig means adopting this approach and the core principles it is built on:
@@ -15,6 +15,9 @@ A progressive theme development rig for WordPress, WP Rig is built to promote th
 - [Resilient Web Design](https://resilientwebdesign.com/)
 - Progressive Web App enabled
 - AMP-ready
+
+## Documentation
+Documentation for the WP Rig Open Source Project can be found at the dedicated [Docs](https://github.com/wprig/docs/) repo.
 
 ## Office Hours
 WP Rig office hours take place every other Thursday from 5:30 - 6:30 p.m. UTC, starting January 10, 2019.
@@ -80,6 +83,12 @@ Place the following in your `./config/config.local.json` file. This config will 
     "certPath": "/path/to/my/browsersync/certificate"
   }
 }
+```
+
+If your local environment uses a specific port number, for example `8888`, add it to the `proxyURL` setting as follows:
+
+```
+"proxyURL": "localwprigenv.test:8888"
 ```
 
 ## How to build WP Rig for production:
@@ -151,4 +160,4 @@ WP Rig ships with advanced features including:
 For more information about the advanced features in WP Rig and how to use them, visit the [Advanced Features Wiki page](https://github.com/wprig/wprig/wiki/Advanced-Features-(and-how-to-use-them)).
 
 ## License
-WP Rig is released under [GNU General Public License v3.0](https://github.com/wprig/wprig/blob/master/LICENSE).
+WP Rig is released under [GNU General Public License v3.0 (or later)](https://github.com/wprig/wprig/blob/master/LICENSE).
