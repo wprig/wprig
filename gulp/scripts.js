@@ -31,6 +31,7 @@ export function scriptsBeforeReplacementStream() {
 
 export function scriptsAfterReplacementStream() {
 	const config = getThemeConfig();
+	const skipUglify = config.dev.debug.scripts && ! isProd;
 
 	// Return a single stream containing all the
 	// after replacement functionality
@@ -41,7 +42,7 @@ export function scriptsAfterReplacementStream() {
 			],
 		} ),
 		gulpPlugins.if(
-			! config.dev.debug.scripts,
+			! skipUglify,
 			gulpPlugins.uglify()
 		),
 		gulpPlugins.rename( {
