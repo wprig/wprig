@@ -29,7 +29,7 @@ export default function prodCompress( done ) {
 
 	return pump(
 		[
-			src( `${ prodThemePath }/**/*` ),
+			src( `${ prodThemePath }/**/*`, { nodir: true } ),
 			gulpPlugins.zip( `${ config.theme.slug }.zip` ),
 			dest( path.normalize( `${ prodThemePath }/../` ) ),
 		],
