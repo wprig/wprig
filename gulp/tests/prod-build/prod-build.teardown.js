@@ -24,7 +24,7 @@ filesToMock.forEach( ( file ) => {
 	}
 
 	// Check if a previous version of the file exists
-	const existingFile = file.dest.replace( /(\.[\w\d_-]+)$/i, '-existing$1' );
+	const existingFile = file.dest.replace( /(\.[\w-]+)$/i, '-existing$1' );
 	const existingFileExists = fs.existsSync( existingFile );
 	if ( existingFileExists ) {
 		// If it does, rename it back to the original file name
