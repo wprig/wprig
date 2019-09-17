@@ -17,7 +17,7 @@ filesToMock.forEach( ( file ) => {
 	const fileExists = fs.existsSync( file.dest );
 	if ( fileExists ) {
 		// If it does, rename the file adding an -existing suffix
-		const existingFile = file.dest.replace( /(\.[\w\d_-]+)$/i, '-existing$1' );
+		const existingFile = file.dest.replace( /(\.[\w-]+)$/i, '-existing$1' );
 		fs.renameSync( file.dest, existingFile );
 	}
 
