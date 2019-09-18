@@ -2,6 +2,7 @@
 
 ## 2.0.2
 - Add support for vendor asset directories. See [#587](https://github.com/wprig/wprig/pull/587). Props @ataylorme, @benoitchantre.
+- Fix sub menus may be displayed under other elements. See [#523](https://github.com/wprig/wprig/pull/523). Props @benoitchantre.
 - Fix invalid argument passed to `wp_nav_menu()`. See [#569](https://github.com/wprig/wprig/pull/569). Props @felixarntz.
 
 ## 2.0.1
