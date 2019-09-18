@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2.0.2
+- Fix no error message for WP-CLI when requirements are not met. See [#545](https://github.com/wprig/wprig/pull/545). Props @benoitchantre.
 - Fix sub menus may be displayed under other elements. See [#523](https://github.com/wprig/wprig/pull/523). Props @benoitchantre.
 - Fix invalid argument passed to `wp_nav_menu()`. See [#569](https://github.com/wprig/wprig/pull/569). Props @felixarntz.
 
