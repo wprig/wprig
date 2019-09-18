@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2.0.1
+- Fix indentation for nested lists, reduce specificity. See [#490](https://github.com/wprig/wprig/pull/490). Props @benoitchantre.
 - Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
 
 ## 2.0.0
