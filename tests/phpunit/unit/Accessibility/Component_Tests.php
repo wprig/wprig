@@ -72,7 +72,7 @@ class Component_Tests extends Unit_Test_Case {
 
 		$template_tags->expects( $this->once() )
 			->method( 'get_asset_version' )
-			->will( $this->returnValue( '2.0.0' ) );
+			->will( $this->returnValue( '2.0.1' ) );
 
 		Functions\when( 'get_theme_file_uri' )->returnArg();
 		Functions\when( 'get_theme_file_path' )->returnArg();
