@@ -28,9 +28,13 @@ matrix:
       env: INTEGRATION=1 WP_VERSION=latest
     - php: 7.3
       env: INTEGRATION=1 WP_VERSION=4.5
+    - php: nightly
+      env: UNIT=1
+    - php: 7.3
+      env: INTEGRATION=1 WP_VERSION=master
 
   allow_failures:
-    - php: 'nightly'
+    - php: nightly
       env: UNIT=1
     - php: 7.3
       env: INTEGRATION=1 WP_VERSION=master
@@ -122,8 +126,8 @@ script:
   # Run the gulp tests.
   - |
     if [[ "$TEST_GULP" == "1" ]]; then
-      npm run lint-gulp
-      npm run test-gulp
+      npm run lint:gulp
+      npm run test:gulp
     fi
 
 # Receive notifications for build results.
