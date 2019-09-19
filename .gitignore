@@ -6,9 +6,11 @@
 !/assets/css/
 /assets/css/*
 !/assets/css/src/
+!/assets/css/vendor/
 !/assets/js/
 /assets/js/*
 !/assets/js/src/
+!/assets/js/vendor/
 !/assets/images/
 /assets/images/*
 !/assets/images/src/
