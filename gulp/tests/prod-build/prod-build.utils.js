@@ -17,8 +17,8 @@ export const filesToMock = [
 	{
 		mock: `${ gulpTestPath }/prod-build/prod-test.php`,
 		dest: `${ rootPath }/template-parts/prod-test.php`,
-  },
-  {
+	},
+	{
 		mock: `${ gulpTestPath }/prod-build/mmenu-light/mmenu-light.css`,
 		dest: `${ rootPath }/assets/css/vendor/mmenu-light.css`,
 	},
