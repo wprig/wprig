@@ -152,6 +152,13 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 	grid-column: span 2;
 }
 
+.wp-block-gallery.columns-3 .blocks-gallery-item:last-child:nth-child(3n),
+.wp-block-gallery.columns-5 .blocks-gallery-item:last-child:nth-child(5n),
+.wp-block-gallery.columns-7 .blocks-gallery-item:last-child:nth-child(7n),
+.wp-block-gallery.columns-9 .blocks-gallery-item:last-child:nth-child(9n) {
+	grid-column: span 1;
+}
+
 @media screen and (min-width: 40em) {
 
 	.wp-block-gallery.columns-2 {

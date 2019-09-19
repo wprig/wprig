@@ -5,6 +5,8 @@
  * External dependencies
  */
 import fs from 'fs';
+import path from 'path';
+import mkdirp from 'mkdirp';
 
 /**
  * Internal dependencies
@@ -21,6 +23,8 @@ filesToMock.forEach( ( file ) => {
 		fs.renameSync( file.dest, existingFile );
 	}
 
-	// Copy the lock file to the desired location
+	// Copy the mock file to the desired location
+	const filePath = path.dirname( file.dest );
+	mkdirp( filePath );
 	fs.copyFileSync( file.mock, file.dest );
 } );
