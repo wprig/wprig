@@ -7,6 +7,7 @@
 /assets/css/*
 !/assets/css/src/
 !/assets/css/vendor/
+!/assets/fonts/
 !/assets/js/
 /assets/js/*
 !/assets/js/src/
