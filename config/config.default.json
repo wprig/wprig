@@ -38,7 +38,9 @@
     "filesToCopy": [
       "LICENSE",
       "readme.txt",
-      "screenshot.png"
+      "screenshot.png",
+      "assets/css/vendor/**/*.css",
+      "assets/js/vendor/**/*.js"
     ]
   }
 }
