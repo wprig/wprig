@@ -1,7 +1,15 @@
 # Changelog
 
-## 2.0.1
+## 2.0.2
+- Prevent gallery block from breaking unexpectedly if the number of images is a multiple of the number of columns. See [#571](https://github.com/wprig/wprig/pull/571). Props @felixarntz.
+- Add support for vendor asset directories. See [#587](https://github.com/wprig/wprig/pull/587). Props @ataylorme, @benoitchantre.
 - Ensure that left- or right-aligned child elements of the post content do not overflow the maximum content width. See [#568](https://github.com/wprig/wprig/pull/568). Props @felixarntz.
+- Fix sub menus may be displayed under other elements. See [#523](https://github.com/wprig/wprig/pull/523). Props @benoitchantre.
+- Fix invalid argument passed to `wp_nav_menu()`. See [#569](https://github.com/wprig/wprig/pull/569). Props @felixarntz.
+
+## 2.0.1
+- Fix inconsistent license references in various areas. See [#575](https://github.com/wprig/wprig/pull/575). Props @felixarntz.
+- Add automated tests for the gulp task that builds the production theme. See [#579](https://github.com/wprig/wprig/pull/579). Props @ataylorme.
 - Fix Travis-CI not executing nightly build jobs. See [#540](https://github.com/wprig/wprig/pull/540). Props @felixarntz.
 
 ## 2.0.0
