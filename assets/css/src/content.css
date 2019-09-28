@@ -201,6 +201,21 @@
 	}
 }
 
+@media (--sidebar-query) {
+
+	.has-sidebar .page-content > .alignleft,
+	.has-sidebar .entry-content > .alignleft,
+	.has-sidebar .entry-summary > .alignleft {
+		margin-left: calc((75vw - 2rem - var(--content-width)) / 2);
+	}
+
+	.has-sidebar .page-content > .alignright,
+	.has-sidebar .entry-content > .alignright,
+	.has-sidebar .entry-summary > .alignright {
+		margin-right: calc((75vw - 2rem - var(--content-width)) / 2);
+	}
+}
+
 /*--------------------------------------------------------------
 ## Custom block colors.
 --------------------------------------------------------------*/
