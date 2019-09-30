@@ -11,7 +11,6 @@ use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use function add_action;
 use function add_theme_support;
-use function is_amp_endpoint;
 use function get_theme_support;
 
 /**
@@ -77,7 +76,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return bool Whether the AMP plugin is active and the current request is for an AMP endpoint.
 	 */
 	public function is_amp() : bool {
-		return function_exists( 'is_amp_endpoint' ) && is_amp_endpoint();
+		return function_exists( '\is_amp_endpoint' ) && \is_amp_endpoint();
 	}
 
 	/**
