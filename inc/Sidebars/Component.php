@@ -87,12 +87,45 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		if ( $this->is_primary_sidebar_active() ) {
 			global $template;
 
-			if ( ! in_array( basename( $template ), [ 'front-page.php', '404.php', '500.php', 'offline.php' ] ) ) {
+			if ( ! empty( $this->find_sidebars( basename( $template ) ) ) ) {
 				$classes[] = 'has-sidebar';
 			}
 		}
 
 		return $classes;
+	}
+
+	/**
+	 * Finds sidebars that are present in a template.
+	 *
+	 * Searches for get_sidebar() calls in the template file.
+	 *
+	 * @param string $template Template file with extension.
+	 * @return array Sidebars file names called by get_sidebar().
+	 */
+	private function find_sidebars( string $template ) : array {
+		$sidebars      = [];
+		$template_path = trailingslashit( get_template_directory() ) . $template;
+
+		// Return early if there's no file.
+		if ( ! file_exists( $template_path ) ) {
+			return [];
+		}
+
+		// Search for get_sidebar() calls in template file.
+		if ( ! preg_match_all( '/get_sidebar[(]\s*\'?([\w-]*)\'?\s*[)]/', file_get_contents( $template_path ), $sidebar_calls ) ) {
+			return $sidebars;
+		};
+
+		foreach ( $sidebar_calls[1] as $name ) {
+			if ( empty( $name ) ) {
+				$sidebars[] = 'sidebar.php';
+			} else {
+				$sidebars[] = 'sidebar-' . $name . '.php';
+			}
+		}
+
+		return $sidebars;
 	}
 
 	/**
