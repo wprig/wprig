@@ -54,7 +54,7 @@ before_install:
   # Install PHPStan.
   - |
     if [[ ( "$STATIC_ANALYSIS" == "1" ) ]]; then
-      composer require phpstan/phpstan-shim:^0.11.19" "szepeviktor/phpstan-wordpress:^0.3.0"
+      composer require --ignore-platform-reqs "phpstan/phpstan-shim:^0.11.19" "szepeviktor/phpstan-wordpress:^0.3.0"
     fi
 
   # Install NPM dependencies.
