@@ -1,0 +1,33 @@
+includes:
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+    level: max
+    inferPrivatePropertyTypeFromConstructor: true
+    paths:
+        - %currentWorkingDirectory%/inc/
+        - %currentWorkingDirectory%/optional/
+        - %currentWorkingDirectory%/template-parts/
+        - %currentWorkingDirectory%/404.php
+        - %currentWorkingDirectory%/500.php
+        - %currentWorkingDirectory%/comments.php
+        - %currentWorkingDirectory%/footer.php
+        - %currentWorkingDirectory%/header.php
+        - %currentWorkingDirectory%/index.php
+        - %currentWorkingDirectory%/offline.php
+        - %currentWorkingDirectory%/sidebar.php
+    autoload_files:
+        # Our stubs
+        - %currentWorkingDirectory%/tests/phpstan/bootstrap.php
+        # Functions
+        - %currentWorkingDirectory%/inc/functions.php
+        - %currentWorkingDirectory%/inc/back-compat.php
+    ignoreErrors:
+        # Core global
+        - '#^Undefined variable: \$post$#'
+        # Uses __call()
+        - '#^Call to an undefined method WP_Rig\\WP_Rig\\Template_Tags::(display_primary_nav_menu|display_primary_sidebar|get_asset_version|is_amp|is_primary_nav_menu_active|is_primary_sidebar_active|print_styles|the_comments|using_amp_live_list_comments)\(\)\.$#'
+        # AMP
+        - '#^Function is_amp_endpoint not found\.$#'
+        # PWA
+        - '#^Function (wp_service_worker_error_message_placeholder|wp_service_worker_error_details_template) not found\.$#'
