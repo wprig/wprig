@@ -25,6 +25,8 @@ matrix:
     - php: 7.0
       env: UNIT=1
     - php: 7.3
+      env: STATIC_ANALYSIS=1 WP_VERSION=latest
+    - php: 7.3
       env: INTEGRATION=1 WP_VERSION=latest
     - php: 7.3
       env: INTEGRATION=1 WP_VERSION=4.5
@@ -47,6 +49,12 @@ before_install:
   - |
     if [[ ( "$SNIFF" == "1" ) || ( "$UNIT" == "1" ) || ( "$INTEGRATION" == "1" ) ]]; then
       composer install;
+    fi
+
+  # Install PHPStan.
+  - |
+    if [[ ( "$STATIC_ANALYSIS" == "1" ) ]]; then
+      composer require phpstan/phpstan-shim:^0.11.19" "szepeviktor/phpstan-wordpress:^0.3.0"
     fi
 
   # Install NPM dependencies.
@@ -115,6 +123,12 @@ script:
   - |
     if [[ "$UNIT" == "1" ]]; then
       composer run-script phpunit-dev
+    fi
+
+  # Run static analysis.
+  - |
+    if [[ ( "$STATIC_ANALYSIS" == "1" ) ]]; then
+      composer run-script phpstan
     fi
 
   # Run the integration tests.
