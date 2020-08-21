@@ -4,12 +4,7 @@ If you have found a problem or want to suggest an improvement or new feature, pl
 If you want to contribute code to WP Rig, please follow the instructions below:
 
 ## Office Hours
-WP Rig office hours take place every other Thursday from 5:30 - 6:30 p.m. UTC, starting January 10, 2019.
-
-Join WP Rig core maintainers to chat about the project, work alongside other devs, discuss ideas, address bugs, and more.
-
-- [View the WP Rig Google Calendar](https://calendar.google.com/calendar/embed?src=wprigio%40gmail.com&ctz=America%2FChicago) to see dates and find info to join the discussion
-- [Subscribe to the WP Rig Google Calendar](https://calendar.google.com/calendar?cid=d3ByaWdpb0BnbWFpbC5jb20) to stay informed.
+WP Rig office hours are on hiatus and not actively scheduled at this time.
 
 ## Workflow
 1. Set up a local development environment with a WordPress site running on your computer.
