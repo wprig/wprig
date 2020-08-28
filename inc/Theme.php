@@ -140,7 +140,6 @@ class Theme {
 			new Editor\Component(),
 			new Accessibility\Component(),
 			new Image_Sizes\Component(),
-			new Lazyload\Component(),
 			new AMP\Component(),
 			new PWA\Component(),
 			new Comments\Component(),
