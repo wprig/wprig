@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.1.0
-- Removed native lazy loading. WordPress 5.5 now handles that for us. Props @robruiz.
+- Removed native lazy loading. WordPress 5.5 now handles that for us. See [#657](https://github.com/wprig/wprig/pull/657).  Props @robruiz.
 
 ## 2.0.1
 - Fix inconsistent license references in various areas. See [#575](https://github.com/wprig/wprig/pull/575). Props @felixarntz.
