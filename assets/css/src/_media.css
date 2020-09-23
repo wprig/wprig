@@ -102,7 +102,7 @@ object {
 
 .gallery-item {
 	padding: 0.5em;
-	border: 1px solid rgb(222, 222, 222);
+	border: 1px solid var(--border-color-light);
 }
 
 .gallery-icon {

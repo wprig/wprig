@@ -21,7 +21,12 @@ export function cleanCSS() {
 		`!${ paths.styles.srcDir }`,
 		`!${ paths.styles.srcDir }/**`,
 	];
-	return del( delPath );
+
+	const keepExportPath = paths.export.src
+		.filter( ( path ) => path.indexOf( '/css/' ) !== -1 )
+		.map( ( path ) => `!${ path }` );
+
+	return del( delPath.concat( keepExportPath ) );
 }
 
 /**
@@ -34,5 +39,10 @@ export function cleanJS() {
 		`!${ paths.scripts.srcDir }`,
 		`!${ paths.scripts.srcDir }/**`,
 	];
-	return del( delPath );
+
+	const keepExportPath = paths.export.src
+		.filter( ( path ) => path.indexOf( '/js/' ) !== -1 )
+		.map( ( path ) => `!${ path }` );
+
+	return del( delPath.concat( keepExportPath ) );
 }

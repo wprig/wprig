@@ -39,10 +39,24 @@ test( 'config defined files to copy exist in the production theme', ( done ) => 
 
 	// Get all files to be copied to the prod directory
 	paths.export.src.forEach( ( filePath ) => {
-		// Update their paths from dev to prod
-		copiedFiles.push(
-			filePath.replace( rootPath, prodThemePath )
-		);
+		// Update paths from dev to prod
+		const prodFilePath = filePath.replace( rootPath, prodThemePath );
+		// Check if the path is a glob
+		if ( prodFilePath.includes( '*' ) ) {
+			// Get the array of paths from the glob
+			const filePathsArray = glob.sync( prodFilePath );
+			// And add each one to the copied files array
+			filePathsArray.forEach( ( globFilePath ) => {
+				copiedFiles.push(
+					globFilePath
+				);
+			} );
+		// If the path is a directory that exists
+		} else {
+			copiedFiles.push(
+				prodFilePath
+			);
+		}
 	} );
 
 	// Make sure the files exist.

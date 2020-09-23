@@ -2,6 +2,11 @@
 
 ## 2.0.2
 - Fix Editor toolbar icons may be unreadable. See [#547](https://github.com/wprig/wprig/pull/547). Props @benoitchantre.
+- Fix indentation for nested lists, reduce specificity. See [#490](https://github.com/wprig/wprig/pull/490). Props @benoitchantre.
+- Reduce hardcoded colors. See [#488](https://github.com/wprig/wprig/pull/488). Props @benoitchantre.
+- Prevent gallery block from breaking unexpectedly if the number of images is a multiple of the number of columns. See [#571](https://github.com/wprig/wprig/pull/571). Props @felixarntz.
+- Add support for vendor asset directories. See [#587](https://github.com/wprig/wprig/pull/587). Props @ataylorme, @benoitchantre.
+- Fix sub menus may be displayed under other elements. See [#523](https://github.com/wprig/wprig/pull/523). Props @benoitchantre.
 - Fix invalid argument passed to `wp_nav_menu()`. See [#569](https://github.com/wprig/wprig/pull/569). Props @felixarntz.
 
 ## 2.0.1

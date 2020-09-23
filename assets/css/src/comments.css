@@ -40,7 +40,7 @@
 }
 
 .comment-body {
-	border-bottom: 1px solid #c3c3c3;
+	border-bottom: 1px solid var(--border-color-light);
 	margin-bottom: 3em;
 }
 
@@ -75,7 +75,7 @@
 
 .bypostauthor .avatar {
 	box-sizing: content-box;
-	border: 5px solid #ccc;
+	border: 5px solid var(--border-color-light);
 	margin-top: -5px;
 	margin-left: -5px;
 }
@@ -147,11 +147,11 @@
 	font-family: var(--highlight-font-family);
 	font-stretch: condensed;
 	font-size: 85%;
-	color: #000;
+	color: var(--global-font-color);
 	line-height: 1.3;
 	text-decoration: none;
 	background: transparent;
-	border: 1px solid #c3c3c3;
+	border: 1px solid var(--border-color-light);
 	border-radius: 0;
 }
 
@@ -159,7 +159,7 @@
 .comment-reply-link:focus,
 .comment-form .form-submit input:hover,
 .comment-form .form-submit input:focus {
-	border-color: #000;
+	border-color: var(--border-color-dark);
 	cursor: pointer;
 }
 
@@ -208,7 +208,7 @@
 }
 
 .comment-form .required {
-	color: #d54e21;
+	color: var(--color-theme-red);
 }
 
 .comment-form .form-submit {
