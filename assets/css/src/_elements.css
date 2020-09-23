@@ -29,7 +29,7 @@ body {
 
 /* stylelint-disable */
 hr {
-	background-color: #ccc;
+	background-color: var(--border-color-light);
 	border: 0;
 	height: 1px;
 	margin-bottom: 1.5em;
