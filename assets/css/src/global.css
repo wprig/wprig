@@ -86,8 +86,9 @@
 		justify-content: center;
 	}
 
-	.site-header {
-		grid-column: span 2;
+	.site-header,
+	.site-footer {
+		grid-column: 1 / -1;
 	}
 
 	.site-main {
@@ -98,10 +99,6 @@
 	.primary-sidebar {
 		grid-column: 2;
 		min-width: 0;
-	}
-
-	.site-footer {
-		grid-column: span 2;
 	}
 }
 
@@ -380,7 +377,6 @@ select {
 ## Main navigation menu
 --------------------------------------------------------------*/
 .main-navigation {
-	clear: both;
 	display: block;
 	margin: 0 auto 2em;
 	padding: 0 1em;
@@ -400,6 +396,11 @@ select {
 .main-navigation a:hover,
 .main-navigation a:focus {
 	text-decoration: underline;
+}
+
+.main-navigation .current-menu-item > a,
+.main-navigation .current-menu-ancestor > a {
+	font-weight: 600;
 }
 
 .main-navigation ul {
