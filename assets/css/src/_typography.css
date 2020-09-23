@@ -28,8 +28,8 @@ h6 {
 	clear: both;
 }
 
-.entry-header h1.entry-title,
-.page-header .page-title {
+.entry-title-singular,
+.page-title {
 	font-size: 2.5rem;
 	line-height: 1.4;
 	margin-top: 1em;
