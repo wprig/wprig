@@ -58,16 +58,6 @@
 	margin: 1.5em 0 0;
 }
 
-.page-content > *,
-.entry-content > *,
-.entry-summary > * {
-	margin-right: auto;
-	margin-left: auto;
-	padding-right: 1.5rem;
-	padding-left: 1.5rem;
-	max-width: var(--content-width);
-}
-
 .page-header,
 .entry-header,
 .entry-footer,
@@ -75,7 +65,22 @@
 .post-navigation,
 .page-navigation,
 .comments-area {
-	margin: 1.5em auto;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+
+.page-content > *,
+.entry-content > *,
+.entry-summary > *,
+.page-header,
+.entry-header,
+.entry-footer,
+.site-info,
+.post-navigation,
+.page-navigation,
+.comments-area {
+	margin-left: auto;
+	margin-right: auto;
 	padding-right: 1.5rem;
 	padding-left: 1.5rem;
 	max-width: var(--content-width);
