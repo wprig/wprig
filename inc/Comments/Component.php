@@ -79,6 +79,23 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
+	 * Filters the comment form default arguments.
+	 *
+	 * Change the heading level to h2 when there are no comments.
+	 *
+	 * @param array $args The default comment form arguments.
+	 * @return array      Modified comment form arguments.
+	 */
+	public function filter_comment_form_defaults( array $args ) : array {
+		if ( ! get_comments_number() ) {
+			$args['title_reply_before'] = '<h2 id="reply-title" class="comment-reply-title">';
+			$args['title_reply_after']  = '</h2>';
+		}
+
+		return $args;
+	}
+
+	/**
 	 * Displays the list of comments for the current post.
 	 *
 	 * Internally this method calls `wp_list_comments()`. However, in addition to that it will render the wrapping

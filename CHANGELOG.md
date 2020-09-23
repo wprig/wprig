@@ -1,7 +1,9 @@
 # Changelog
 
 ## 2.0.2
+
 - Use long array syntax to be ready with upcoming changes in PHP Coding Standards. See [#557](https://github.com/wprig/wprig/pull/557). Props @benoitchantre.
+- Fix indentation for nested lists, reduce specificity. See [#490](https://github.com/wprig/wprig/pull/490). Props @benoitchantre.
 - Reduce hardcoded colors. See [#488](https://github.com/wprig/wprig/pull/488). Props @benoitchantre.
 - Prevent gallery block from breaking unexpectedly if the number of images is a multiple of the number of columns. See [#571](https://github.com/wprig/wprig/pull/571). Props @felixarntz.
 - Add support for vendor asset directories. See [#587](https://github.com/wprig/wprig/pull/587). Props @ataylorme, @benoitchantre.
