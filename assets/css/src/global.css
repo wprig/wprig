@@ -380,7 +380,6 @@ select {
 ## Main navigation menu
 --------------------------------------------------------------*/
 .main-navigation {
-	clear: both;
 	display: block;
 	margin: 0 auto 2em;
 	padding: 0 1em;
