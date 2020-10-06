@@ -19,11 +19,11 @@ namespace WP_Rig\WP_Rig;
 					wp_kses(
 						/* translators: %s: post title */
 						__( 'Leave a Comment<span class="screen-reader-text"> on %s</span>', 'wp-rig' ),
-						[
-							'span' => [
-								'class' => [],
-							],
-						]
+						array(
+							'span' => array(
+								'class' => array(),
+							),
+						)
 					),
 					get_the_title()
 				)
@@ -38,11 +38,11 @@ namespace WP_Rig\WP_Rig;
 			wp_kses(
 				/* translators: %s: post title */
 				__( 'Edit <span class="screen-reader-text">%s</span>', 'wp-rig' ),
-				[
-					'span' => [
-						'class' => [],
-					],
-				]
+				array(
+					'span' => array(
+						'class' => array(),
+					),
+				)
 			),
 			get_the_title()
 		),
