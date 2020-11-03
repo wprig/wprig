@@ -30,7 +30,11 @@ WP Rig requires the following dependencies. Full installation instructions are p
 
 - [PHP](http://php.net/) 7.0
 - [npm](https://www.npmjs.com/)
-- [Composer](https://getcomposer.org/) (installed globally)
+- [Composer](https://getcomposer.org/) 1.10.17 (installed globally)
+
+#### How to install Composer 1.10.17 globally
+- Install the [latest version of Composer](https://getcomposer.org/doc/00-intro.md#globally) (currently 2.0.4)
+- Run `composer self-update --1`
 
 ### How to install WP Rig:
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
