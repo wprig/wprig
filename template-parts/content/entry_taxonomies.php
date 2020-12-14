@@ -9,9 +9,9 @@ namespace WP_Rig\WP_Rig;
 
 $taxonomies = wp_list_filter(
 	get_object_taxonomies( $post, 'objects' ),
-	[
+	array(
 		'public' => true,
-	]
+	)
 );
 
 ?>

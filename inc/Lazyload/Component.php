@@ -23,6 +23,8 @@ use function remove_filter;
 use function is_feed;
 use function is_preview;
 use function wp_kses_hair;
+use function wp_allowed_protocols;
+use function esc_attr;
 
 /**
  * Class for managing lazy-loading images.
@@ -42,8 +44,8 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'wp', [ $this, 'action_lazyload_images' ] );
-		add_action( 'customize_register', [ $this, 'action_customize_register_lazyload' ] );
+		add_action( 'wp', array( $this, 'action_lazyload_images' ) );
+		add_action( 'customize_register', array( $this, 'action_customize_register_lazyload' ) );
 	}
 
 	/**
@@ -71,12 +73,12 @@ class Component implements Component_Interface {
 			return;
 		}
 
-		add_action( 'wp_head', [ $this, 'action_add_lazyload_filters' ], PHP_INT_MAX );
-		add_action( 'wp_enqueue_scripts', [ $this, 'action_enqueue_lazyload_assets' ] );
+		add_action( 'wp_head', array( $this, 'action_add_lazyload_filters' ), PHP_INT_MAX );
+		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_lazyload_assets' ) );
 
 		// Do not lazy load avatar in admin bar.
-		add_action( 'admin_bar_menu', [ $this, 'action_remove_lazyload_filters' ], 0 );
-		add_filter( 'wp_kses_allowed_html', [ $this, 'filter_allow_lazyload_attributes' ] );
+		add_action( 'admin_bar_menu', array( $this, 'action_remove_lazyload_filters' ), 0 );
+		add_filter( 'wp_kses_allowed_html', array( $this, 'filter_allow_lazyload_attributes' ) );
 	}
 
 	/**
@@ -121,12 +123,12 @@ class Component implements Component_Interface {
 	 * Adds filters to enable lazy-loading of images.
 	 */
 	public function action_add_lazyload_filters() {
-		add_filter( 'the_content', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		add_filter( 'post_thumbnail_html', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		add_filter( 'get_avatar', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		add_filter( 'widget_text', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		add_filter( 'get_image_tag', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		add_filter( 'wp_get_attachment_image_attributes', [ $this, 'filter_lazyload_attributes' ], PHP_INT_MAX );
+		add_filter( 'the_content', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		add_filter( 'post_thumbnail_html', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		add_filter( 'get_avatar', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		add_filter( 'widget_text', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		add_filter( 'get_image_tag', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'filter_lazyload_attributes' ), PHP_INT_MAX );
 	}
 
 	/**
@@ -148,12 +150,12 @@ class Component implements Component_Interface {
 	 * Removes filters for images that should not be lazy-loaded.
 	 */
 	public function action_remove_lazyload_filters() {
-		remove_filter( 'the_content', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		remove_filter( 'post_thumbnail_html', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		remove_filter( 'get_avatar', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		remove_filter( 'widget_text', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		remove_filter( 'get_image_tag', [ $this, 'filter_add_lazyload_placeholders' ], PHP_INT_MAX );
-		remove_filter( 'wp_get_attachment_image_attributes', [ $this, 'filter_lazyload_attributes' ], PHP_INT_MAX );
+		remove_filter( 'the_content', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		remove_filter( 'post_thumbnail_html', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		remove_filter( 'get_avatar', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		remove_filter( 'widget_text', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		remove_filter( 'get_image_tag', array( $this, 'filter_add_lazyload_placeholders' ), PHP_INT_MAX );
+		remove_filter( 'wp_get_attachment_image_attributes', array( $this, 'filter_lazyload_attributes' ), PHP_INT_MAX );
 	}
 
 	/**
@@ -323,7 +325,7 @@ class Component implements Component_Interface {
 	 * @return array Flattened attributes as $attr => $attr_value pairs.
 	 */
 	protected function flatten_kses_hair_data( array $attributes ) : array {
-		$flattened_attributes = [];
+		$flattened_attributes = array();
 		foreach ( $attributes as $name => $attribute ) {
 			$flattened_attributes[ $name ] = $attribute['value'];
 		}
@@ -337,7 +339,7 @@ class Component implements Component_Interface {
 	 * @return string HTML attribute string.
 	 */
 	protected function build_attributes_string( array $attributes ) : string {
-		$string = [];
+		$string = array();
 		foreach ( $attributes as $name => $value ) {
 			if ( '' === $value ) {
 				$string[] = sprintf( '%s', $name );
