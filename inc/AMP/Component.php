@@ -76,7 +76,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return bool Whether the AMP plugin is active and the current request is for an AMP endpoint.
 	 */
 	public function is_amp() : bool {
-		return function_exists( 'is_amp_endpoint' ) && \is_amp_endpoint();
+		return function_exists( '\is_amp_endpoint' ) && \is_amp_endpoint();
 	}
 
 	/**

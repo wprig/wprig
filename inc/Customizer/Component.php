@@ -14,6 +14,7 @@ use function add_action;
 use function bloginfo;
 use function wp_enqueue_script;
 use function get_theme_file_uri;
+use function get_theme_file_path;
 
 /**
  * Class for managing Customizer integration.
