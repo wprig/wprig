@@ -37,7 +37,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'after_setup_theme', [ $this, 'action_add_amp_support' ] );
+		add_action( 'after_setup_theme', array( $this, 'action_add_amp_support' ) );
 	}
 
 	/**
@@ -49,8 +49,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function template_tags() : array {
 		return [
-			'is_amp'                       => [ $this, 'is_amp' ],
-			'using_amp_live_list_comments' => [ $this, 'using_amp_live_list_comments' ],
+			'is_amp'                       => array( $this, 'is_amp' ),
+			'using_amp_live_list_comments' => array( $this, 'using_amp_live_list_comments' ),
 		];
 	}
 

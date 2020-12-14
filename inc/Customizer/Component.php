@@ -34,8 +34,8 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'customize_register', [ $this, 'action_customize_register' ] );
-		add_action( 'customize_preview_init', [ $this, 'action_enqueue_customize_preview_js' ] );
+		add_action( 'customize_register', array( $this, 'action_customize_register' ) );
+		add_action( 'customize_preview_init', array( $this, 'action_enqueue_customize_preview_js' ) );
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Component implements Component_Interface {
 		wp_enqueue_script(
 			'wp-rig-customizer',
 			get_theme_file_uri( '/assets/js/customizer.min.js' ),
-			[ 'customize-preview' ],
+			array( 'customize-preview' ),
 			wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/customizer.min.js' ) ),
 			true
 		);

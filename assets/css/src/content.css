@@ -71,6 +71,8 @@
 	padding-right: 1.5rem;
 	padding-left: 1.5rem;
 	max-width: var(--content-width);
+}
+
 .page-header,
 .entry-header,
 .entry-footer,
