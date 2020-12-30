@@ -36,10 +36,10 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'wp_enqueue_scripts', [ $this, 'action_enqueue_navigation_script' ] );
-		add_action( 'wp_print_footer_scripts', [ $this, 'action_print_skip_link_focus_fix' ] );
-		add_filter( 'nav_menu_link_attributes', [ $this, 'filter_nav_menu_link_attributes_aria_current' ], 10, 2 );
-		add_filter( 'page_menu_link_attributes', [ $this, 'filter_nav_menu_link_attributes_aria_current' ], 10, 2 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_navigation_script' ) );
+		add_action( 'wp_print_footer_scripts', array( $this, 'action_print_skip_link_focus_fix' ) );
+		add_filter( 'nav_menu_link_attributes', array( $this, 'filter_nav_menu_link_attributes_aria_current' ), 10, 2 );
+		add_filter( 'page_menu_link_attributes', array( $this, 'filter_nav_menu_link_attributes_aria_current' ), 10, 2 );
 	}
 
 	/**
@@ -56,7 +56,7 @@ class Component implements Component_Interface {
 		wp_enqueue_script(
 			'wp-rig-navigation',
 			get_theme_file_uri( '/assets/js/navigation.min.js' ),
-			[],
+			array(),
 			wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/navigation.min.js' ) ),
 			false
 		);
@@ -65,10 +65,10 @@ class Component implements Component_Interface {
 		wp_localize_script(
 			'wp-rig-navigation',
 			'wpRigScreenReaderText',
-			[
+			array(
 				'expand'   => __( 'Expand child menu', 'wp-rig' ),
 				'collapse' => __( 'Collapse child menu', 'wp-rig' ),
-			]
+			)
 		);
 	}
 

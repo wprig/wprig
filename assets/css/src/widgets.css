@@ -2,6 +2,10 @@
 # Widgets
 --------------------------------------------------------------*/
 
+.widget-title {
+	font-size: 1.5em;
+}
+
 /* Make sure select elements fit in widgets. */
 .widget {
 	margin-top: 0;
@@ -35,11 +39,7 @@
 	text-overflow: ellipsis;
 }
 
-/* Archive and Categories widgets */
-.widget_archive li {
-	color: #7d7d7d;
-}
-
+/* Categories widget */
 .widget_categories .children {
 	padding-top: 0;
 }
@@ -112,7 +112,6 @@
 
 .rss-date,
 .widget_rss cite {
-	color: #333;
 	font-size: 0.8em;
 }
 
@@ -128,7 +127,7 @@
 	box-sizing: border-box;
 	width: 100%;
 	padding: 0.5em 1em;
-	border: 1px solid #c3c3c3;
+	border: 1px solid var(--border-color-light);
 	border-radius: 0;
 }
 
@@ -163,7 +162,7 @@
 	font-size: 0.8em;
 	text-align: center;
 	background: #fff;
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color-light);
 }
 
 .widget_calendar .pad {

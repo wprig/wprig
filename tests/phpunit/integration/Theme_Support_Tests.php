@@ -33,50 +33,50 @@ class Theme_Support_Tests extends Integration_Test_Case {
 	 * @return array List of test datasets.
 	 */
 	public function data_theme_support_features() : array {
-		return [
-			[
+		return array(
+			array(
 				'automatic-feed-links',
-			],
-			[
+			),
+			array(
 				'title-tag',
-			],
-			[
+			),
+			array(
 				'post-thumbnails',
-			],
-			[
+			),
+			array(
 				'html5',
-			],
-			[
+			),
+			array(
 				'custom-background',
-			],
-			[
+			),
+			array(
 				'customize-selective-refresh-widgets',
-			],
-			[
+			),
+			array(
 				'responsive-embeds',
-			],
-			[
+			),
+			array(
 				'custom-logo',
-			],
-			[
+			),
+			array(
 				'wp-block-styles',
-			],
-			[
+			),
+			array(
 				'align-wide',
-			],
-			[
+			),
+			array(
 				'editor-color-palette',
-			],
-			[
+			),
+			array(
 				'editor-font-sizes',
-			],
-			[
+			),
+			array(
 				'amp',
-			],
-			[
+			),
+			array(
 				'custom-header',
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -87,13 +87,13 @@ class Theme_Support_Tests extends Integration_Test_Case {
 
 		$this->assertInternalType( 'array', $html5_support );
 		$this->assertEqualSets(
-			[
+			array(
 				'search-form',
 				'comment-form',
 				'comment-list',
 				'gallery',
 				'caption',
-			],
+			),
 			$html5_support[0]
 		);
 	}

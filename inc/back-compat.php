@@ -39,6 +39,15 @@ function wp_rig_get_insufficient_requirements_message() {
 }
 
 /**
+ * Displays an error message if WP-CLI is used when requirements are not met.
+ *
+ * Exits script.
+ */
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::error( wp_rig_get_insufficient_requirements_message() );
+}
+
+/**
  * Prevents switching to the theme when requirements are not met.
  *
  * Switches to the default theme.

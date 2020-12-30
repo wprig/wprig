@@ -27,7 +27,7 @@ use function esc_html_e;
  * Class for managing comments UI.
  *
  * Exposes template tags:
- * * `wp_rig()->the_comments( array $args = [] )`
+ * * `wp_rig()->the_comments( array $args = array() )`
  *
  * @link https://wordpress.org/plugins/amp/
  */
@@ -46,7 +46,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'wp_enqueue_scripts', [ $this, 'action_enqueue_comment_reply_script' ] );
+		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_comment_reply_script' ) );
 	}
 
 	/**
@@ -57,9 +57,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return [
-			'the_comments' => [ $this, 'the_comments' ],
-		];
+		return array(
+			'the_comments' => array( $this, 'the_comments' ),
+		);
 	}
 
 	/**
@@ -79,6 +79,23 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
+	 * Filters the comment form default arguments.
+	 *
+	 * Change the heading level to h2 when there are no comments.
+	 *
+	 * @param array $args The default comment form arguments.
+	 * @return array      Modified comment form arguments.
+	 */
+	public function filter_comment_form_defaults( array $args ) : array {
+		if ( ! get_comments_number() ) {
+			$args['title_reply_before'] = '<h2 id="reply-title" class="comment-reply-title">';
+			$args['title_reply_after']  = '</h2>';
+		}
+
+		return $args;
+	}
+
+	/**
 	 * Displays the list of comments for the current post.
 	 *
 	 * Internally this method calls `wp_list_comments()`. However, in addition to that it will render the wrapping
@@ -88,13 +105,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param array $args Optional. Array of arguments. See `wp_list_comments()` documentation for a list of supported
 	 *                    arguments.
 	 */
-	public function the_comments( array $args = [] ) {
+	public function the_comments( array $args = array() ) {
 		$args = array_merge(
 			$args,
-			[
+			array(
 				'style'      => 'ol',
 				'short_ping' => true,
-			]
+			)
 		);
 
 		$amp_live_list = wp_rig()->using_amp_live_list_comments();
@@ -113,7 +130,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			>
 			<?php
 
-			add_filter( 'navigation_markup_template', [ $this, 'filter_add_amp_live_list_pagination_attribute' ] );
+			add_filter( 'navigation_markup_template', array( $this, 'filter_add_amp_live_list_pagination_attribute' ) );
 		}
 
 		?>
@@ -125,7 +142,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		the_comments_navigation();
 
 		if ( $amp_live_list ) {
-			remove_filter( 'navigation_markup_template', [ $this, 'filter_add_amp_live_list_pagination_attribute' ] );
+			remove_filter( 'navigation_markup_template', array( $this, 'filter_add_amp_live_list_pagination_attribute' ) );
 
 			?>
 				<div update>

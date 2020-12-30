@@ -52,6 +52,7 @@ export default function prodPrep( done ) {
 	];
 
 	// Error if config that must be set is still the default value.
+	/* eslint no-unused-vars: 0 */
 	for ( const requiredConfigField of requiredConfigUpdates ) {
 		if ( nameFieldDefaults[ requiredConfigField ] === config.theme[ requiredConfigField ] ) {
 			log( colors.red( `${ colors.bold( 'Error:' ) } the theme ${ requiredConfigField } must be different than the default value ${ nameFieldDefaults[ requiredConfigField ] }.` ) );

@@ -127,6 +127,7 @@ const paths = {
 };
 
 // Add rootPath to filesToCopy and additionalFilesToCopy
+/* eslint no-unused-vars: 0 */
 const additionalFilesToCopy = configValueDefined( 'export.additionalFilesToCopy' ) ? config.export.additionalFilesToCopy : [];
 const filesToCopy = configValueDefined( 'export.filesToCopy' ) ? config.export.filesToCopy : [];
 for ( const filePath of filesToCopy.concat( additionalFilesToCopy ) ) {

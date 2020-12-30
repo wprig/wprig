@@ -52,12 +52,12 @@ class Component_Tests extends Unit_Test_Case {
 	public function test_initialize() {
 		$this->component->initialize();
 
-		$this->assertTrue( has_action( 'after_setup_theme', [ $this->component, 'action_essential_theme_support' ] ) );
-		$this->assertTrue( has_action( 'wp_head', [ $this->component, 'action_add_pingback_header' ] ) );
-		$this->assertTrue( has_filter( 'body_class', [ $this->component, 'filter_body_classes_add_hfeed' ] ) );
-		$this->assertTrue( has_filter( 'embed_defaults', [ $this->component, 'filter_embed_dimensions' ] ) );
-		$this->assertTrue( has_filter( 'theme_scandir_exclusions', [ $this->component, 'filter_scandir_exclusions_for_optional_templates' ] ) );
-		$this->assertTrue( has_filter( 'script_loader_tag', [ $this->component, 'filter_script_loader_tag' ] ) );
+		$this->assertNotEquals( false, has_action( 'after_setup_theme', array( $this->component, 'action_essential_theme_support' ) ) );
+		$this->assertNotEquals( false, has_action( 'wp_head', array( $this->component, 'action_add_pingback_header' ) ) );
+		$this->assertNotEquals( false, has_filter( 'body_class', array( $this->component, 'filter_body_classes_add_hfeed' ) ) );
+		$this->assertNotEquals( false, has_filter( 'embed_defaults', array( $this->component, 'filter_embed_dimensions' ) ) );
+		$this->assertNotEquals( false, has_filter( 'theme_scandir_exclusions', array( $this->component, 'filter_scandir_exclusions_for_optional_templates' ) ) );
+		$this->assertNotEquals( false, has_filter( 'script_loader_tag', array( $this->component, 'filter_script_loader_tag' ) ) );
 	}
 
 	/**
@@ -69,10 +69,10 @@ class Component_Tests extends Unit_Test_Case {
 		$tags = $this->component->template_tags();
 
 		$this->assertEqualSetsWithIndex(
-			[
-				'get_version'       => [ $this->component, 'get_version' ],
-				'get_asset_version' => [ $this->component, 'get_asset_version' ],
-			],
+			array(
+				'get_version'       => array( $this->component, 'get_version' ),
+				'get_asset_version' => array( $this->component, 'get_asset_version' ),
+			),
 			$tags
 		);
 	}
@@ -83,7 +83,7 @@ class Component_Tests extends Unit_Test_Case {
 	 * @covers Component::action_essential_theme_support()
 	 */
 	public function test_action_essential_theme_support() {
-		$features = [];
+		$features = array();
 
 		Functions\when( 'add_theme_support' )->alias(
 			function( $feature, ...$args ) use ( &$features ) {
@@ -94,13 +94,13 @@ class Component_Tests extends Unit_Test_Case {
 		$this->component->action_essential_theme_support();
 
 		$this->assertEqualSets(
-			[
+			array(
 				'automatic-feed-links',
 				'title-tag',
 				'html5',
 				'customize-selective-refresh-widgets',
 				'responsive-embeds',
-			],
+			),
 			array_keys( $features )
 		);
 	}

@@ -86,8 +86,9 @@
 		justify-content: center;
 	}
 
-	.site-header {
-		grid-column: span 2;
+	.site-header,
+	.site-footer {
+		grid-column: 1 / -1;
 	}
 
 	.site-main {
@@ -98,10 +99,6 @@
 	.primary-sidebar {
 		grid-column: 2;
 		min-width: 0;
-	}
-
-	.site-footer {
-		grid-column: span 2;
 	}
 }
 
@@ -120,9 +117,9 @@ input[type="button"],
 input[type="reset"],
 input[type="submit"] {
 	border: 1px solid;
-	border-color: #ccc #ccc #bbb;
+	border-color: var(--border-color-light) var(--border-color-light) #bbb;
 	border-radius: 3px;
-	background: #e6e6e6;
+	background: #eee;
 	color: rgba(0, 0, 0, 0.8);
 	font-size: 0.75rem;
 	line-height: 1;
@@ -135,7 +132,7 @@ button:hover,
 input[type="button"]:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover {
-	border-color: #ccc #bbb #aaa;
+	border-color: var(--border-color-light) #bbb #aaa;
 }
 
 button:active,
@@ -166,7 +163,7 @@ input[type="datetime-local"],
 input[type="color"],
 textarea {
 	color: #666;
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color-light);
 	border-radius: 3px;
 	padding: 3px;
 }
@@ -191,7 +188,7 @@ textarea:focus {
 }
 
 select {
-	border: 1px solid #ccc;
+	border: 1px solid var(--border-color-light);
 }
 
 /*--------------------------------------------------------------
@@ -228,7 +225,6 @@ select {
 	font-size: 38px;
 	font-weight: 700;
 	line-height: 1.2;
-	color: #333332;
 }
 
 .site-title a {
@@ -258,7 +254,7 @@ select {
 	font-stretch: condensed;
 	font-size: 80%;
 	text-transform: uppercase;
-	border: 2px solid #000;
+	border: 2px solid var(--border-color-dark);
 	border-radius: 0;
 	background: transparent;
 }
@@ -297,7 +293,7 @@ select {
 		background: #fff;
 		margin-left: 0;
 		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
-		z-index: 1;
+		z-index: 100;
 	}
 
 	.nav--toggle-sub .dropdown,
@@ -327,7 +323,7 @@ select {
 		top: 35%;
 		width: 60%;
 		height: 60%;
-		border: solid #000;
+		border: solid var(--border-color-dark);
 		border-width: 0 2px 2px 0;
 		transform: translateY(-50%) rotate(45deg);
 	}
@@ -381,7 +377,6 @@ select {
 ## Main navigation menu
 --------------------------------------------------------------*/
 .main-navigation {
-	clear: both;
 	display: block;
 	margin: 0 auto 2em;
 	padding: 0 1em;
@@ -395,12 +390,17 @@ select {
 	width: 100%;
 	padding: 0.5em 1em 0.5em 0;
 	text-decoration: none;
-	color: #000;
+	color: var(--global-font-color);
 }
 
 .main-navigation a:hover,
 .main-navigation a:focus {
 	text-decoration: underline;
+}
+
+.main-navigation .current-menu-item > a,
+.main-navigation .current-menu-ancestor > a {
+	font-weight: 600;
 }
 
 .main-navigation ul {
@@ -464,7 +464,7 @@ select {
 .site-main .posts-navigation,
 .site-main .post-navigation,
 .site-main .pagination {
-	border-bottom: 1px solid #111;
+	border-bottom: 1px solid var(--border-color-dark);
 	margin: 0 auto 2em;
 	max-width: var(--content-width);
 	overflow: hidden;
@@ -535,7 +535,7 @@ select {
 .pagination a:hover,
 .pagination a:focus,
 .pagination a:active {
-	border-color: #00a0d2;
+	border-color: var(--color-link-active);
 }
 
 .pagination .prev,
@@ -560,7 +560,7 @@ select {
 }
 
 .pagination .current {
-	border-color: var(--global-font-color);
+	border-color: var(--border-color-dark);
 }
 
 /*--------------------------------------------------------------

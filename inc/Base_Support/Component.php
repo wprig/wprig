@@ -42,12 +42,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'after_setup_theme', [ $this, 'action_essential_theme_support' ] );
-		add_action( 'wp_head', [ $this, 'action_add_pingback_header' ] );
-		add_filter( 'body_class', [ $this, 'filter_body_classes_add_hfeed' ] );
-		add_filter( 'embed_defaults', [ $this, 'filter_embed_dimensions' ] );
-		add_filter( 'theme_scandir_exclusions', [ $this, 'filter_scandir_exclusions_for_optional_templates' ] );
-		add_filter( 'script_loader_tag', [ $this, 'filter_script_loader_tag' ], 10, 2 );
+		add_action( 'after_setup_theme', array( $this, 'action_essential_theme_support' ) );
+		add_action( 'wp_head', array( $this, 'action_add_pingback_header' ) );
+		add_filter( 'body_class', array( $this, 'filter_body_classes_add_hfeed' ) );
+		add_filter( 'embed_defaults', array( $this, 'filter_embed_dimensions' ) );
+		add_filter( 'theme_scandir_exclusions', array( $this, 'filter_scandir_exclusions_for_optional_templates' ) );
+		add_filter( 'script_loader_tag', array( $this, 'filter_script_loader_tag' ), 10, 2 );
 	}
 
 	/**
@@ -58,10 +58,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return [
-			'get_version'       => [ $this, 'get_version' ],
-			'get_asset_version' => [ $this, 'get_asset_version' ],
-		];
+		return array(
+			'get_version'       => array( $this, 'get_version' ),
+			'get_asset_version' => array( $this, 'get_asset_version' ),
+		);
 	}
 
 	/**
@@ -77,13 +77,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		// Ensure WordPress theme features render in HTML5 markup.
 		add_theme_support(
 			'html5',
-			[
+			array(
 				'search-form',
 				'comment-form',
 				'comment-list',
 				'gallery',
 				'caption',
-			]
+			)
 		);
 
 		// Add support for selective refresh for widgets.
@@ -138,7 +138,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function filter_scandir_exclusions_for_optional_templates( array $exclusions ) : array {
 		return array_merge(
 			$exclusions,
-			[ 'optional' ]
+			array( 'optional' )
 		);
 	}
 
@@ -155,7 +155,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function filter_script_loader_tag( string $tag, string $handle ) : string {
 
-		foreach ( [ 'async', 'defer' ] as $attr ) {
+		foreach ( array( 'async', 'defer' ) as $attr ) {
 			if ( ! wp_scripts()->get_data( $handle, $attr ) ) {
 				continue;
 			}
