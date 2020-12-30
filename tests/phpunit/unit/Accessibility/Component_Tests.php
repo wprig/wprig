@@ -83,7 +83,7 @@ class Component_Tests extends Unit_Test_Case {
 
 		Functions\expect( 'wp_script_add_data' )
 			->with( 'wp-rig-navigation', 'async', true )
-			->once();
+			->twice();
 
 		Functions\expect( 'wp_localize_script' )
 			->with( 'wp-rig-navigation', Mockery::any(), Mockery::any() )
