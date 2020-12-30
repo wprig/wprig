@@ -154,6 +154,7 @@ export function configValueDefined( configValueLocation ) {
 	}
 
 	// Loop through the config value paths passed
+	/* eslint no-unused-vars: 0 */
 	for ( const currentValueLocation of configValueLocationArray ) {
 		// Check if there is a match in the current object level
 		if ( ! Object.prototype.hasOwnProperty.call( config, currentValueLocation ) ) {
