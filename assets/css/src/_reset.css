@@ -353,11 +353,3 @@ template {
 [hidden] {
 	display: none;
 }
-
-/**
- * Hide lazy load placeholders when browser does not have JS enabled.
- * Should override everything, therefore !important.
- */
-.no-js .lazy {
-	display: none !important;
-}
