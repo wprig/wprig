@@ -48,10 +48,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return [
+		return array(
 			'is_amp'                       => array( $this, 'is_amp' ),
 			'using_amp_live_list_comments' => array( $this, 'using_amp_live_list_comments' ),
-		];
+		);
 	}
 
 	/**
@@ -62,9 +62,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function action_add_amp_support() {
 		add_theme_support(
 			'amp',
-			[
+			array(
 				'comments_live_list' => true,
-			]
+			)
 		);
 	}
 

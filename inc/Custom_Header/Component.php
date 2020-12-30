@@ -47,14 +47,14 @@ class Component implements Component_Interface {
 			'custom-header',
 			apply_filters(
 				'wp_rig_custom_header_args',
-				[
+				array(
 					'default-image'      => '',
 					'default-text-color' => '000000',
 					'width'              => 1600,
 					'height'             => 250,
 					'flex-height'        => true,
 					'wp-head-callback'   => array( $this, 'wp_head_callback' ),
-				]
+				)
 			)
 		);
 	}

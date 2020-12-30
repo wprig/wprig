@@ -51,21 +51,21 @@ class Component implements Component_Interface {
 		if ( isset( $wp_customize->selective_refresh ) ) {
 			$wp_customize->selective_refresh->add_partial(
 				'blogname',
-				[
+				array(
 					'selector'        => '.site-title a',
 					'render_callback' => function() {
 						bloginfo( 'name' );
 					},
-				]
+				)
 			);
 			$wp_customize->selective_refresh->add_partial(
 				'blogdescription',
-				[
+				array(
 					'selector'        => '.site-description',
 					'render_callback' => function() {
 						bloginfo( 'description' );
 					},
-				]
+				)
 			);
 		}
 
@@ -74,10 +74,10 @@ class Component implements Component_Interface {
 		 */
 		$wp_customize->add_section(
 			'theme_options',
-			[
+			array(
 				'title'    => __( 'Theme Options', 'wp-rig' ),
 				'priority' => 130, // Before Additional CSS.
-			]
+			)
 		);
 	}
 

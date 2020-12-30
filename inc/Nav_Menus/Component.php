@@ -53,10 +53,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return [
+		return array(
 			'is_primary_nav_menu_active' => array( $this, 'is_primary_nav_menu_active' ),
 			'display_primary_nav_menu'   => array( $this, 'display_primary_nav_menu' ),
-		];
+		);
 	}
 
 	/**
@@ -64,9 +64,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function action_register_nav_menus() {
 		register_nav_menus(
-			[
+			array(
 				static::PRIMARY_NAV_MENU_SLUG => esc_html__( 'Primary', 'wp-rig' ),
-			]
+			)
 		);
 	}
 

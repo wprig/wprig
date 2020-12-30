@@ -134,7 +134,7 @@ class Theme {
 	 * @return array List of theme components to use by default.
 	 */
 	protected function get_default_components() : array {
-		$components = [
+		$components = array(
 			new Localization\Component(),
 			new Base_Support\Component(),
 			new Editor\Component(),
@@ -151,7 +151,7 @@ class Theme {
 			new Post_Thumbnails\Component(),
 			new Customizer\Component(),
 			new Styles\Component(),
-		];
+		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {
 			$components[] = new Jetpack\Component();

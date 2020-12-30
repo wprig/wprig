@@ -54,10 +54,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return [
+		return array(
 			'is_primary_sidebar_active' => array( $this, 'is_primary_sidebar_active' ),
 			'display_primary_sidebar'   => array( $this, 'display_primary_sidebar' ),
-		];
+		);
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function action_register_sidebars() {
 		register_sidebar(
-			[
+			array(
 				'name'          => esc_html__( 'Sidebar', 'wp-rig' ),
 				'id'            => static::PRIMARY_SIDEBAR_SLUG,
 				'description'   => esc_html__( 'Add widgets here.', 'wp-rig' ),
@@ -73,7 +73,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				'after_widget'  => '</section>',
 				'before_title'  => '<h3 class="widget-title">',
 				'after_title'   => '</h3>',
-			]
+			)
 		);
 	}
 

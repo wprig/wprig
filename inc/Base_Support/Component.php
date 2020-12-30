@@ -58,10 +58,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return [
+		return array(
 			'get_version'       => array( $this, 'get_version' ),
 			'get_asset_version' => array( $this, 'get_asset_version' ),
-		];
+		);
 	}
 
 	/**
@@ -77,13 +77,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		// Ensure WordPress theme features render in HTML5 markup.
 		add_theme_support(
 			'html5',
-			[
+			array(
 				'search-form',
 				'comment-form',
 				'comment-list',
 				'gallery',
 				'caption',
-			]
+			)
 		);
 
 		// Add support for selective refresh for widgets.

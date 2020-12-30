@@ -42,12 +42,12 @@ if ( ! file_exists( $test_root . '/includes/phpunit6-compat.php' ) && ! file_exi
 }
 
 // Override WP options to set current theme and themes directory.
-$GLOBALS['wp_tests_options'] = [
+$GLOBALS['wp_tests_options'] = array(
 	'template'        => TESTS_THEME_BASENAME,
 	'stylesheet'      => TESTS_THEME_BASENAME,
 	'template_root'   => dirname( TESTS_THEME_DIR ),
 	'stylesheet_root' => dirname( TESTS_THEME_DIR ),
-];
+);
 
 // Register the themes directory.
 require_once $test_root . '/includes/functions.php';

@@ -69,10 +69,10 @@ class Component_Tests extends Unit_Test_Case {
 		$tags = $this->component->template_tags();
 
 		$this->assertEqualSetsWithIndex(
-			[
+			array(
 				'get_version'       => array( $this->component, 'get_version' ),
 				'get_asset_version' => array( $this->component, 'get_asset_version' ),
-			],
+			),
 			$tags
 		);
 	}

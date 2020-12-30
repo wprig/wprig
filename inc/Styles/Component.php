@@ -88,9 +88,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return [
+		return array(
 			'print_styles' => array( $this, 'print_styles' ),
-		];
+		);
 	}
 
 	/**
@@ -199,10 +199,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function filter_resource_hints( array $urls, string $relation_type ) : array {
 		if ( 'preconnect' === $relation_type && wp_style_is( 'wp-rig-fonts', 'queue' ) ) {
-			$urls[] = [
+			$urls[] = array(
 				'href' => 'https://fonts.gstatic.com',
 				'crossorigin',
-			];
+			);
 		}
 
 		return $urls;
@@ -278,41 +278,41 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			return $this->css_files;
 		}
 
-		$css_files = [
-			'wp-rig-global'     => [
+		$css_files = array(
+			'wp-rig-global'     => array(
 				'file'   => 'global.min.css',
 				'global' => true,
-			],
-			'wp-rig-comments'   => [
+			),
+			'wp-rig-comments'   => array(
 				'file'             => 'comments.min.css',
 				'preload_callback' => function() {
 					return ! post_password_required() && is_singular() && ( comments_open() || get_comments_number() );
 				},
-			],
-			'wp-rig-content'    => [
+			),
+			'wp-rig-content'    => array(
 				'file'             => 'content.min.css',
 				'preload_callback' => '__return_true',
-			],
-			'wp-rig-sidebar'    => [
+			),
+			'wp-rig-sidebar'    => array(
 				'file'             => 'sidebar.min.css',
 				'preload_callback' => function() {
 					return wp_rig()->is_primary_sidebar_active();
 				},
-			],
-			'wp-rig-widgets'    => [
+			),
+			'wp-rig-widgets'    => array(
 				'file'             => 'widgets.min.css',
 				'preload_callback' => function() {
 					return wp_rig()->is_primary_sidebar_active();
 				},
-			],
-			'wp-rig-front-page' => [
+			),
+			'wp-rig-front-page' => array(
 				'file' => 'front-page.min.css',
 				'preload_callback' => function() {
 					global $template;
 					return 'front-page.php' === basename( $template );
 				},
-			],
-		];
+			),
+		);
 
 		/**
 		 * Filters default CSS files.
@@ -336,11 +336,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 
 			$this->css_files[ $handle ] = array_merge(
-				[
+				array(
 					'global'           => false,
 					'preload_callback' => null,
 					'media'            => 'all',
-				],
+				),
 				$data
 			);
 		}
@@ -358,10 +358,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			return $this->google_fonts;
 		}
 
-		$google_fonts = [
+		$google_fonts = array(
 			'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
 			'Crimson Text'     => array( '400', '400i', '600', '600i' ),
-		];
+		);
 
 		/**
 		 * Filters default Google Fonts.
@@ -402,10 +402,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$font_families[] = $font_name;
 		}
 
-		$query_args = [
+		$query_args = array(
 			'family'  => implode( '|', $font_families ),
 			'display' => 'swap',
-		];
+		);
 
 		return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
 	}

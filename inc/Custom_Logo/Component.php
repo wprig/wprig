@@ -43,12 +43,12 @@ class Component implements Component_Interface {
 			'custom-logo',
 			apply_filters(
 				'wp_rig_custom_logo_args',
-				[
+				array(
 					'height'      => 250,
 					'width'       => 250,
 					'flex-width'  => false,
 					'flex-height' => false,
-				]
+				)
 			)
 		);
 	}

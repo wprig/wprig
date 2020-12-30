@@ -56,7 +56,7 @@ class Component implements Component_Interface {
 		wp_enqueue_script(
 			'wp-rig-navigation',
 			get_theme_file_uri( '/assets/js/navigation.min.js' ),
-			[],
+			array(),
 			wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/navigation.min.js' ) ),
 			false
 		);
@@ -65,10 +65,10 @@ class Component implements Component_Interface {
 		wp_localize_script(
 			'wp-rig-navigation',
 			'wpRigScreenReaderText',
-			[
+			array(
 				'expand'   => __( 'Expand child menu', 'wp-rig' ),
 				'collapse' => __( 'Collapse child menu', 'wp-rig' ),
-			]
+			)
 		);
 	}
 

@@ -25,7 +25,7 @@ class Unit_Test_Case extends TestCase {
 
 		// We don't care about testing the following functions, so they should just be available.
 		Monkey\Functions\stubs(
-			[
+			array(
 				// With defined return value.
 				'get_template_directory'       => TESTS_THEME_DIR,
 				'get_stylesheet_directory'     => TESTS_THEME_DIR,
@@ -56,7 +56,7 @@ class Unit_Test_Case extends TestCase {
 				'_nx'                 => function( $single, $plural, $number ) {
 					return 1 === $number ? $single : $plural;
 				},
-			]
+			)
 		);
 	}
 

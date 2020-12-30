@@ -57,9 +57,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags() : array {
-		return [
+		return array(
 			'the_comments' => array( $this, 'the_comments' ),
-		];
+		);
 	}
 
 	/**
@@ -108,10 +108,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function the_comments( array $args = array() ) {
 		$args = array_merge(
 			$args,
-			[
+			array(
 				'style'      => 'ol',
 				'short_ping' => true,
-			]
+			)
 		);
 
 		$amp_live_list = wp_rig()->using_amp_live_list_comments();
