@@ -93,6 +93,9 @@ jobs:
     - name: "Unit tests - PHP 8.0"
     - name: "WP trunk - PHP 7.3"
 
+services:
+  - "mysql"
+
 cache:
   npm: true
   directories:
