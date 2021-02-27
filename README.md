@@ -32,6 +32,9 @@ WP Rig requires the following dependencies. Full installation instructions are p
 - [npm](https://www.npmjs.com/)
 - [Composer](https://getcomposer.org/) (installed globally)
 
+### WP Rig and child themes
+WP Rig is built to lay a solid theme foundation, which is great for a parent theme, but not for a child theme. A child theme is meant to only add on or modify the foundation. As such, WP Rig is not intended for making child themes to extend any themes, whether they were originally built with WP Rig or not.
+
 ### How to install WP Rig:
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
       - DO NOT give the WP Rig theme directory the same name as your eventual production theme. Suggested directory names are `wprig` or `wprig-themeslug`.  For instance if your theme will eventually be named “Excalibur” your development directory could be named `wprig-excalibur`. The `excalibur` directory will be automatically created during the production process and should not exist beforehand.
