@@ -55,6 +55,7 @@
     "gulp-rename": "^1.4.0",
     "gulp-sort": "^2.0.0",
     "gulp-string-replace": "^1.1.2",
+    "gulp-svg-sprite": "^1.5.0",
     "gulp-tabify": "0.0.2",
     "gulp-uglify": "^3.0.2",
     "gulp-wp-pot": "^2.3.5",
