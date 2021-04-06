@@ -23,8 +23,6 @@ import {cleanCSS, cleanJS} from './gulp/clean';
 
 /**
  * Map out the sequence of events on first load and make it the default task
- *
- * sprites is in series because it outputs to styles
  */
 export const firstRun = series(
     cleanCSS, cleanJS, parallel(php, images, sprites, series( styles, editorStyles ), scripts), serve, watch
