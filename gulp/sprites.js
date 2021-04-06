@@ -12,24 +12,24 @@ import pump from 'pump';
  */
 import { paths, gulpPlugins } from './constants';
 
-var config = {
+let config = {
 	shape: {
-		meta: paths.sprites.srcDir + '/meta.yaml'
+		meta: paths.sprites.srcDir + '/meta.yaml',
 	},
 	svg: {
 		xmlDeclaration: false,
 		doctypeDeclaration: false,
 		namespaceIDs: true,
-		namespaceIDPrefix: 'wprig'
+		namespaceIDPrefix: 'wprig',
 	},
 	mode: {
 		symbol: {
 			dest: '.',
 			sprite: 'sprite.svg.php',
 			inline: true,
-			render: {css: true}
-		}
-	}
+			render: { css: true, },
+		},
+	},
 };
 
 /**
@@ -41,7 +41,7 @@ export default function sprites( done ) {
 	return pump( [
 		src( paths.sprites.src ),
 		gulpPlugins.newer( paths.sprites.dest ),
-		gulpPlugins.svgSprite(config),
+		gulpPlugins.svgSprite( config ),
 		dest( paths.sprites.dest ),
 	], done );
 }
