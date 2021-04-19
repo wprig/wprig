@@ -173,6 +173,7 @@
 	margin-right: auto;
 }
 
+/* stylelint-disable */
 .alignwide {
 	max-width: calc(50% + var(--content-width) / 2);
 }
@@ -181,6 +182,7 @@
 	max-width: 100%;
 	padding: 0;
 }
+/* stylelint-ensable */
 
 .page-content > .alignleft,
 .entry-content > .alignleft,
