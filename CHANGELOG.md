@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.2
+## 2.0.3
 - Add Read More link to Recent Posts block. See [#714](https://github.com/wprig/wprig/issues/714). Props @dthenley
 
 ## 2.0.2
