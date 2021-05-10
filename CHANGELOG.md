@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2.0.2
+- Add Read More link to Recent Posts block. See [#714](https://github.com/wprig/wprig/issues/714). Props @dthenley
+
+## 2.0.2
 - Removed native lazy loading. WordPress 5.5 now handles that for us. See [#657](https://github.com/wprig/wprig/pull/657).  Props @robruiz.
 - Use long array syntax to be ready with upcoming changes in PHP Coding Standards. See [#557](https://github.com/wprig/wprig/pull/557). Props @benoitchantre.
 - Fix indentation for nested lists, reduce specificity. See [#490](https://github.com/wprig/wprig/pull/490). Props @benoitchantre.
