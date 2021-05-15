@@ -4,12 +4,7 @@
 # Typography
 --------------------------------------------------------------*/
 /* stylelint-disable */
-body,
-button,
-input,
-select,
-optgroup,
-textarea {
+body {
 	color: var(--global-font-color);
 	font-family: var(--global-font-family);
 	font-size: var(--font-size-regular);
