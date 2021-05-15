@@ -21,8 +21,12 @@
         "_custom-media.css"
       ],
       "features": {
-        "custom-media-queries": true,
-        "custom-properties": true,
+        "custom-media-queries": {
+          "preserve": false
+        },
+        "custom-properties": {
+          "preserve": true
+        },
         "nesting-rules": true
       }
     },
