@@ -18,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "WP_Rig\\WP_Rig\\": "inc"
+      "WP_Rig\\WP_Rig\\": "inc/"
     }
   },
   "scripts": {
@@ -34,6 +34,7 @@
       "@phpcs-dev"
     ],
     "phpunit-dev": "\"vendor/bin/phpunit\"",
-    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
+    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\"",
+    "phpstan": "\"vendor/bin/phpstan\" analyze"
   }
 }
