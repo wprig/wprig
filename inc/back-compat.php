@@ -22,7 +22,7 @@ function wp_rig_get_insufficient_requirements_message() {
 
 	if ( $insufficient_wp && $insufficient_php ) {
 		/* translators: 1: required WP version number, 2: required PHP version number, 3: available WP version number, 4: available PHP version number */
-		return sprintf( __( 'WP Rig requires at least WordPress version %1$s and PHP version %2$s. You are running versions %3$s and %3$s respectively. Please update and try again.', 'wp-rig' ), WP_RIG_MINIMUM_WP_VERSION, WP_RIG_MINIMUM_PHP_VERSION, $wp_version, phpversion() );
+		return sprintf( __( 'WP Rig requires at least WordPress version %1$s and PHP version %2$s. You are running versions %3$s and %4$s respectively. Please update and try again.', 'wp-rig' ), WP_RIG_MINIMUM_WP_VERSION, WP_RIG_MINIMUM_PHP_VERSION, $wp_version, phpversion() );
 	}
 
 	if ( $insufficient_wp ) {
