@@ -1,13 +1,10 @@
 # Changelog
 
-<<<<<<< Updated upstream
-=======
 ## 2.0.3
 
 -   Add Read More link to Recent Posts block. See [#714](https://github.com/wprig/wprig/issues/714). Props @dthenley
 -   Add padding to full width block content. See [#708](https://github.com/wprig/wprig/issues/708). Props @dthenley
 
->>>>>>> Stashed changes
 ## 2.0.2
 
 -   Removed native lazy loading. WordPress 5.5 now handles that for us. See [#657](https://github.com/wprig/wprig/pull/657). Props @robruiz.
