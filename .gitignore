@@ -14,6 +14,9 @@
 !/assets/images/
 /assets/images/*
 !/assets/images/src/
+!/assets/sprites
+/assets/sprites/*
+!/assets/sprites/src/
 !/languages/
 !gulp/
 !style.css
