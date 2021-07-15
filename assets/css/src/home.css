@@ -1,5 +1,7 @@
 /**
- * Custom styles for the front-page.php template.
+ * Custom styles for the front-page.php template, when front page is_home()
+ *
+ * Creates a grid layout for the blog index.
  */
 
 @media (--sidebar-query) {
