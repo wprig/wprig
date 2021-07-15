@@ -12,9 +12,11 @@ namespace WP_Rig\WP_Rig;
 get_header();
 
 // Use grid layout if blog index is displayed.
-if ( is_front_page() ) {
-	wp_rig()->print_styles( 'wp-rig-content', 'wp-rig-front-page' );
+if ( is_home() ) {
+	// The site's front page is also the blog home (i.e., blog index) page
+	wp_rig()->print_styles( 'wp-rig-content', 'wp-rig-home' );
 } else {
+	// Front page is set to a static page; use same styles as page.php
 	wp_rig()->print_styles( 'wp-rig-content' );
 }
 
