@@ -1,0 +1,5 @@
+
+contact_links:
+  - name: Ask a question
+    url: https://github.com/wprig/wprig/discussions/new
+    about: Ask and discuss questions with other Bootstrap community members
