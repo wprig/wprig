@@ -1,0 +1,19 @@
+{
+  "theme_name": "wp-rig",
+  "settings_id": "wp-rig_theme",
+  "sections": [
+    {
+      "id": "global",
+      "title": "WP Rig Settings",
+      "priority": 30
+    }
+  ],
+  "settings": [
+    {
+      "id": "ga_id",
+      "label": "Google Analytics ID",
+      "section": "global",
+      "refresh": false
+    }
+  ]
+}
