@@ -149,8 +149,9 @@ class Theme {
 			new Custom_Header\Component(),
 			new Custom_Logo\Component(),
 			new Post_Thumbnails\Component(),
-			new Customizer\Component(),
+			new EZ_Customizer\Component(),
 			new Styles\Component(),
+			new Excerpts\Component(),
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {
