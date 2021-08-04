@@ -13,7 +13,7 @@ use WP_Customize_Media_Control;
 use WP_Customize_control;
 use WP_Rig\WP_Rig\Component_Interface;
 use function add_action;
-use function get_theme_File_path;
+use function get_theme_file_path;
 
 /**
  * Class for managing Customizer integration.
