@@ -28,14 +28,14 @@ class Component implements Component_Interface {
 	public $theme_settings;
 
 	/**
-	 * wp_customize class instance.
+	 * The wp_customize class instance.
 	 *
 	 * @var $wp_customize object
 	 */
 	private $wp_customize;
 
 	/**
-	 * settings_id for set of settings.
+	 * The settings_id for set of settings.
 	 *
 	 * @var $settings_id string
 	 */
@@ -68,6 +68,8 @@ class Component implements Component_Interface {
 
 	/**
 	 * Triggers the registering of all sections and settings passed in from the JSON file.
+	 *
+	 * @var object $wp_customize WP_Customize main class
 	 */
 	public function ez_customizer_settings_register( $wp_customize ) {
 		$this->wp_customize = $wp_customize;
@@ -118,6 +120,8 @@ class Component implements Component_Interface {
 
 	/**
 	 * Changing some nomenclature to play nice with WP.
+	 *
+	 * @var array $setting Definition of setting values
 	 */
 	private function get_settings_args( $setting ) {
 		$setting_args = array();
@@ -134,6 +138,8 @@ class Component implements Component_Interface {
 
 	/**
 	 * Clean up the settings array a bit to keep things standard.
+	 *
+	 * @var array $setting Definition of setting values
 	 */
 	private function clean_setting_array( $setting ) {
 		unset( $setting['refresh'] );
@@ -143,6 +149,8 @@ class Component implements Component_Interface {
 
 	/**
 	 * Retrieve appropriate type control depending on the field type
+	 *
+	 * @var array $setting Definition of setting values
 	 */
 	private function get_type_control( $setting ) {
 		$control_id = $this->theme_settings['theme_name'] . '_theme_' . $setting['id'];
