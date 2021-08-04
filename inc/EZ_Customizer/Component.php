@@ -25,21 +25,21 @@ class Component implements Component_Interface {
 	 *
 	 * @var $theme_settings array
 	 */
-	public array $theme_settings;
+	public $theme_settings;
 
 	/**
 	 * wp_customize class instance.
 	 *
 	 * @var $wp_customize object
 	 */
-	private object $wp_customize;
+	private $wp_customize;
 
 	/**
 	 * settings_id for set of settings.
 	 *
 	 * @var $settings_id string
 	 */
-	private string $settings_id;
+	private $settings_id;
 
 	/**
 	 * Gets the unique identifier for the theme component.
