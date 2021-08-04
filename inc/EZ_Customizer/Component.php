@@ -20,8 +20,26 @@ use function get_theme_file_path;
  */
 class Component implements Component_Interface {
 
-	public $theme_settings;
-	private $wp_customize, $i18n, $settings_id;
+	/**
+	 * All theme settings - from JSON file.
+	 *
+	 * @var $theme_settings array
+	 */
+	public array $theme_settings;
+
+	/**
+	 * wp_customize class instance.
+	 *
+	 * @var $wp_customize object
+	 */
+	private object $wp_customize;
+
+	/**
+	 * settings_id for set of settings.
+	 *
+	 * @var $settings_id string
+	 */
+	private string $settings_id;
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -38,37 +56,47 @@ class Component implements Component_Interface {
 	public function initialize() {
 		$this->get_theme_settings_config();
 		$this->settings_id = $this->theme_settings['settings_id'];
-		$this->i18n = $this->theme_settings['settings_id'];
-		if ( isset( $this->theme_settings['i18n'] ) ) {
-			$this->i18n = $this->theme_settings['i18n'];
-		}
 		$this->hooks();
 	}
 
+	/**
+	 * Setup all hooks for the class
+	 */
 	private function hooks() {
 		add_action( 'customize_register', array( $this, 'ez_customizer_settings_register' ) );
 	}
 
+	/**
+	 * Triggers the registering of all sections and settings passed in from the JSON file.
+	 */
 	public function ez_customizer_settings_register( $wp_customize ) {
 		$this->wp_customize = $wp_customize;
 		$this->register_sections();
 		$this->add_settings();
 	}
 
+	/**
+	 * Retrieves the theme settings from the JSON file and stores them in class-level variable
+	 */
 	private function get_theme_settings_config() {
 		$theme_settings_json = file_get_contents( get_theme_file_path() . '/config/themeCustomizeSettings.json' );
 		$this->theme_settings = json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH );
 	}
 
+	/**
+	 * Registers all sections.
+	 */
 	private function register_sections() {
 		foreach ( $this->theme_settings['sections'] as $section ) {
 			$section_id = $this->settings_id . '_' . $section['id'] . '_section';
 			$section_args = $section;
-			$section_args['title'] = __( $section['title'], $this->i18n );
 			$this->wp_customize->add_section( $section_id, $section_args );
 		}
 	}
 
+	/**
+	 * Registers all settings.
+	 */
 	private function add_settings() {
 		foreach ( $this->theme_settings['settings'] as $setting ) {
 			$setting_args = $this->get_settings_args( $setting );
@@ -88,6 +116,9 @@ class Component implements Component_Interface {
 		}
 	}
 
+	/**
+	 * Changing some nomenclature to play nice with WP.
+	 */
 	private function get_settings_args( $setting ) {
 		$setting_args = array();
 		if ( isset( $setting['refresh'] ) && ! $setting['refresh'] ) {
@@ -101,12 +132,18 @@ class Component implements Component_Interface {
 		return $setting_args;
 	}
 
+	/**
+	 * Clean up the settings array a bit to keep things standard.
+	 */
 	private function clean_setting_array( $setting ) {
 		unset( $setting['refresh'] );
 		unset( $setting['default'] );
 		return $setting;
 	}
 
+	/**
+	 * Retrieve appropriate type control depending on the field type
+	 */
 	private function get_type_control( $setting ) {
 		$control_id = $this->theme_settings['theme_name'] . '_theme_' . $setting['id'];
 		/**
@@ -115,7 +152,6 @@ class Component implements Component_Interface {
 		 */
 		$args = $setting;
 		/* Altering values that we simplified for class instantiation where needed */
-		$args['label'] = __( $setting['label'], $this->i18n );
 		$args['section'] = $this->settings_id . '_' . $setting['section'] . '_section';
 		$args['settings'] = $setting['id'];
 
