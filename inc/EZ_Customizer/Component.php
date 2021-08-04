@@ -60,7 +60,7 @@ class Component implements Component_Interface {
 	}
 
 	/**
-	 * Setup all hooks for the class
+	 * Setup all hooks for the class.
 	 */
 	private function hooks() {
 		add_action( 'customize_register', array( $this, 'ez_customizer_settings_register' ) );
@@ -69,7 +69,7 @@ class Component implements Component_Interface {
 	/**
 	 * Triggers the registering of all sections and settings passed in from the JSON file.
 	 *
-	 * @param object $wp_customize WP_Customize main class
+	 * @param object $wp_customize WP_Customize main class.
 	 */
 	public function ez_customizer_settings_register( $wp_customize ) {
 		$this->wp_customize = $wp_customize;
@@ -78,7 +78,7 @@ class Component implements Component_Interface {
 	}
 
 	/**
-	 * Retrieves the theme settings from the JSON file and stores them in class-level variable
+	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
 	 */
 	private function get_theme_settings_config() {
 		$theme_settings_json = file_get_contents( get_theme_file_path() . '/config/themeCustomizeSettings.json' );
@@ -121,8 +121,8 @@ class Component implements Component_Interface {
 	/**
 	 * Changing some nomenclature to play nice with WP.
 	 *
-	 * @param array $setting Definition of setting values
-	 * @return array Definition of setting values
+	 * @param array $setting Definition of setting values.
+	 * @return array Definition of setting values.
 	 */
 	private function get_settings_args( array $setting ) {
 		$setting_args = array();
@@ -140,8 +140,8 @@ class Component implements Component_Interface {
 	/**
 	 * Clean up the settings array a bit to keep things standard.
 	 *
-	 * @param array $setting Definition of setting values
-	 * @return array Definition of setting values
+	 * @param array $setting Definition of setting values.
+	 * @return array Definition of setting values.
 	 */
 	private function clean_setting_array( array $setting ) {
 		unset( $setting['refresh'] );
@@ -150,19 +150,19 @@ class Component implements Component_Interface {
 	}
 
 	/**
-	 * Retrieve appropriate type control depending on the field type
+	 * Retrieve appropriate type control depending on the field type.
 	 *
-	 * @param array $setting Definition of setting values
-	 * @return object respective Control Object
+	 * @param array $setting Definition of setting values.
+	 * @return object respective Control Object.
 	 */
 	private function get_type_control( array $setting ) {
 		$control_id = $this->theme_settings['theme_name'] . '_theme_' . $setting['id'];
 		/**
 		 * Here we are basing our control args on the initial settings array
-		 * Refer to https://developer.wordpress.org/reference/classes/wp_customize_control/ for acceptable args
+		 * Refer to https://developer.wordpress.org/reference/classes/wp_customize_control/ for acceptable args.
 		 */
 		$args = $setting;
-		/* Altering values that we simplified for class instantiation where needed */
+		/* Altering values that we simplified for class instantiation where needed. */
 		$args['section'] = $this->settings_id . '_' . $setting['section'] . '_section';
 		$args['settings'] = $setting['id'];
 
