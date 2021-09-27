@@ -21,11 +21,32 @@ use function get_theme_file_path;
 class Component implements Component_Interface {
 
 	/**
-	 * All theme settings - from JSON file.
+	 * All theme settings.
+	 * 
+	 * @link https://developer.wordpress.org/themes/customize-api/customizer-objects/
+	 * @link https://github.com/robruiz/easy-customizer-settings-class
 	 *
 	 * @var $theme_settings array
 	 */
-	public $theme_settings;
+	public $theme_settings = array(
+		'theme_name' => 'wp-rig',
+		'settings_id' => 'wp-rig_theme',
+		'sections' => array(
+			array(
+				'id' => 'global',
+				'title' => 'WP Rig Settings',
+				'priority' => 30
+			)
+		), // end sections
+		'settings' => array(
+			array(
+				'id' => 'ga_id',
+				'label' => 'Google Analytics ID',
+				'section' => 'global',
+				'refresh' => false,
+			)
+		) // end settings
+	);
 
 	/**
 	 * The wp_customize class instance.
@@ -54,7 +75,6 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		$this->get_theme_settings_config();
 		$this->settings_id = $this->theme_settings['settings_id'];
 		$this->hooks();
 	}
@@ -75,14 +95,6 @@ class Component implements Component_Interface {
 		$this->wp_customize = $wp_customize;
 		$this->register_sections();
 		$this->add_settings();
-	}
-
-	/**
-	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
-	 */
-	private function get_theme_settings_config() {
-		$theme_settings_json = file_get_contents( get_theme_file_path() . '/config/themeCustomizeSettings.json' );
-		$this->theme_settings = json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH );
 	}
 
 	/**
