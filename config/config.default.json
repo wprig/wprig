@@ -12,6 +12,18 @@
       "bypassPort": "8181",
       "https": false
     },
+    "styles": {
+      "stage": 3,
+      "autoprefixer": {
+        "grid": false
+      },
+      "importFrom": ["_custom-media.css"],
+      "features": {
+        "custom-media-queries": true,
+        "custom-properties": true,
+        "nesting-rules": true
+      }
+    },
     "debug": {
       "styles": false,
       "scripts": false,
@@ -19,6 +31,15 @@
     }
   },
   "export": {
-    "compress": true
+    "compress": true,
+    "generatePotFile": true,
+    "filesToCopy": [
+      "LICENSE",
+      "readme.txt",
+      "screenshot.png",
+      "assets/css/vendor/**/*.css",
+      "assets/js/vendor/**/*.js",
+      "inc/EZ_Customizer/themeCustomizeSettings.json"
+    ]
   }
 }
