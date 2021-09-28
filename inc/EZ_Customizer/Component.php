@@ -81,7 +81,7 @@ class Component implements Component_Interface {
 	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
 	 */
 	private function get_theme_settings_config() {
-		$theme_settings_json = file_get_contents( get_theme_file_path() . '/config/themeCustomizeSettings.json' );
+		$theme_settings_json = file_get_contents( get_theme_file_path() . '/inc/EZ_Customizer/themeCustomizeSettings.json' );
 		$this->theme_settings = json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH );
 	}
 
