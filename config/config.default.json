@@ -17,9 +17,7 @@
       "autoprefixer": {
         "grid": false
       },
-      "importFrom": [
-        "_custom-media.css"
-      ],
+      "importFrom": ["_custom-media.css"],
       "features": {
         "custom-media-queries": true,
         "custom-properties": true,
@@ -40,7 +38,8 @@
       "readme.txt",
       "screenshot.png",
       "assets/css/vendor/**/*.css",
-      "assets/js/vendor/**/*.js"
+      "assets/js/vendor/**/*.js",
+      "inc/EZ_Customizer/themeCustomizeSettings.json"
     ]
   }
 }
