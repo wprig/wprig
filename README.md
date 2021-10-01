@@ -149,7 +149,7 @@ Configuring the behavior of WP Rig is done by editing `./config/config.json`. He
 Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`. Place local-only/untracked theme settings in `./config/config.local.json`. For example, if you want to set local information for BrowserSync.
 
 WP Rig ships with advanced features including:
-- Lazy-loading images
+- Easily add custom Customizer settings using .json file
 - Built-in support for the [official AMP plugin](https://wordpress.org/plugins/amp/)
 - Progressive loading of CSS
 - Modern CSS, custom properties (variables), autoprefixing, etc
