@@ -259,7 +259,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		if ( is_array( $this->js_files ) ) {
 			return $this->js_files;
 		}
-
+		// TODO: Dependencies and localize_scripts
 		$js_files = array(
 			'wp-rig-custom'     => array(
 				'file'   => 'custom.min.js',
