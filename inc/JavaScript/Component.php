@@ -50,6 +50,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * - 'async' (whether the file should be loaded asynchronously)
 	 * - 'defer' (whether the file should defer to be loaded)
 	 * - 'footer' (whether the file should be loaded in the footer)
+	 * - 'deps' (array of dependencies)
+	 * - 'localize' (array of variables to inject with wp_localize_scripts)
 	 * 
 	 * Not currently implemented
 	 * 'preload_callback'
@@ -121,9 +123,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			 * Enqueue global JavaScript files immediately and register the other ones for later use.
 			 */
 			if ( $data['global'] ) {
-				wp_enqueue_script( $handle, $src, array(), $version, $data['footer'] );
+				wp_enqueue_script( $handle, $src, $data['deps'], $version, $data['footer'] );
 			} else {
-				wp_register_script( $handle, $src, array(), $version, $data['footer'] );
+				wp_register_script( $handle, $src, $data['deps'], $version, $data['footer'] );
 			}
 
 			/**
@@ -134,6 +136,15 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 			if ( $data['defer'] ) {
 				wp_script_add_data( $handle, 'defer', true );
+			}
+
+			/**
+			 * wp_localize_scripts
+			 */
+			if ( $data['localize'] ) {
+				foreach ($data['localize'] as $object => $vars) {
+					wp_localize_script( $handle, $object, $vars);
+				}
 			}
 		}
 
@@ -185,7 +196,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Enqueues WordPress theme scripts for the editor.
-	 * FIXME: Find js editor solution.
+	 * TODO: Find js editor solution.
 	 */
 	// public function action_add_editor_styles() {}
 
@@ -259,7 +270,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		if ( is_array( $this->js_files ) ) {
 			return $this->js_files;
 		}
-		// TODO: Dependencies and localize_scripts
+
 		$js_files = array(
 			'wp-rig-custom'     => array(
 				'file'   => 'custom.min.js',
@@ -298,6 +309,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 					'async'            => true,
 					'defer'            => null,
 					'footer'           => false,
+					'deps'             => array(),
+					'localize'         => null,
+					// TODO: add preload call back to prevent registering
 					// 'preload_callback' => null,
 				),
 				$data
@@ -306,66 +320,4 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		return $this->js_files;
 	}
-
-	/**
-	 * Returns Google Fonts used in theme.
-	 * FIXME: maybe use for other JS resources
-	 * @return array Associative array of $font_name => $font_variants pairs.
-	 */
-	// protected function get_google_fonts() : array {
-	// 	if ( is_array( $this->google_fonts ) ) {
-	// 		return $this->google_fonts;
-	// 	}
-
-	// 	$google_fonts = array(
-	// 		'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
-	// 		'Crimson Text'     => array( '400', '400i', '600', '600i' ),
-	// 	);
-
-		/**
-		 * Filters default Google Fonts.
-		 *
-		 * @param array $google_fonts Associative array of $font_name => $font_variants pairs.
-		 */
-	// 	$this->google_fonts = (array) apply_filters( 'wp_rig_google_fonts', $google_fonts );
-
-	// 	return $this->google_fonts;
-	// }
-
-	/**
-	 * Returns the Google Fonts URL to use for enqueuing Google Fonts CSS.
-	 *
-	 * Uses `latin` subset by default. To use other subsets, add a `subset` key to $query_args and the desired value.
-	 *
-	 * @return string Google Fonts URL, or empty string if no Google Fonts should be used.
-	 */
-	// protected function get_google_fonts_url() : string {
-	// 	$google_fonts = $this->get_google_fonts();
-
-	// 	if ( empty( $google_fonts ) ) {
-	// 		return '';
-	// 	}
-
-	// 	$font_families = array();
-
-	// 	foreach ( $google_fonts as $font_name => $font_variants ) {
-	// 		if ( ! empty( $font_variants ) ) {
-	// 			if ( ! is_array( $font_variants ) ) {
-	// 				$font_variants = explode( ',', str_replace( ' ', '', $font_variants ) );
-	// 			}
-
-	// 			$font_families[] = $font_name . ':' . implode( ',', $font_variants );
-	// 			continue;
-	// 		}
-
-	// 		$font_families[] = $font_name;
-	// 	}
-
-	// 	$query_args = array(
-	// 		'family'  => implode( '|', $font_families ),
-	// 		'display' => 'swap',
-	// 	);
-
-	// 	return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
-	// }
 }
