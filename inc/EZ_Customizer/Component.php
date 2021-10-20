@@ -82,7 +82,7 @@ class Component implements Component_Interface {
 	 */
 	private function get_theme_settings_config() {
 		$theme_settings_json = file_get_contents( get_theme_file_path() . '/inc/EZ_Customizer/themeCustomizeSettings.json' );
-		$this->theme_settings = json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH );
+		$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
 	}
 
 	/**
