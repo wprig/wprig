@@ -20,19 +20,23 @@ use function _doing_it_wrong;
 use function esc_html;
 use function wp_print_scripts;
 use function apply_filters;
-/* Might not need - preload
-use function wp_scripts;
-use function esc_attr;
-use function esc_url;
-*\
 
-\* probably should implement to prevent loading on unauthorized pages
-use function post_password_required;
-*/
+/**
+ * Might not need - preload
+ * use function wp_scripts;
+ * use function esc_attr;
+ * use function esc_url;
+ */
 
-/* might not need - external resource
-use function add_query_arg;
-*/
+/**
+ * Probably should implement to prevent loading on unauthorized pages
+ * use function post_password_required;
+ */
+
+/**
+ * Might not need - external resource
+ * use function add_query_arg;
+ */
 
 /**
  * Class for managing javascript files.
@@ -52,7 +56,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * - 'footer' (whether the file should be loaded in the footer)
 	 * - 'deps' (array of dependencies)
 	 * - 'localize' (array of variables to inject with wp_localize_scripts)
-	 * 
+	 *
 	 * Not currently implemented
 	 * 'preload_callback'
 	 * (callback function determining whether the file should be preloaded for the current request).
@@ -80,13 +84,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		/**
 		 * Waiting to see if preload should be an option.
+		 * add_action( 'wp_head', array( $this, 'action_preload_scripts' ) );
 		 */
-		// add_action( 'wp_head', array( $this, 'action_preload_scripts' ) );
 
 		/**
 		 * No add_editor_scripts
+		 * add_action( 'after_setup_theme', array( $this, 'action_add_editor_styles' ) );
 		 */
-		// add_action( 'after_setup_theme', array( $this, 'action_add_editor_styles' ) );
 	}
 
 	/**
@@ -108,7 +112,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * JavaScript files that are global are enqueued. All other JavaScript files are only registered, to be enqueued later.
 	 */
 	public function action_enqueue_scripts() {
-
 		$js_uri = get_theme_file_uri( '/assets/js/' );
 		$js_dir = get_theme_file_path( '/assets/js/' );
 
@@ -139,20 +142,20 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 
 			/**
-			 * wp_localize_scripts
+			 *  Uses wp_localize_scripts
 			 */
 			if ( $data['localize'] ) {
-				foreach ($data['localize'] as $object => $vars) {
-					wp_localize_script( $handle, $object, $vars);
+				foreach ( $data['localize'] as $object => $vars ) {
+					wp_localize_script( $handle, $object, $vars );
 				}
 			}
 		}
-
 	}
 
+	// @codingStandardsIgnoreStart
 	/**
 	 * NOT CURRENTLY IN USE!!!
-	 * 
+	 *
 	 * Preloads in-body JavaScript files depending on what templates are being used.
 	 *
 	 * Only JavaScript files that have a 'preload_callback' provided will be considered. If that callback evaluates to true
@@ -162,36 +165,36 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	// public function action_preload_scripts() {
 
-	// 	// If preloading scripts is disabled, return early.
-	// 	if ( ! $this->preloading_scripts_enabled() ) {
-	// 		return;
-	// 	}
+	// If preloading scripts is disabled, return early.
+	// if ( ! $this->preloading_scripts_enabled() ) {
+	// return;
+	// }.
 
-	// 	$wp_scripts = wp_scripts();
+	// $wp_scripts = wp_scripts();
 
-	// 	$js_files = $this->get_js_files();
-	// 	foreach ( $js_files as $handle => $data ) {
+	// $js_files = $this->get_js_files();
+	// foreach ( $js_files as $handle => $data ) {
 
-	// 		// Skip if JS not registered.
-	// 		if ( ! isset( $wp_scripts->registered[ $handle ] ) ) {
-	// 			continue;
-	// 		}
+	// Skip if JS not registered.
+	// if ( ! isset( $wp_scripts->registered[ $handle ] ) ) {
+	// continue;
+	// }
 
-	// 		// Skip if no preload callback provided.
-	// 		if ( ! is_callable( $data['preload_callback'] ) ) {
-	// 			continue;
-	// 		}
+	// Skip if no preload callback provided.
+	// if ( ! is_callable( $data['preload_callback'] ) ) {
+	// continue;
+	// }
 
-	// 		// Skip if preloading is not necessary for this request.
-	// 		if ( ! call_user_func( $data['preload_callback'] ) ) {
-	// 			continue;
-	// 		}
+	// Skip if preloading is not necessary for this request.
+	// if ( ! call_user_func( $data['preload_callback'] ) ) {
+	// continue;
+	// }
 
-	// 		$preload_uri = $wp_scripts->registered[ $handle ]->src . '?ver=' . $wp_scripts->registered[ $handle ]->ver;
+	// $preload_uri = $wp_scripts->registered[ $handle ]->src . '?ver=' . $wp_scripts->registered[ $handle ]->ver;
 
-	// 		echo '<script rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $preload_uri ) . '" as="script" type="text/javascript></script>';
-	// 		echo "\n";
-	// 	}
+	// echo '<script rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $preload_uri ) . '" as="script" type="text/javascript></script>';
+	// echo "\n";
+	// }
 	// }
 
 	/**
@@ -199,6 +202,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * TODO: Find js editor solution.
 	 */
 	// public function action_add_editor_styles() {}
+	// @codingStandardsIgnoreEnd
 
 	/**
 	 * Prints JavaScript <script> tags directly.
@@ -213,16 +217,15 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param string ...$handles One or more JavaScript file handles.
 	 */
 	public function print_scripts( string ...$handles ) {
-
 		// If preloading scripts is disabled (and thus they have already been enqueued), return early.
 		if ( ! $this->preloading_scripts_enabled() ) {
 			return;
 		}
 
 		$js_files = $this->get_js_files();
-		$handles   = array_filter(
+		$handles  = array_filter(
 			$handles,
-			function( $handle ) use ( $js_files ) {
+			function ( $handle ) use ( $js_files ) {
 				$is_valid = isset( $js_files[ $handle ] ) && ! $js_files[ $handle ]['global'];
 				if ( ! $is_valid ) {
 					/* translators: %s: JS handle */
@@ -272,11 +275,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		$js_files = array(
-			'wp-rig-custom'     => array(
+			'wp-rig-custom' => array(
 				'file'   => 'custom.min.js',
 				'global' => false,
 			),
-			'wp-rig-global'     => array(
+			'wp-rig-global' => array(
 				'file'   => 'global.min.js',
 				'global' => true,
 			),
@@ -305,14 +308,14 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 			$this->js_files[ $handle ] = array_merge(
 				array(
-					'global'           => false,
-					'async'            => true,
-					'defer'            => null,
-					'footer'           => false,
-					'deps'             => array(),
-					'localize'         => null,
+					'global'   => false,
+					'async'    => true,
+					'defer'    => null,
+					'footer'   => false,
+					'deps'     => array(),
+					'localize' => null,
 					// TODO: add preload call back to prevent registering
-					// 'preload_callback' => null,
+					// 'preload_callback' => null.
 				),
 				$data
 			);
