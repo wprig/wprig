@@ -81,8 +81,8 @@ class Component implements Component_Interface {
 	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
 	 */
 	private function get_theme_settings_config() {
-		$theme_settings_json = file_get_contents( get_theme_file_path() . '/inc/EZ_Customizer/themeCustomizeSettings.json' );
-		$this->theme_settings = json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH );
+		$theme_settings_json  = file_get_contents( get_theme_file_path() . '/inc/EZ_Customizer/themeCustomizeSettings.json' );
+		$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
 	}
 
 	/**
@@ -90,7 +90,7 @@ class Component implements Component_Interface {
 	 */
 	private function register_sections() {
 		foreach ( $this->theme_settings['sections'] as $section ) {
-			$section_id = $this->settings_id . '_' . $section['id'] . '_section';
+			$section_id   = $this->settings_id . '_' . $section['id'] . '_section';
 			$section_args = $section;
 			$this->wp_customize->add_section( $section_id, $section_args );
 		}
@@ -102,13 +102,13 @@ class Component implements Component_Interface {
 	private function add_settings() {
 		foreach ( $this->theme_settings['settings'] as $setting ) {
 			$setting_args = $this->get_settings_args( $setting );
-			$setting = $this->clean_setting_array( $setting );
+			$setting      = $this->clean_setting_array( $setting );
 			$this->wp_customize->add_setting( $setting['id'], $setting_args );
 
 			if ( ! isset( $setting['type'] ) ) {
 				$control = array(
-					'id' => $this->theme_settings['theme_name'] . '_theme_' . $setting['id'],
-					'label' => $setting['label'],
+					'id'      => $this->theme_settings['theme_name'] . '_theme_' . $setting['id'],
+					'label'   => $setting['label'],
 					'section' => $args['section'] = $this->settings_id . '_' . $setting['section'] . '_section',
 				);
 				$this->wp_customize->add_control( $setting['id'], $control );
@@ -163,7 +163,7 @@ class Component implements Component_Interface {
 		 */
 		$args = $setting;
 		/* Altering values that we simplified for class instantiation where needed. */
-		$args['section'] = $this->settings_id . '_' . $setting['section'] . '_section';
+		$args['section']  = $this->settings_id . '_' . $setting['section'] . '_section';
 		$args['settings'] = $setting['id'];
 
 		switch ( $setting['type'] ) {
