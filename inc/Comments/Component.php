@@ -28,8 +28,6 @@ use function esc_html_e;
  *
  * Exposes template tags:
  * * `wp_rig()->the_comments( array $args = array() )`
- *
- * @link https://wordpress.org/plugins/amp/
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
@@ -67,11 +65,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function action_enqueue_comment_reply_script() {
 
-		// If the AMP plugin is active, return early.
-		if ( wp_rig()->is_amp() ) {
-			return;
-		}
-
 		// Enqueue comment script on singular post/page views only.
 		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 			wp_enqueue_script( 'comment-reply' );
@@ -99,8 +92,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Displays the list of comments for the current post.
 	 *
 	 * Internally this method calls `wp_list_comments()`. However, in addition to that it will render the wrapping
-	 * element for the list, so that must not be added manually. The method will also take care of generating the
-	 * necessary markup if amp-live-list should be used for comments.
+	 * element for the list, so that must not be added manually.
 	 *
 	 * @param array $args Optional. Array of arguments. See `wp_list_comments()` documentation for a list of supported
 	 *                    arguments.
@@ -114,56 +106,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			)
 		);
 
-		$amp_live_list = wp_rig()->using_amp_live_list_comments();
-
-		if ( $amp_live_list ) {
-			$comment_order     = get_option( 'comment_order' );
-			$comments_per_page = get_option( 'page_comments' ) ? (int) get_option( 'comments_per_page' ) : 10000;
-			$poll_inverval     = MINUTE_IN_SECONDS * 1000;
-
-			?>
-			<amp-live-list
-				id="amp-live-comments-list-<?php the_ID(); ?>"
-				<?php echo ( 'asc' === $comment_order ) ? ' sort="ascending" ' : ''; ?>
-				data-poll-interval="<?php echo esc_attr( $poll_inverval ); ?>"
-				data-max-items-per-page="<?php echo esc_attr( $comments_per_page ); ?>"
-			>
-			<?php
-
-			add_filter( 'navigation_markup_template', array( $this, 'filter_add_amp_live_list_pagination_attribute' ) );
-		}
-
 		?>
-		<ol class="comment-list"<?php echo $amp_live_list ? ' items' : ''; ?>>
+		<ol class="comment-list">
 			<?php wp_list_comments( $args ); ?>
 		</ol><!-- .comment-list -->
 		<?php
 
 		the_comments_navigation();
-
-		if ( $amp_live_list ) {
-			remove_filter( 'navigation_markup_template', array( $this, 'filter_add_amp_live_list_pagination_attribute' ) );
-
-			?>
-				<div update>
-					<button class="button" on="tap:amp-live-comments-list-<?php the_ID(); ?>.update"><?php esc_html_e( 'New comment(s)', 'wp-rig' ); ?></button>
-				</div>
-			</amp-live-list>
-			<?php
-		}
-	}
-
-	/**
-	 * Adds a pagination reference point attribute for amp-live-list when theme supports AMP.
-	 *
-	 * This is used by the navigation_markup_template filter in the comments template.
-	 *
-	 * @link https://www.ampproject.org/docs/reference/components/amp-live-list#pagination
-	 *
-	 * @param string $markup Navigation markup.
-	 * @return string Filtered markup.
-	 */
-	public function filter_add_amp_live_list_pagination_attribute( string $markup ) : string {
-		return preg_replace( '/(\s*<[a-z0-9_-]+)/i', '$1 pagination ', $markup, 1 );
 	}
 }

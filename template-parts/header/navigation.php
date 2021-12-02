@@ -13,39 +13,9 @@ if ( ! wp_rig()->is_primary_nav_menu_active() ) {
 
 ?>
 
-<nav id="site-navigation" class="main-navigation nav--toggle-sub nav--toggle-small" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
-	<?php
-	if ( wp_rig()->is_amp() ) {
-		?>
-		[class]=" siteNavigationMenu.expanded ? 'main-navigation nav--toggle-sub nav--toggle-small nav--toggled-on' : 'main-navigation nav--toggle-sub nav--toggle-small' "
-		<?php
-	}
-	?>
->
-	<?php
-	if ( wp_rig()->is_amp() ) {
-		?>
-		<amp-state id="siteNavigationMenu">
-			<script type="application/json">
-				{
-					"expanded": false
-				}
-			</script>
-		</amp-state>
-		<?php
-	}
-	?>
+<nav id="site-navigation" class="main-navigation nav--toggle-sub nav--toggle-small" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>">
 
-	<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Open menu', 'wp-rig' ); ?>" aria-controls="primary-menu" aria-expanded="false"
-		<?php
-		if ( wp_rig()->is_amp() ) {
-			?>
-			on="tap:AMP.setState( { siteNavigationMenu: { expanded: ! siteNavigationMenu.expanded } } )"
-			[aria-expanded]="siteNavigationMenu.expanded ? 'true' : 'false'"
-			<?php
-		}
-		?>
-	>
+	<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Open menu', 'wp-rig' ); ?>" aria-controls="primary-menu" aria-expanded="false">
 		<?php esc_html_e( 'Menu', 'wp-rig' ); ?>
 	</button>
 

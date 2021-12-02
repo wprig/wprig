@@ -77,7 +77,6 @@
 }
 
 @media (--sidebar-query) {
-
 	.has-sidebar .site {
 		margin: 0 1em;
 		display: grid;
@@ -269,14 +268,12 @@ select {
 }
 
 @media (--narrow-menu-query) {
-
 	.nav--toggle-small.nav--toggled-on .menu {
 		display: block;
 	}
 }
 
 @media (--wide-menu-query) {
-
 	.nav--toggle-small .menu-toggle {
 		display: none;
 	}
@@ -363,7 +360,7 @@ select {
 	/*
 	 * "focus-within" is an alternative to focus class for
 	 * supporting browsers (all but IE/Edge) for no-JS context
-	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+	 * See https://caniuse.com/#feat=css-focus-within
 	 *
 	 * This selector needs to stay separated, otherwise submenus
 	 * will not be displayed with IE/Edge.
@@ -415,7 +412,6 @@ select {
 }
 
 @media (--wide-menu-query) {
-
 	.main-navigation ul li a {
 		padding: 0.4em 0.5em;
 	}
@@ -474,7 +470,6 @@ select {
 }
 
 @media (--content-query) {
-
 	.site-main .comment-navigation,
 	.site-main .posts-navigation,
 	.site-main .post-navigation,
@@ -585,7 +580,6 @@ select {
 .infinite-scroll .posts-navigation,
 .infinite-scroll .pagination,
 .infinite-scroll.neverending .site-footer {
-
 	/* Theme Footer (when set to scrolling) */
 	display: none;
 }
