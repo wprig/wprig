@@ -257,77 +257,12 @@ select {
 	border: 2px solid var(--border-color-dark);
 	border-radius: 0;
 	background: transparent;
-
-	&.icon {
-		border:none;
-		position: absolute;
-		top: 40px;
-		left: 5px;
-		display:none;
-
-		@media screen and (max-width: 600px){
-			display:block;
-		}
-
-		& .dashicons-menu-alt:before {
-			font-size: 40px;
-		}
-	}
-
-}
-.nav--toggle-small {
-	& .menu {
-		display: none;
-	}
-	&.nav--toggled-on {
-		& .menu {
-			display: block;
-		}
-		@media screen and (min-width: 600px) {
-			& .menu {
-				display: flex;
-				justify-content: center;
-			}
-		}
-	}
-	&.icon-nav {
-		& .menu {
-			display: block;
-		}
-		@media screen and (min-width: 600px) {
-			& .menu {
-				display: flex;
-				justify-content: center;
-			}
-		}
-		@media screen and (max-width:600px) {
-			& .primary-menu-container {
-				position: absolute;
-				background: white;
-				width: 100vw;
-				top: 300px;
-				left: 0;
-				height: 100vh;
-				padding: 20px 30px;
-				opacity: 0;
-				transition: opacity .3s, top .3s ease-out;
-			}
-			&.nav--toggled-on {
-				& .menu-toggle span.dashicons:before {
-					content: "\f158";
-				}
-				& .primary-menu-container {
-					top: 180px;
-					opacity: 1;
-					transition: opacity .3s, top .3s ease-out;
-				}
-			}
-		}
-
-	}
 }
 
-.nav--toggle-small,
+.nav--toggle-small .menu {
+	display: none;
+}
+
 .nav--toggle-sub .dropdown,
 .nav--toggle-sub .dropdown-toggle {
 	display: none;
