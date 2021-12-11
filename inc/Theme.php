@@ -152,6 +152,7 @@ class Theme {
 			new EZ_Customizer\Component(),
 			new Styles\Component(),
 			new Excerpts\Component(),
+			new JavaScript\Component(),
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {
