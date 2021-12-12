@@ -19,9 +19,9 @@ class Unit_Test_Case extends TestCase {
 	/**
 	 * Sets up the environment before each test.
 	 */
-	protected function setUp() {
-		parent::setUp();
-		Monkey\setUp();
+	protected function set_up() {
+		parent::set_up();
+		Monkey\set_up();
 
 		// We don't care about testing the following functions, so they should just be available.
 		Monkey\Functions\stubs(
