@@ -52,7 +52,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$this->hooks();
 	}
 
-	public function hooks(){
+	public function hooks() {
 		add_action( 'after_setup_theme', array( $this, 'action_register_nav_menus' ) );
 		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_primary_nav_menu_dropdown_symbol' ), 10, 4 );
 		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ), 10, 1 );
@@ -159,7 +159,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *                    arguments.
 	 */
 	public function customize_mobile_menu_toggle( $menu_toggle_button ) {
-		$menu_toggle_button = '<button class="menu-toggle icon" aria-label="'. esc_html__( 'Open menu', 'wp-rig' ).'" aria-controls="primary-menu" aria-expanded="false">
+		$menu_toggle_button = '<button class="menu-toggle icon" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
 					<span class="dashicons dashicons-menu-alt"></span>
 					</button>';
 		return $menu_toggle_button;
