@@ -258,6 +258,7 @@ select {
 	border-radius: 0;
 	background: transparent;
 
+
 	&.icon {
 		border:none;
 		position: absolute;
