@@ -172,6 +172,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string Mobile Nav Toggle classes.
 	 */
 	public function customize_mobile_menu_nav_classes() {
-		return 'main-navigation nav--toggle-sub nav--toggle-small icon-nav';
+		return esc_html__( 'main-navigation nav--toggle-sub nav--toggle-small icon-nav', 'wp-rig' );
 	}
 }
