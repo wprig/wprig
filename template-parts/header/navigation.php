@@ -13,7 +13,7 @@ if ( ! wp_rig()->is_primary_nav_menu_active() ) {
 
 ?>
 
-<nav id="<?php echo esc_attr__( apply_filters( 'wp_rig_site_navigation_id', 'site-navigation' ), 'wp-rig' ); ?>" class="<?php echo esc_attr__( apply_filters( 'wp_rig_site_navigation_classes', 'main-navigation nav--toggle-sub nav--toggle-small' ), 'wp-rig' ); ?>" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
+<nav id="<?php echo  apply_filters( 'wp_rig_site_navigation_id', esc_attr__('site-navigation', 'wp-rig' ) ); ?>" class="<?php echo apply_filters( 'wp_rig_site_navigation_classes', esc_attr__( 'main-navigation nav--toggle-sub nav--toggle-small', 'wp-rig' ) ); ?>" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
 	<?php
 	if ( wp_rig()->is_amp() ) {
 		?>
@@ -43,7 +43,7 @@ if ( ! wp_rig()->is_primary_nav_menu_active() ) {
 	$menu_toggle_button = apply_filters( 'wp_rig_menu_toggle_button', $menu_toggle_button );
 	?>
 
-	<?php echo esc_html__( $menu_toggle_button ); ?>
+	<?php echo $menu_toggle_button; ?>
 
 	<div class="primary-menu-container">
 		<?php wp_rig()->display_primary_nav_menu( array( 'menu_id' => 'primary-menu' ) ); ?>
