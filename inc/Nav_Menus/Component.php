@@ -52,11 +52,14 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$this->hooks();
 	}
 
+	/**
+	 * Setup all hooks for the class.
+	 */
 	public function hooks() {
 		add_action( 'after_setup_theme', array( $this, 'action_register_nav_menus' ) );
 		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_primary_nav_menu_dropdown_symbol' ), 10, 4 );
-		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ), 10, 1 );
-		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ), 10, 1 );
+		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ) );
+		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ) );
 	}
 
 	/**
@@ -155,24 +158,20 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	/**
 	 * Displays the primary navigation menu.
 	 *
-	 * @param array $args Optional. Array of arguments. See `wp_nav_menu()` documentation for a list of supported
-	 *                    arguments.
+	 * @return string Mobile Nav Toggle HTML.
 	 */
-	public function customize_mobile_menu_toggle( $menu_toggle_button ) {
-		$menu_toggle_button = '<button class="menu-toggle icon" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
+	public function customize_mobile_menu_toggle() {
+		return '<button class="menu-toggle icon" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
 					<span class="dashicons dashicons-menu-alt"></span>
 					</button>';
-		return $menu_toggle_button;
 	}
 
 	/**
 	 * Displays the primary navigation menu.
 	 *
-	 * @param array $args Optional. Array of arguments. See `wp_nav_menu()` documentation for a list of supported
-	 *                    arguments.
+	 * @return string Mobile Nav Toggle classes.
 	 */
-	public function customize_mobile_menu_nav_classes( $menu_nav_classes ) {
-		$menu_nav_classes = 'main-navigation nav--toggle-sub nav--toggle-small icon-nav';
-		return $menu_nav_classes;
+	public function customize_mobile_menu_nav_classes() {
+		return 'main-navigation nav--toggle-sub nav--toggle-small icon-nav';
 	}
 }
