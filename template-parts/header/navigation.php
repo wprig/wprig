@@ -13,7 +13,7 @@ if ( ! wp_rig()->is_primary_nav_menu_active() ) {
 
 ?>
 
-<nav id="site-navigation" class="main-navigation nav--toggle-sub nav--toggle-small" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
+<nav id="<?php echo apply_filters( 'wp_rig_site_navigation_id', 'site-navigation' ); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>" class="<?php echo apply_filters( 'wp_rig_site_navigation_classes', 'main-navigation nav--toggle-sub nav--toggle-small' ); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>"
 	<?php
 	if ( wp_rig()->is_amp() ) {
 		?>
@@ -36,18 +36,14 @@ if ( ! wp_rig()->is_primary_nav_menu_active() ) {
 	}
 	?>
 
-	<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Open menu', 'wp-rig' ); ?>" aria-controls="primary-menu" aria-expanded="false"
-		<?php
-		if ( wp_rig()->is_amp() ) {
-			?>
-			on="tap:AMP.setState( { siteNavigationMenu: { expanded: ! siteNavigationMenu.expanded } } )"
-			[aria-expanded]="siteNavigationMenu.expanded ? 'true' : 'false'"
-			<?php
-		}
-		?>
-	>
-		<?php esc_html_e( 'Menu', 'wp-rig' ); ?>
-	</button>
+	<?php
+	$menu_toggle_button = '<button class="menu-toggle" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
+					' . esc_html__( 'Menu', 'wp-rig' ) . '
+					</button>';
+	$menu_toggle_button = apply_filters( 'wp_rig_menu_toggle_button', $menu_toggle_button );
+	?>
+
+	<?php echo $menu_toggle_button; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
 
 	<div class="primary-menu-container">
 		<?php wp_rig()->display_primary_nav_menu( array( 'menu_id' => 'primary-menu' ) ); ?>

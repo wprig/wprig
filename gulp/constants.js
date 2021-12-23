@@ -46,10 +46,14 @@ export const PHPCSOptions = {
 
 // Theme config name fields and their defaults
 export const nameFieldDefaults = {
-	author: 'The WP Rig Contributors',
 	PHPNamespace: 'WP_Rig\\WP_Rig',
 	slug: 'wp-rig',
 	name: 'WP Rig',
+	theme_uri: 'https://github.com/wprig/wprig/',
+	author: 'The WP Rig Contributors',
+	author_uri: 'https://wprig.io/',
+	description: 'A progressive theme development rig for WordPress.',
+	version: '2.0.1',
 	underscoreCase: 'wp_rig',
 	constant: 'WP_RIG',
 	camelCase: 'WpRig',
