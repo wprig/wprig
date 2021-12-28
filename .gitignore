@@ -13,6 +13,8 @@
 !/assets/js/vendor/
 !/assets/images/
 /assets/images/*
+!/assets/svg/
+!/assets/svg/*
 !/assets/images/src/
 !/languages/
 !gulp/
