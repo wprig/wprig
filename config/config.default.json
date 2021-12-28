@@ -40,7 +40,8 @@
       "readme.txt",
       "screenshot.png",
       "assets/css/vendor/**/*.css",
-      "assets/js/vendor/**/*.js"
+      "assets/js/vendor/**/*.js",
+      "inc/EZ_Customizer/themeCustomizeSettings.json"
     ]
   }
 }
