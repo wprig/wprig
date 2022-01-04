@@ -9,9 +9,13 @@
 	--content-width: 45rem;
 	--dropdown-symbol-width: 0.7em;
 
+	/* for JS cleanup */
+	--narrow-menu-query-break-point: 37.5em;
+
 	/* Typography */
 	--global-font-family: "Crimson Text", serif;
-	--highlight-font-family: "Roboto Condensed", "Helvetica Neue", "Arial Narrow", sans-serif;
+	--highlight-font-family: "Roboto Condensed", "Helvetica Neue",
+		"Arial Narrow", sans-serif;
 	--global-font-size: 20;
 	--global-font-line-height: 1.4;
 
