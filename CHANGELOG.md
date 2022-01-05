@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.1
+-   Change Sidebar screen reader text. see [#761](https://github.com/wprig/wprig/issues/761)
+
 ## 2.2.0
 -   Enhanced Mobile Navigation System and new default mobile nav. Props @robruiz
 -   Add new Javascript component for managing JS enqueues. Props @Spleeding1
