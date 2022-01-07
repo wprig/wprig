@@ -1,11 +1,11 @@
 <?php
 /**
- * WP_Rig\WP_Rig\JavaScript\Component class
+ * WP_Rig\WP_Rig\Scripts\Component class
  *
  * @package wp_rig
  */
 
-namespace WP_Rig\WP_Rig\JavaScript;
+namespace WP_Rig\WP_Rig\Scripts;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
