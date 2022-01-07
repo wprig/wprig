@@ -87,12 +87,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$js_uri = get_theme_file_uri( '/assets/js/' );
 		$js_dir = get_theme_file_path( '/assets/js/' );
 
-
 		$js_files = $this->get_js_files();
 		foreach ( $js_files as $handle => $data ) {
 			$src     = $js_uri . $data['file'];
 			$version = wp_rig()->get_asset_version( $js_dir . $data['file'] );
-
 
 			/*
 			 * Enqueue global JavaScript files immediately and register the other ones for later use.
