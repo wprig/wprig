@@ -34,8 +34,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * $data must be an array with keys:
 	 * - 'file' (file path relative to 'assets/js' directory) - required
 	 * - 'global' (whether the file should immediately be enqueued instead of just being registered)
-	 * - 'async' (whether the file should be loaded asynchronously)
-	 * - 'defer' (whether the file should defer to be loaded)
+	 * - 'loading' (whether the file should be loaded 'async' or 'defer')
 	 * - 'footer' (whether the file should be loaded in the footer)
 	 * - 'deps' (array of dependencies)
 	 * - 'localize' (array of variables to inject with wp_localize_scripts)
@@ -107,10 +106,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			/**
 			 * Set async and deferred attributes.
 			 */
-			if ( $data['async'] ) {
+			if ( 'async' === $data['loading'] ) {
 				wp_script_add_data( $handle, 'async', true );
 			}
-			if ( $data['defer'] ) {
+			if ( 'defer' === $data['loading'] ) {
 				wp_script_add_data( $handle, 'defer', true );
 			}
 
@@ -173,8 +172,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		$js_files = array(
 			'wp-rig-custom' => array(
-				'file'   => 'custom.min.js',
-				'global' => false,
+				'file'    => 'custom.min.js',
+				'loading' => 'defer',
+				'global'  => false,
 			),
 			'wp-rig-global' => array(
 				'file'   => 'global.min.js',
@@ -206,8 +206,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$this->js_files[ $handle ] = array_merge(
 				array(
 					'global'   => false,
-					'async'    => true,
-					'defer'    => null,
+					'loading'  => null,
 					'footer'   => false,
 					'deps'     => array(),
 					'localize' => null,
