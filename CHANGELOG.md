@@ -1,7 +1,9 @@
 # Changelog
 
-## 2.2.0
+## 2.2.1
+-   Update Javascript Component. Props @dthenley
 
+## 2.2.0
 -   Enhanced Mobile Navigation System and new default mobile nav. Props @robruiz
 -   Add new Javascript component for managing JS enqueues. Props @Spleeding1
 

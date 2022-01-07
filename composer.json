@@ -9,7 +9,8 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
     "phpunit/phpunit": "^6",
     "brain/monkey": "^2",
-    "phpcompatibility/php-compatibility": "^9"
+    "phpcompatibility/php-compatibility": "^9",
+    "yoast/phpunit-polyfills": "^1.0"
   },
   "config": {
     "platform": {
