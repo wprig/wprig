@@ -1,8 +1,10 @@
 # Changelog
 
 ## 2.2.0
+
 -   Enhanced Mobile Navigation System and new default mobile nav. Props @robruiz
 -   Add new Javascript component for managing JS enqueues. Props @Spleeding1
+-   Integrate wp-prettier for formatting .js files. Props @Spleeding1
 
 ## 2.1.0
 

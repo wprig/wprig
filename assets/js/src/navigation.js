@@ -101,10 +101,9 @@ function initEachNavToggleSubmenu(nav) {
 
 		// When we focus on a menu link, make sure all siblings are closed.
 		parentMenuItem.querySelector("a").addEventListener("focus", (e) => {
-			const parentMenuItemsToggled =
-				e.target.parentNode.parentNode.querySelectorAll(
-					"li.menu-item--toggled-on"
-				);
+			const parentMenuItemsToggled = e.target.parentNode.parentNode.querySelectorAll(
+				"li.menu-item--toggled-on"
+			);
 			for (let j = 0; j < parentMenuItemsToggled.length; j++) {
 				toggleSubMenu(parentMenuItemsToggled[j], false);
 			}
@@ -242,10 +241,9 @@ function toggleSubMenu(parentMenuItem, forceToggle) {
 		}
 	} else {
 		// Make sure siblings are closed.
-		const parentMenuItemsToggled =
-			parentMenuItem.parentNode.querySelectorAll(
-				"li.menu-item--toggled-on"
-			);
+		const parentMenuItemsToggled = parentMenuItem.parentNode.querySelectorAll(
+			"li.menu-item--toggled-on"
+		);
 		for (let i = 0; i < parentMenuItemsToggled.length; i++) {
 			toggleSubMenu(parentMenuItemsToggled[i], false);
 		}
