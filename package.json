@@ -18,6 +18,7 @@
     "@babel/preset-env": "^7.5.4",
     "@babel/register": "^7.4.4",
     "@wordpress/eslint-plugin": "^2.3.0",
+    "@wordpress/prettier-config": "^1.1.1",
     "ajv": "^6.10.1",
     "ansi-colors": "^4.1.1",
     "autoprefixer": "^9.6.1",
@@ -120,6 +121,7 @@
     "test:gulp": "run-s test:gulp:dev test:gulp:prod",
     "lint": "eslint assets/js/src/",
     "lint:gulp": "eslint gulp/",
-    "lint:gulp:fix": "eslint --fix gulp/"
+    "lint:gulp:fix": "eslint --fix gulp/",
+    "js:fix": "npx prettier --write --paren-spacing assets/js/src/*.js"
   }
 }
