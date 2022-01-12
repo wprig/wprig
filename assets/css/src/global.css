@@ -620,7 +620,7 @@ select {
 			transform: rotate(-45deg);
 		}
 
-		&.colapse-menu .dropdown-symbol {
+		&.collapse-menu .dropdown-symbol {
 			transform: rotate(135deg);
 		}
 	}
@@ -635,7 +635,7 @@ select {
 		border-left: 1px solid var(--submenu-border-color);
 	}
 
-	.main-navigation.nav--mobile-menu .dropdown-toggle.colapse-menu {
+	.main-navigation.nav--mobile-menu .dropdown-toggle.collapse-menu {
 		border-left: none;
 		border-right: 1px solid var(--submenu-border-color);
 

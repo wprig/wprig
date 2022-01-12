@@ -66,8 +66,12 @@ class Component implements Component_Interface {
 			'wp-rig-navigation',
 			'wpRigScreenReaderText',
 			array(
-				'expand'   => __( 'Expand child menu', 'wp-rig' ),
-				'collapse' => __( 'Collapse child menu', 'wp-rig' ),
+				'expand'          => __( 'Expand menu', 'wp-rig' ),
+				'collapse'        => __( 'Collapse menu', 'wp-rig' ),
+				'expandPrimary'   => __( 'Expand child menu', 'wp-rig' ),
+				'collapsePrimary' => __( 'Collapse child menu', 'wp-rig' ),
+				'expandChild'     => __( 'Expand child menu', 'wp-rig' ),
+				'collapseChild'   => __( 'Collapse child menu', 'wp-rig' ),
 			)
 		);
 	}
