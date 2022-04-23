@@ -1,9 +1,13 @@
 {
   "theme": {
+    "PHPNamespace": "WP_Rig\\WP_Rig",
     "slug": "wp-rig",
     "name": "WP Rig",
+    "theme_uri": "https://github.com/wprig/wprig/",
     "author": "The WP Rig Contributors",
-    "PHPNamespace": "WP_Rig\\WP_Rig"
+    "author_uri": "https://wprig.io/",
+    "description": "A progressive theme development rig for WordPress.",
+    "version": "1.0.0"
   },
   "dev": {
     "browserSync": {

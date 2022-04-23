@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.1
+-  Extended config file to add the ability to modify author name, author url, theme description and version for production. Props @dthenley
+
 ## 2.2.0
 -   Enhanced Mobile Navigation System and new default mobile nav. Props @robruiz
 -   Add new Javascript component for managing JS enqueues. Props @Spleeding1
