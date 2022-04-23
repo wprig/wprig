@@ -5,6 +5,7 @@
 -   Add new Javascript component for managing JS enqueues. Props @Spleeding1
 
 ## 2.1.0
+
 -   Add EZ_Customizer Component for easier customizer settings. See [WPRig.io](https://wprig.io/documentation/creating-custom-settings-for-your-theme-in-customize/) for details on how this works. Props @robruiz
 -   Add Read More link to Recent Posts block. See [#714](https://github.com/wprig/wprig/issues/714). Props @dthenley
 -   Add padding to full width block content. See [#708](https://github.com/wprig/wprig/issues/708). Props @dthenley
