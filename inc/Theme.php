@@ -151,8 +151,8 @@ class Theme {
 			new Post_Thumbnails\Component(),
 			new EZ_Customizer\Component(),
 			new Styles\Component(),
+			new Scripts\Component(),
 			new Excerpts\Component(),
-			new JavaScript\Component(),
 		);
 
 		if ( defined( 'JETPACK__VERSION' ) ) {

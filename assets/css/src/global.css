@@ -216,6 +216,10 @@ select {
 .site-branding {
 	text-align: center;
 	padding: 60px 0 1.75em;
+	@media screen and (max-width: 600px) {
+		padding: 1.75em 0;
+		margin:0;
+	}
 }
 
 .site-title {
@@ -248,7 +252,7 @@ select {
 --------------------------------------------------------------*/
 .nav--toggle-small .menu-toggle {
 	display: block;
-	margin: 1.2em auto;
+	margin: 0;
 	padding: 0.6em 1.2em 0.5em;
 	font-family: var(--highlight-font-family);
 	font-stretch: condensed;
@@ -273,8 +277,13 @@ select {
 		& .dashicons-menu-alt:before {
 			font-size: 40px;
 		}
+
+		& svg.close {
+			display:none;
+		}
 	}
 }
+
 .nav--toggle-small {
 	& .menu {
 		display: none;
@@ -289,6 +298,14 @@ select {
 				justify-content: center;
 			}
 		}
+
+		& .menu-toggle.icon svg.close {
+			display: block;
+		}
+		& svg.open-menu {
+			display: none;
+		}
+
 	}
 	&.icon-nav {
 		& .menu {
@@ -307,7 +324,7 @@ select {
 				width: 100vw;
 				top: 300px;
 				left: 0;
-				height: 100vh;
+				height: 200%;
 				padding: 20px 30px;
 				opacity: 0;
 				transition: opacity .3s, top .3s ease-out;
