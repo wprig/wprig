@@ -16,7 +16,6 @@ if ( ! wp_rig()->is_primary_sidebar_active() ) {
 wp_rig()->print_styles( 'wp-rig-sidebar', 'wp-rig-widgets' );
 
 ?>
-<aside id="secondary" class="primary-sidebar widget-area">
-	<h2 class="screen-reader-text"><?php esc_attr_e( 'Asides', 'wp-rig' ); ?></h2>
+<aside id="secondary" class="primary-sidebar widget-area" aria-label="Sidebar">
 	<?php wp_rig()->display_primary_sidebar(); ?>
 </aside><!-- #secondary -->
