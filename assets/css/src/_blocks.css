@@ -95,7 +95,7 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 # Gallery Block - overrides core styles
 --------------------------------------------------------------*/
 
-.wp-block-gallery {
+.wp-block-gallery ul {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	grid-gap: 0.5em;
