@@ -5,6 +5,7 @@
 -  Bumps [ajv](https://github.com/ajv-validator/ajv) from 6.10.2 to 6.12.3.
 -  Bumps [handlebars](https://github.com/handlebars-lang/handlebars.js) from 4.7.6 to 4.7.7.
 - Change Sidebar screen reader text. see [#761](https://github.com/wprig/wprig/issues/761)
+- Update blocks css to use grid css
 
 
 ## 2.2.0
