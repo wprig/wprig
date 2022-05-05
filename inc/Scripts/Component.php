@@ -169,11 +169,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		$js_files = array(
-			'wp-rig-custom' => array(
-				'file'    => 'custom.min.js',
-				'loading' => 'defer',
-				'global'  => false,
-			),
 			'wp-rig-global' => array(
 				'file'   => 'global.min.js',
 				'global' => true,
