@@ -122,9 +122,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			 * enqueued based on whether they are necessary for the page content).
 			 */
 			if ( $data['global'] || ! $preloading_styles_enabled && is_callable( $data['preload_callback'] ) && call_user_func( $data['preload_callback'] ) ) {
-				wp_enqueue_style( $handle, $src, array(), $version, $data['media'] );
+				wp_enqueue_style( $handle, $src, $data['deps'], $version, $data['media'] );
 			} else {
-				wp_register_style( $handle, $src, array(), $version, $data['media'] );
+				wp_register_style( $handle, $src, $data['deps'], $version, $data['media'] );
 			}
 
 			wp_style_add_data( $handle, 'precache', true );
@@ -306,7 +306,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				},
 			),
 			'wp-rig-front-page' => array(
-				'file' => 'front-page.min.css',
+				'file'             => 'front-page.min.css',
 				'preload_callback' => function() {
 					global $template;
 					return 'front-page.php' === basename( $template );
@@ -340,6 +340,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 					'global'           => false,
 					'preload_callback' => null,
 					'media'            => 'all',
+					'deps'             => array(),
 				),
 				$data
 			);

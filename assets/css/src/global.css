@@ -216,9 +216,10 @@ select {
 .site-branding {
 	text-align: center;
 	padding: 60px 0 1.75em;
+
 	@media screen and (max-width: 600px) {
 		padding: 1.75em 0;
-		margin:0;
+		margin: 0;
 	}
 }
 
@@ -264,35 +265,40 @@ select {
 
 
 	&.icon {
-		border:none;
+		border: none;
 		position: absolute;
 		top: 40px;
 		left: 5px;
-		display:none;
+		display: none;
 
 		@media screen and (max-width: 600px) {
-			display:block;
+			display: block;
 		}
 
-		& .dashicons-menu-alt:before {
+		& .dashicons-menu-alt::before {
 			font-size: 40px;
 		}
 
 		& svg.close {
-			display:none;
+			display: none;
 		}
 	}
 }
 
 .nav--toggle-small {
+
 	& .menu {
 		display: none;
 	}
+
 	&.nav--toggled-on {
+
 		& .menu {
 			display: block;
 		}
+
 		@media screen and (min-width: 600px) {
+
 			& .menu {
 				display: flex;
 				justify-content: center;
@@ -302,41 +308,51 @@ select {
 		& .menu-toggle.icon svg.close {
 			display: block;
 		}
+
 		& svg.open-menu {
 			display: none;
 		}
 
 	}
+
 	&.icon-nav {
+
 		& .menu {
 			display: block;
 		}
+
 		@media screen and (min-width: 600px) {
+
 			& .menu {
 				display: flex;
 				justify-content: center;
 			}
 		}
-		@media screen and (max-width:600px) {
+
+		@media screen and (max-width: 600px) {
+
 			& .primary-menu-container {
 				position: absolute;
-				background: white;
+				background: #fff;
 				width: 100vw;
 				top: 300px;
 				left: 0;
 				height: 200%;
 				padding: 20px 30px;
 				opacity: 0;
-				transition: opacity .3s, top .3s ease-out;
+				transition: opacity 0.3s, top 0.3s ease-out;
 			}
+
 			&.nav--toggled-on {
-				& .menu-toggle span.dashicons:before {
+
+				& .menu-toggle span.dashicons::before {
 					content: "\f158";
 				}
+
 				& .primary-menu-container {
 					top: 180px;
 					opacity: 1;
-					transition: opacity .3s, top .3s ease-out;
+					transition: opacity 0.3s, top 0.3s ease-out;
 				}
 			}
 		}
