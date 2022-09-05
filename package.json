@@ -61,6 +61,7 @@
     "lint:gulp:fix": "eslint --fix gulp/"
   },
   "dependencies": {
-    "ansi-colors": "^4.1.3"
+    "ansi-colors": "^4.1.3",
+    "autoprefixer": "^10.4.8"
   }
 }
