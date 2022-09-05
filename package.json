@@ -59,5 +59,8 @@
     "lint": "eslint assets/js/src/",
     "lint:gulp": "eslint gulp/",
     "lint:gulp:fix": "eslint --fix gulp/"
+  },
+  "dependencies": {
+    "ansi-colors": "^4.1.3"
   }
 }
