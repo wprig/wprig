@@ -13,7 +13,9 @@
   "bugs": {
     "url": "https://github.com/wprig/wprig/issues"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@wordpress/eslint-plugin": "^13.0.0"
+  },
   "babel": {
     "presets": [
       "@babel/env"
