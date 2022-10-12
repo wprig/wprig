@@ -7,6 +7,7 @@
     "php": ">=7.0",
     "wp-coding-standards/wpcs": "^2",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+    "squizlabs/php_codesniffer": "3.*",
     "phpunit/phpunit": "^6",
     "brain/monkey": "^2",
     "phpcompatibility/php-compatibility": "^9",
