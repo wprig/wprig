@@ -8,6 +8,7 @@ import {parallel, series} from 'gulp';
 // Internal dependencies
 import generateCert from './gulp/generateCert';
 import images from './gulp/images';
+import fonts from './gulp/fonts';
 import php from './gulp/php';
 import {serve} from './gulp/browserSync';
 import scripts from './gulp/scripts';
@@ -40,10 +41,10 @@ export const buildDev = parallel(
  * Export theme for distribution.
  */
 export const bundleTheme = series(
-    prodPrep, parallel(php, scripts, series( styles, editorStyles ), images), translate, prodStringReplace, prodCompress
+    prodPrep, parallel(php, scripts, series( styles, editorStyles ), images, fonts), translate, prodStringReplace, prodCompress
 );
 
 /**
  * Export all imported functions as tasks
  */
-export { generateCert, images, php, scripts, styles, editorStyles, translate, watch, cleanCSS, cleanJS };
+export { generateCert, images, fonts, php, scripts, styles, editorStyles, translate, watch, cleanCSS, cleanJS };
