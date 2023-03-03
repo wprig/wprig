@@ -64,7 +64,7 @@
     "jest-expect-message": "^1.0.2",
     "map-stream": "0.0.7",
     "mississippi": "^4.0.0",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "^0.5.5",
     "npm-run-all": "^4.1.5",
     "postcss-calc": "^7.0.1",
     "postcss-import": "^12.0.1",
