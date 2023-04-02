@@ -14,8 +14,8 @@
     "url": "https://github.com/wprig/wprig/issues"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.4",
-    "@babel/preset-env": "^7.5.4",
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.8",
     "@babel/register": "^7.4.4",
     "@wordpress/eslint-plugin": "^2.3.0",
     "ajv": "^6.12.3",
@@ -28,7 +28,7 @@
     "cssnano": "^4.1.10",
     "deepmerge": "^4.0.0",
     "del": "^5.0.0",
-    "eslint": "^6.0.1",
+    "eslint": "^6.8.0",
     "eslint-config-gulp": "^3.0.1",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-import": "^2.18.0",
