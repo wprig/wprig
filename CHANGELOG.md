@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3
+
+-   Updated all dependencies. Props @robruiz
+-   Added onload attribute to preload styles. Props @robruiz
+
 ## 2.2.1
 
 -   Extended config file to add the ability to modify author name, author url, theme description and version for production. Props @dthenley

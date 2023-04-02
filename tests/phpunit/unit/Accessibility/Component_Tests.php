@@ -7,6 +7,7 @@
 
 namespace WP_Rig\WP_Rig\Tests\Unit\Accessibility;
 
+use phpDocumentor\Reflection\Types\Object_;
 use WP_Rig\WP_Rig\Tests\Framework\Unit_Test_Case;
 use Brain\Monkey\Functions;
 use Mockery;
@@ -25,6 +26,13 @@ class Component_Tests extends Unit_Test_Case {
 	 * @var Component
 	 */
 	private $component;
+
+	/**
+	 * WP_Post mock object.
+	 *
+	 * @var Object
+	 */
+	public $MockPost;
 
 	/**
 	 * Sets up the environment before each test.
@@ -51,6 +59,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_initialize() {
 		$this->component->initialize();
+		$this->MockPost = $this->getMockBuilder( 'WP_Post' );
 
 		$this->assertNotEquals( false, has_action( 'wp_enqueue_scripts', array( $this->component, 'action_enqueue_navigation_script' ) ) );
 		$this->assertNotEquals( false, has_action( 'wp_print_footer_scripts', array( $this->component, 'action_print_skip_link_focus_fix' ) ) );
@@ -158,7 +167,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current() {
 		$atts = array();
-		$item = $this->getMockBuilder( 'WP_Post' )->getMock();
+		$item = $this->MockPost->getMock();
 
 		$atts = $this->component->filter_nav_menu_link_attributes_aria_current( $atts, $item );
 		$this->assertEmpty( $atts );
@@ -171,7 +180,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current_with_current_item() {
 		$atts          = array();
-		$item          = $this->getMockBuilder( 'WP_Post' )->getMock();
+		$item          = $this->MockPost->getMock();
 		$item->current = true;
 
 		$atts = $this->component->filter_nav_menu_link_attributes_aria_current( $atts, $item );
@@ -185,7 +194,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current_with_current_post() {
 		$atts     = array();
-		$item     = $this->getMockBuilder( 'WP_Post' )->getMock();
+		$item     = $this->MockPost->getMock();
 		$item->ID = 1;
 
 		$GLOBALS['post'] = $item; // phpcs:ignore WordPress.WP.GlobalVariablesOverride

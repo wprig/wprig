@@ -92,7 +92,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		// Add support for responsive embedded content.
 		add_theme_support( 'responsive-embeds' );
 
-
 	}
 
 	/**
