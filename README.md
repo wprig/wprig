@@ -13,7 +13,6 @@ A progressive theme development rig for WordPress, WP Rig is built to promote th
 - Progressive enhancement
 - [Resilient Web Design](https://resilientwebdesign.com/)
 - Progressive Web App enabled
-- AMP-ready
 
 We are trying to be the starter theme for design-focused devs. If you have any ideas, questions, or suggestions for this project or are seeking to get involved in contributing or maintaining, please check out
 our [discussion board on Github](https://github.com/wprig/wprig/discussions) and read [our contribute page](https://wprig.io/contribute/) on our website.
@@ -28,7 +27,7 @@ WP Rig has been tested on Linux, Mac, and Windows.
 ### Requirements
 WP Rig requires the following dependencies. Full installation instructions are provided at their respective websites.
 
-- [PHP](http://php.net/) 7.0
+- [PHP](http://php.net/) 7.0 or higher (PHP 8 recommended)
 - [npm](https://www.npmjs.com/)
 - [Composer](https://getcomposer.org/) (installed globally)
 
