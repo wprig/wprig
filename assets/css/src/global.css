@@ -333,6 +333,7 @@ select {
 
 			& .primary-menu-container {
 				position: absolute;
+				z-index: -5;
 				background: #fff;
 				width: 100vw;
 				top: 300px;
@@ -351,6 +352,7 @@ select {
 
 				& .primary-menu-container {
 					top: 180px;
+					z-index: 5;
 					opacity: 1;
 					transition: opacity 0.3s, top 0.3s ease-out;
 				}
