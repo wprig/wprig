@@ -128,4 +128,5 @@ class Template_Tags {
 			$this->template_tags[ $method_name ] = $callback;
 		}
 	}
+
 }
