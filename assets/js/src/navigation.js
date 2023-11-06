@@ -48,7 +48,7 @@ function initNavToggleSubmenus() {
  */
 function initEachNavToggleSubmenu( nav ) {
 	// Get the submenus.
-	const SUBMENUS = nav.querySelectorAll( '.menu ul' );
+	const SUBMENUS = nav.querySelectorAll( 'ul.sub-menu, ul.wp-block-navigation__submenu-container' );
 
 	// No point if no submenus.
 	if ( ! SUBMENUS.length ) {
@@ -77,18 +77,26 @@ function initEachNavToggleSubmenu( nav ) {
 		}
 
 		// Convert dropdown to button.
-		const thisDropdownButton = dropdownButton.cloneNode( true );
+		if ( ! SUBMENUS[ i ].parentNode.classList.contains( 'wp-block-navigation-item' ) ) {
+			const thisDropdownButton = dropdownButton.cloneNode( true );
 
-		// Copy contents of dropdown into button.
-		thisDropdownButton.innerHTML = dropdown.innerHTML;
+			// Copy contents of dropdown into button.
+			thisDropdownButton.innerHTML = dropdown.innerHTML;
 
-		// Replace dropdown with toggle button.
-		dropdown.parentNode.replaceChild( thisDropdownButton, dropdown );
+			// Replace dropdown with toggle button.
+			dropdown.parentNode.replaceChild( thisDropdownButton, dropdown );
 
-		// Toggle the submenu when we click the dropdown button.
-		thisDropdownButton.addEventListener( 'click', ( e ) => {
-			toggleSubMenu( e.target.parentNode );
-		} );
+			// Toggle the submenu when we click the dropdown button.
+			thisDropdownButton.addEventListener( 'click', ( e ) => {
+				toggleSubMenu( e.target.parentNode );
+			} );
+		} else {
+			SUBMENUS[ i ].parentNode.querySelector( '.wp-block-navigation-submenu__toggle' ).addEventListener( 'click', ( e ) => {
+				//console.log( [ e.currentTarget, e.currentTarget.parentNode ] );
+
+				toggleSubMenu( e.currentTarget.parentNode );
+			} );
+		}
 
 		// Clean up the toggle if a mouse takes over from keyboard.
 		parentMenuItem.addEventListener( 'mouseleave', ( e ) => {
@@ -171,10 +179,10 @@ function initEachNavToggleSmall( nav ) {
  * @return {void}
  */
 function toggleSubMenu( parentMenuItem, forceToggle ) {
-	const toggleButton = parentMenuItem.querySelector( '.dropdown-toggle' ),
+	const toggleButton = parentMenuItem.querySelector( '.dropdown-toggle, .wp-block-navigation-submenu__toggle' ),
 		subMenu = parentMenuItem.querySelector( 'ul' );
 	let parentMenuItemToggled = parentMenuItem.classList.contains( 'menu-item--toggled-on' );
-
+	console.log( [ parentMenuItem, forceToggle, parentMenuItemToggled, toggleButton ] );
 	// Will be true if we want to force the toggle on, false if force toggle close.
 	if ( undefined !== forceToggle && 'boolean' === ( typeof forceToggle ) ) {
 		parentMenuItemToggled = ! forceToggle;

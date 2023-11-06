@@ -360,11 +360,27 @@ select {
 	}
 }
 
-.nav--toggle-small,
-.nav--toggle-sub .dropdown,
-.nav--toggle-sub .dropdown-toggle {
-	display: none;
-}
+/*.nav--toggle-sub .dropdown,
+.nav--toggle-sub .dropdown-toggle,
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-icon
+{
+	display: block;
+	background: transparent;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: var(--dropdown-symbol-width);
+	height: var(--dropdown-symbol-width);
+	font-size: inherit;
+	line-height: inherit;
+	margin: 0;
+	padding: 0;
+	border: none;
+	border-radius: 0;
+	transform: translateY(-50%);
+	overflow: visible;
+}*/
+
 
 @media (--narrow-menu-query) {
 
@@ -481,6 +497,9 @@ select {
 	max-width: var(--content-width);
 	font-family: var(--highlight-font-family);
 	font-stretch: condensed;
+	& ul.wp-block-navigation-submenu li {
+		padding: .3em .5em;
+	}
 }
 
 .main-navigation a {
@@ -512,7 +531,43 @@ select {
 	padding-left: 1em;
 }
 
+/*--------------------------------------------------------------
+## Main navigation menu - overrides for navigation block
+--------------------------------------------------------------*/
+
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content {
+	& .wp-block-navigation__submenu-icon {
+		display:block;
+	}
+	& li.wp-block-navigation-item {
+		width:100%;
+	}
+	& li.wp-block-navigation-submenu.has-child {
+		flex-direction: row;
+		flex-wrap: wrap;
+		& ul.wp-block-navigation__submenu-container {
+			overflow:hidden;
+			max-height:0;
+			transition: max-height .4s ease-out;
+			&.toggle-show {
+				max-height:2300px;
+			}
+		}
+		& a.wp-block-navigation-item__content {
+			flex:90%;
+		}
+	}
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content .has-child .wp-block-navigation__submenu-container {
+	padding: .3em .5em;
+}
+
 @media (--wide-menu-query) {
+
+	.main-navigation.wp-block-navigation ul {
+		display: flex;
+	}
 
 	.main-navigation ul li a {
 		padding: 0.4em 0.5em;
