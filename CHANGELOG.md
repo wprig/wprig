@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.1
+
+-   Improvements to mobile navigation, primarily collapsible sub-menus, including consideringation for Gutenberg navigation block. Props @robruiz
+-   Improvements to header layout. Props @robruiz
+
 ## 2.3
 
 -   Updated all dependencies. Props @robruiz
