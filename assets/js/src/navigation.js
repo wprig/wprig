@@ -60,10 +60,11 @@ function initEachNavToggleSubmenu( nav ) {
 
 	for ( let i = 0; i < SUBMENUS.length; i++ ) {
 		const parentMenuItem = SUBMENUS[ i ].parentNode;
+		const isNavigationBlock = SUBMENUS[ i ].parentNode.classList.contains( 'wp-block-navigation-item' );
 		let dropdown = parentMenuItem.querySelector( '.dropdown' );
 
 		// If no dropdown, create one.
-		if ( ! dropdown ) {
+		if ( ! dropdown && ! isNavigationBlock ) {
 			// Create dropdown.
 			dropdown = document.createElement( 'span' );
 			dropdown.classList.add( 'dropdown' );
@@ -77,7 +78,7 @@ function initEachNavToggleSubmenu( nav ) {
 		}
 
 		// Convert dropdown to button.
-		if ( ! SUBMENUS[ i ].parentNode.classList.contains( 'wp-block-navigation-item' ) ) {
+		if ( ! isNavigationBlock ) {
 			const thisDropdownButton = dropdownButton.cloneNode( true );
 
 			// Copy contents of dropdown into button.

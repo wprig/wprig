@@ -536,6 +536,9 @@ select {
 --------------------------------------------------------------*/
 
 .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content {
+	& ul.wp-block-navigation__container {
+		width:100%;
+	}
 	& .wp-block-navigation__submenu-icon {
 		display:block;
 	}
@@ -546,11 +549,9 @@ select {
 		flex-direction: row;
 		flex-wrap: wrap;
 		& ul.wp-block-navigation__submenu-container {
-			overflow:hidden;
-			max-height:0;
-			transition: max-height .4s ease-out;
+			display:none;
 			&.toggle-show {
-				max-height:2300px;
+				display:block;
 			}
 		}
 		& a.wp-block-navigation-item__content {
