@@ -249,7 +249,7 @@ select {
 }
 
 @media (--narrow-menu-query) {
-	header#masthead {
+	header#masthead:has(nav) {
 		display: grid;
 		grid-template-columns: 1fr 6fr;
 
@@ -257,7 +257,7 @@ select {
 			order: 2;
 			padding: 0;
 
-			& p.site-title {
+			& .site-title {
 				margin: .5em 0;
 			}
 
