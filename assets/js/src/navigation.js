@@ -183,7 +183,6 @@ function toggleSubMenu( parentMenuItem, forceToggle ) {
 	const toggleButton = parentMenuItem.querySelector( '.dropdown-toggle, .wp-block-navigation-submenu__toggle' ),
 		subMenu = parentMenuItem.querySelector( 'ul' );
 	let parentMenuItemToggled = parentMenuItem.classList.contains( 'menu-item--toggled-on' );
-	console.log( [ parentMenuItem, forceToggle, parentMenuItemToggled, toggleButton ] );
 	// Will be true if we want to force the toggle on, false if force toggle close.
 	if ( undefined !== forceToggle && 'boolean' === ( typeof forceToggle ) ) {
 		parentMenuItemToggled = ! forceToggle;
