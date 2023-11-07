@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.3.1
+
+-   Improvements to mobile navigation, primarily collapsible sub-menus, including consideration for Gutenberg navigation block. Props @robruiz
+-   Improvements to header layout. Props @robruiz
+
+## 2.3
+
+-   Updated all dependencies. Props @robruiz
+-   Added onload attribute to preload styles. Props @robruiz
+
 ## 2.2.2
 
 -   Updated navigation CSS to prevent blocking of content when mobile menu is toggled off and to have smooth transition from toggle-on toggled-off states. Props @Spleeding1
