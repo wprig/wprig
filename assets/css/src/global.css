@@ -351,6 +351,7 @@ select {
 		@media screen and (max-width: 600px) {
 			& .primary-menu-container {
 				position: absolute;
+				z-index: -5;
 				background: #fff;
 				width: 100vw;
 				top: 300px;
@@ -374,6 +375,7 @@ select {
 
 				& .primary-menu-container {
 					top: 180px;
+					z-index: 5;
 					opacity: 1;
 					transition: opacity 0.3s ease, top 0.3s ease-out;
 					visibility: visible;
@@ -419,8 +421,6 @@ select {
 	border-width: 0 2px 2px 0;
 	transform: translateY(-50%) rotate(45deg);
 }
-
-
 
 @media (--narrow-menu-query) {
 	.nav--toggle-small.nav--toggled-on .menu {
