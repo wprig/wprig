@@ -248,6 +248,33 @@ select {
 	color: #757575;
 }
 
+@media (--narrow-menu-query) {
+	header#masthead {
+		display: grid;
+		grid-template-columns: 1fr 6fr;
+
+		& .site-branding {
+			order: 2;
+			padding: 0;
+
+			& p.site-title {
+				margin: .5em 0;
+			}
+
+		}
+
+		& .main-navigation.nav--toggle-sub {
+			padding: initial;
+			margin: 1em 0;
+
+			& .menu-toggle.icon {
+				top: 0;
+			}
+		}
+
+	}
+}
+
 /*--------------------------------------------------------------
 ## Basic navigation menus - handles submenu and small screen toggle
 --------------------------------------------------------------*/
@@ -266,7 +293,7 @@ select {
 
 	&.icon {
 		border: none;
-		position: absolute;
+		position: relative;
 		top: 40px;
 		left: 5px;
 		display: none;
