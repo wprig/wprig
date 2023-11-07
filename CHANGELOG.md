@@ -2,7 +2,7 @@
 
 ## 2.3.1
 
--   Improvements to mobile navigation, primarily collapsible sub-menus, including consideringation for Gutenberg navigation block. Props @robruiz
+-   Improvements to mobile navigation, primarily collapsible sub-menus, including consideration for Gutenberg navigation block. Props @robruiz
 -   Improvements to header layout. Props @robruiz
 
 ## 2.3
