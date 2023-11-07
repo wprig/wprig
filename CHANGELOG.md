@@ -5,6 +5,10 @@
 -   Updated all dependencies. Props @robruiz
 -   Added onload attribute to preload styles. Props @robruiz
 
+## 2.2.2
+
+-   Updated navigation CSS to prevent blocking of content when mobile menu is toggled off and to have smooth transition from toggle-on toggled-off states. Props @Spleeding1
+
 ## 2.2.1
 
 -   Extended config file to add the ability to modify author name, author url, theme description and version for production. Props @dthenley

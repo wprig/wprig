@@ -77,7 +77,6 @@
 }
 
 @media (--sidebar-query) {
-
 	.has-sidebar .site {
 		margin: 0 1em;
 		display: grid;
@@ -263,7 +262,6 @@ select {
 	border-radius: 0;
 	background: transparent;
 
-
 	&.icon {
 		border: none;
 		position: absolute;
@@ -286,19 +284,16 @@ select {
 }
 
 .nav--toggle-small {
-
 	& .menu {
 		display: none;
 	}
 
 	&.nav--toggled-on {
-
 		& .menu {
 			display: block;
 		}
 
 		@media screen and (min-width: 600px) {
-
 			& .menu {
 				display: flex;
 				justify-content: center;
@@ -312,17 +307,14 @@ select {
 		& svg.open-menu {
 			display: none;
 		}
-
 	}
 
 	&.icon-nav {
-
 		& .menu {
 			display: block;
 		}
 
 		@media screen and (min-width: 600px) {
-
 			& .menu {
 				display: flex;
 				justify-content: center;
@@ -330,7 +322,6 @@ select {
 		}
 
 		@media screen and (max-width: 600px) {
-
 			& .primary-menu-container {
 				position: absolute;
 				z-index: -5;
@@ -341,11 +332,16 @@ select {
 				height: 200%;
 				padding: 20px 30px;
 				opacity: 0;
-				transition: opacity 0.3s, top 0.3s ease-out;
+				transition: opacity 0.3s ease, top 0.3s ease-out,
+					visibility 0.1s ease 0.4s;
+				visibility: hidden;
 			}
 
-			&.nav--toggled-on {
+			/* & .menu {
+				visibility: visible;
+			} */
 
+			&.nav--toggled-on {
 				& .menu-toggle span.dashicons::before {
 					content: "\f158";
 				}
@@ -354,11 +350,15 @@ select {
 					top: 180px;
 					z-index: 5;
 					opacity: 1;
-					transition: opacity 0.3s, top 0.3s ease-out;
+					transition: opacity 0.3s ease, top 0.3s ease-out;
+					visibility: visible;
 				}
+
+				/* & .menu {
+					visibility: visible;
+				} */
 			}
 		}
-
 	}
 }
 
@@ -369,14 +369,12 @@ select {
 }
 
 @media (--narrow-menu-query) {
-
 	.nav--toggle-small.nav--toggled-on .menu {
 		display: block;
 	}
 }
 
 @media (--wide-menu-query) {
-
 	.nav--toggle-small .menu-toggle {
 		display: none;
 	}
@@ -515,7 +513,6 @@ select {
 }
 
 @media (--wide-menu-query) {
-
 	.main-navigation ul li a {
 		padding: 0.4em 0.5em;
 	}
@@ -574,7 +571,6 @@ select {
 }
 
 @media (--content-query) {
-
 	.site-main .comment-navigation,
 	.site-main .posts-navigation,
 	.site-main .post-navigation,
@@ -685,7 +681,6 @@ select {
 .infinite-scroll .posts-navigation,
 .infinite-scroll .pagination,
 .infinite-scroll.neverending .site-footer {
-
 	/* Theme Footer (when set to scrolling) */
 	display: none;
 }
