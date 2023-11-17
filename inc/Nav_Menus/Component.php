@@ -182,12 +182,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return string.
 	 */
-	public function add_nav_class_to_navigation_block($block_content, $block, $instance){
+	public function add_nav_class_to_navigation_block( $block_content, $block, $instance ) {
 		// Instantiate the tag processor.
 		$content = new \WP_HTML_Tag_Processor( $block_content );
 
 		// Find the first <ul> or <ol> tag in the block markup.
-		$content->next_tag( [ 'nav' ] );
+		$content->next_tag( array( 'nav' ) );
 		// Note: soon this will change to `$content->next( [ 'ol', 'ul' ] )`;
 
 		// Add a custom class.
