@@ -92,17 +92,18 @@ function initEachNavToggleSubmenu( nav ) {
 				toggleSubMenu( e.target.parentNode );
 			} );
 		} else {
-			SUBMENUS[ i ].parentNode.querySelector( '.wp-block-navigation-submenu__toggle' ).addEventListener( 'click', ( e ) => {
+			SUBMENUS[ i ].parentNode.querySelector( '.wp-block-navigation-submenu__toggle' )
+				.addEventListener( 'click', ( e ) => {
 				//console.log( [ e.currentTarget, e.currentTarget.parentNode ] );
 
-				toggleSubMenu( e.currentTarget.parentNode );
-			} );
+					toggleSubMenu( e.currentTarget.parentNode );
+				} );
 		}
 
 		// Clean up the toggle if a mouse takes over from keyboard.
-		parentMenuItem.addEventListener( 'mouseleave', ( e ) => {
+		/*parentMenuItem.addEventListener( 'mouseleave', ( e ) => {
 			toggleSubMenu( e.target, false );
-		} );
+		} );*/
 
 		// When we focus on a menu link, make sure all siblings are closed.
 		parentMenuItem.querySelector( 'a' ).addEventListener( 'focus', ( e ) => {
@@ -189,7 +190,9 @@ function toggleSubMenu( parentMenuItem, forceToggle ) {
 	}
 
 	// Toggle aria-expanded status.
-	toggleButton.setAttribute( 'aria-expanded', ( ! parentMenuItemToggled ).toString() );
+	if ( ! toggleButton.classList.contains( 'wp-block-navigation-submenu__toggle' ) ) {
+		toggleButton.setAttribute( 'aria-expanded', ( ! parentMenuItemToggled ).toString() );
+	}
 
 	/*
 	 * Steps to handle during toggle:
