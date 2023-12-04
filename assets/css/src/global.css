@@ -274,6 +274,12 @@ select {
 	}
 }
 
+nav div.wp-block-navigation__responsive-dialog {
+	@media screen and (max-width: 600px) {
+		margin: 1em
+	}
+}
+
 /*--------------------------------------------------------------
 ## Basic navigation menus - handles submenu and small screen toggle
 --------------------------------------------------------------*/
