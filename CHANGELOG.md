@@ -2,6 +2,7 @@
 
 ## 2.3.1
 
+-   Updated WPCS to V3. Props @robruiz
 -   Improvements to mobile navigation, primarily collapsible sub-menus, including consideration for Gutenberg navigation block. Props @robruiz
 -   Improvements to header layout. Props @robruiz
 
