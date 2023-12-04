@@ -89,7 +89,7 @@ function initEachNavToggleSubmenu( nav ) {
 
 			// Toggle the submenu when we click the dropdown button.
 			thisDropdownButton.addEventListener( 'click', ( e ) => {
-				toggleSubMenu( e.target.parentNode );
+				toggleSubMenu( e.currentTarget.parentNode );
 			} );
 		} else {
 			SUBMENUS[ i ].parentNode.querySelector( '.wp-block-navigation-submenu__toggle' )
