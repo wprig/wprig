@@ -14,7 +14,7 @@ namespace WP_Rig\WP_Rig;
  *
  * @return Template_Tags Template tags instance exposing template tag methods.
  */
-function wp_rig() : Template_Tags {
+function wp_rig(): Template_Tags {
 	static $theme = null;
 
 	if ( null === $theme ) {

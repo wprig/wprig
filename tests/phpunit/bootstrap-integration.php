@@ -53,7 +53,7 @@ $GLOBALS['wp_tests_options'] = array(
 require_once $test_root . '/includes/functions.php';
 tests_add_filter(
 	'setup_theme',
-	function() {
+	function () {
 		register_theme_directory( $GLOBALS['wp_tests_options']['stylesheet_root'] );
 	}
 );

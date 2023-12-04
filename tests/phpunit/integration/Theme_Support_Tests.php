@@ -32,7 +32,7 @@ class Theme_Support_Tests extends Integration_Test_Case {
 	 *
 	 * @return array List of test datasets.
 	 */
-	public function data_theme_support_features() : array {
+	public function data_theme_support_features(): array {
 		return array(
 			array(
 				'automatic-feed-links',

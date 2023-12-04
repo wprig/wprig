@@ -40,7 +40,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return string Component slug.
 	 */
-	public function get_slug() : string {
+	public function get_slug(): string {
 		return 'nav_menus';
 	}
 
@@ -60,6 +60,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		add_filter( 'walker_nav_menu_start_el', array( $this, 'filter_primary_nav_menu_dropdown_symbol' ), 10, 4 );
 		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ) );
 		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ) );
+		add_filter( 'render_block_core/navigation', array( $this, 'add_nav_class_to_navigation_block' ), 10, 3 );
 	}
 
 	/**
@@ -69,7 +70,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               a callable or an array with key 'callable'. This approach is used to reserve the possibility of
 	 *               adding support for further arguments in the future.
 	 */
-	public function template_tags() : array {
+	public function template_tags(): array {
 		return array(
 			'is_primary_nav_menu_active' => array( $this, 'is_primary_nav_menu_active' ),
 			'display_primary_nav_menu'   => array( $this, 'display_primary_nav_menu' ),
@@ -115,7 +116,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param object  $args        An object of wp_nav_menu() arguments.
 	 * @return string Modified nav menu HTML.
 	 */
-	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ) : string {
+	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ): string {
 
 		// Only for our primary menu location.
 		if ( empty( $args->theme_location ) || static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
@@ -135,7 +136,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return bool True if the primary navigation menu is active, false otherwise.
 	 */
-	public function is_primary_nav_menu_active() : bool {
+	public function is_primary_nav_menu_active(): bool {
 		return (bool) has_nav_menu( static::PRIMARY_NAV_MENU_SLUG );
 	}
 
@@ -174,5 +175,28 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function customize_mobile_menu_nav_classes() {
 		return esc_html__( 'main-navigation nav--toggle-sub nav--toggle-small icon-nav', 'wp-rig' );
+	}
+
+	/**
+	 * Adds the necessary nav class for navigation.js to control sub menus.
+	 *
+	 * @return string.
+	 */
+	public function add_nav_class_to_navigation_block( $block_content, $block, $instance ) {
+		// Instantiate the tag processor.
+		$content = new \WP_HTML_Tag_Processor( $block_content );
+
+		// Find the first <ul> or <ol> tag in the block markup.
+		$content->next_tag( array( 'nav' ) );
+		// Note: soon this will change to `$content->next( [ 'ol', 'ul' ] )`;
+
+		// Add a custom class.
+		$content->add_class( 'nav--toggle-sub' );
+
+		// Save the updated block content.
+		$block_content = (string) $content;
+
+		// Return the block content.
+		return $block_content;
 	}
 }

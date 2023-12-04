@@ -5,7 +5,7 @@
   "license": "GPL-3.0-or-later",
   "require-dev": {
     "php": ">=7.0",
-    "wp-coding-standards/wpcs": "^2",
+    "wp-coding-standards/wpcs": "^3.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
     "squizlabs/php_codesniffer": "3.*",
     "phpunit/phpunit": "^6",
