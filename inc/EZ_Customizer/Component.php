@@ -46,7 +46,7 @@ class Component implements Component_Interface {
 	 *
 	 * @return string Component slug.
 	 */
-	public function get_slug() : string {
+	public function get_slug(): string {
 		return 'ez_customizer';
 	}
 
@@ -176,5 +176,4 @@ class Component implements Component_Interface {
 		}
 		return new WP_Customize_control( $this->wp_customize, $control_id, $args );
 	}
-
 }

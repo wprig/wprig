@@ -26,7 +26,7 @@ class Component implements Component_Interface {
 	 *
 	 * @return string Component slug.
 	 */
-	public function get_slug() : string {
+	public function get_slug(): string {
 		return 'customizer';
 	}
 
@@ -53,7 +53,7 @@ class Component implements Component_Interface {
 				'blogname',
 				array(
 					'selector'        => '.site-title a',
-					'render_callback' => function() {
+					'render_callback' => function () {
 						bloginfo( 'name' );
 					},
 				)
@@ -62,7 +62,7 @@ class Component implements Component_Interface {
 				'blogdescription',
 				array(
 					'selector'        => '.site-description',
-					'render_callback' => function() {
+					'render_callback' => function () {
 						bloginfo( 'description' );
 					},
 				)

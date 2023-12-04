@@ -44,16 +44,16 @@ class Unit_Test_Case extends TestCase {
 				'esc_attr_x',
 
 				// With return value determined by callback.
-				'get_theme_file_path' => function( $path ) {
+				'get_theme_file_path' => function ( $path ) {
 					return TESTS_THEME_DIR . '/' . ltrim( $path );
 				},
-				'get_theme_file_uri'  => function( $path ) {
+				'get_theme_file_uri'  => function ( $path ) {
 					return TESTS_THEME_URI . '/' . ltrim( $path );
 				},
-				'_n'                  => function( $single, $plural, $number ) {
+				'_n'                  => function ( $single, $plural, $number ) {
 					return 1 === $number ? $single : $plural;
 				},
-				'_nx'                 => function( $single, $plural, $number ) {
+				'_nx'                 => function ( $single, $plural, $number ) {
 					return 1 === $number ? $single : $plural;
 				},
 			)
