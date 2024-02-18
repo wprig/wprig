@@ -54,8 +54,8 @@ class Theme {
 				throw new InvalidArgumentException(
 					sprintf(
 						/* translators: 1: classname/type of the variable, 2: interface name */
-						__( 'The theme component %1$s does not implement the %2$s interface.', 'wp-rig' ),
-						gettype( $component ),
+						esc_html__( 'The theme component %1$s does not implement the %2$s interface.', 'wp-rig' ),
+						esc_html( gettype( $component ) ),
 						Component_Interface::class
 					)
 				);
@@ -117,8 +117,8 @@ class Theme {
 			throw new InvalidArgumentException(
 				sprintf(
 					/* translators: %s: slug */
-					__( 'No theme component with the slug %s exists.', 'wp-rig' ),
-					$slug
+					esc_html__( 'No theme component with the slug %s exists.', 'wp-rig' ),
+					esc_html( $slug )
 				)
 			);
 		}
