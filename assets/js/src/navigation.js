@@ -177,17 +177,13 @@ function initEachNavToggleSmall( nav ) {
 /**
  * Toggle submenus open and closed, and tell screen readers what's going on.
  * @param {Object} parentMenuItem Parent menu element.
- * @param {boolean} forceToggle Force the menu toggle.
+ * @param {boolean} limitOpenSubmenus Toggle for enabling the auto closing of non-target submenus.
  * @return {void}
  */
-function toggleSubMenu( parentMenuItem, forceToggle ) {
+function toggleSubMenu( parentMenuItem, limitOpenSubmenus = false ) {
 	const toggleButton = parentMenuItem.querySelector( '.dropdown-toggle, .wp-block-navigation-submenu__toggle' ),
 		subMenu = parentMenuItem.querySelector( 'ul' );
-	let parentMenuItemToggled = parentMenuItem.classList.contains( 'menu-item--toggled-on' );
-	// Will be true if we want to force the toggle on, false if force toggle close.
-	if ( undefined !== forceToggle && 'boolean' === ( typeof forceToggle ) ) {
-		parentMenuItemToggled = ! forceToggle;
-	}
+	const parentMenuItemToggled = parentMenuItem.classList.contains( 'menu-item--toggled-on' );
 
 	// Toggle aria-expanded status.
 	if ( ! toggleButton.classList.contains( 'wp-block-navigation-submenu__toggle' ) ) {
@@ -203,24 +199,28 @@ function toggleSubMenu( parentMenuItem, forceToggle ) {
 		// Toggle "off" the submenu.
 		parentMenuItem.classList.remove( 'menu-item--toggled-on' );
 		subMenu.classList.remove( 'toggle-show' );
-		toggleButton.setAttribute( 'aria-label', wpRigScreenReaderText.expand );
+		toggleButton.setAttribute( 'aria-label', wpRigScreenReaderText.collapse );
 
 		// Make sure all children are closed.
-		const subMenuItemsToggled = parentMenuItem.querySelectorAll( '.menu-item--toggled-on' );
-		for ( let i = 0; i < subMenuItemsToggled.length; i++ ) {
-			toggleSubMenu( subMenuItemsToggled[ i ], false );
+		if ( limitOpenSubmenus ) {
+			const subMenuItemsToggled = parentMenuItem.querySelectorAll( '.menu-item--toggled-on' );
+			for ( let i = 0; i < subMenuItemsToggled.length; i++ ) {
+				toggleSubMenu( subMenuItemsToggled[ i ] );
+			}
 		}
 	} else {
 		// Make sure siblings are closed.
-		const parentMenuItemsToggled = parentMenuItem.parentNode.querySelectorAll( 'li.menu-item--toggled-on' );
-		for ( let i = 0; i < parentMenuItemsToggled.length; i++ ) {
-			toggleSubMenu( parentMenuItemsToggled[ i ], false );
+		if ( limitOpenSubmenus ) {
+			const parentMenuItemsToggled = parentMenuItem.parentNode.querySelectorAll( 'li.menu-item--toggled-on' );
+			for ( let i = 0; i < parentMenuItemsToggled.length; i++ ) {
+				toggleSubMenu( parentMenuItemsToggled[ i ] );
+			}
 		}
 
 		// Toggle "on" the submenu.
 		parentMenuItem.classList.add( 'menu-item--toggled-on' );
 		subMenu.classList.add( 'toggle-show' );
-		toggleButton.setAttribute( 'aria-label', wpRigScreenReaderText.collapse );
+		toggleButton.setAttribute( 'aria-label', wpRigScreenReaderText.expand );
 	}
 }
 
