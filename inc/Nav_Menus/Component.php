@@ -10,6 +10,7 @@ namespace WP_Rig\WP_Rig\Nav_Menus;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Post;
+
 use function add_action;
 use function add_filter;
 use function register_nav_menus;
@@ -177,9 +178,14 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		return esc_html__( 'main-navigation nav--toggle-sub nav--toggle-small icon-nav', 'wp-rig' );
 	}
 
+	// TODO: Please improve the following @param description.
+
 	/**
 	 * Adds the necessary nav class for navigation.js to control sub menus.
 	 *
+	 * @param mixed $block_content The block content. Type could possibly be more specific.
+	 * @param mixed $block The block. Type could possibly be more specific.
+	 * @param mixed $instance The instance. Type could possibly be more specific.
 	 * @return string.
 	 */
 	public function add_nav_class_to_navigation_block( $block_content, $block, $instance ) {
@@ -188,7 +194,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Find the first <ul> or <ol> tag in the block markup.
 		$content->next_tag( array( 'nav' ) );
-		// Note: soon this will change to `$content->next( [ 'ol', 'ul' ] )`;
+		// Note: soon this will change to `$content->next( [ 'ol', 'ul' ] )`.
 
 		// Add a custom class.
 		$content->add_class( 'nav--toggle-sub' );
