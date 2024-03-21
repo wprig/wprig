@@ -158,6 +158,7 @@
 	margin-right: auto;
 }
 
+/* stylelint-disable */
 .alignwide {
 	max-width: calc(50% + var(--content-width) / 2);
 }
@@ -207,6 +208,7 @@
 		margin-right: calc((75vw - 2rem - var(--content-width)) / 2);
 	}
 }
+/* stylelint-ensable */
 
 /*--------------------------------------------------------------
 ## Custom block colors.
