@@ -88,6 +88,7 @@ add_action( 'load-customize.php', 'wp_rig_customize' );
  * Prevents the Theme Preview from being loaded when requirements are not met.
  */
 function wp_rig_preview() {
+	// @phpcs:ignore
 	if ( isset( $_GET['preview'] ) ) {
 		wp_die( esc_html( wp_rig_get_insufficient_requirements_message() ) );
 	}

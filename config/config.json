@@ -1,1 +1,12 @@
-{}
+{
+  "theme": {
+    "PHPNamespace": "WP_Rig\\WP_Rig",
+    "slug": "wp-rig-test",
+    "name": "WP Rig Test",
+    "theme_uri": "https://github.com/wprig/wprig/",
+    "author": "The WP Rig Contributors",
+    "author_uri": "https://wprig.io/",
+    "description": "A progressive theme development rig for WordPress.",
+    "version": "1.0.0"
+  }
+}

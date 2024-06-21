@@ -22,7 +22,6 @@
 		 v flag: Print verbose output.
 		 n flag: Do not print warnings.
 	-->
-	<arg value="psvn"/>
 
 	<!-- Check up to 8 files simultanously. -->
 	<arg name="parallel" value="8"/>
@@ -35,6 +34,7 @@
 
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*.min.css*</exclude-pattern>
 
 	<!--
 	#############################################################################

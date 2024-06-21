@@ -40,8 +40,9 @@ export const prodAssetsDir = `${ prodThemePath }/assets`;
 // PHPCS options
 export const PHPCSOptions = {
 	bin: `${ rootPath }/vendor/bin/phpcs`,
-	standard: `${ rootPath }/phpcs.xml.dist`,
-	warningSeverity: 0,
+	showSniffCode: true,
+	report: 'full',
+	reporter: 'log',
 };
 
 // Theme config name fields and their defaults
