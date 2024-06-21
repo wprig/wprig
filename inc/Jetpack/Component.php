@@ -26,7 +26,7 @@ class Component implements Component_Interface {
 	 *
 	 * @return string Component slug.
 	 */
-	public function get_slug() : string {
+	public function get_slug(): string {
 		return 'jetpack';
 	}
 
@@ -52,7 +52,7 @@ class Component implements Component_Interface {
 			array(
 				'container' => 'primary',
 				'footer'    => 'page',
-				'render'    => function() {
+				'render'    => function () {
 					while ( have_posts() ) {
 						the_post();
 						if ( is_search() ) {

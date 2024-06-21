@@ -86,7 +86,7 @@ class Component_Tests extends Unit_Test_Case {
 		$features = array();
 
 		Functions\when( 'add_theme_support' )->alias(
-			function( $feature, ...$args ) use ( &$features ) {
+			function ( $feature, ...$args ) use ( &$features ) {
 				$features[ $feature ] = $args;
 			}
 		);

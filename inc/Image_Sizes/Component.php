@@ -22,7 +22,7 @@ class Component implements Component_Interface {
 	 *
 	 * @return string Component slug.
 	 */
-	public function get_slug() : string {
+	public function get_slug(): string {
 		return 'image_sizes';
 	}
 
@@ -43,7 +43,7 @@ class Component implements Component_Interface {
 	 *                      values in pixels (in that order).
 	 * @return string A source size value for use in a content image 'sizes' attribute.
 	 */
-	public function filter_content_image_sizes_attr( string $sizes, array $size ) : string {
+	public function filter_content_image_sizes_attr( string $sizes, array $size ): string {
 		$width = $size[0];
 
 		if ( 740 <= $width ) {
@@ -65,7 +65,7 @@ class Component implements Component_Interface {
 	 * @param array  $attr   Array of the attributes for the image tag.
 	 * @return string The filtered header image HTML.
 	 */
-	public function filter_header_image_tag( string $html, $header, array $attr ) : string {
+	public function filter_header_image_tag( string $html, $header, array $attr ): string {
 		if ( isset( $attr['sizes'] ) ) {
 			$html = str_replace( $attr['sizes'], '100vw', $html );
 		}
@@ -81,7 +81,7 @@ class Component implements Component_Interface {
 	 * @param string|array $size       Registered image size or flat array of height and width dimensions.
 	 * @return array The filtered attributes for the image markup.
 	 */
-	public function filter_post_thumbnail_sizes_attr( array $attr, WP_Post $attachment, $size ) : array {
+	public function filter_post_thumbnail_sizes_attr( array $attr, WP_Post $attachment, $size ): array {
 		$attr['sizes'] = '100vw';
 
 		if ( wp_rig()->is_primary_sidebar_active() ) {

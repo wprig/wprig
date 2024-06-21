@@ -1,6 +1,6 @@
 {
   "name": "wprig",
-  "version": "2.3",
+  "version": "2.3.1",
   "description": "A progressive theme development rig for WordPress.",
   "author": "The WP Rig Contributors",
   "license": "GPL-3.0-or-later",
@@ -119,6 +119,7 @@
     "test:gulp": "run-s test:gulp:dev test:gulp:prod",
     "lint": "eslint assets/js/src/",
     "lint:gulp": "eslint gulp/",
-    "lint:gulp:fix": "eslint --fix gulp/"
+    "lint:gulp:fix": "eslint --fix gulp/",
+    "editor-support": "node gulp/editorSupport.js"
   }
 }

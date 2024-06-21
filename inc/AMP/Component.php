@@ -29,7 +29,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return string Component slug.
 	 */
-	public function get_slug() : string {
+	public function get_slug(): string {
 		return 'amp';
 	}
 
@@ -47,7 +47,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               a callable or an array with key 'callable'. This approach is used to reserve the possibility of
 	 *               adding support for further arguments in the future.
 	 */
-	public function template_tags() : array {
+	public function template_tags(): array {
 		return array(
 			'is_amp'                       => array( $this, 'is_amp' ),
 			'using_amp_live_list_comments' => array( $this, 'using_amp_live_list_comments' ),
@@ -75,7 +75,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return bool Whether the AMP plugin is active and the current request is for an AMP endpoint.
 	 */
-	public function is_amp() : bool {
+	public function is_amp(): bool {
 		return function_exists( '\is_amp_endpoint' ) && \is_amp_endpoint();
 	}
 
@@ -84,7 +84,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return bool Whether to use amp-live-list.
 	 */
-	public function using_amp_live_list_comments() : bool {
+	public function using_amp_live_list_comments(): bool {
 		if ( ! $this->is_amp() ) {
 			return false;
 		}

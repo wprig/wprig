@@ -34,7 +34,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return string Component slug.
 	 */
-	public function get_slug() : string {
+	public function get_slug(): string {
 		return 'sidebars';
 	}
 
@@ -53,7 +53,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               a callable or an array with key 'callable'. This approach is used to reserve the possibility of
 	 *               adding support for further arguments in the future.
 	 */
-	public function template_tags() : array {
+	public function template_tags(): array {
 		return array(
 			'is_primary_sidebar_active' => array( $this, 'is_primary_sidebar_active' ),
 			'display_primary_sidebar'   => array( $this, 'display_primary_sidebar' ),
@@ -83,7 +83,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param array $classes Classes for the body element.
 	 * @return array Filtered body classes.
 	 */
-	public function filter_body_classes( array $classes ) : array {
+	public function filter_body_classes( array $classes ): array {
 		if ( $this->is_primary_sidebar_active() ) {
 			global $template;
 
@@ -100,7 +100,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return bool True if the primary sidebar is active, false otherwise.
 	 */
-	public function is_primary_sidebar_active() : bool {
+	public function is_primary_sidebar_active(): bool {
 		return (bool) is_active_sidebar( static::PRIMARY_SIDEBAR_SLUG );
 	}
 

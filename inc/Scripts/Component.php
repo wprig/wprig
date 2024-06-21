@@ -54,7 +54,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return string Component slug.
 	 */
-	public function get_slug() : string {
+	public function get_slug(): string {
 		return 'scripts';
 	}
 
@@ -72,7 +72,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               a callable or an array with key 'callable'. This approach is used to reserve the possibility of
 	 *               adding support for further arguments in the future.
 	 */
-	public function template_tags() : array {
+	public function template_tags(): array {
 		return array(
 			'print_scripts' => array( $this, 'print_scripts' ),
 		);
@@ -163,7 +163,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return array Associative array of $handle => $data pairs.
 	 */
-	protected function get_js_files() : array {
+	protected function get_js_files(): array {
 		if ( is_array( $this->js_files ) ) {
 			return $this->js_files;
 		}
