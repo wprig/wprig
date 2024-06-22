@@ -35,6 +35,7 @@
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*.min.css*</exclude-pattern>
+	<exclude-pattern>*/gulp/tests/prod-build/*</exclude-pattern>
 
 	<!--
 	#############################################################################
