@@ -8,9 +8,9 @@
 namespace WP_Rig\WP_Rig\EZ_Customizer;
 
 use WP_Customize_Color_Control;
+use WP_Customize_control;
 use WP_Customize_Date_Time_Control;
 use WP_Customize_Media_Control;
-use WP_Customize_control;
 use WP_Rig\WP_Rig\Component_Interface;
 use function add_action;
 use function get_theme_file_uri;
@@ -19,6 +19,8 @@ use function get_theme_file_uri;
  * Class for managing Customizer integration.
  */
 class Component implements Component_Interface {
+
+
 
 	/**
 	 * All theme settings - from JSON file.
