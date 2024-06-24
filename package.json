@@ -10,6 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/wprig/wprig.git"
   },
+  "engines": {
+    "node": ">=20.13.1",
+    "npm": ">=10.5.2"
+  },
   "bugs": {
     "url": "https://github.com/wprig/wprig/issues"
   },
