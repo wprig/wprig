@@ -77,8 +77,8 @@
     "postcss-reporter": "^6.0.1",
     "pump": "^3.0.0",
     "rimraf": "^2.6.3",
-    "stylelint": "^10.0.1",
-    "stylelint-config-wordpress": "^14.0.0",
+    "stylelint": "^16.6.1",
+    "stylelint-config-wordpress": "^17.0.0",
     "vinyl": "^2.2.0"
   },
   "babel": {
