@@ -32,7 +32,7 @@ class Component_Tests extends Unit_Test_Case {
 	 *
 	 * @var Object
 	 */
-	public $MockPost;
+	public $mock_post;
 
 	/**
 	 * Sets up the environment before each test.
@@ -59,7 +59,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_initialize() {
 		$this->component->initialize();
-		$this->MockPost = $this->getMockBuilder( 'WP_Post' );
+		$this->mock_post = $this->getMockBuilder( 'WP_Post' );
 
 		$this->assertNotEquals( false, has_action( 'wp_enqueue_scripts', array( $this->component, 'action_enqueue_navigation_script' ) ) );
 		$this->assertNotEquals( false, has_action( 'wp_print_footer_scripts', array( $this->component, 'action_print_skip_link_focus_fix' ) ) );
@@ -167,7 +167,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current() {
 		$atts = array();
-		$item = $this->MockPost->getMock();
+		$item = $this->mock_post->getMock();
 
 		$atts = $this->component->filter_nav_menu_link_attributes_aria_current( $atts, $item );
 		$this->assertEmpty( $atts );
@@ -180,7 +180,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current_with_current_item() {
 		$atts          = array();
-		$item          = $this->MockPost->getMock();
+		$item          = $this->mock_post->getMock();
 		$item->current = true;
 
 		$atts = $this->component->filter_nav_menu_link_attributes_aria_current( $atts, $item );
@@ -194,7 +194,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current_with_current_post() {
 		$atts     = array();
-		$item     = $this->MockPost->getMock();
+		$item     = $this->mock_post->getMock();
 		$item->ID = 1;
 
 		$GLOBALS['post'] = $item; // phpcs:ignore WordPress.WP.GlobalVariablesOverride

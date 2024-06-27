@@ -1,6 +1,6 @@
 {
   "name": "wprig",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "A progressive theme development rig for WordPress.",
   "author": "The WP Rig Contributors",
   "license": "GPL-3.0-or-later",
@@ -9,6 +9,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wprig/wprig.git"
+  },
+  "engines": {
+    "node": ">=20.13.1",
+    "npm": ">=10.5.2"
   },
   "bugs": {
     "url": "https://github.com/wprig/wprig/issues"
@@ -46,10 +50,10 @@
     "gulp-imagemin": "^6.0.0",
     "gulp-load-plugins": "^2.0.0",
     "gulp-newer": "^1.4.0",
-    "gulp-notify": "^3.2.0",
-    "gulp-phpcs": "^3.0.0",
+    "gulp-notify": "^4.0.0",
+    "gulp-phpcs": "^3.1.0",
     "gulp-plumber": "^1.2.1",
-    "gulp-postcss": "^8.0.0",
+    "gulp-postcss": "^10.0.0",
     "gulp-potomo": "^1.1.0",
     "gulp-print": "^5.0.2",
     "gulp-rename": "^1.4.0",
@@ -69,12 +73,12 @@
     "postcss-calc": "^7.0.1",
     "postcss-import": "^12.0.1",
     "postcss-partial-import": "^4.1.0",
-    "postcss-preset-env": "^6.7.0",
+    "postcss-preset-env": "^9.5.14",
     "postcss-reporter": "^6.0.1",
     "pump": "^3.0.0",
     "rimraf": "^2.6.3",
-    "stylelint": "^10.0.1",
-    "stylelint-config-wordpress": "^14.0.0",
+    "stylelint": "^16.6.1",
+    "stylelint-config-wordpress": "^17.0.0",
     "vinyl": "^2.2.0"
   },
   "babel": {

@@ -10,6 +10,7 @@ namespace WP_Rig\WP_Rig\Nav_Menus;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Post;
+
 use function add_action;
 use function add_filter;
 use function register_nav_menus;
@@ -81,8 +82,14 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
 	 */
 	private function get_theme_settings_config() {
-		$theme_settings_json  = file_get_contents( get_theme_file_path() . '/inc/EZ_Customizer/themeCustomizeSettings.json' );
-		$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
+		$url      = get_theme_file_uri() . '/inc/EZ_Customizer/themeCustomizeSettings.json';
+		$response = wp_remote_get( $url );
+		if ( is_wp_error( $response ) ) {
+			return null;
+		} else {
+			$theme_settings_json  = wp_remote_retrieve_body( $response );
+			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
+		}
 	}
 
 	/**
@@ -124,7 +131,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		// Add the dropdown for items that have children.
-		if ( ! empty( $item->classes ) && in_array( 'menu-item-has-children', $item->classes ) ) {
+		if ( ! empty( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true ) ) {
 			return $item_output . '<span class="dropdown"><i class="dropdown-symbol"></i></span>';
 		}
 
@@ -162,9 +169,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string Mobile Nav Toggle HTML.
 	 */
 	public function customize_mobile_menu_toggle() {
+		$get_menu_icon  = wp_remote_get( get_theme_file_uri() . '/assets/svg/menu-icon.svg' );
+		$get_close_icon = wp_remote_get( get_theme_file_path() . '/assets/svg/close-icon.svg' );
 		return '<button class="menu-toggle icon" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
-					' . file_get_contents( get_theme_file_path() . '/assets/svg/menu-icon.svg' ) . '
-					' . file_get_contents( get_theme_file_path() . '/assets/svg/close-icon.svg' ) . '
+					' . wp_remote_retrieve_body( $get_menu_icon ) . '
+					' . wp_remote_retrieve_body( $get_close_icon ) . '
 					</button>';
 	}
 
@@ -177,9 +186,14 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		return esc_html__( 'main-navigation nav--toggle-sub nav--toggle-small icon-nav', 'wp-rig' );
 	}
 
+	// TODO: Please improve the following @param description.
+
 	/**
 	 * Adds the necessary nav class for navigation.js to control sub menus.
 	 *
+	 * @param mixed $block_content The block content. Type could possibly be more specific.
+	 * @param mixed $block The block. Type could possibly be more specific.
+	 * @param mixed $instance The instance. Type could possibly be more specific.
 	 * @return string.
 	 */
 	public function add_nav_class_to_navigation_block( $block_content, $block, $instance ) {
@@ -188,7 +202,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Find the first <ul> or <ol> tag in the block markup.
 		$content->next_tag( array( 'nav' ) );
-		// Note: soon this will change to `$content->next( [ 'ol', 'ul' ] )`;
+		// Note: soon this will change to `$content->next( [ 'ol', 'ul' ] )`.
 
 		// Add a custom class.
 		$content->add_class( 'nav--toggle-sub' );

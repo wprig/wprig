@@ -122,10 +122,10 @@ export function stylesAfterReplacementStream() {
 }
 
 /**
-* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
-* @param {function} done function to call when async processes finish
-* @return {Stream} single stream
-*/
+ * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
+ * @param {function} done function to call when async processes finish
+ * @return {Stream} single stream
+ */
 export default function styles( done ) {
 	return pump( [
 		src( paths.styles.src, { sourcemaps: ! isProd } ),
