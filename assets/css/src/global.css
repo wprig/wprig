@@ -381,10 +381,6 @@ nav div.wp-block-navigation__responsive-dialog {
 				visibility: hidden;
 			}
 
-			/* & .menu {
-				visibility: visible;
-			} */
-
 			&.nav--toggled-on {
 
 				& .menu-toggle span.dashicons::before {
@@ -398,10 +394,6 @@ nav div.wp-block-navigation__responsive-dialog {
 					transition: opacity 0.3s ease, top 0.3s ease-out;
 					visibility: visible;
 				}
-
-				/* & .menu {
-					visibility: visible;
-				} */
 			}
 		}
 	}

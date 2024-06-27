@@ -8,8 +8,9 @@
 namespace WP_Rig\WP_Rig\Image_Sizes;
 
 use WP_Rig\WP_Rig\Component_Interface;
-use function WP_Rig\WP_Rig\wp_rig;
 use WP_Post;
+
+use function WP_Rig\WP_Rig\wp_rig;
 use function add_filter;
 
 /**

@@ -8,17 +8,19 @@
 namespace WP_Rig\WP_Rig\EZ_Customizer;
 
 use WP_Customize_Color_Control;
+use WP_Customize_control;
 use WP_Customize_Date_Time_Control;
 use WP_Customize_Media_Control;
-use WP_Customize_control;
 use WP_Rig\WP_Rig\Component_Interface;
 use function add_action;
-use function get_theme_file_path;
+use function get_theme_file_uri;
 
 /**
  * Class for managing Customizer integration.
  */
 class Component implements Component_Interface {
+
+
 
 	/**
 	 * All theme settings - from JSON file.
@@ -81,7 +83,8 @@ class Component implements Component_Interface {
 	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
 	 */
 	private function get_theme_settings_config() {
-		$theme_settings_json  = file_get_contents( get_theme_file_path() . '/inc/EZ_Customizer/themeCustomizeSettings.json' );
+		$get_menu_icon        = wp_remote_get( get_theme_file_uri() . '/inc/EZ_Customizer/themeCustomizeSettings.json' );
+		$theme_settings_json  = wp_remote_retrieve_body( $get_menu_icon );
 		$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
 	}
 

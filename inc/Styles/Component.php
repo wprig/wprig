@@ -121,7 +121,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			 * (unless preloading stylesheets is disabled, in which case stylesheets should be immediately
 			 * enqueued based on whether they are necessary for the page content).
 			 */
-			if ( $data['global'] || ! $preloading_styles_enabled && is_callable( $data['preload_callback'] ) && call_user_func( $data['preload_callback'] ) ) {
+			$global_style         = $data['global'];
+			$preloading_available = is_callable( $data['preload_callback'] ) && call_user_func( $data['preload_callback'] );
+
+			if ( $global_style || ( ! $preloading_styles_enabled && $preloading_available ) ) {
 				wp_enqueue_style( $handle, $src, $data['deps'], $version, $data['media'] );
 			} else {
 				wp_register_style( $handle, $src, $data['deps'], $version, $data['media'] );
