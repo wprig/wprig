@@ -44,14 +44,14 @@ function watchCSS(done) {
 
 // Placeholder build functions for other processes
 function buildPHP() {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		// Add PHP build logic if any, otherwise just resolve
 		resolve();
 	});
 }
 
 function buildImages() {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		// Add Images build logic if any, otherwise just resolve
 		resolve();
 	});
