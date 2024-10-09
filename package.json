@@ -92,12 +92,13 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "gulp",
     "build:js": "node build-js.js",
-    "watch:js": "node build-js.js",
+    "dev:js": "node build-js.js --dev",
     "build:css": "node build-css.js",
+    "dev:css": "node build-css.js --dev",
+    "watch:js": "node build-js.js",
     "watch:css": "npm run build:css && chokidar 'src/styles/**/*.css' -c 'npm run build:css'",
-    "watch": "npm-run-all --parallel watch:js watch:css",
-    "build": "npm-run-all build:js build:css"
+    "dev": "gulp",
+    "build": "gulp build"
   }
 }

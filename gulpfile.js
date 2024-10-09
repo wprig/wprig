@@ -1,24 +1,19 @@
-import { src, dest, parallel, series, watch } from 'gulp';
-import imagemin from 'gulp-imagemin';
+import gulp from 'gulp';
 import browserSync from 'browser-sync';
 import { exec } from 'child_process';
 import util from 'util';
-import { paths } from './gulp/constants.js';
-
-// Promisify exec to use with async/await
 const execPromise = util.promisify(exec);
 
-// BrowserSync instance
-const server = browserSync.create();
+// Create browserSync instance
+const bs = browserSync.create();
 
-// Clean CSS and JS tasks (implement appropriate logic)
-async function cleanCSS() { /* Clean CSS logic */ }
-async function cleanJS() { /* Clean JS logic */ }
+// Check if the current environment is development or production
+const isDev = process.env.NODE_ENV === 'development';
 
-// JavaScript build with Esbuild
 async function buildJS() {
 	try {
-		const { stdout, stderr } = await execPromise('npm run build:js');
+		const cmd = isDev ? 'npm run dev:js' : 'npm run build:js';
+		const { stdout, stderr } = await execPromise(cmd);
 		console.log(stdout);
 		if (stderr) console.error(stderr);
 	} catch (err) {
@@ -26,10 +21,15 @@ async function buildJS() {
 	}
 }
 
-// CSS build with LightningCSS
+function watchJS(done) {
+	gulp.watch('assets/js/src/**/*.{js,ts,tsx}', buildJS).on('change', bs.reload);
+	done();
+}
+
 async function buildCSS() {
 	try {
-		const { stdout, stderr } = await execPromise('npm run build:css');
+		const cmd = isDev ? 'npm run dev:css' : 'npm run build:css';
+		const { stdout, stderr } = await execPromise(cmd);
 		console.log(stdout);
 		if (stderr) console.error(stderr);
 	} catch (err) {
@@ -37,41 +37,51 @@ async function buildCSS() {
 	}
 }
 
-// Optimize images
-function images() {
-	return src(paths.images.src)
-		.pipe(imagemin())
-		.pipe(dest(paths.images.dest));
+function watchCSS(done) {
+	gulp.watch('assets/css/src/**/*.css', buildCSS).on('change', bs.reload);
+	done();
 }
 
-// Watch files for changes
-function watchFiles() {
-	watch('src/js/**/*.js', buildJS);
-	watch('src/styles/**/*.css', buildCSS);
-	watch('src/images/**/*', images);
-	watch(['dist/js/**/*.js', 'dist/css/**/*.css']).on('change', server.reload);
-}
-
-// Serve with BrowserSync
-function serve() {
-	server.init({
-		server: {
-			baseDir: './'
-		}
+// Placeholder build functions for other processes
+function buildPHP() {
+	return new Promise((resolve, reject) => {
+		// Add PHP build logic if any, otherwise just resolve
+		resolve();
 	});
-	watchFiles();
 }
 
-// Default task
-const build = series(cleanCSS, cleanJS, parallel(buildCSS, buildJS, images), serve);
+function buildImages() {
+	return new Promise((resolve, reject) => {
+		// Add Images build logic if any, otherwise just resolve
+		resolve();
+	});
+}
 
-export {
-	cleanCSS,
-	cleanJS,
-	buildCSS,
-	buildJS,
-	images,
-	serve,
-};
+// Placeholder functions for other watch tasks (retain original existing tasks)
+function watchPHP() {
+	gulp.watch('**/*.php').on('change', bs.reload);
+}
 
-export default build;
+function watchImages() {
+	gulp.watch('assets/images/**/*').on('change', bs.reload);
+}
+
+// Development task with BrowserSync server and file watching
+function dev() {
+	bs.init({
+		proxy: 'your-local-site-url' // Adjust your local server URL
+	});
+
+	gulp.series(
+		gulp.parallel(buildJS, buildCSS, buildPHP, buildImages),
+		gulp.parallel(watchJS, watchCSS, watchPHP, watchImages)
+	)();
+}
+
+// Build task without file watching
+const build = gulp.series(
+	gulp.parallel(buildJS, buildCSS, buildPHP, buildImages) // Include all build tasks
+);
+
+// Export tasks using ES Modules syntax
+export { dev as default, build };
