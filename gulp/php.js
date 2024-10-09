@@ -11,8 +11,8 @@ import { pipeline } from 'mississippi';
 /**
  * Internal dependencies
  */
-import { paths, PHPCSOptions, gulpPlugins, isProd } from './constants';
-import { getStringReplacementTasks, getThemeConfig } from './utils';
+import { paths, PHPCSOptions, isProd } from './constants.js';
+import { getStringReplacementTasks, getThemeConfig } from './utils.js';
 
 export function phpBeforeReplacementStream() {
 	const config = getThemeConfig();
@@ -21,12 +21,12 @@ export function phpBeforeReplacementStream() {
 	// before replacement functionality
 	return pipeline.obj( [
 		// Only code sniff PHP files if the debug setting is true
-		gulpPlugins.if(
+		/*gulpPlugins.if(
 			config.dev.debug.phpcs,
 			gulpPlugins.phpcs( PHPCSOptions )
-		),
+		),*/
 		// Log all problems that were found.
-		gulpPlugins.phpcs.reporter( 'log' ),
+		//gulpPlugins.phpcs.reporter( 'log' ),
 	] );
 }
 

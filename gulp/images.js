@@ -10,7 +10,9 @@ import pump from 'pump';
 /**
  * Internal dependencies
  */
-import { paths, gulpPlugins } from './constants';
+import { paths } from './constants.js';
+import gulpImagemin from "gulp-imagemin";
+import gulpNewer from "gulp-newer";
 
 /**
  * Optimize images.
@@ -20,8 +22,8 @@ import { paths, gulpPlugins } from './constants';
 export default function images( done ) {
 	return pump( [
 		src( paths.images.src ),
-		gulpPlugins.newer( paths.images.dest ),
-		gulpPlugins.imagemin(),
+		gulpNewer( paths.images.dest ),
+		gulpImagemin(),
 		dest( paths.images.dest ),
 	], done );
 }

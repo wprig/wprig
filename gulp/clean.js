@@ -9,7 +9,7 @@ import del from 'del';
 /**
  * Internal dependencies
  */
-import { paths } from './constants';
+import { paths } from './constants.js';
 
 /**
  * Clean CSS

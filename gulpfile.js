@@ -1,8 +1,13 @@
-import gulp from 'gulp';
+import gulp, {parallel, series} from 'gulp';
 import browserSync from 'browser-sync';
 import { exec } from 'child_process';
 import util from 'util';
 const execPromise = util.promisify(exec);
+import {serve} from './gulp/browserSync.js';
+import watch from './gulp/watch.js';
+import php from "./gulp/php.js";
+import images from "./gulp/images.js";
+import {cleanCSS, cleanJS} from "./gulp/clean.js";
 
 // Create browserSync instance
 const bs = browserSync.create();
@@ -68,13 +73,14 @@ function watchImages() {
 
 // Development task with BrowserSync server and file watching
 function dev() {
-	bs.init({
-		proxy: 'your-local-site-url' // Adjust your local server URL
-	});
 
 	gulp.series(
-		gulp.parallel(buildJS, buildCSS, buildPHP, buildImages),
-		gulp.parallel(watchJS, watchCSS, watchPHP, watchImages)
+		cleanCSS,
+		cleanJS,
+		gulp.parallel(buildJS, buildCSS),
+		gulp.parallel( images), // Put php process back in later before image
+		gulp.parallel(watchJS, watchCSS),
+		serve, watch
 	)();
 }
 
