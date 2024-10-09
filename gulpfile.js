@@ -3,7 +3,7 @@ import browserSync from 'browser-sync';
 import { exec } from 'child_process';
 import util from 'util';
 const execPromise = util.promisify(exec);
-import {serve} from './gulp/browserSync.js';
+import {serve, server, reload} from './gulp/browserSync.js';
 import watch from './gulp/watch.js';
 import php from "./gulp/php.js";
 import images from "./gulp/images.js";
@@ -21,13 +21,14 @@ async function buildJS() {
 		const { stdout, stderr } = await execPromise(cmd);
 		console.log(stdout);
 		if (stderr) console.error(stderr);
+		server.reload();
 	} catch (err) {
 		console.error(err);
 	}
 }
 
 function watchJS(done) {
-	gulp.watch('assets/js/src/**/*.{js,ts,tsx}', buildJS).on('change', bs.reload);
+	gulp.watch('assets/js/src/**/*.{js,ts,tsx}', buildJS).on('change', server.reload);
 	done();
 }
 
@@ -37,13 +38,14 @@ async function buildCSS() {
 		const { stdout, stderr } = await execPromise(cmd);
 		console.log(stdout);
 		if (stderr) console.error(stderr);
+		server.reload();
 	} catch (err) {
 		console.error(err);
 	}
 }
 
 function watchCSS(done) {
-	gulp.watch('assets/css/src/**/*.css', buildCSS).on('change', bs.reload);
+	gulp.watch('assets/css/src/**/*.css', buildCSS).on('change', server.reload);
 	done();
 }
 
@@ -64,11 +66,11 @@ function buildImages() {
 
 // Placeholder functions for other watch tasks (retain original existing tasks)
 function watchPHP() {
-	gulp.watch('**/*.php').on('change', bs.reload);
+	gulp.watch('**/*.php').on('change', server.reload);
 }
 
 function watchImages() {
-	gulp.watch('assets/images/**/*').on('change', bs.reload);
+	gulp.watch('assets/images/**/*').on('change', server.reload);
 }
 
 // Development task with BrowserSync server and file watching
