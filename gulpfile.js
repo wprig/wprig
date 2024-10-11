@@ -6,7 +6,7 @@ const execPromise = util.promisify(exec);
 import {serve, server, reload} from './gulp/browserSync.js';
 import watch from './gulp/watch.js';
 import php from "./gulp/php.js";
-import images from "./gulp/images.js";
+import { images, convertToWebP } from "./gulp/images.js";
 import {cleanCSS, cleanJS} from "./gulp/clean.js";
 
 // Create browserSync instance
@@ -57,13 +57,6 @@ function buildPHP() {
 	});
 }
 
-function buildImages() {
-	return new Promise((resolve) => {
-		// Add Images build logic if any, otherwise just resolve
-		resolve();
-	});
-}
-
 // Placeholder functions for other watch tasks (retain original existing tasks)
 function watchPHP() {
 	gulp.watch('**/*.php').on('change', server.reload);
@@ -80,7 +73,7 @@ function dev() {
 		cleanCSS,
 		cleanJS,
 		gulp.parallel(buildJS, buildCSS),
-		gulp.parallel( images), // Put php process back in later before image
+		//gulp.parallel( images, webp ), // Put php process back in later before image
 		gulp.parallel(watchJS, watchCSS),
 		serve, watch
 	)();
@@ -88,8 +81,21 @@ function dev() {
 
 // Build task without file watching
 const build = gulp.series(
-	gulp.parallel(buildJS, buildCSS, buildPHP, buildImages) // Include all build tasks
+	gulp.parallel(buildJS, buildCSS, buildPHP) // Include all build tasks
 );
+
+// Define the 'images' task
+gulp.task('images', gulp.series(
+	(done) => {
+		console.log('Optimizing images...');
+		done();
+	},
+	gulp.parallel(images, convertToWebP),
+	(done) => {
+		console.log('Images processed');
+		done();
+	}
+));
 
 // Export tasks using ES Modules syntax
 export { dev as default, build };
