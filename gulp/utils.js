@@ -41,7 +41,6 @@ export const getDefaultConfig = () => require( `${ rootPath }/config/config.defa
  * @return {Object} Theme configuration data.
  */
 export function getThemeConfig( uncached = false ) {
-
 	if ( ! config.theme.slug ) {
 		config.theme.slug = config.theme.name.toLowerCase().replace( /[\s_]+/g, '-' ).replace( /[^a-z0-9-]+/g, '' );
 	}
@@ -74,8 +73,9 @@ export function getThemeConfig( uncached = false ) {
  * @return {Array} List of tasks.
  */
 export function getStringReplacementTasks() {
-	const config = getThemeConfig( isProd );
-
+	// const config = getThemeConfig( isProd );
+	// Are we getting the correct config? We have to make sure it's all dynamic enough
+	// We also need to replace this stringReplace from gulpPlugins. Ughhhh
 	const stringReplacementTasks = Object.keys( nameFieldDefaults ).map( ( nameField ) => {
 		return gulpPlugins.stringReplace(
 			// Backslashes must be double escaped for regex
