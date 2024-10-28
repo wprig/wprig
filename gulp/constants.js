@@ -14,6 +14,8 @@ import {
 	configValueDefined,
 } from './utils.js';
 
+import config from '../config/themeConfig.js';
+
 // Root path is where npm run commands happen
 export const rootPath = process.cwd();
 export const gulpTestPath = `${rootPath}/gulp/tests`;
@@ -22,7 +24,8 @@ export const gulpTestPath = `${rootPath}/gulp/tests`;
 export const isProd = (process.env.NODE_ENV === 'production');
 
 // Get the config
-const config = getThemeConfig(true);
+/*console.log(themeConfig);
+const config = themeConfig.loadThemeConfig(true);*/
 
 // Directory for assets (CSS, JS, images)
 export const assetsDir = `${rootPath}/assets`;
