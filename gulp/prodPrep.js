@@ -19,12 +19,12 @@ import {
 	rootPath,
 	paths,
 	nameFieldDefaults,
-} from './constants';
+} from './constants.js';
 import {
 	createProdDir,
 	gulpRelativeDest,
 	getThemeConfig,
-} from './utils';
+} from './utils.js';
 
 /**
  * Create the production directory

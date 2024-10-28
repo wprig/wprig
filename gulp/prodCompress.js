@@ -7,12 +7,13 @@
 import { src, dest } from 'gulp';
 import pump from 'pump';
 import path from 'path';
+import zip from 'gulp-zip';
 
 /**
  * Internal dependencies
  */
-import { prodThemePath, gulpPlugins } from './constants';
-import { getThemeConfig } from './utils';
+import { prodThemePath } from './constants.js';
+import { getThemeConfig } from './utils.js';
 
 /**
  * Create the zip file
@@ -30,7 +31,7 @@ export default function prodCompress( done ) {
 	return pump(
 		[
 			src( `${ prodThemePath }/**/*` ),
-			gulpPlugins.zip( `${ config.theme.slug }.zip` ),
+			zip( `${ config.theme.slug }.zip` ),
 			dest( path.normalize( `${ prodThemePath }/../` ) ),
 		],
 		done

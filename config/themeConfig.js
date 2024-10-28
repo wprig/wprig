@@ -16,6 +16,7 @@ const MISSING_DEFAULT_CONFIG_ERROR = `No default configuration detected. Please 
 
 // Function to load configuration from a file
 const loadConfig = (config, filePath) => {
+	console.log('testinggg');
 	if (fs.existsSync(filePath)) {
 		const fileConfig = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 		return merge(config, fileConfig);

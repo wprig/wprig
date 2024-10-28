@@ -34,7 +34,7 @@
     "run-phpcbf": [
       "@phpcbf-dev"
     ],
-    "phpcs-dev": "\"vendor/bin/phpcs\"",
+    "phpcs-dev": "\"vendor/bin/phpcs\" --parallel=4 --ignore=vendor/*",
     "run-phpcs": [
       "@phpcs-dev"
     ],

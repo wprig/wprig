@@ -5,9 +5,15 @@ import util from 'util';
 const execPromise = util.promisify(exec);
 import {serve, server, reload} from './gulp/browserSync.js';
 import watch from './gulp/watch.js';
-import php from "./gulp/php.js";
 import { images, convertToWebP } from "./gulp/images.js";
 import {cleanCSS, cleanJS} from "./gulp/clean.js";
+import php from "./gulp/php.js";
+import fonts from './gulp/fonts.js';
+import prodPrep from './gulp/prodPrep.js';
+import prodStringReplace from './gulp/prodStringReplace.js';
+import prodCompress from './gulp/prodCompress.js';
+import translate from './gulp/translate.js';
+
 
 // Create browserSync instance
 const bs = browserSync.create();
@@ -49,23 +55,6 @@ function watchCSS(done) {
 	done();
 }
 
-// Placeholder build functions for other processes
-function buildPHP() {
-	return new Promise((resolve) => {
-		// Add PHP build logic if any, otherwise just resolve
-		resolve();
-	});
-}
-
-// Placeholder functions for other watch tasks (retain original existing tasks)
-function watchPHP() {
-	gulp.watch('**/*.php').on('change', server.reload);
-}
-
-function watchImages() {
-	gulp.watch('assets/images/**/*').on('change', server.reload);
-}
-
 // Development task with BrowserSync server and file watching
 function dev() {
 
@@ -73,7 +62,6 @@ function dev() {
 		cleanCSS,
 		cleanJS,
 		gulp.parallel(buildJS, buildCSS),
-		//gulp.parallel( images, webp ), // Put php process back in later before image
 		gulp.parallel(watchJS, watchCSS),
 		serve, watch
 	)();
@@ -81,7 +69,20 @@ function dev() {
 
 // Build task without file watching
 const build = gulp.series(
-	gulp.parallel(buildJS, buildCSS, buildPHP) // Include all build tasks
+	gulp.parallel(cleanCSS, cleanJS),
+	gulp.parallel(buildJS, buildCSS),
+	gulp.parallel( images, php ),
+);
+
+// Bundle theme
+//	prodPrep, parallel(php, scripts, series(styles, editorStyles), images, fonts), translate, prodStringReplace, prodCompress
+const bundle = gulp.series(
+	prodPrep,
+	gulp.parallel(cleanCSS, cleanJS),
+	gulp.parallel(buildJS, buildCSS),
+	gulp.parallel( images, php, fonts ), // Put php process back in later before image
+	gulp.parallel(watchJS, watchCSS),
+	translate, prodStringReplace, prodCompress
 );
 
 // Define the 'images' task
@@ -98,4 +99,4 @@ gulp.task('images', gulp.series(
 ));
 
 // Export tasks using ES Modules syntax
-export { dev as default, build };
+export { dev as default, build, bundle };

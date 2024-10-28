@@ -10,7 +10,7 @@ import pump from 'pump';
 /**
  * Internal dependencies
  */
-import { paths } from './constants';
+import { paths } from './constants.js';
 
 /**
  * Copy the fonts folder from wp-rig to the production theme

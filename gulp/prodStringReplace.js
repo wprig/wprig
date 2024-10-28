@@ -13,11 +13,11 @@ import pump from 'pump';
 import {
 	isProd,
 	paths,
-} from './constants';
+} from './constants.js';
 import {
 	getStringReplacementTasks,
 	gulpRelativeDest,
-} from './utils';
+} from './utils.js';
 
 /**
  * Run string replacement on production files

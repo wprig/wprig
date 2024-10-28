@@ -39,13 +39,22 @@ export const getDefaultConfig = () => require( `${ rootPath }/config/config.defa
  * @return {Object} Theme configuration data.
  */
 export async function getThemeConfig( uncached = false ) {
+	console.log(uncached);
 	if (uncached) {
-		// Dynamically import the module each time (no caching)
-		const dynamicConfig = (await import(path.join(process.cwd(), 'config/themeConfig.js'))).default;
-		return dynamicConfig;
+		try {
+			console.log(path.join(rootPath, 'config/themeConfig.js'));
+			// Dynamically import the module each time (no caching)
+			const dynamicConfig = (await import(path.join(rootPath, 'config/themeConfig.js'))).default;
+			console.log('test');
+			return dynamicConfig;
+		} catch (error) {
+			console.error('Error importing themeConfig.js:', error);
+			// Rethrow the error if you want to propagate it
+			throw error;
+		}
 	} else {
 		if (!global._configCache) {
-			global._configCache = (await import(path.join(process.cwd(), 'config/themeConfig.js'))).default;
+			global._configCache = (await import(path.join(rootPath, 'config/themeConfig.js'))).default;
 		}
 		return global._configCache;
 	}
