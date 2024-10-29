@@ -15,6 +15,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import path from 'path';
 import { fileURLToPath } from 'url';
+import through2 from 'through2';
 
 // Determine `__dirname` in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -76,21 +77,44 @@ export function getStringReplacementTasks() {
 	// const config = getThemeConfig( isProd );
 	// Are we getting the correct config? We have to make sure it's all dynamic enough
 	// We also need to replace this stringReplace from gulpPlugins. Ughhhh
-	const stringReplacementTasks = Object.keys( nameFieldDefaults ).map( ( nameField ) => {
-		return gulpPlugins.stringReplace(
-			// Backslashes must be double escaped for regex
-			nameFieldDefaults[ nameField ].replace( /\\/g, '\\\\' ),
-			config.theme[ nameField ],
-			{
-				logs: {
-					enabled: false,
-				},
-				searchValue: 'regex',
-			}
-		);
-	} );
+	const config = getThemeConfig(isProd); // Assuming `isProd` is passed correctly
 
-	return pipeline.obj( stringReplacementTasks );
+	const stringReplacementTasks = Object.keys(nameFieldDefaults).map(nameField => {
+		const searchValue = new RegExp(nameFieldDefaults[nameField].replace(/\\/g, '\\\\'), 'g');
+		const replaceValue = config.theme[nameField];
+
+		return through2.obj(function (file, enc, callback) {
+			if (file.isBuffer()) {
+				const contents = file.contents.toString(enc).replace(searchValue, replaceValue);
+				file.contents = Buffer.from(contents, enc);
+				this.push(file);
+				return callback();
+			}
+
+			if (file.isStream()) {
+				file.contents = file.contents.pipe(replaceStream(searchValue, replaceValue));
+				this.push(file);
+				return callback();
+			}
+
+			this.push(file);
+			return callback();
+		});
+	});
+
+	return through2.obj(function (file, enc, callback) {
+		const stream = stringReplacementTasks.reduce((prev, task) => {
+			return prev.pipe(task);
+		}, through2.obj());
+
+		file.contents = file.contents.pipe(stream);
+
+		file.contents.on('finish', () => {
+			callback(null, file);
+		});
+
+		file.contents.on('error', callback);
+	});
 }
 
 export function logError( errorTitle = 'gulp' ) {
