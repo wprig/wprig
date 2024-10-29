@@ -103,17 +103,26 @@ export function getStringReplacementTasks() {
 	});
 
 	return through2.obj(function (file, enc, callback) {
-		const stream = stringReplacementTasks.reduce((prev, task) => {
-			return prev.pipe(task);
-		}, through2.obj());
-
-		file.contents = file.contents.pipe(stream);
-
-		file.contents.on('finish', () => {
+		if (file.isBuffer()) {
+			let contents = file.contents.toString(enc);
+			for (const task of stringReplacementTasks) {
+				contents = contents.replace(task.regex, task.replaceValue);
+			}
+			file.contents = Buffer.from(contents, enc);
 			callback(null, file);
-		});
-
-		file.contents.on('error', callback);
+		} else if (file.isStream()) {
+			let stream = file.contents;
+			for (const task of stringReplacementTasks) {
+				stream = stream.pipe(replaceStream(task.regex, task.replaceValue));
+			}
+			file.contents = stream;
+			stream.on('finish', () => {
+				callback(null, file);
+			});
+			stream.on('error', callback);
+		} else {
+			callback(null, file);
+		}
 	});
 }
 
