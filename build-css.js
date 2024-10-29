@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync, readdirSync } from "fs";
+import { readFileSync, writeFileSync, readdirSync } from 'fs';
 import path from 'path';
-import { transform } from '@parcel/css';
+import { transform } from '@parcel/css'; // Assuming you meant LightningCSS, replace with actual package
 
 // Determine if running in development mode
 const isDev = process.argv.includes('--dev');
@@ -8,6 +8,9 @@ const isDev = process.argv.includes('--dev');
 // Directory paths
 const srcDir = path.join(path.resolve(), 'assets/css/src');
 const outDir = path.join(path.resolve(), 'assets/css');
+
+// Read the contents of _custom-media.css
+const customMediaCSS = readFileSync(path.resolve(srcDir, '_custom-media.css'), 'utf8');
 
 // Function to recursively inline @import statements and move them to the top
 function inlineImports(filePath, seenFiles = new Set()) {
@@ -36,7 +39,10 @@ function inlineImports(filePath, seenFiles = new Set()) {
 
 // Function to process CSS files
 function processCSSFile(filePath, outputPath) {
-	const inlinedCSS = inlineImports(filePath);
+	let inlinedCSS = inlineImports(filePath);
+
+	// Prepend the custom media CSS
+	inlinedCSS = customMediaCSS + inlinedCSS;
 
 	const result = transform({
 		filename: filePath,
@@ -45,7 +51,10 @@ function processCSSFile(filePath, outputPath) {
 		sourceMap: isDev,
 		targets: {
 			// Example: Adjust to fit your target environments
-			browsers: ['>0.2%', 'not dead', 'not op_mini all']
+			browsers: ['>0.2%', 'not dead', 'not op_mini all'],
+		},
+		drafts: {
+			customMedia: true,
 		},
 	});
 

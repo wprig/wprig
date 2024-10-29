@@ -43,7 +43,6 @@ export const getDefaultConfig = () => require( `${ rootPath }/config/config.defa
  * @return {Object} Theme configuration data.
  */
 export function getThemeConfig( uncached = false ) {
-	console.log(config);
 	if ( ! config.theme.slug ) {
 		config.theme.slug = config.theme.name.toLowerCase().replace( /[\s_]+/g, '-' ).replace( /[^a-z0-9-]+/g, '' );
 	}
@@ -66,7 +65,7 @@ export function getThemeConfig( uncached = false ) {
 	if ( ! config.theme.camelCaseVar ) {
 		config.theme.camelCaseVar = config.theme.camelCase[ 0 ].toLowerCase() + config.theme.camelCase.substring( 1 );
 	}
-	console.log(config);
+
 	return config;
 }
 
