@@ -66,6 +66,7 @@
     "postcss-preset-env": "^9.5.14",
     "postcss-reporter": "^6.0.1",
     "pump": "^3.0.0",
+    "replacestream": "^4.0.3",
     "rimraf": "^2.6.3",
     "through2": "^4.0.2",
     "vinyl": "^2.2.0"

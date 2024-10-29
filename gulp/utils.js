@@ -16,6 +16,7 @@ const require = createRequire(import.meta.url);
 import path from 'path';
 import { fileURLToPath } from 'url';
 import through2 from 'through2';
+import replaceStream from 'replacestream';
 
 // Determine `__dirname` in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -70,56 +71,44 @@ export function getThemeConfig( uncached = false ) {
 }
 
 /**
- * Get string replacement streams to push into a pump process.
- *
- * @return {Array} List of tasks.
+ * Handles string replacements based on config.
+ * @param {Buffer|string} content - The content to be processed.
+ * @param {Array} replacements - The list of replacements to apply.
+ * @param {string} encoding - The encoding of the content.
+ * @return {Buffer} - The processed content as a Buffer.
  */
-export function getStringReplacementTasks() {
-	// const config = getThemeConfig( isProd );
-	// Are we getting the correct config? We have to make sure it's all dynamic enough
-	// We also need to replace this stringReplace from gulpPlugins. Ughhhh
+function processBuffer(content, replacements, encoding) {
+	let contentStr = content.toString(encoding);
+	replacements.forEach(({ searchValue, replaceValue }) => {
+		contentStr = contentStr.replace(searchValue, replaceValue);
+	});
+	return Buffer.from(contentStr, encoding);
+}
+
+/**
+ * Creates a stream transformation for replacing strings based on the theme config.
+ * @param {boolean} isProd - Flag indicating whether it's in production mode.
+ * @return {Stream.Transform} - A stream transformation for string replacements.
+ */
+export function getStringReplacementTasks(isProd) {
 	const config = getThemeConfig(isProd); // Assuming `isProd` is passed correctly
 
-	const stringReplacementTasks = Object.keys(nameFieldDefaults).map(nameField => {
-		const searchValue = new RegExp(nameFieldDefaults[nameField].replace(/\\/g, '\\\\'), 'g');
-		const replaceValue = config.theme[nameField];
-		console.log([nameField, searchValue, replaceValue]);
-		return through2.obj(function (file, enc, callback) {
-			if (file.isBuffer()) {
-				const contents = file.contents.toString(enc).replace(searchValue, replaceValue);
-				file.contents = Buffer.from(contents, enc);
-				this.push(file);
-				return callback();
-			}
-
-			if (file.isStream()) {
-				file.contents = file.contents.pipe(replaceStream(searchValue, replaceValue));
-				this.push(file);
-				return callback();
-			}
-
-			this.push(file);
-			return callback();
-		});
-	});
+	const replacements = Object.keys(nameFieldDefaults).map(nameField => ({
+		searchValue: new RegExp(nameFieldDefaults[nameField].replace(/\\/g, '\\\\'), 'g'),
+		replaceValue: config.theme[nameField]
+	}));
 
 	return through2.obj(function (file, enc, callback) {
 		if (file.isBuffer()) {
-			let contents = file.contents.toString(enc);
-			for (const task of stringReplacementTasks) {
-				contents = contents.replace(task.regex, task.replaceValue);
-			}
-			file.contents = Buffer.from(contents, enc);
+			file.contents = processBuffer(file.contents, replacements, enc);
 			callback(null, file);
 		} else if (file.isStream()) {
 			let stream = file.contents;
-			for (const task of stringReplacementTasks) {
-				stream = stream.pipe(replaceStream(task.regex, task.replaceValue));
-			}
+			replacements.forEach(({ searchValue, replaceValue }) =>
+				stream = stream.pipe(replaceStream(searchValue, replaceValue))
+			);
 			file.contents = stream;
-			stream.on('finish', () => {
-				callback(null, file);
-			});
+			stream.on('finish', () => callback(null, file));
 			stream.on('error', callback);
 		} else {
 			callback(null, file);
