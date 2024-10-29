@@ -27,20 +27,17 @@ export default function watch() {
 	const PHPwatcher = gulpWatch( backslashToForwardSlash( paths.php.src ), reload );
 	const config = getThemeConfig();
 
-	config.then((config) => {
-		// Only code sniff PHP files if the debug setting is true
-		if ( config.dev.debug.phpcs ) {
-			PHPwatcher.on( 'change', function( path ) {
-				return pump( [
-					src( path ),
-					// Run code sniffing
-					//gulpPlugins.phpcs( PHPCSOptions ),
-					// Log all problems that were found.
-					//gulpPlugins.phpcs.reporter( 'log' ),
-				] );
-			} );
-		}
-	});
+	if ( config.dev.debug.phpcs ) {
+		PHPwatcher.on( 'change', function( path ) {
+			return pump( [
+				src( path ),
+				// Run code sniffing
+				//gulpPlugins.phpcs( PHPCSOptions ),
+				// Log all problems that were found.
+				//gulpPlugins.phpcs.reporter( 'log' ),
+			] );
+		} );
+	}
 
 	gulpWatch( backslashToForwardSlash( paths.images.src ), series( images, reload ) );
 }
