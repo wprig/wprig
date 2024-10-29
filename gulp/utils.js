@@ -42,6 +42,7 @@ export const getDefaultConfig = () => require( `${ rootPath }/config/config.defa
  * @return {Object} Theme configuration data.
  */
 export function getThemeConfig( uncached = false ) {
+	console.log(config);
 	if ( ! config.theme.slug ) {
 		config.theme.slug = config.theme.name.toLowerCase().replace( /[\s_]+/g, '-' ).replace( /[^a-z0-9-]+/g, '' );
 	}
@@ -64,7 +65,7 @@ export function getThemeConfig( uncached = false ) {
 	if ( ! config.theme.camelCaseVar ) {
 		config.theme.camelCaseVar = config.theme.camelCase[ 0 ].toLowerCase() + config.theme.camelCase.substring( 1 );
 	}
-
+	console.log(config);
 	return config;
 }
 
@@ -82,7 +83,7 @@ export function getStringReplacementTasks() {
 	const stringReplacementTasks = Object.keys(nameFieldDefaults).map(nameField => {
 		const searchValue = new RegExp(nameFieldDefaults[nameField].replace(/\\/g, '\\\\'), 'g');
 		const replaceValue = config.theme[nameField];
-
+		console.log([nameField, searchValue, replaceValue]);
 		return through2.obj(function (file, enc, callback) {
 			if (file.isBuffer()) {
 				const contents = file.contents.toString(enc).replace(searchValue, replaceValue);

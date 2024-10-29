@@ -27,7 +27,7 @@ export default function prodCompress( done ) {
 	if ( ! config.export.compress ) {
 		return done();
 	}
-
+	console.log([prodThemePath, config])
 	return pump(
 		[
 			src( `${ prodThemePath }/**/*` ),
