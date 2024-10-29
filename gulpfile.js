@@ -81,7 +81,6 @@ const bundle = gulp.series(
 	gulp.parallel(cleanCSS, cleanJS),
 	gulp.parallel(buildJS, buildCSS),
 	gulp.parallel( images, php, fonts ), // Put php process back in later before image
-	gulp.parallel(watchJS, watchCSS),
 	translate, prodStringReplace, prodCompress
 );
 
