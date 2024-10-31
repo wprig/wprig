@@ -1,19 +1,19 @@
-import gulp, {parallel, series} from 'gulp';
+import gulp, { parallel, series } from 'gulp';
 import browserSync from 'browser-sync';
 import { exec } from 'child_process';
 import util from 'util';
 const execPromise = util.promisify(exec);
-import {serve, server, reload} from './gulp/browserSync.js';
+import { serve, server, reload } from './gulp/browserSync.js';
 import watch from './gulp/watch.js';
-import { images, convertToWebP } from "./gulp/images.js";
-import {cleanCSS, cleanJS} from "./gulp/clean.js";
-import php from "./gulp/php.js";
+import { images, convertToWebP } from './gulp/images.js';
+import { cleanCSS, cleanJS } from './gulp/clean.js';
+import phpTask from './gulp/php.js';  // Note the import as `phpTask`
 import fonts from './gulp/fonts.js';
 import prodPrep from './gulp/prodPrep.js';
 import prodStringReplace from './gulp/prodStringReplace.js';
 import prodCompress from './gulp/prodCompress.js';
 import translate from './gulp/translate.js';
-
+import minimist from 'minimist';
 
 // Create browserSync instance
 const bs = browserSync.create();
@@ -57,8 +57,7 @@ function watchCSS(done) {
 
 // Development task with BrowserSync server and file watching
 function dev() {
-
-	gulp.series(
+	return gulp.series(
 		cleanCSS,
 		cleanJS,
 		gulp.parallel(buildJS, buildCSS),
@@ -67,21 +66,28 @@ function dev() {
 	)();
 }
 
+// Parse command line arguments
+const argv = minimist(process.argv.slice(2));
+const runPhpcs = argv.phpcs || false;
+
+// Wrap the php task to pass the runPhpcs argument
+const php = (done) => phpTask(runPhpcs, done);
+
 // Build task without file watching
 const build = gulp.series(
 	gulp.parallel(cleanCSS, cleanJS),
 	gulp.parallel(buildJS, buildCSS),
-	gulp.parallel( images, php ),
+	gulp.parallel(images, php)
 );
 
 // Bundle theme
-//	prodPrep, parallel(php, scripts, series(styles, editorStyles), images, fonts), translate, prodStringReplace, prodCompress
+//  prodPrep, parallel(php, scripts, series(styles, editorStyles), images, fonts), translate, prodStringReplace, prodCompress
 const bundle = gulp.series(
 	prodPrep,
 	gulp.parallel(cleanCSS, cleanJS),
 	gulp.parallel(buildJS, buildCSS),
-	gulp.parallel( images, php, fonts ), // Put php process back in later before image
-	translate, prodStringReplace, prodCompress
+	gulp.parallel(images, php, fonts), // Put php process back in later before image
+	prodStringReplace, prodCompress
 );
 
 // Define the 'images' task
