@@ -29,6 +29,7 @@ export function serve( done ) {
 
 	if ( ! config.dev.browserSync.live ) {
 		done();
+		return;
 	}
 
 	const serverConfig = {
