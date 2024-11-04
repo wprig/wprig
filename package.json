@@ -20,6 +20,7 @@
   "devDependencies": {
     "@eslint/js": "^9.14.0",
     "@parcel/css": "^1.14.0",
+    "@wordpress/eslint-plugin": "^21.4.0",
     "ajv": "^6.12.3",
     "ansi-colors": "^4.1.1",
     "autoprefixer": "^9.6.1",

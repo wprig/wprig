@@ -7,7 +7,9 @@ const isDev = process.argv.includes('--dev');
 
 // Directory paths
 const srcDir = path.join(path.resolve(), 'assets/css/src');
+const editorSrcDir = path.join(path.resolve(), 'assets/css/src/editor');
 const outDir = path.join(path.resolve(), 'assets/css');
+const editorOutDir = path.join(path.resolve(), 'assets/css/editor');
 
 // Read the contents of _custom-media.css
 const customMediaCSS = readFileSync(path.resolve(srcDir, '_custom-media.css'), 'utf8');
@@ -71,6 +73,17 @@ files.forEach(file => {
 		const filePath = path.join(srcDir, file);
 		const outputFileName = file.replace('.css', '.min.css');
 		const outputPath = path.join(outDir, outputFileName);
+		processCSSFile(filePath, outputPath);
+	}
+});
+
+// Editor files
+const editorFiles = readdirSync(editorSrcDir);
+editorFiles.forEach(file => {
+	if (!file.startsWith('_') && file.endsWith('.css')) {
+		const filePath = path.join(editorSrcDir, file);
+		const outputFileName = file.replace('.css', '.min.css');
+		const outputPath = path.join(editorOutDir, outputFileName);
 		processCSSFile(filePath, outputPath);
 	}
 });
