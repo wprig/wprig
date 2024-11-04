@@ -1,9 +1,10 @@
-import gulp, { parallel, series } from 'gulp';
+import gulp from 'gulp';
+import shell from 'gulp-shell';
 import browserSync from 'browser-sync';
 import { exec } from 'child_process';
 import util from 'util';
 const execPromise = util.promisify(exec);
-import { serve, server, reload } from './gulp/browserSync.js';
+import { serve, server } from './gulp/browserSync.js';
 import watch from './gulp/watch.js';
 import { images, convertToWebP } from './gulp/images.js';
 import { cleanCSS, cleanJS } from './gulp/clean.js';
@@ -12,7 +13,6 @@ import fonts from './gulp/fonts.js';
 import prodPrep from './gulp/prodPrep.js';
 import prodStringReplace from './gulp/prodStringReplace.js';
 import prodCompress from './gulp/prodCompress.js';
-import translate from './gulp/translate.js';
 import minimist from 'minimist';
 
 // Create browserSync instance
@@ -50,6 +50,13 @@ async function buildCSS() {
 	}
 }
 
+async function lintCSS(done){
+	gulp.task('stylint', shell.task([
+		'stylint assets/css/src -c .stylintrc'
+	]));
+	done();
+}
+
 function watchCSS(done) {
 	gulp.watch('assets/css/src/**/*.css', buildCSS).on('change', server.reload);
 	done();
@@ -76,7 +83,7 @@ const php = (done) => phpTask(runPhpcs, done);
 // Build task without file watching
 const build = gulp.series(
 	gulp.parallel(cleanCSS, cleanJS),
-	gulp.parallel(buildJS, buildCSS),
+	gulp.parallel(buildJS, buildCSS, lintCSS),
 	gulp.parallel(images, php)
 );
 
