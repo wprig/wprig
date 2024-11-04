@@ -104,7 +104,7 @@
   },
   "type": "module",
   "scripts": {
-    "editor-support": "node gulp/editorSupport.js",
+    "editor-support": "node node/editorSupport.js",
     "build:js": "node build-js.js",
     "dev:js": "node build-js.js --dev",
     "lint:js": "eslint assets/js/src",
