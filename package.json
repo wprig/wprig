@@ -30,7 +30,7 @@
     "del": "^5.0.0",
     "esbuild": "^0.14.0",
     "esbuild-loader": "^2.13.1",
-    "eslint": "^6.8.0",
+    "eslint": "^9.14.0",
     "eslint-config-gulp": "^3.0.1",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-import": "^2.18.0",
