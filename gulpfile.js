@@ -88,7 +88,6 @@ const build = gulp.series(
 );
 
 // Bundle theme
-//  prodPrep, parallel(php, scripts, series(styles, editorStyles), images, fonts), translate, prodStringReplace, prodCompress
 const bundle = gulp.series(
 	prodPrep,
 	gulp.parallel(cleanCSS, cleanJS),
