@@ -170,7 +170,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function customize_mobile_menu_toggle() {
 		$get_menu_icon  = wp_remote_get( get_theme_file_uri() . '/assets/svg/menu-icon.svg' );
-		$get_close_icon = wp_remote_get( get_theme_file_path() . '/assets/svg/close-icon.svg' );
+		$get_close_icon = wp_remote_get( get_theme_file_uri() . '/assets/svg/close-icon.svg' );
 		return '<button class="menu-toggle icon" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
 					' . wp_remote_retrieve_body( $get_menu_icon ) . '
 					' . wp_remote_retrieve_body( $get_close_icon ) . '

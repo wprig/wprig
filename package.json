@@ -116,6 +116,6 @@
     "build": "gulp build",
     "images": "gulp images",
     "bundle": "cross-env NODE_ENV=production gulp bundle",
-    "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs"
+    "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs",
   }
 }
