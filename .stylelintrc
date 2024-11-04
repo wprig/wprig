@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "brackets": "always", // Ensure brackets are always used
+    "colons": "always", // Ensure colons are always used
+    "colors": "always", // Enforce color usage (hex, rgba etc.)
+    "commaSpace": "always", // Ensure space after commas
+    "commentSpace": "always", // Ensure space after comment start
+    "CSSLiteral": "never", // Disallow unquoted URLs and other literals
+    "depthLimit": 4, // Set max nesting depth
+    "duplicates": "always", // Disallow duplicate properties
+    "efn": "always", // Ensure end files new line
+    "extendsBeforeMixins": "always", // Make sure extends are declared before mixins
+    "indentPref": 2, // Set 2 spaces for indentation
+    "leadingZero": "always", // Always use leading zero in numerical values
+    "maxErrors": false, // No limit on maximum errors
+    "maxWarnings": 10, // Set max warnings limit
+    "mixed": "never", // Disallow mixing spaces and tabs
+    "none": "never", // Ensure none is quoted
+    "namingConvention": "BEM", // Enforce BEM naming convention
+    "parenSpace": "always", // Ensure space inside parentheses
+    "placeholderColon": "never", // Disallow colons before placeholders
+    "semicolons": "always", // Enforce semicolons usage
+    "sortOrder": "alphabetical", // Properties sorting order
+    "stackedProperties": "never", // Disallow stacked properties
+    "universal": "always", // Ensure universal selector is used properly
+    "valid": "always" // Ensure valid syntax
+  },
+  "ignoreFiles": ["**/vendor/*.styl"], // Ignore vendor files
+  "ignoreNestingDepth": [".deep-nested-class"], // Ignore specific deep nested classes
+  "plugins": ["postcss-stylistic"] // Use PostCSS Stylistic plugin for enhanced PostCSS support
+}
