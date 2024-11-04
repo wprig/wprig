@@ -153,6 +153,7 @@ class Theme {
 			new Custom_Logo\Component(),
 			new Post_Thumbnails\Component(),
 			new EZ_Customizer\Component(),
+			new Fonts\Component(),
 			new Styles\Component(),
 			new Scripts\Component(),
 			new Excerpts\Component(),
