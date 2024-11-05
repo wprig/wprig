@@ -105,6 +105,7 @@
   "type": "module",
   "scripts": {
     "editor-support": "node node/editorSupport.js",
+    "rig-init": "npm install && composer install",
     "build:js": "node build-js.js",
     "dev:js": "node build-js.js --dev",
     "lint:js": "eslint assets/js/src",

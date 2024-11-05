@@ -39,7 +39,7 @@ WP Rig has been tested on Linux, Mac, and Windows.
 
 WP Rig requires the following dependencies. Full installation instructions are provided at their respective websites.
 
-- [PHP](http://php.net/) 7.0 or higher (PHP 8 recommended)(PHP 7 is being decremented)
+- [PHP](http://php.net/) 8.0 or higher (PHP 8.1 recommended)
 - [npm](https://www.npmjs.com/)
 - [Composer](https://getcomposer.org/) (installed globally)
 
@@ -171,16 +171,17 @@ export:
 }
 ```
 
-### Gulp process
+### Build process
 
-WP Rig uses a [Gulp 4](https://gulpjs.com/) (Gulp 5 support coming soon) build process to generate and optimize the code
-for the theme. All development is done in the `wp-rig` development theme. Feel free to edit any `.php` files. Asset
-files (CSS, JavaScript and images) are processed by gulp. You should only edit the source asset files in the following
+WP Rig uses a fast end efficient build process to generate and optimize the code
+for the theme. [Gulp 5](https://gulpjs.com/), [Lightning CSS](https://lightningcss.dev/), and [esbuid](https://esbuild.github.io/) are mainly used to provide the underlying functionality.
+All development is done in the `wp-rig` development theme. Feel free to edit any `.php` files.
+You should only edit the source asset files in the following
 locations:
 
-- CSS: `assets/css/src`
-- JavaScript: `assets/js/src`
-- images: `assets/images/src`
+- CSS: `assets/css/src` (Processed by Lightning CSS)
+- JavaScript/Typescript: `assets/js/src` (Processed by esbuild)
+- images: `assets/images/src` (Processed by Gulp)
 
 For more information about the Gulp processes, what processes are available, and how to run them individually, visit
 the [Gulp Wiki page](https://github.com/wprig/wprig/wiki/Gulp).
