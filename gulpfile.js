@@ -2,6 +2,7 @@ import gulp from 'gulp';
 import shell from 'gulp-shell';
 import browserSync from 'browser-sync';
 import { exec } from 'child_process';
+import generateCert from './gulp/generateCert.js';
 import util from 'util';
 const execPromise = util.promisify(exec);
 import { serve, server } from './gulp/browserSync.js';
@@ -110,4 +111,4 @@ gulp.task('images', gulp.series(
 ));
 
 // Export tasks using ES Modules syntax
-export { dev as default, build, bundle };
+export { dev as default, generateCert, build, bundle };

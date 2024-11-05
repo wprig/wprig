@@ -106,6 +106,7 @@
   "scripts": {
     "editor-support": "node node/editorSupport.js",
     "rig-init": "npm install && composer install",
+    "generateCert": "gulp generateCert",
     "build:js": "node build-js.js",
     "dev:js": "node build-js.js --dev",
     "lint:js": "eslint assets/js/src",
