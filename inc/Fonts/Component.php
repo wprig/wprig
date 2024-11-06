@@ -99,17 +99,61 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	function wprig_register_fonts(): void {
 		if ( function_exists( 'wp_register_font_collection' ) ) {
-			wp_register_font_collection( 'google-fonts', [
-				[
-					'family' => 'Roboto Condenses',
-					'variants' => [ '300', '400', '500', '700' ],
-					'subsets' => [ 'latin', 'latin-ext' ],
+			wp_register_font_collection( 'modern-stacks', [
+				'name'          => __( 'Modern Stacks', 'wp-rig' ),
+				'description'   => __( 'A collection of modern system fonts.', 'wp-rig' ),
+				'font_families' => [
+					[
+						'font_family_settings' => [
+							'fontFamily' => 'system-ui, sans-serif',
+							'slug'       => 'system-ui',
+							'name'       => __( 'System UI', 'wp-rig' ),
+						],
+						'categories' => [ 'sans-serif' ]
+					],
+					[
+						'font_family_settings' => [
+							'fontFamily' => "Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif",
+							'slug'       => 'transitional',
+							'name'       => __( 'Transitional', 'wp-rig' ),
+						],
+						'categories' => [ 'serif' ]
+					],
+					[
+						'font_family_settings' => [
+							'fontFamily' => "'Nimbus Mono PS', 'Courier New', monospace",
+							'slug'       => 'monospace-slab-serif',
+							'name'       => __( 'Monospace Slab Serif', 'wp-rig' ),
+						],
+						'categories' => [ 'monospace', 'serif' ]
+					],
+					[
+						'font_family_settings' => [
+							'fontFamily' => "'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive",
+							'slug'       => 'handwritten',
+							'name'       => __( 'Handwritten', 'wp-rig' ),
+						],
+						'categories' => [ 'handwriting' ]
+					]
 				],
-				[
-					'family' => 'Crimson Text',
-					'variants' => [ '300', '400', '600', '700' ],
-					'subsets' => [ 'latin', 'latin-ext' ],
-				],
+				'categories' => [
+					[
+						'name' => __( 'Handwriting', 'wp-rig' ),
+						'slug' => 'handwriting'
+					],
+					[
+						'name' => __( 'Monospace', 'wp-rig' ),
+						'slug' => 'monospace'
+					],
+					[
+						'name' => __( 'Sans Serif', 'wp-rig' ),
+						'slug' => 'sans-serif'
+					],
+					[
+						'name' => __( 'Serif', 'wp-rig' ),
+						'slug' => 'serif'
+					]
+				]
 			] );
 
 			wp_register_font_collection( 'local-fonts', [
