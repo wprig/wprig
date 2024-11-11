@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSync } from 'fs';
 import path from 'path';
-import { transform } from '@parcel/css'; // Assuming you meant LightningCSS, replace with actual package
+import { transform } from '@parcel/css'; // Use LightningCSS or the package you intended to use
 
 // Determine if running in development mode
 const isDev = process.argv.includes('--dev');
@@ -10,6 +10,16 @@ const srcDir = path.join(path.resolve(), 'assets/css/src');
 const editorSrcDir = path.join(path.resolve(), 'assets/css/src/editor');
 const outDir = path.join(path.resolve(), 'assets/css');
 const editorOutDir = path.join(path.resolve(), 'assets/css/editor');
+
+// Ensure output directories exist
+const ensureDirectoryExistence = (dir) => {
+	if (!existsSync(dir)) {
+		mkdirSync(dir, { recursive: true });
+	}
+};
+
+ensureDirectoryExistence(outDir);
+ensureDirectoryExistence(editorOutDir);
 
 // Read the contents of _custom-media.css
 const customMediaCSS = readFileSync(path.resolve(srcDir, '_custom-media.css'), 'utf8');
@@ -39,8 +49,24 @@ function inlineImports(filePath, seenFiles = new Set()) {
 	return inlinedCSS;
 }
 
-// Function to process CSS files
-function processCSSFile(filePath, outputPath) {
+// Recursive function to find all files
+const getAllFiles = (dir) => {
+	const files = readdirSync(dir);
+	let filelist = [];
+	files.forEach(file => {
+		const filePath = path.join(dir, file);
+		const fileStat = statSync(filePath);
+		if (fileStat.isDirectory()) {
+			filelist = filelist.concat(getAllFiles(filePath));
+		} else if (file.endsWith('.css') && !file.startsWith('_')) {
+			filelist.push(filePath);
+		}
+	});
+	return filelist;
+};
+
+// Process CSS files recursively
+const processCSSFile = (filePath, outputPath) => {
 	let inlinedCSS = inlineImports(filePath);
 
 	// Prepend the custom media CSS
@@ -64,26 +90,32 @@ function processCSSFile(filePath, outputPath) {
 	if (result.map) {
 		writeFileSync(`${outputPath}.map`, result.map);
 	}
+};
+
+// Function to process all CSS files in a directory
+const processDirectory = (dir, outDir) => {
+	const files = getAllFiles(dir);
+	files.forEach(file => {
+		const relativePath = path.relative(dir, file);
+		const outputPath = path.join(outDir, relativePath.replace('.css', '.min.css'));
+		const outputDir = path.dirname(outputPath);
+		ensureDirectoryExistence(outputDir);
+		processCSSFile(file, outputPath);
+	});
+};
+
+// Process main CSS directory
+processDirectory(srcDir, outDir);
+
+// Process editor CSS directory
+processDirectory(editorSrcDir, editorOutDir);
+
+console.log('CSS build completed successfully.');
+
+// Usage in package.json for development and production builds
+/*
+"scripts": {
+    "build:css": "node build-css.js",
+    "build:css:dev": "node build-css.js --dev"
 }
-
-// Read all files in the source CSS directory
-const files = readdirSync(srcDir);
-files.forEach(file => {
-	if (!file.startsWith('_') && file.endsWith('.css')) {
-		const filePath = path.join(srcDir, file);
-		const outputFileName = file.replace('.css', '.min.css');
-		const outputPath = path.join(outDir, outputFileName);
-		processCSSFile(filePath, outputPath);
-	}
-});
-
-// Editor files
-const editorFiles = readdirSync(editorSrcDir);
-editorFiles.forEach(file => {
-	if (!file.startsWith('_') && file.endsWith('.css')) {
-		const filePath = path.join(editorSrcDir, file);
-		const outputFileName = file.replace('.css', '.min.css');
-		const outputPath = path.join(editorOutDir, outputFileName);
-		processCSSFile(filePath, outputPath);
-	}
-});
+*/
