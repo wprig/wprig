@@ -105,13 +105,3 @@ processDirectory(paths.styles.srcDir, paths.styles.dest);
 
 // Process editor CSS directory
 processDirectory(paths.styles.editorSrcDir, paths.styles.editorDest);
-
-console.log('CSS build completed successfully.');
-
-// Usage in package.json for development and production builds
-/*
-"scripts": {
-    "build:css": "node build-css.js",
-    "build:css:dev": "node build-css.js --dev"
-}
-*/
