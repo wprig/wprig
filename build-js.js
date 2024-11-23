@@ -1,13 +1,14 @@
 import esbuild from 'esbuild';
 import { readdirSync, existsSync, mkdirSync, statSync } from 'fs';
 import path from 'path';
+import {paths} from './gulp/constants.js';
 
 // Determine if running in development mode
 const isDev = process.argv.includes('--dev');
 
 // Directory paths
-const srcDir = path.join(path.resolve(), 'assets/js/src');
-const outDir = path.join(path.resolve(), 'assets/js');
+const srcDir = paths.scripts.srcDir;
+const outDir = paths.scripts.dest;
 
 // Ensure output directory exists
 if (!existsSync(outDir)) {

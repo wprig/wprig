@@ -1,14 +1,10 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSync } from 'fs';
 import path from 'path';
 import { transform } from '@parcel/css'; // Use LightningCSS or the package you intended to use
-import {paths, isProd} from './gulp/constants.js';
+import {paths} from './gulp/constants.js';
 
 // Determine if running in development mode
 const isDev = process.argv.includes('--dev');
-
-// Directory paths
-
-console.log([ paths, isProd]);
 
 // Ensure output directories exist
 const ensureDirectoryExistence = (dir) => {
