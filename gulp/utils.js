@@ -194,3 +194,46 @@ export function appendBaseToFilePathArray( filePaths, basePath ) {
 
 	return output;
 }
+
+/**
+ * Replaces all occurrences of a specific inline CSS class name in a given string
+ * with another class name.
+ *
+ * @param {string} code - The code containing inline CSS where the replacement
+ * is to be performed.
+ * @return {string} The modified code with the specified inline CSS class name
+ * replaced.
+ */
+export function replaceInlineCSS (code) {
+	const searchValue = nameFieldDefaults.slug;
+	const replaceValue = config.theme.slug;
+	return code.replace(new RegExp(searchValue, 'g'), replaceValue);
+}
+
+/**
+ * Converts a hyphenated string to camelCase notation.
+ *
+ * @param {string} str - The input string containing words separated by hyphens.
+ * @return {string} The converted string in camelCase notation.
+ */
+function toCamelCase(str) {
+	return str.toLowerCase().replace(/-([a-z])/g, (match, group1) => group1.toUpperCase());
+}
+
+/**
+ * Replaces inline JavaScript code by substituting specified placeholders with corresponding values.
+ *
+ * @param {string} code - The inline JavaScript code that contains placeholders to be replaced.
+ * @return {string} - The modified JavaScript code with placeholders replaced by their respective values.
+ */
+export function replaceInlineJS(code) {
+	const replacements = [
+		{ searchValue: nameFieldDefaults.slug, replaceValue: config.theme.slug },
+		{ searchValue: toCamelCase(nameFieldDefaults.slug), replaceValue: toCamelCase(config.theme.slug ) }
+	];
+
+	return code.replace(new RegExp(replacements.map(r => r.searchValue).join('|'), 'g'), match => {
+		const replacement = replacements.find(r => new RegExp(r.searchValue).test(match));
+		return replacement ? replacement.replaceValue : match;
+	});
+};

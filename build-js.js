@@ -1,10 +1,8 @@
 import esbuild from 'esbuild';
-import { readdirSync, existsSync, mkdirSync, statSync } from 'fs';
+import { readdirSync, existsSync, mkdirSync, statSync, readFileSync } from 'fs';
 import path from 'path';
-import {paths} from './gulp/constants.js';
-
-// Determine if running in development mode
-const isDev = process.argv.includes('--dev');
+import { paths, isProd } from './gulp/constants.js';
+import { replaceInlineJS } from './gulp/utils.js';
 
 // Directory paths
 const srcDir = paths.scripts.srcDir;
@@ -34,6 +32,26 @@ const getAllFiles = (dir) => {
 // Get all JavaScript and TypeScript files
 const files = getAllFiles(srcDir);
 
+// Plugin to transform code using replaceInlineJS
+const replaceInlineJSPlugin = {
+	name: 'replaceInlineJS',
+	setup(build) {
+		build.onLoad({ filter: /\.(js|ts|tsx)$/ }, async (args) => {
+			const filePath = args.path;
+			const sourceCode = readFileSync(filePath, 'utf8');
+			const transformedCode = replaceInlineJS(sourceCode);
+			let loader = path.extname(filePath).slice(1);
+			if(loader === 'js'){
+				loader = 'jsx';
+			}
+			return {
+				contents: transformedCode,
+				loader: loader
+			};
+		});
+	}
+};
+
 files.forEach(file => {
 	const relativePath = path.relative(srcDir, file);
 	const outputPath = path.join(outDir, relativePath.replace(/\.(js|ts|tsx)$/, '.min.js'));
@@ -46,8 +64,8 @@ files.forEach(file => {
 	esbuild.build({
 		entryPoints: [file],
 		outfile: outputPath,
-		minify: !isDev,
-		sourcemap: isDev,
+		minify: isProd,
+		sourcemap: !isProd,
 		bundle: true,
 		target: ['es6'], // Adjust based on your target environments
 		loader: {
@@ -55,5 +73,6 @@ files.forEach(file => {
 			'.ts': 'ts',
 			'.tsx': 'tsx',
 		},
+		plugins: [replaceInlineJSPlugin]
 	}).catch(() => process.exit(1));
 });

@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSync } from 'fs';
 import path from 'path';
 import { transform } from '@parcel/css'; // Use LightningCSS or the package you intended to use
-import {paths} from './gulp/constants.js';
-
+import {paths, isProd} from './gulp/constants.js';
+import { replaceInlineCSS } from './gulp/utils.js';
 // Determine if running in development mode
 const isDev = process.argv.includes('--dev');
 
@@ -66,6 +66,7 @@ const processCSSFile = (filePath, outputPath) => {
 
 	// Prepend the custom media CSS
 	inlinedCSS = customMediaCSS + inlinedCSS;
+	inlinedCSS = replaceInlineCSS(inlinedCSS);
 
 	const result = transform({
 		filename: filePath,

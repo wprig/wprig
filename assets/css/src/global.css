@@ -849,3 +849,7 @@ were hidden (via .neverending) before. */
 .infinity-end.neverending .site-footer {
 	display: block;
 }
+
+.wp-rig {
+	display:none;
+}
