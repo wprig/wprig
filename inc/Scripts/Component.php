@@ -61,7 +61,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	/**
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
-	public function initialize() {
+	public function initialize(): void {
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_scripts' ) );
 	}
 
@@ -83,7 +83,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * JavaScript files that are global are enqueued. All other JavaScript files are only registered, to be enqueued later.
 	 */
-	public function action_enqueue_scripts() {
+	public function action_enqueue_scripts(): void {
 		$js_uri = get_theme_file_uri( '/assets/js/' );
 		$js_dir = get_theme_file_path( '/assets/js/' );
 
@@ -136,7 +136,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @param string ...$handles One or more JavaScript file handles.
 	 */
-	public function print_scripts( string ...$handles ) {
+	public function print_scripts( string ...$handles ): void {
 
 		$js_files = $this->get_js_files();
 		$handles  = array_filter(
@@ -175,6 +175,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			),
 		);
 
+		$js_files[] = array(
+			'wp-rig-authors' => array(
+				'file'   => 'authors.min.js',
+				'global' => true,
+			),
+		);
+
 		/**
 		 * Filters default JS files.
 		 *
@@ -203,7 +210,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 					'footer'   => false,
 					'deps'     => array(),
 					'localize' => null,
-
 				),
 				$data
 			);

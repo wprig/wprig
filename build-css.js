@@ -1,15 +1,14 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSync } from 'fs';
 import path from 'path';
 import { transform } from '@parcel/css'; // Use LightningCSS or the package you intended to use
+import {paths, isProd} from './gulp/constants.js';
 
 // Determine if running in development mode
 const isDev = process.argv.includes('--dev');
 
 // Directory paths
-const srcDir = path.join(path.resolve(), 'assets/css/src');
-const editorSrcDir = path.join(path.resolve(), 'assets/css/src/editor');
-const outDir = path.join(path.resolve(), 'assets/css');
-const editorOutDir = path.join(path.resolve(), 'assets/css/editor');
+
+console.log([ paths, isProd]);
 
 // Ensure output directories exist
 const ensureDirectoryExistence = (dir) => {
@@ -18,11 +17,11 @@ const ensureDirectoryExistence = (dir) => {
 	}
 };
 
-ensureDirectoryExistence(outDir);
-ensureDirectoryExistence(editorOutDir);
+ensureDirectoryExistence(paths.styles.dest);
+ensureDirectoryExistence(paths.styles.editorDest);
 
 // Read the contents of _custom-media.css
-const customMediaCSS = readFileSync(path.resolve(srcDir, '_custom-media.css'), 'utf8');
+const customMediaCSS = readFileSync(path.resolve(paths.styles.srcDir, '_custom-media.css'), 'utf8');
 
 // Function to recursively inline @import statements and move them to the top
 function inlineImports(filePath, seenFiles = new Set()) {
@@ -93,11 +92,11 @@ const processCSSFile = (filePath, outputPath) => {
 };
 
 // Function to process all CSS files in a directory
-const processDirectory = (dir, outDir) => {
+const processDirectory = (dir, destDir) => {
 	const files = getAllFiles(dir);
-	files.forEach(file => {
+	files.forEach((file) => {
 		const relativePath = path.relative(dir, file);
-		const outputPath = path.join(outDir, relativePath.replace('.css', '.min.css'));
+		const outputPath = path.join(destDir, relativePath.replace('.css', '.min.css'));
 		const outputDir = path.dirname(outputPath);
 		ensureDirectoryExistence(outputDir);
 		processCSSFile(file, outputPath);
@@ -105,10 +104,10 @@ const processDirectory = (dir, outDir) => {
 };
 
 // Process main CSS directory
-processDirectory(srcDir, outDir);
+processDirectory(paths.styles.srcDir, paths.styles.dest);
 
 // Process editor CSS directory
-processDirectory(editorSrcDir, editorOutDir);
+processDirectory(paths.styles.editorSrcDir, paths.styles.editorDest);
 
 console.log('CSS build completed successfully.');
 
