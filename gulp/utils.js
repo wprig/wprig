@@ -205,6 +205,9 @@ export function appendBaseToFilePathArray( filePaths, basePath ) {
  * replaced.
  */
 export function replaceInlineCSS (code) {
+	if(!isProd){
+		return code;
+	}
 	const searchValue = nameFieldDefaults.slug;
 	const replaceValue = config.theme.slug;
 	return code.replace(new RegExp(searchValue, 'g'), replaceValue);
@@ -227,6 +230,9 @@ function toCamelCase(str) {
  * @return {string} - The modified JavaScript code with placeholders replaced by their respective values.
  */
 export function replaceInlineJS(code) {
+	if(!isProd){
+		return code;
+	}
 	const replacements = [
 		{ searchValue: nameFieldDefaults.slug, replaceValue: config.theme.slug },
 		{ searchValue: toCamelCase(nameFieldDefaults.slug), replaceValue: toCamelCase(config.theme.slug ) }
