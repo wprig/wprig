@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { createElement } from '@wordpress/element'; // For core Gutenberg components compatibility
 import { Panel, PanelBody, PanelRow, TextControl } from '@wordpress/components';
 import { updateSettings } from './api.js'
+import formFieldsData from './settingsFields.json';
 
 const SettingsPage = () => {
 	const [ settings, setSettings ] = useState(window.wpRigThemeSettings.settings);
@@ -22,20 +23,16 @@ const SettingsPage = () => {
 		<div className="settings-page">
 			<Panel>
 				<PanelBody title="My Settings Panel">
-					<PanelRow>
-						<TextControl
-							label="Option 1"
-							value={settings.option1}
-							onChange={(value) => handleChange('option1', value)}
-						/>
-					</PanelRow>
-					<PanelRow>
-						<TextControl
-							label="Option 2"
-							value={settings.option2}
-							onChange={(value) => handleChange('option2', value)}
-						/>
-					</PanelRow>
+					{formFieldsData.fields.map(field => (
+						<PanelRow key={field.name}>
+							<TextControl
+								label={field.label}
+								type={field.type}
+								value={settings[field.name] || ''}
+								onChange={(value) => handleChange(field.name, value)}
+							/>
+						</PanelRow>
+					))}
 				</PanelBody>
 			</Panel>
 		</div>
