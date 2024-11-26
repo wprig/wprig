@@ -1,15 +1,11 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { useState } from 'react';
 import { createElement } from '@wordpress/element'; // For core Gutenberg components compatibility
 import { Panel, PanelBody, PanelRow, TextControl } from '@wordpress/components';
-//import { updateSettings } from 'api.js';
 import { updateSettings } from './api.js'
 
 const SettingsPage = () => {
-	const [ settings, setSettings ] = useState({
-		option1: '',
-		option2: ''
-	});
+	const [ settings, setSettings ] = useState(window.wpRigThemeSettings.settings);
 
 	const handleChange = ( settingKey, value ) => {
 		const newSettings = { ...settings, [settingKey]: value };
@@ -51,7 +47,8 @@ export default SettingsPage;
 const renderSettingsPage = () => {
 	const container = document.getElementById('my-settings-page');
 	if (container) {
-		render(<SettingsPage />, container);
+		const root = createRoot(container);
+		root.render(<SettingsPage />);
 	}
 };
 

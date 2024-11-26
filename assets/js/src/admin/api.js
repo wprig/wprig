@@ -5,7 +5,7 @@ export const updateSettings = (settings) => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			'X-WP-Nonce': window.wpApiSettings.nonce,
+			'X-WP-Nonce': window.wpRigThemeSettings.nonce,
 		},
 		body: JSON.stringify({ settings }),
 	}).then(response => response.json());

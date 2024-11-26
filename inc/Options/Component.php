@@ -68,8 +68,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			true
 		);
 
-		wp_localize_script( 'wp-rig-theme-settings', 'wpApiSettings', array(
+		$settings = get_option('wp_rig_theme_settings', '');
+
+		wp_localize_script( 'wp-rig-theme-settings', 'wpRigThemeSettings', array(
 			'nonce' => wp_create_nonce( 'wp_rest' ),
+			'settings' => $settings,
 		));
 	}
 
@@ -128,11 +131,39 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			return new WP_Error( 'invalid_settings', 'Invalid settings.', array( 'status' => 400 ) );
 		}
 
-		foreach ( $settings as $key => $value ) {
-			update_option( sanitize_key( $key ), sanitize_text_field( $value ) );
-		}
+		$settings = $this->sanitize_theme_settings($settings);
+
+		update_option( 'wp_rig_theme_settings', $settings );
 
 		return new WP_REST_Response( [ 'success' => true, 'settings' => $settings ], 200 );
+	}
+
+	/**
+	 * Sanitizes theme settings by key.
+	 *
+	 * @param array $settings The settings array to be sanitized.
+	 *
+	 * @return array The sanitized settings array.
+	 */
+	function sanitize_theme_settings( array $settings): array {
+		$sanitized_settings = array();
+		foreach ( $settings as $key => $value ) {
+			$sanitized_key = sanitize_key( $key );
+
+			switch ( $sanitized_key ) {
+				case 'email_option':
+					$sanitized_settings[$sanitized_key] = sanitize_email( $value );
+					break;
+				case 'url_option':
+					$sanitized_settings[$sanitized_key] = esc_url_raw( $value );
+					break;
+				default:
+					$sanitized_settings[$sanitized_key] = sanitize_text_field( $value );
+					break;
+			}
+		}
+
+		return $sanitized_settings;
 	}
 
 	/**
