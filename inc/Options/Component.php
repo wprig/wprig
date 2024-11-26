@@ -7,18 +7,13 @@
 
 namespace WP_Rig\WP_Rig\Options;
 
+use WP_Error;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_REST_Server;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use function add_action;
-use function add_filter;
-use function add_theme_support;
-use function is_singular;
-use function pings_open;
-use function esc_url;
-use function get_bloginfo;
-use function wp_scripts;
-use function wp_get_theme;
-use function get_template;
 
 /**
  * Class for adding basic theme support, most of which is mandatory to be implemented by all themes.
@@ -44,6 +39,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function initialize() {
 		add_action( 'admin_enqueue_scripts', array($this, 'theme_options_enqueue_scripts') );
 		add_action( 'admin_menu', array($this, 'add_admin_menu') );
+		add_action( 'rest_api_init', array($this, 'register_settings_endpoint') );
 	}
 
 	/**
@@ -58,7 +54,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		);
 	}
 
-	public function theme_options_enqueue_scripts() {
+	/**
+	 * Enqueues the theme options admin scripts.
+	 *
+	 * @return void
+	 */
+	public function theme_options_enqueue_scripts(): void {
 		wp_enqueue_script(
 			'wp-rig-theme-settings',
 			get_template_directory_uri() . '/assets/js/admin/index.min.js',
@@ -66,9 +67,18 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			filemtime( get_template_directory() . '/assets/js/admin/index.min.js' ),
 			true
 		);
+
+		wp_localize_script( 'wp-rig-theme-settings', 'wpApiSettings', array(
+			'nonce' => wp_create_nonce( 'wp_rest' ),
+		));
 	}
 
-	public function add_admin_menu() {
+	/**
+	 * Adds an admin menu page for WP Rig settings.
+	 *
+	 * @return void
+	 */
+	public function add_admin_menu(): void {
         add_menu_page(
             __( 'WP Rig Settings', 'wp-rig' ),
             __( 'WP Rig Settings', 'wp-rig' ),
@@ -78,8 +88,62 @@ class Component implements Component_Interface, Templating_Component_Interface {
         );
     }
 
-	public function render_settings_page() {
+	/**
+	 * Renders the settings page by including the settings-page.php file from the theme's inc/Options directory.
+	 *
+	 * @return void
+	 */
+	public function render_settings_page(): void {
 		require get_template_directory() . '/inc/Options/settings-page.php';
+	}
+
+	/**
+	 * Registers the settings endpoint for the REST API.
+	 *
+	 * @return void
+	 */
+	function register_settings_endpoint(): void {
+		register_rest_route(
+			'my-theme/v1',
+			'/settings',
+			array(
+				'methods'  => WP_REST_Server::EDITABLE,
+				'callback' => array($this, 'update_settings'),
+				'permission_callback' => array($this, 'settings_permissions_check'),
+			)
+		);
+	}
+
+	/**
+	 * Updates settings based on the provided request.
+	 *
+	 * @param WP_REST_Request $request The request object containing 'settings' parameter.
+	 *
+	 * @return WP_REST_Response|WP_Error WP_REST_Response on success, or WP_Error on failure due to invalid settings.
+	 */
+	function update_settings( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$settings = $request->get_param('settings');
+
+		if ( !is_array( $settings ) ) {
+			return new WP_Error( 'invalid_settings', 'Invalid settings.', array( 'status' => 400 ) );
+		}
+
+		foreach ( $settings as $key => $value ) {
+			update_option( sanitize_key( $key ), sanitize_text_field( $value ) );
+		}
+
+		return new WP_REST_Response( [ 'success' => true, 'settings' => $settings ], 200 );
+	}
+
+	/**
+	 * Checks whether the current user has permission to manage settings.
+	 *
+	 * @param WP_REST_Request $request The current request instance.
+	 *
+	 * @return bool True if the user has the 'manage_options' capability, false otherwise.
+	 */
+	function settings_permissions_check( WP_REST_Request $request ): bool {
+		return current_user_can( 'manage_options' );
 	}
 
 }
