@@ -41,6 +41,21 @@
             "name": "option4",
             "label": "Option 4",
             "type": "url"
+          },
+          {
+            "name": "option6",
+            "label": "Select one",
+            "type": "select",
+            "options": [
+              {
+                "label": "Option 1",
+                "value": "option-1"
+              },
+              {
+                "label": "Option 2",
+                "value": "option-2"
+              }
+            ]
           }
         ]
       }

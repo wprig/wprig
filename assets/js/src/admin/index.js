@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useCallback } from 'react';
 import { createElement } from '@wordpress/element'; // For core Gutenberg components compatibility
-import { PanelRow, TabPanel, TextControl, SnackbarList, BaseControl, FormToggle } from '@wordpress/components';
+import { PanelRow, TabPanel, TextControl, SnackbarList, BaseControl, SelectControl, FormToggle } from '@wordpress/components';
 import { updateSettings } from './api.js';
 import formFieldsData from './settingsFields.json';
 
@@ -13,6 +13,8 @@ const debounce = (func, wait) => {
 		timeout = setTimeout(() => func(...args), wait);
 	};
 };
+
+const textControlTypes = ['text', 'email', 'url', 'password', 'number', 'search', 'tel', 'date', 'time', 'datetime-local'];
 
 const SettingsPage = () => {
 	const [settings, setSettings] = useState(window.wpRigThemeSettings.settings);
@@ -51,7 +53,14 @@ const SettingsPage = () => {
 									checked={!!settings[field.name]}
 									onChange={(event) => handleChange(field.name, event.target.checked)}
 								/></BaseControl>}
-								{field.type !== 'toggle' && <TextControl
+								{field.type === 'select' && <SelectControl
+									__nextHasNoMarginBottom
+									label = { field.label }
+									value = { settings[field.name] || '' }
+									onChange = { (value) => handleChange(field.name, value) }
+									options = { field.options }
+								/>}
+								{textControlTypes.includes(field.type) && <TextControl
 									label={field.label}
 									type={field.type}
 									value={settings[field.name] || ''}
