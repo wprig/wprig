@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { useState, useEffect, useCallback } from 'react';
 import { createElement } from '@wordpress/element'; // For core Gutenberg components compatibility
-import { PanelRow, TabPanel, TextControl, SnackbarList } from '@wordpress/components';
+import { PanelRow, TabPanel, TextControl, SnackbarList, BaseControl, FormToggle } from '@wordpress/components';
 import { updateSettings } from './api.js';
 import formFieldsData from './settingsFields.json';
 
@@ -10,7 +10,7 @@ const debounce = (func, wait) => {
 	let timeout;
 	return (...args) => {
 		clearTimeout(timeout);
-		timeout = setTimeout(() => func.apply(this, args), wait);
+		timeout = setTimeout(() => func(...args), wait);
 	};
 };
 
@@ -47,12 +47,17 @@ const SettingsPage = () => {
 					<div>
 						{formFieldsData.tabs.find(t => t.id === tab.name).tabContent.fields.map(field => (
 							<PanelRow key={field.name}>
-								<TextControl
+								{field.type === 'toggle' && <BaseControl label={field.label}><FormToggle
+									checked={!!settings[field.name]}
+									onChange={(event) => handleChange(field.name, event.target.checked)}
+								/></BaseControl>}
+								{field.type !== 'toggle' && <TextControl
 									label={field.label}
 									type={field.type}
 									value={settings[field.name] || ''}
 									onChange={(value) => handleChange(field.name, value)}
-								/>
+								/>}
+
 							</PanelRow>
 						))}
 					</div>

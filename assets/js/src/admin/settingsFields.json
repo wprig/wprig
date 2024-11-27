@@ -16,6 +16,11 @@
             "name": "option2",
             "label": "Option 2",
             "type": "text"
+          },
+          {
+            "name": "option5",
+            "label": "On/Off",
+            "type": "toggle"
           }
         ]
       }
