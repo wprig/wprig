@@ -1,8 +1,16 @@
-import { createRoot } from 'react-dom/client';
-import { useState, useEffect, useCallback } from 'react';
-import { createElement } from '@wordpress/element'; // For core Gutenberg components compatibility
-import { PanelRow, TabPanel, TextControl, SnackbarList, BaseControl, SelectControl, FormToggle } from '@wordpress/components';
-import { updateSettings } from './api.js';
+import {createRoot} from 'react-dom/client';
+import {useState, useEffect, useCallback} from 'react';
+import {createElement} from '@wordpress/element'; // For core Gutenberg components compatibility
+import {
+	PanelRow,
+	TabPanel,
+	TextControl,
+	SnackbarList,
+	BaseControl,
+	SelectControl,
+	FormToggle
+} from '@wordpress/components';
+import {updateSettings} from './api.js';
 import formFieldsData from './settingsFields.json';
 
 // Debounce function to limit the frequency of calling a function
@@ -23,8 +31,12 @@ const SettingsPage = () => {
 	const debouncedUpdateSettings = useCallback(debounce((newSettings) => {
 		updateSettings(newSettings).then(response => {
 			if (response.success) {
-				const newSnackbarNotices = [...snackbarNotices, { id: Date.now(), content: 'Settings saved!', spokenMessage: 'Settings saved!' }];
-				setSnackbarNotices(newSnackbarNotices );
+				const newSnackbarNotices = [...snackbarNotices, {
+					id: Date.now(),
+					content: 'Settings saved!',
+					spokenMessage: 'Settings saved!'
+				}];
+				setSnackbarNotices(newSnackbarNotices);
 				setTimeout(() => {
 					setSnackbarNotices(prevNotices => prevNotices.filter(notice => notice.id !== newSnackbarNotices[0].id));
 				}, 2000);
@@ -35,7 +47,7 @@ const SettingsPage = () => {
 	}, 1500), [snackbarNotices]);
 
 	const handleChange = (settingKey, value) => {
-		const newSettings = { ...settings, [settingKey]: value };
+		const newSettings = {...settings, [settingKey]: value};
 		setSettings(newSettings);
 		debouncedUpdateSettings(newSettings);
 	}
@@ -44,7 +56,7 @@ const SettingsPage = () => {
 
 		<div className="settings-page">
 			<TabPanel
-				tabs={formFieldsData.tabs.map(tab => ({ name: tab.id, title: tab.tabControl.label }))}
+				tabs={formFieldsData.tabs.map(tab => ({name: tab.id, title: tab.tabControl.label}))}
 			>
 				{(tab) => (
 					<div>
@@ -56,10 +68,10 @@ const SettingsPage = () => {
 								/></BaseControl>}
 								{field.type === 'select' && <SelectControl
 									__nextHasNoMarginBottom
-									label = { field.label }
-									value = { settings[field.name] || '' }
-									onChange = { (value) => handleChange(field.name, value) }
-									options = { field.options }
+									label={field.label}
+									value={settings[field.name] || ''}
+									onChange={(value) => handleChange(field.name, value)}
+									options={field.options}
 								/>}
 								{textControlTypes.includes(field.type) && <TextControl
 									label={field.label}
@@ -74,7 +86,7 @@ const SettingsPage = () => {
 				)}
 			</TabPanel>
 			<div id="settings-saved">
-				<SnackbarList  notices={snackbarNotices} />
+				<SnackbarList notices={snackbarNotices}/>
 			</div>
 
 		</div>
@@ -87,7 +99,7 @@ const renderSettingsPage = () => {
 	const container = document.getElementById('wp-rig-settings-page');
 	if (container) {
 		const root = createRoot(container);
-		root.render(<SettingsPage />);
+		root.render(<SettingsPage/>);
 	}
 };
 
