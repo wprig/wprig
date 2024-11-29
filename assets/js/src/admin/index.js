@@ -27,12 +27,12 @@ const SettingsPage = () => {
 				setSnackbarNotices(newSnackbarNotices );
 				setTimeout(() => {
 					setSnackbarNotices(prevNotices => prevNotices.filter(notice => notice.id !== newSnackbarNotices[0].id));
-				}, 3000);
+				}, 2000);
 			} else {
 				console.error('Failed to save settings:', response);
 			}
 		});
-	}, 1000), [snackbarNotices]);
+	}, 1500), [snackbarNotices]);
 
 	const handleChange = (settingKey, value) => {
 		const newSettings = { ...settings, [settingKey]: value };

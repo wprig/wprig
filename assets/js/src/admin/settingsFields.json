@@ -31,6 +31,11 @@
             "name": "option5",
             "label": "On/Off",
             "type": "toggle"
+          },
+          {
+            "name": "option9",
+            "label": "Live/Die",
+            "type": "toggle"
           }
         ]
       }
