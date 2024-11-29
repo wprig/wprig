@@ -35,7 +35,7 @@ async function buildJS() {
 }
 
 function watchJS(done) {
-	gulp.watch('assets/js/src/**/*.{js,ts,tsx}', buildJS).on('change', server.reload);
+	gulp.watch('assets/js/src/**/*.{js,ts,tsx,json}', buildJS).on('change', server.reload);
 	done();
 }
 

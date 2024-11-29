@@ -5,5 +5,5 @@ wp_enqueue_style(
 ?>
 <div class="wrap">
 	<h1><?php esc_html_e( 'Theme Settings', 'my-theme' ); ?></h1>
-	<div id="my-settings-page"></div>
+	<div id="wp-rig-settings-page"></div>
 </div><?php

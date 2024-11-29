@@ -23,8 +23,8 @@ const SettingsPage = () => {
 	const debouncedUpdateSettings = useCallback(debounce((newSettings) => {
 		updateSettings(newSettings).then(response => {
 			if (response.success) {
-				const newSnackbarNotices = [...snackbarNotices, { id: Date.now(), content: 'Settings were saved' }];
-				setSnackbarNotices(newSnackbarNotices);
+				const newSnackbarNotices = [...snackbarNotices, { id: Date.now(), content: 'Settings saved!', spokenMessage: 'Settings saved!' }];
+				setSnackbarNotices(newSnackbarNotices );
 				setTimeout(() => {
 					setSnackbarNotices(prevNotices => prevNotices.filter(notice => notice.id !== newSnackbarNotices[0].id));
 				}, 3000);
@@ -38,9 +38,10 @@ const SettingsPage = () => {
 		const newSettings = { ...settings, [settingKey]: value };
 		setSettings(newSettings);
 		debouncedUpdateSettings(newSettings);
-	};
+	}
 
 	return (
+
 		<div className="settings-page">
 			<TabPanel
 				tabs={formFieldsData.tabs.map(tab => ({ name: tab.id, title: tab.tabControl.label }))}
@@ -72,7 +73,10 @@ const SettingsPage = () => {
 					</div>
 				)}
 			</TabPanel>
-			<SnackbarList notices={snackbarNotices} />
+			<div id="settings-saved">
+				<SnackbarList  notices={snackbarNotices} />
+			</div>
+
 		</div>
 	);
 };
@@ -80,7 +84,7 @@ const SettingsPage = () => {
 export default SettingsPage;
 
 const renderSettingsPage = () => {
-	const container = document.getElementById('my-settings-page');
+	const container = document.getElementById('wp-rig-settings-page');
 	if (container) {
 		const root = createRoot(container);
 		root.render(<SettingsPage />);

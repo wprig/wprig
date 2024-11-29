@@ -22,7 +22,7 @@ const getAllFiles = (dir) => {
 		const fileStat = statSync(filePath);
 		if (fileStat.isDirectory()) {
 			filelist = filelist.concat(getAllFiles(filePath));
-		} else if (file.endsWith('.js') || file.endsWith('.ts') || file.endsWith('.tsx')) {
+		} else if (file.endsWith('.js') || file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.json')) {
 			filelist.push(filePath);
 		}
 	});

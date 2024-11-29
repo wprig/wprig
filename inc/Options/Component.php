@@ -68,6 +68,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			true
 		);
 
+		wp_enqueue_style('wp-rig-theme-settings',
+			get_template_directory_uri() . '/assets/css/admin/theme-settings.min.css',);
+
 		$settings = get_option('wp_rig_theme_settings', '');
 
 		wp_localize_script( 'wp-rig-theme-settings', 'wpRigThemeSettings', array(
