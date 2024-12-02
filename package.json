@@ -122,6 +122,7 @@
     "watch:css": "npm run build:css && chokidar 'src/styles/**/*.css' -c 'npm run build:css'",
     "dev": "gulp",
     "build": "gulp build",
+    "build:phpcs": "gulp build --phpcs",
     "images": "gulp images",
     "bundle": "cross-env NODE_ENV=production gulp bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs"
