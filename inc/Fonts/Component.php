@@ -97,7 +97,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return void
 	 */
-	function wprig_register_fonts(): void {
+	public function wprig_register_fonts(): void {
 		if ( function_exists( 'wp_register_font_collection' ) ) {
 			wp_register_font_collection(
 				'modern-stacks',

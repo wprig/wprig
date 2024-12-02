@@ -70,6 +70,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		wp_enqueue_style(
 			'wp-rig-theme-settings',
 			get_template_directory_uri() . '/assets/css/admin/theme-settings.min.css',
+			array(),
+			filemtime( get_template_directory() . '/assets/css/admin/theme-settings.min.css' ),
 		);
 
 		$settings = get_option( 'wp_rig_theme_settings', '' );
@@ -113,7 +115,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return void
 	 */
-	function register_settings_endpoint(): void {
+	public function register_settings_endpoint(): void {
 		register_rest_route(
 			'my-theme/v1',
 			'/settings',
@@ -132,7 +134,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return WP_REST_Response|WP_Error WP_REST_Response on success, or WP_Error on failure due to invalid settings.
 	 */
-	function update_settings( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+	public function update_settings( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 		$settings = $request->get_param( 'settings' );
 
 		if ( ! is_array( $settings ) ) {
@@ -159,7 +161,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return array The sanitized settings array.
 	 */
-	function sanitize_theme_settings( array $settings ): array {
+	public function sanitize_theme_settings( array $settings ): array {
 		$sanitized_settings = array();
 		foreach ( $settings as $key => $value ) {
 			$sanitized_key = sanitize_key( $key );
@@ -187,7 +189,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @return bool True if the user has the 'manage_options' capability, false otherwise.
 	 */
-	function settings_permissions_check( WP_REST_Request $request ): bool {
+	public function settings_permissions_check( WP_REST_Request $request ): bool {
 		return current_user_can( 'manage_options' );
 	}
 }
