@@ -43,7 +43,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function initialize(): void {
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_fonts' ) );
 		add_action( 'after_setup_theme', array( $this, 'action_add_editor_fonts' ) );
-		add_action( 'init', array( $this, 'wprig_register_fonts') );
+		add_action( 'init', array( $this, 'wprig_register_fonts' ) );
 		add_filter( 'wp_resource_hints', array( $this, 'filter_resource_hints' ), 10, 2 );
 	}
 
@@ -99,71 +99,77 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	function wprig_register_fonts(): void {
 		if ( function_exists( 'wp_register_font_collection' ) ) {
-			wp_register_font_collection( 'modern-stacks', [
-				'name'          => __( 'Modern Stacks', 'wp-rig' ),
-				'description'   => __( 'A collection of modern system fonts.', 'wp-rig' ),
-				'font_families' => [
-					[
-						'font_family_settings' => [
-							'fontFamily' => 'system-ui, sans-serif',
-							'slug'       => 'system-ui',
-							'name'       => __( 'System UI', 'wp-rig' ),
-						],
-						'categories' => [ 'sans-serif' ]
-					],
-					[
-						'font_family_settings' => [
-							'fontFamily' => "Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif",
-							'slug'       => 'transitional',
-							'name'       => __( 'Transitional', 'wp-rig' ),
-						],
-						'categories' => [ 'serif' ]
-					],
-					[
-						'font_family_settings' => [
-							'fontFamily' => "'Nimbus Mono PS', 'Courier New', monospace",
-							'slug'       => 'monospace-slab-serif',
-							'name'       => __( 'Monospace Slab Serif', 'wp-rig' ),
-						],
-						'categories' => [ 'monospace', 'serif' ]
-					],
-					[
-						'font_family_settings' => [
-							'fontFamily' => "'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive",
-							'slug'       => 'handwritten',
-							'name'       => __( 'Handwritten', 'wp-rig' ),
-						],
-						'categories' => [ 'handwriting' ]
-					]
-				],
-				'categories' => [
-					[
-						'name' => __( 'Handwriting', 'wp-rig' ),
-						'slug' => 'handwriting'
-					],
-					[
-						'name' => __( 'Monospace', 'wp-rig' ),
-						'slug' => 'monospace'
-					],
-					[
-						'name' => __( 'Sans Serif', 'wp-rig' ),
-						'slug' => 'sans-serif'
-					],
-					[
-						'name' => __( 'Serif', 'wp-rig' ),
-						'slug' => 'serif'
-					]
-				]
-			] );
+			wp_register_font_collection(
+				'modern-stacks',
+				array(
+					'name'          => __( 'Modern Stacks', 'wp-rig' ),
+					'description'   => __( 'A collection of modern system fonts.', 'wp-rig' ),
+					'font_families' => array(
+						array(
+							'font_family_settings' => array(
+								'fontFamily' => 'system-ui, sans-serif',
+								'slug'       => 'system-ui',
+								'name'       => __( 'System UI', 'wp-rig' ),
+							),
+							'categories'           => array( 'sans-serif' ),
+						),
+						array(
+							'font_family_settings' => array(
+								'fontFamily' => "Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif",
+								'slug'       => 'transitional',
+								'name'       => __( 'Transitional', 'wp-rig' ),
+							),
+							'categories'           => array( 'serif' ),
+						),
+						array(
+							'font_family_settings' => array(
+								'fontFamily' => "'Nimbus Mono PS', 'Courier New', monospace",
+								'slug'       => 'monospace-slab-serif',
+								'name'       => __( 'Monospace Slab Serif', 'wp-rig' ),
+							),
+							'categories'           => array( 'monospace', 'serif' ),
+						),
+						array(
+							'font_family_settings' => array(
+								'fontFamily' => "'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive",
+								'slug'       => 'handwritten',
+								'name'       => __( 'Handwritten', 'wp-rig' ),
+							),
+							'categories'           => array( 'handwriting' ),
+						),
+					),
+					'categories'    => array(
+						array(
+							'name' => __( 'Handwriting', 'wp-rig' ),
+							'slug' => 'handwriting',
+						),
+						array(
+							'name' => __( 'Monospace', 'wp-rig' ),
+							'slug' => 'monospace',
+						),
+						array(
+							'name' => __( 'Sans Serif', 'wp-rig' ),
+							'slug' => 'sans-serif',
+						),
+						array(
+							'name' => __( 'Serif', 'wp-rig' ),
+							'slug' => 'serif',
+						),
+					),
+				)
+			);
 
-			wp_register_font_collection( 'local-fonts', [
-				[
-					'family' => 'My Local Font',
-					'file' => get_template_directory_uri() . '/assets/fonts/my-local-font/my-local-font.woff2',
-					'weight' => '400',
-					'style' => 'normal',
-				],
-			] );
+			wp_register_font_collection(
+				'local-fonts',
+				array(
+					array(
+						'family' => 'My Local Font',
+						'file'   => get_template_directory_uri() . '/assets/fonts/my-local-font/my-local-font.woff2',
+						'weight' => '400',
+						'style'  => 'normal',
+					),
+				)
+			);
 		}
 	}
 
@@ -178,7 +184,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		if ( ! empty( $google_fonts_url ) ) {
 			wp_enqueue_style( 'wp-rig-fonts', $google_fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		}
-
 	}
 
 	/**
@@ -276,5 +281,4 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
 	}
-
 }
