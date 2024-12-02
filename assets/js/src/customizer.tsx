@@ -5,8 +5,16 @@
  *
  * Contains handlers to make Theme Customizer preview reload changes asynchronously.
  */
+interface BindCallback<T> {
+	(to: T): void;
+}
+
+interface CustomizeValue<T> {
+	bind: (callback: BindCallback<T>) => void;
+}
+
 interface WPCustomize {
-	(id: string, callback: (value: { bind: (callback: (to: any) => void) => void }) => void): void;
+	<T>(id: string, callback: (value: CustomizeValue<T>) => void): void;
 }
 
 declare global {
@@ -44,16 +52,16 @@ window.wp.customize('blogdescription', function(value) {
 });
 
 // Header text color.
-window.wp.customize('header_textcolor', function(value) {
-	value.bind(function(to) {
+window.wp.customize('header_textcolor', function (value) {
+	value.bind(function (to) {
 		if ('blank' === to) {
 			setStyle('.site-title, .site-description', {
-				clip: 'rect(1px, 1px, 1px, 1px)',
+				clipPath: 'inset(1px)',
 				position: 'absolute'
 			});
 		} else {
 			setStyle('.site-title, .site-description', {
-				clip: 'auto',
+				clipPath: 'none',
 				position: 'relative'
 			});
 			setStyle('.site-title a, .site-description', {

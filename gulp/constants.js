@@ -5,11 +5,12 @@
  * External dependencies
  */
 import path from "path";
+import * as process from "node:process";
 
 /**
  * Internal dependencies
  */
-import { getThemeConfig, configValueDefined } from "./utils.js";
+import { configValueDefined } from "./utils.js";
 
 import config from "../config/themeConfig.js";
 
@@ -75,6 +76,7 @@ export const paths = {
 			`!${rootPath}/optional/**/*.*`,
 			`!${rootPath}/tests/**/*.*`,
 			`!${rootPath}/vendor/**/*.*`,
+			`!${rootPath}/node_modules/**/*.*`,
 		],
 		dest: `${rootPath}/`,
 	},
