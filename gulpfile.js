@@ -17,9 +17,10 @@ import prodCompress from './gulp/prodCompress.js';
 import minimist from 'minimist';
 
 // Create browserSync instance
-const bs = browserSync.create();
+browserSync.create();
 
 // Check if the current environment is development or production
+// eslint-disable-next-line no-undef
 const isDev = process.env.NODE_ENV === 'development';
 
 async function buildJS() {
@@ -75,6 +76,7 @@ function dev() {
 }
 
 // Parse command line arguments
+// eslint-disable-next-line no-undef
 const argv = minimist(process.argv.slice(2));
 const runPhpcs = argv.phpcs || false;
 

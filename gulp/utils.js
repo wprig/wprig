@@ -1,26 +1,16 @@
 /* eslint-env es6 */
 'use strict';
 
-/**
- * External dependencies
- */
-import importFresh from 'import-fresh';
+
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 import rimraf from 'rimraf';
 import mkdirp from 'mkdirp';
 import fs from 'fs';
-import { pipeline } from 'mississippi';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-import path from 'path';
-import { fileURLToPath } from 'url';
 import through2 from 'through2';
 import replaceStream from 'replacestream';
-
-// Determine `__dirname` in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 /**
  * Internal dependencies
@@ -39,10 +29,9 @@ export const getDefaultConfig = () => require( `${ rootPath }/config/config.defa
 /**
  * Get theme configuration.
  *
- * @param {boolean} uncached Whether to get an uncached version of the configuration. Defaults to false.
  * @return {Object} Theme configuration data.
  */
-export function getThemeConfig( uncached = false ) {
+export function getThemeConfig( ) {
 	if ( ! config.theme.slug ) {
 		config.theme.slug = config.theme.name.toLowerCase().replace( /[\s_]+/g, '-' ).replace( /[^a-z0-9-]+/g, '' );
 	}
@@ -70,20 +59,28 @@ export function getThemeConfig( uncached = false ) {
 }
 
 /**
- * Handles string replacements based on config.
- * @param {Buffer|string} content - The content to be processed.
- * @param {Array} replacements - The list of replacements to apply.
- * @param {string} encoding - The encoding of the content.
- * @return {Buffer} - The processed content as a Buffer.
+ * Processes a buffer by converting it to a string, performing replacements, and converting it back to a buffer.
+ *
+ * @param {Buffer} content - The buffer to be processed.
+ * @param {Array<Object>} replacements - An array of objects where each object contains 'searchValue' to find and 'replaceValue' to replace within the content string.
+ * @param {string|RegExp} replacements[].searchValue - The value to search for within the content. It can be a string or regular expression.
+ * @param {string} replacements[].replaceValue - The value to replace the found content with.
+ * @return {Buffer} - A new buffer with applied replacements.
  */
-function processBuffer(content, replacements, encoding) {
-	let contentStr = content.toString(encoding);
+function processBuffer(content, replacements) {
+	let contentStr = content.toString(); // Default UTF-8
 	replacements.forEach(({ searchValue, replaceValue }) => {
 		contentStr = contentStr.replace(searchValue, replaceValue);
 	});
-	return Buffer.from(contentStr, encoding);
+	// eslint-disable-next-line no-undef
+	return Buffer.from(contentStr); // Default UTF-8
 }
 
+/**
+ * Creates a stream transformation for replacing strings based on the theme config.
+ * @param {boolean} isProd - Flag indicating whether it's in production mode.
+ * @return {Stream.Transform} - A stream transformation for string replacements.
+ */
 /**
  * Creates a stream transformation for replacing strings based on the theme config.
  * @param {boolean} isProd - Flag indicating whether it's in production mode.
@@ -97,9 +94,9 @@ export function getStringReplacementTasks(isProd) {
 		replaceValue: config.theme[nameField]
 	}));
 
-	return through2.obj(function (file, enc, callback) {
+	return through2.obj( (file, enc, callback) => {
 		if (file.isBuffer()) {
-			file.contents = processBuffer(file.contents, replacements, enc);
+			file.contents = processBuffer(file.contents, replacements);
 			callback(null, file);
 		} else if (file.isStream()) {
 			let stream = file.contents;
@@ -115,15 +112,23 @@ export function getStringReplacementTasks(isProd) {
 	});
 }
 
-export function logError( errorTitle = 'gulp' ) {
-	return gulpPlugins.plumber( {
-		errorHandler: gulpPlugins.notify.onError( {
-			title: errorTitle,
-			message: '<%= error.message %>',
-		} ),
-	} );
+/**
+ * Logs an error with a specified title and message.
+ *
+ * @param {string} errorTitle - Title to describe where the error occurred.
+ * @param {Object} error - The error object to log.
+ */
+export function logError(errorTitle = 'Task', error = {}) {
+	console.error(`[${errorTitle}] Error: ${error.message || 'An error occurred'}`);
 }
 
+/**
+ * Creates the production theme directory at the specified path, removing any existing directory at that location before creation.
+ *
+ * Logs the creation process and ensures that the directory is freshly created even if it previously existed.
+ *
+ * @return {void} This function does not return any value.
+ */
 export function createProdDir() {
 	log( colors.green( `Creating the production theme directory ${ prodThemePath }` ) );
 	if ( fs.existsSync( prodThemePath ) ) {
@@ -132,11 +137,24 @@ export function createProdDir() {
 	mkdirp( prodThemePath );
 }
 
+/**
+ * Computes the relative destination path for a given file based on its base path.
+ *
+ * @param {Object} file - The file object that contains file path information.
+ * @param {string} file.base - The base path of the file.
+ * @param {string} file.cwd - The current working directory from which the relative path is calculated.
+ * @return {string} The relative production file path based on the file's base and current working directory.
+ */
 export function gulpRelativeDest( file ) {
-	const relativeProdFilePath = file.base.replace( file.cwd, prodThemePath );
-	return relativeProdFilePath;
+	return file.base.replace( file.cwd, prodThemePath );
 }
 
+/**
+ * Converts backslashes in the given path or array of paths to forward slashes.
+ *
+ * @param {string|string[]} path - The path or array of paths to be converted.
+ * @return {string|string[]} The converted path or array of paths with backslashes replaced by forward slashes.
+ */
 export function backslashToForwardSlash( path ) {
 	const replaceFn = ( ( p ) => p.replace( /\\/g, '/' ) );
 	if ( Array.isArray( path ) ) {
@@ -242,4 +260,4 @@ export function replaceInlineJS(code) {
 		const replacement = replacements.find(r => new RegExp(r.searchValue).test(match));
 		return replacement ? replacement.replaceValue : match;
 	});
-};
+}
