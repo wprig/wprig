@@ -72,6 +72,7 @@ export const paths = {
 			`!${rootPath}/optional/**/*.*`,
 			`!${rootPath}/tests/**/*.*`,
 			`!${rootPath}/vendor/**/*.*`,
+			`!${rootPath}/wp-cli/**/*.*`,
 			`!${rootPath}/node_modules/**/*.*`,
 		],
 		dest: `${rootPath}/`,
