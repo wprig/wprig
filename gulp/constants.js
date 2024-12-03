@@ -21,10 +21,6 @@ export const gulpTestPath = `${rootPath}/gulp/tests`;
 // Dev or production
 export const isProd = process.env.NODE_ENV === "production";
 
-// Get the config
-/*console.log(themeConfig);
-const config = themeConfig.loadThemeConfig(true);*/
-
 // Directory for assets (CSS, JS, images)
 export const assetsDir = `${rootPath}/assets`;
 

@@ -7,13 +7,13 @@
 import pump from 'pump';
 import { src, dest } from 'gulp';
 import { exec } from 'child_process';
-import shell from 'gulp-shell';
 
 /**
  * Internal dependencies
  */
 import { paths, isProd } from './constants.js';
-import { getStringReplacementTasks } from './utils.js';
+import through2 from "through2";
+import removeWpCliBlock from "./removeWpCliBlock.js";
 
 /**
  * PHP Build Task.
@@ -63,7 +63,16 @@ export default function php(runPhpcs, done) {
 		// Only do string replacements and save PHP files when building for production
 		return pump([
 			src(paths.php.src),
-			getStringReplacementTasks(),
+			through2.obj(function (file, enc, callback) {
+				// remove wp cli block from functions.php
+				if (file.isBuffer() && file.relative === 'functions.php') { // Adjust this check as necessary.
+					const content = file.contents.toString(enc);
+					const cleanedContent = removeWpCliBlock(content);
+					// eslint-disable-next-line no-undef
+					file.contents = Buffer.from(cleanedContent, enc);
+				}
+				callback(null, file);
+			}),
 			dest(paths.php.dest),
 		], done);
 	}
