@@ -62,7 +62,7 @@ if ( file_exists( get_template_directory() . '/vendor/autoload.php' ) ) {
 // Load the `wp_rig()` entry point function.
 require get_template_directory() . '/inc/functions.php';
 
-// Add custom WP CLI commands
+// Add custom WP CLI commands.
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once get_template_directory() . '/wp-cli/wp-rig-commands.php';
 }
