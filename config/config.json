@@ -1,9 +1,9 @@
 {
   "theme": {
-    "PHPNamespace": "WP_Rig\\WP_Rig",
-    "slug": "wp-rig-test",
-    "name": "WP Rig Test",
-    "theme_uri": "https://github.com/wprig/wprig/",
+    "PHPNamespace": "WP_Rig_IO\\WP_Rig_IO",
+    "slug": "wp-rig-io-two",
+    "name": "WP Rig IO",
+    "theme_uri": "https://github.com/wprig/wprig-io2",
     "author": "The WP Rig Contributors",
     "author_uri": "https://wprig.io/",
     "description": "A progressive theme development rig for WordPress.",
