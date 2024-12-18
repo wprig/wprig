@@ -208,7 +208,6 @@ example, if you want to set local information for BrowserSync.
 WP Rig ships with advanced features, including:
 
 - Easily add custom Customizer settings using .json file
-- Built-in support for the [official AMP plugin](https://wordpress.org/plugins/amp/)
 - Progressive loading of CSS
 - Modern CSS, custom properties (variables), autoprefixing, etc
 - Modern layouts through CSS grid, flex, and float

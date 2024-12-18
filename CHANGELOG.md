@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.0
+
+- Complete Rewrite of Javascript and CSS build systems. Introduced esbuild and Lightning CSS. Props @robruiz
+- Full Typescript support added. Props @robruiz
+- Added base CSS framework for layout purposes. Props @robruiz
+- Min version of PHP bumpbed to PHP 8. Type checking added. Props @robruiz
+- React-based options/settings page framework for theme devs added. @robruiz
+- Removed support for AMP Plugin. @robruiz
+
 ## 2.3.2
 
 - Updated WPCS to V3.1. Props @robruiz

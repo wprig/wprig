@@ -214,21 +214,18 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Determines whether to preload stylesheets and inject their link tags directly within the page content.
 	 *
 	 * Using this technique generally improves performance, however may not be preferred under certain circumstances.
-	 * For example, since AMP will include all style rules directly in the head, it must not be used in that context.
-	 * By default, this method returns true unless the page is being served in AMP. The
 	 * {@see 'wp_rig_preloading_styles_enabled'} filter can be used to tweak the return value.
 	 *
 	 * @return bool True if preloading stylesheets and injecting them is enabled, false otherwise.
 	 */
-	protected function preloading_styles_enabled() {
-		$preloading_styles_enabled = ! wp_rig()->is_amp();
+	protected function preloading_styles_enabled(): bool {
 
 		/**
 		 * Filters whether to preload stylesheets and inject their link tags within the page content.
 		 *
 		 * @param bool $preloading_styles_enabled Whether preloading stylesheets and injecting them is enabled.
 		 */
-		return apply_filters( 'wp_rig_preloading_styles_enabled', $preloading_styles_enabled );
+		return apply_filters( 'wp_rig_preloading_styles_enabled', true );
 	}
 
 	/**

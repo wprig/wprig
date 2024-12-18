@@ -67,11 +67,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function action_enqueue_comment_reply_script() {
 
-		// If the AMP plugin is active, return early.
-		if ( wp_rig()->is_amp() ) {
-			return;
-		}
-
 		// Enqueue comment script on singular post/page views only.
 		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 			wp_enqueue_script( 'comment-reply' );

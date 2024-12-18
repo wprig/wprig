@@ -73,11 +73,7 @@ class Component_Tests extends Unit_Test_Case {
 	 * @covers Component::action_enqueue_navigation_script()
 	 */
 	public function test_action_enqueue_navigation_script() {
-		$template_tags = $this->mockTemplateTags( array( 'is_amp', 'get_asset_version' ) );
-
-		$template_tags->expects( $this->once() )
-			->method( 'is_amp' )
-			->will( $this->returnValue( false ) );
+		$template_tags = $this->mockTemplateTags( array( 'get_asset_version' ) );
 
 		$template_tags->expects( $this->once() )
 			->method( 'get_asset_version' )
@@ -101,26 +97,6 @@ class Component_Tests extends Unit_Test_Case {
 		$this->component->action_enqueue_navigation_script();
 	}
 
-	/**
-	 * Tests enqueueing the navigation script, with AMP active.
-	 *
-	 * @covers Component::action_enqueue_navigation_script()
-	 */
-	public function test_action_enqueue_navigation_script_with_amp() {
-		$template_tags = $this->mockTemplateTags( array( 'is_amp', 'get_asset_version' ) );
-
-		$template_tags->expects( $this->once() )
-			->method( 'is_amp' )
-			->will( $this->returnValue( true ) );
-
-		$template_tags->expects( $this->never() )
-			->method( 'get_asset_version' );
-
-		Functions\expect( 'wp_enqueue_script' )
-			->never();
-
-		$this->component->action_enqueue_navigation_script();
-	}
 
 	/**
 	 * Tests printing the skip-link-focus-fix script inline.
@@ -128,11 +104,6 @@ class Component_Tests extends Unit_Test_Case {
 	 * @covers Component::action_print_skip_link_focus_fix()
 	 */
 	public function test_action_print_skip_link_focus_fix() {
-		$template_tags = $this->mockTemplateTags( array( 'is_amp' ) );
-
-		$template_tags->expects( $this->once() )
-			->method( 'is_amp' )
-			->will( $this->returnValue( false ) );
 
 		ob_start();
 		$this->component->action_print_skip_link_focus_fix();
@@ -141,24 +112,6 @@ class Component_Tests extends Unit_Test_Case {
 		$this->assertTrue( false !== strpos( $output, '<script>' ) );
 	}
 
-	/**
-	 * Tests printing the skip-link-focus-fix script inline, with AMP active.
-	 *
-	 * @covers Component::action_print_skip_link_focus_fix()
-	 */
-	public function test_action_print_skip_link_focus_fix_with_amp() {
-		$template_tags = $this->mockTemplateTags( array( 'is_amp' ) );
-
-		$template_tags->expects( $this->once() )
-			->method( 'is_amp' )
-			->will( $this->returnValue( true ) );
-
-		ob_start();
-		$this->component->action_print_skip_link_focus_fix();
-		$output = ob_get_clean();
-
-		$this->assertEmpty( $output );
-	}
 
 	/**
 	 * Tests that an aria-current attribute is not added unconditionally.
