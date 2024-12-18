@@ -33,7 +33,7 @@ function checkAndCreateFolders( folderPaths ) {
 	} );
 }
 
-function createBlankIndexHtml( templatesFolderPath ) {
+function createIndexHtmlWithStarterContent( templatesFolderPath ) {
 	try {
 		// Ensure the templates folder exists.
 		const fullTemplatesPath = path.resolve( __dirname, templatesFolderPath );
@@ -50,16 +50,29 @@ function createBlankIndexHtml( templatesFolderPath ) {
 			return;
 		}
 
-		// Create a blank index.html file.
-		fs.writeFileSync( indexPath, '', 'utf8' );
-		console.log( `Blank index.html created at ${ indexPath } successfully.` );
+		// Define Gutenberg-ready starter content.
+		const starterContent = `
+			<!-- wp:header {"style":{"spacing":{"margin":{"bottom":"40px"}}}} /-->
+
+			<!-- wp:group {"layout":{"type":"constrained"}} -->
+			<div class="wp-block-group">
+				<!-- wp:post-content /-->
+			</div>
+			<!-- /wp:group -->
+
+			<!-- wp:footer {"style":{"spacing":{"margin":{"top":"40px"}}}} /-->
+		`;
+
+		// Write starter content to index.html.
+		fs.writeFileSync( indexPath, starterContent, 'utf8' );
+		console.log( `index.html with starter content created at ${ indexPath } successfully.` );
 	} catch ( error ) {
-		console.error( `Error creating blank index.html: ${ error.message }` );
+		console.error( `Error creating index.html: ${ error.message }` );
 	}
 }
 
 // Continue with other functions...
 
 checkAndCreateFolders( fseFolders );
-createBlankIndexHtml( '../templates' );
+createIndexHtmlWithStarterContent( '../templates' );
 // Call other functions with their appropriate paths...
