@@ -124,6 +124,7 @@ const build = gulp.series(
 const bundle = gulp.series(
 	prodPrep,
 	gulp.parallel(cleanCSS, cleanJS),
+	lintTasks,
 	gulp.parallel(buildJS, buildCSS),
 	gulp.parallel(images, php, fonts), // Put php process back in later before image
 	prodStringReplace,
