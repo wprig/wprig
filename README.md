@@ -39,7 +39,7 @@ WP Rig has been tested on Linux, Mac, and Windows.
 
 WP Rig requires the following dependencies. Full installation instructions are provided at their respective websites.
 
-- [PHP](http://php.net/) 8.0 or higher (PHP 8.1 recommended)
+- [PHP](http://php.net/) 8.0 or higher (PHP 8.3 recommended)
 - [npm](https://www.npmjs.com/)
 - [Composer](https://getcomposer.org/) (installed globally)
 

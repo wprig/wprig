@@ -105,7 +105,7 @@
     ]
   },
   "stylelint": {
-    "extends": "stylelint-config-wordpress"
+    "extends": "@wordpress/stylelint-config"
   },
   "type": "module",
   "scripts": {
@@ -117,7 +117,7 @@
     "lint:js": "eslint assets/js/src",
     "build:css": "node build-css.js",
     "dev:css": "node build-css.js --dev",
-    "lint:css": "stylint assets/css/src",
+    "lint:css": "node lint-css.js",
     "watch:js": "node build-js.js",
     "watch:css": "npm run build:css && chokidar 'src/styles/**/*.css' -c 'npm run build:css'",
     "dev": "gulp",
@@ -125,6 +125,7 @@
     "build:phpcs": "gulp build --phpcs",
     "images": "gulp images",
     "bundle": "cross-env NODE_ENV=production gulp bundle",
-    "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs"
+    "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs",
+    "bundle:check-all": "cross-env NODE_ENV=production gulp bundle --phpcs"
   }
 }
