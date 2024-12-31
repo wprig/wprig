@@ -19,9 +19,9 @@ import minimist from 'minimist';
 // Create browserSync instance
 browserSync.create();
 
-// Check if the current environment is development or production
+// Check if the current environment is development or productions
 // eslint-disable-next-line no-undef
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.npm_lifecycle_event === 'dev';
 
 // Parse command line arguments
 // eslint-disable-next-line no-undef

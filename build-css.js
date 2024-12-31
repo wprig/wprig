@@ -1,7 +1,14 @@
-import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSync } from 'fs';
+import {
+	readFileSync,
+	writeFileSync,
+	readdirSync,
+	existsSync,
+	mkdirSync,
+	statSync,
+} from 'fs';
 import path from 'path';
 import { transform } from '@parcel/css'; // Use LightningCSS or the package you intended to use
-import {paths, isProd} from './gulp/constants.js';
+import { paths } from './gulp/constants.js';
 import { replaceInlineCSS } from './gulp/utils.js';
 // Determine if running in development mode
 const isDev = process.argv.includes('--dev');
@@ -17,7 +24,10 @@ ensureDirectoryExistence(paths.styles.dest);
 ensureDirectoryExistence(paths.styles.editorDest);
 
 // Read the contents of _custom-media.css
-const customMediaCSS = readFileSync(path.resolve(paths.styles.srcDir, '_custom-media.css'), 'utf8');
+const customMediaCSS = readFileSync(
+	path.resolve(paths.styles.srcDir, '_custom-media.css'),
+	'utf8'
+);
 
 // Function to recursively inline @import statements and move them to the top
 function inlineImports(filePath, seenFiles = new Set()) {
@@ -48,7 +58,7 @@ function inlineImports(filePath, seenFiles = new Set()) {
 const getAllFiles = (dir) => {
 	const files = readdirSync(dir);
 	let filelist = [];
-	files.forEach(file => {
+	files.forEach((file) => {
 		const filePath = path.join(dir, file);
 		const fileStat = statSync(filePath);
 		if (fileStat.isDirectory()) {
@@ -67,7 +77,6 @@ const processCSSFile = (filePath, outputPath) => {
 	// Prepend the custom media CSS
 	inlinedCSS = customMediaCSS + inlinedCSS;
 	inlinedCSS = replaceInlineCSS(inlinedCSS);
-
 	const result = transform({
 		filename: filePath,
 		code: Buffer.from(inlinedCSS),
@@ -93,7 +102,10 @@ const processDirectory = (dir, destDir) => {
 	const files = getAllFiles(dir);
 	files.forEach((file) => {
 		const relativePath = path.relative(dir, file);
-		const outputPath = path.join(destDir, relativePath.replace('.css', '.min.css'));
+		const outputPath = path.join(
+			destDir,
+			relativePath.replace('.css', '.min.css')
+		);
 		const outputDir = path.dirname(outputPath);
 		ensureDirectoryExistence(outputDir);
 		processCSSFile(file, outputPath);
