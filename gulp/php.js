@@ -12,19 +12,23 @@ import { exec } from 'child_process';
  * Internal dependencies
  */
 import { paths, isProd } from './constants.js';
-import through2 from "through2";
-import removeWpCliBlock from "./removeWpCliBlock.js";
+import through2 from 'through2';
+import removeWpCliBlock from './removeWpCliBlock.js';
+import { getStringReplacementTasks } from './utils.js';
 
 /**
- * PHP Build Task.
- * @param {boolean} runPhpcs - Whether to run PHPCS.
- * @param {function} done - Function to call when async processes finish.
- * @return {Stream} single stream
+ * Executes the PHPCS (PHP CodeSniffer) process or handles PHP file processing based on the provided flags.
+ *
+ * @param {boolean}  runPhpcs - Flag indicating whether to run PHPCS using a Composer script.
+ * @param {Function} done     - Callback function to be executed upon task completion.
+ * @return {Stream|undefined} Returns a stream when processing PHP files in development mode; otherwise, returns undefined.
  */
 export default function php(runPhpcs, done) {
 	if (runPhpcs) {
 		console.log('Running PHPCS via Composer script...');
-		const phpcsProcess = exec('vendor/bin/phpcs --standard=phpcs.xml.dist -p -s');
+		const phpcsProcess = exec(
+			'vendor/bin/phpcs --standard=phpcs.xml.dist -p -s'
+		);
 
 		let stdoutData = '';
 		let stderrData = '';
@@ -61,20 +65,25 @@ export default function php(runPhpcs, done) {
 
 	if (isProd) {
 		// Only do string replacements and save PHP files when building for production
-		return pump([
-			src(paths.php.src),
-			through2.obj(function (file, enc, callback) {
-				// remove wp cli block from functions.php
-				if (file.isBuffer() && file.relative === 'functions.php') { // Adjust this check as necessary.
-					const content = file.contents.toString(enc);
-					const cleanedContent = removeWpCliBlock(content);
-					// eslint-disable-next-line no-undef
-					file.contents = Buffer.from(cleanedContent, enc);
-				}
-				callback(null, file);
-			}),
-			dest(paths.php.dest),
-		], done);
+		return pump(
+			[
+				src(paths.php.src),
+				getStringReplacementTasks(),
+				through2.obj(function (file, enc, callback) {
+					// remove wp cli block from functions.php
+					if (file.isBuffer() && file.relative === 'functions.php') {
+						// Adjust this check as necessary.
+						const content = file.contents.toString(enc);
+						const cleanedContent = removeWpCliBlock(content);
+						// eslint-disable-next-line no-undef
+						file.contents = Buffer.from(cleanedContent, enc);
+					}
+					callback(null, file);
+				}),
+				dest(paths.php.dest),
+			],
+			done
+		);
 	}
 
 	// In development, just pass through the files without saving
