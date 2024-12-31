@@ -13,7 +13,9 @@
 		"comment-whitespace-inside": null,
 		"comment-empty-line-before": null,
 		"comment-pattern": null,
-		"selector-class-pattern": "[a-z0-9\\-_]+",
+		"selector-class-pattern": ["^[a-z0-9]+([_-]{1,2}[a-z0-9]+)*$", {
+			"message": "Class selectors should only contain lowercase letters, numbers, single/double hyphens (--), or single/double underscores (__)."
+		}],
 		"no-duplicate-selectors": true,
 		"no-empty-source": null,
 		"declaration-block-no-duplicate-properties": true,

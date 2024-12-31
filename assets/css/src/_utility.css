@@ -46,24 +46,8 @@
 	flex-wrap: wrap-reverse;
 }
 
-.items-start {
-	align-items: flex-start;
-}
-
-.items-center {
-	align-items: center;
-}
-
-.items-end {
-	align-items: flex-end;
-}
-
 .items-baseline {
 	align-items: baseline;
-}
-
-.items-stretch {
-	align-items: stretch;
 }
 
 .justify-start {

@@ -104,9 +104,6 @@
       "jest-expect-message"
     ]
   },
-  "stylelint": {
-    "extends": "@wordpress/stylelint-config"
-  },
   "type": "module",
   "scripts": {
     "editor-support": "node node/editorSupport.js",
