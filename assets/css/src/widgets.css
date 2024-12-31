@@ -115,13 +115,6 @@
 	font-size: 0.8em;
 }
 
-.rssSummary {
-	font-family: var(--global-font-family);
-	padding: 0.5em 0;
-	font-size: 0.9em;
-	line-height: 1.3;
-}
-
 /* Search widget */
 .widget_search input[type="search"] {
 	box-sizing: border-box;

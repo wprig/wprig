@@ -48,11 +48,6 @@ class Component implements Component_Interface {
 	 */
 	public function action_enqueue_navigation_script() {
 
-		// If the AMP plugin is active, return early.
-		if ( wp_rig()->is_amp() ) {
-			return;
-		}
-
 		// Enqueue the navigation script.
 		wp_enqueue_script(
 			'wp-rig-navigation',
@@ -84,11 +79,6 @@ class Component implements Component_Interface {
 	 * @link https://git.io/vWdr2
 	 */
 	public function action_print_skip_link_focus_fix() {
-
-		// If the AMP plugin is active, return early.
-		if ( wp_rig()->is_amp() ) {
-			return;
-		}
 
 		// Print the minified script.
 		?>

@@ -9,8 +9,8 @@
  * @package wp_rig
  */
 
-define( 'WP_RIG_MINIMUM_WP_VERSION', '4.7' );
-define( 'WP_RIG_MINIMUM_PHP_VERSION', '7.0' );
+define( 'WP_RIG_MINIMUM_WP_VERSION', '5.4' );
+define( 'WP_RIG_MINIMUM_PHP_VERSION', '8.0' );
 
 // Bail if requirements are not met.
 if ( version_compare( $GLOBALS['wp_version'], WP_RIG_MINIMUM_WP_VERSION, '<' ) || version_compare( phpversion(), WP_RIG_MINIMUM_PHP_VERSION, '<' ) ) {
@@ -61,6 +61,11 @@ if ( file_exists( get_template_directory() . '/vendor/autoload.php' ) ) {
 
 // Load the `wp_rig()` entry point function.
 require get_template_directory() . '/inc/functions.php';
+
+// Add custom WP CLI commands.
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once get_template_directory() . '/wp-cli/wp-rig-commands.php';
+}
 
 // Initialize the theme.
 call_user_func( 'WP_Rig\WP_Rig\wp_rig' );

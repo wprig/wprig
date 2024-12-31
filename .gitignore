@@ -18,6 +18,7 @@
 !/assets/images/src/
 !/languages/
 !gulp/
+!node/
 !style.css
 !/*.php
 !/inc/

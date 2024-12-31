@@ -42,6 +42,7 @@
 	USE THE WordPress-Coding-Standards RULESET
 	#############################################################################
 	-->
+	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility,vendor/phpcsstandards/phpcsextra,vendor/phpcsstandards/phpcsutils"/>
 
 	<rule ref="WordPress"/>
 	<rule ref="WordPress-Core" />
@@ -94,7 +95,7 @@
 	#############################################################################
 	-->
 
-	<config name="testVersion" value="7.0-99.0"/>
+	<config name="testVersion" value="8.0-99.0"/>
 	<rule ref="PHPCompatibility" />
 
 </ruleset>

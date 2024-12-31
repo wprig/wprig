@@ -57,7 +57,7 @@ class Component implements Component_Interface {
 	 */
 	public function initialize() {
 		$this->get_theme_settings_config();
-		$this->settings_id = $this->theme_settings['settings_id'];
+		$this->settings_id = $this->theme_settings['settings_id'] ?? null;
 		$this->hooks();
 	}
 

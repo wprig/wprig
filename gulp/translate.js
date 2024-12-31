@@ -6,12 +6,14 @@
  */
 import { src, dest } from 'gulp';
 import pump from 'pump';
+import sort from 'gulp-sort';
+import wpPot from 'gulp-wp-pot';
 
 /**
  * Internal dependencies
  */
-import { paths, gulpPlugins, nameFieldDefaults, isProd } from './constants';
-import { getThemeConfig } from './utils';
+import { paths, nameFieldDefaults, isProd } from './constants.js';
+import { getThemeConfig } from './utils.js';
 
 /**
  * Generate translation files.
@@ -26,15 +28,15 @@ export default function translate( done ) {
 		return done();
 	}
 
-	pump( [
+	pump([
 		src( paths.languages.src ),
-		gulpPlugins.sort(),
-		gulpPlugins.wpPot( {
+		sort(),
+		wpPot({
 			domain: ( isProd ) ? config.theme.slug : nameFieldDefaults.slug,
 			package: ( isProd ) ? config.theme.name : nameFieldDefaults.name,
-			bugReport: ( isProd ) ? config.theme.name : nameFieldDefaults.name,
+			bugReport: ( isProd ) ? config.theme.author : nameFieldDefaults.author,
 			lastTranslator: ( isProd ) ? config.theme.author : nameFieldDefaults.author,
-		} ),
+		}),
 		dest( paths.languages.dest ),
-	], done );
+	], done);
 }

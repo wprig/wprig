@@ -1,0 +1,215 @@
+/* Flexbox Utilities */
+.flex {
+	display: flex;
+}
+
+/* By default, flex items will stack vertically on mobile */
+@media (--narrow-menu-query) {
+	.flex {
+		flex-direction: column;
+
+		&.horiz {
+			flex-direction: row;
+		}
+	}
+}
+
+.inline-flex {
+	display: inline-flex;
+}
+
+.flex-row {
+	flex-direction: row;
+}
+
+.flex-column {
+	flex-direction: column;
+}
+
+.flex-row-reverse {
+	flex-direction: row-reverse;
+}
+
+.flex-column-reverse {
+	flex-direction: column-reverse;
+}
+
+.flex-wrap {
+	flex-wrap: wrap;
+}
+
+.flex-nowrap {
+	flex-wrap: nowrap;
+}
+
+.flex-wrap-reverse {
+	flex-wrap: wrap-reverse;
+}
+
+.items-baseline {
+	align-items: baseline;
+}
+
+.justify-start {
+	justify-content: flex-start;
+}
+
+.justify-center {
+	justify-content: center;
+}
+
+.justify-end {
+	justify-content: flex-end;
+}
+
+.justify-between {
+	justify-content: space-between;
+}
+
+.justify-around {
+	justify-content: space-around;
+}
+
+.justify-evenly {
+	justify-content: space-evenly;
+}
+
+.self-auto {
+	align-self: auto;
+}
+
+.self-start {
+	align-self: flex-start;
+}
+
+.self-center {
+	align-self: center;
+}
+
+.self-end {
+	align-self: flex-end;
+}
+
+.self-stretch {
+	align-self: stretch;
+}
+
+/* Grid Utilities */
+.grid {
+	display: grid;
+}
+
+/* By default, grid items stack vertically on mobile */
+@media (--narrow-menu-query) {
+	.grid {
+		grid-template-columns: 1fr;
+
+		&.keep-cols {
+			grid-template-columns: revert; /* Keeps the original column setting */
+		}
+	}
+}
+
+.inline-grid {
+	display: inline-grid;
+}
+
+.grid-col-auto {
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.grid-cols-1 {
+	grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid-rows-1 {
+	grid-template-rows: repeat(1, minmax(0, 1fr));
+}
+
+.grid-rows-2 {
+	grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.grid-rows-3 {
+	grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+.grid-rows-4 {
+	grid-template-rows: repeat(4, minmax(0, 1fr));
+}
+
+.gap-1 {
+	gap: 0.25rem;
+}
+
+.gap-2 {
+	gap: 0.5rem;
+}
+
+.gap-3 {
+	gap: 0.75rem;
+}
+
+.gap-4 {
+	gap: 1rem;
+}
+
+.grid-flow-row {
+	grid-auto-flow: row;
+}
+
+.grid-flow-col {
+	grid-auto-flow: column;
+}
+
+.grid-flow-row-dense {
+	grid-auto-flow: row dense;
+}
+
+.grid-flow-col-dense {
+	grid-auto-flow: column dense;
+}
+
+.justify-items-start {
+	justify-items: start;
+}
+
+.justify-items-center {
+	justify-items: center;
+}
+
+.justify-items-end {
+	justify-items: end;
+}
+
+.justify-items-stretch {
+	justify-items: stretch;
+}
+
+.items-start {
+	align-items: start;
+}
+
+.items-center {
+	align-items: center;
+}
+
+.items-end {
+	align-items: end;
+}
+
+.items-stretch {
+	align-items: stretch;
+}

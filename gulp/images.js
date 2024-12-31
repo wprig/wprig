@@ -10,18 +10,35 @@ import pump from 'pump';
 /**
  * Internal dependencies
  */
-import { paths, gulpPlugins } from './constants';
+import { paths } from './constants.js';
+import gulpImagemin from "gulp-imagemin";
+import gulpNewer from "gulp-newer";
+import webp from 'gulp-webp';
 
 /**
  * Optimize images.
  * @param {function} done function to call when async processes finish
  * @return {Stream} single stream
  */
-export default function images( done ) {
+export function images( done ) {
 	return pump( [
 		src( paths.images.src ),
-		gulpPlugins.newer( paths.images.dest ),
-		gulpPlugins.imagemin(),
+		gulpNewer( paths.images.dest ),
+		gulpImagemin(),
+		dest( paths.images.dest ),
+	], done );
+}
+
+/**
+ * Convert images to webp.
+ * @param {function} done function to call when async processes finish
+ * @return {Stream} single stream
+ */
+export function convertToWebP( done ) {
+	return pump( [
+		src( paths.images.src ),
+		gulpNewer( paths.images.dest ),
+		webp(),
 		dest( paths.images.dest ),
 	], done );
 }

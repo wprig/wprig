@@ -1,0 +1,31 @@
+{
+	"extends": [
+		"plugin:@wordpress/eslint-plugin/recommended"
+	],
+	"env": {
+		"node": true
+	},
+	"rules": {
+		"no-console": "error"
+	},
+	"overrides": [
+		{
+			"files": ["gulp/**/*.js", "node/**/*.js", "*.js"],
+			"env": {
+				"node": true
+			},
+			"rules": {
+				"no-console": "off"
+			}
+		},
+		{
+			"files": ["assets/js/**/*.js"],
+			"env": {
+				"browser": true
+			},
+			"rules": {
+				"no-console": "error"
+			}
+		}
+	]
+}

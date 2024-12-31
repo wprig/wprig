@@ -12,7 +12,7 @@ import fs from 'fs';
 /**
  * Internal dependencies
  */
-import { paths } from './constants';
+import { paths } from './constants.js';
 
 export default function generateCert( done ) {
 	// Use pem to create a new key/cert

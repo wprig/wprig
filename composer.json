@@ -34,7 +34,8 @@
     "run-phpcbf": [
       "@phpcbf-dev"
     ],
-    "phpcs-dev": "\"vendor/bin/phpcs\"",
+    "phpcs-dev": "\"vendor/bin/phpcs\" -s --parallel=4 --standard=phpcs.xml.dist",
+    "phpcs-config": "\"vendor/bin/phpcs\" --config-show",
     "run-phpcs": [
       "@phpcs-dev"
     ],

@@ -1,0 +1,46 @@
+{
+	"extends": ["@wordpress/stylelint-config"],
+	"rules": {
+		"color-hex-length": "short",
+		"max-nesting-depth": 4,
+		"rule-empty-line-before": [
+			"always",
+			{
+				"except": ["first-nested"],
+				"ignore": ["after-comment", "inside-block"]
+			}
+		],
+		"comment-whitespace-inside": null,
+		"comment-empty-line-before": null,
+		"comment-pattern": null,
+		"selector-class-pattern": ["^[a-z0-9]+([_-]{1,2}[a-z0-9]+)*$", {
+			"message": "Class selectors should only contain lowercase letters, numbers, single/double hyphens (--), or single/double underscores (__)."
+		}],
+		"no-duplicate-selectors": true,
+		"no-empty-source": null,
+		"declaration-block-no-duplicate-properties": true,
+		"block-no-empty": null,
+		"media-feature-name-no-unknown": [
+			true,
+			{
+				"ignoreMediaFeatureNames": ["/^--/"]
+			}
+		],
+		"at-rule-no-unknown": [
+			true,
+			{
+				"ignoreAtRules": ["media", "custom-media"]
+			}
+		]
+	},
+	"ignoreFiles": ["**/vendor/**/*.css"],
+	"overrides": [
+		{
+			"files": ["**/*.scss"],
+			"rules": {
+				"scss/dollar-variable-pattern": "^[_a-z0-9-]+$",
+				"scss/at-extend-no-missing-placeholder": true
+			}
+		}
+	]
+}
