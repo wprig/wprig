@@ -1,6 +1,6 @@
 <?php
 /**
- * WP_Rig\WP_Rig\Base_Support\Component class
+ * WP_Rig\WP_Rig\Fonts\Component class
  *
  * @package wp_rig
  */
@@ -34,7 +34,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string Component slug.
 	 */
 	public function get_slug(): string {
-		return 'base_support';
+		return 'fonts';
 	}
 
 	/**
@@ -55,10 +55,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags(): array {
-		return array(
-			'get_version'       => array( $this, 'get_version' ),
-			'get_asset_version' => array( $this, 'get_asset_version' ),
-		);
+		return array();
 	}
 
 	/**
