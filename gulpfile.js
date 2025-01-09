@@ -42,8 +42,7 @@ async function lintTasks() {
 async function buildJS() {
 	try {
 		const cmd = isDev ? 'npm run dev:js' : 'npm run build:js';
-		const { stdout, stderr } = await execPromise(cmd);
-		console.log(stdout);
+		const { stderr } = await execPromise(cmd);
 		if (stderr) {
 			console.error(stderr);
 		}
@@ -64,8 +63,7 @@ function watchJS(done) {
 async function buildCSS() {
 	try {
 		const cmd = isDev ? 'npm run dev:css' : 'npm run build:css';
-		const { stdout, stderr } = await execPromise(cmd);
-		console.log(stdout);
+		const { stderr } = await execPromise(cmd);
 		if (stderr) {
 			console.error(stderr);
 		}
