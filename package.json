@@ -111,7 +111,7 @@
   "type": "module",
   "scripts": {
     "editor-support": "node node/editorSupport.js",
-    "rig-init": "npm install && composer install",
+    "rig-init": "npm install --loglevel=error && composer install",
     "generateCert": "gulp generateCert",
     "build:js": "node build-js.js",
     "dev:js": "node build-js.js --dev",

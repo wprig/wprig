@@ -4,8 +4,8 @@
 
 import log from 'fancy-log';
 import colors from 'ansi-colors';
-import rimraf from 'rimraf';
-import mkdirp from 'mkdirp';
+import { rimraf } from 'rimraf';
+import { mkdirp } from 'mkdirp';
 import fs from 'fs';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);

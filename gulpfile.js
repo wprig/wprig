@@ -30,12 +30,14 @@ const runLint = process.env.npm_config_lint || false;
 const runPhpcs = argv.phpcs || false;
 
 // Conditional linting
-const lintTasks = runLint
-	? gulp.parallel(lintCSS, lintJS)
-	: (done) => {
+async function lintTasks() {
+	runLint
+		? gulp.parallel(lintCSS, lintJS)
+		: (done) => {
 			console.log('Skipping linting as --lint flag is not set.');
 			done();
 		};
+}
 
 async function buildJS() {
 	try {
