@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1
+
+- Fixed as many security vulns as possible for a local build tool. Props @robruiz
+
 ## 3.0.0
 
 - Complete Rewrite of Javascript and CSS build systems. Introduced esbuild and Lightning CSS. Props @robruiz
