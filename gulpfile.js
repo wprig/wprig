@@ -117,7 +117,7 @@ const build = gulp.series(
 	gulp.parallel(cleanCSS, cleanJS),
 	lintTasks, // Add linting tasks here conditionally
 	gulp.parallel(buildJS, buildCSS),
-	gulp.parallel(images, php)
+	gulp.parallel(images, convertToWebP, php)
 );
 
 // Bundle theme
@@ -126,7 +126,7 @@ const bundle = gulp.series(
 	gulp.parallel(cleanCSS, cleanJS),
 	lintTasks,
 	gulp.parallel(buildJS, buildCSS),
-	gulp.parallel(images, php, fonts), // Put php process back in later before image
+	gulp.parallel(images, convertToWebP, php, fonts), // Put php process back in later before image
 	prodStringReplace,
 	prodCompress
 );
@@ -139,7 +139,7 @@ gulp.task(
 			console.log('Optimizing images...');
 			done();
 		},
-		gulp.parallel(images, convertToWebP),
+		images, convertToWebP,
 		(done) => {
 			console.log('Images processed');
 			done();
