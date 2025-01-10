@@ -5,7 +5,7 @@
 - Updated some packages. Props @robruiz
 - Improved some command line messaging. Props @robruiz
 - Replaced gulp-imagemin and gulp-webp for compatibility reasons. Props @robruiz
-- Improved some command line messaging. Props @robruiz
+- Now supporting Node v22+. Props @robruiz
 
 ## 3.0.0
 
