@@ -29,7 +29,7 @@ class Component_Tests extends Unit_Test_Case {
 	/**
 	 * Sets up the environment before each test.
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->component = new Component();
