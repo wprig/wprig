@@ -2,7 +2,8 @@
 
 ## 3.0.1
 
-- Fixed as many security vulns as possible for a local build tool. Props @robruiz
+- Updated some packages. Props @robruiz
+- Improved some command line messaging. Props @robruiz
 
 ## 3.0.0
 
