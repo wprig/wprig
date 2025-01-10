@@ -47,6 +47,7 @@
     "globals": "^15.11.0",
     "gulp": "^5.0.0",
     "gulp-clean-css": "^4.3.0",
+    "gulp-cli": "^3.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-esbuild": "^0.11.0",
     "gulp-newer": "^1.4.0",
