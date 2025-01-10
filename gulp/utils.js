@@ -24,7 +24,7 @@ import {
 
 import config from '../config/themeConfig.js';
 
-export const getDefaultConfig = () => require( `${ rootPath }/config/config.default.json` );
+export const getDefaultConfig = () => import( `${ rootPath }/config/config.default.json` );
 
 /**
  * Get theme configuration.
