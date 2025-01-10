@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.0.1
+
+- Updated some packages. Props @robruiz
+- Improved some command line messaging. Props @robruiz
+- Replaced gulp-imagemin and gulp-webp for compatibility reasons. Props @robruiz
+- Now supporting Node v22+. Props @robruiz
+
 ## 3.0.0
 
 - Complete Rewrite of Javascript and CSS build systems. Introduced esbuild and Lightning CSS. Props @robruiz
