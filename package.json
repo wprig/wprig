@@ -124,11 +124,5 @@
     "bundle": "cross-env NODE_ENV=production gulp bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs",
     "bundle:check-all": "cross-env NODE_ENV=production gulp bundle --phpcs"
-  },
-  "dependencies": {
-    "graceful-fs": "^4.2.11",
-    "imagemin-gifsicle": "^7.0.0",
-    "imagemin-optipng": "^8.0.0",
-    "stampit": "^4.3.2"
   }
 }
