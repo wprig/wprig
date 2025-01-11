@@ -41,6 +41,7 @@
     "run-phpcs": [
       "@phpcs-dev"
     ],
+    "fix": "vendor/bin/rector process && vendor/bin/php-cs-fixer fix && vendor/bin/phpcbf",
     "phpunit-dev": "\"vendor/bin/phpunit\"",
     "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
   }
