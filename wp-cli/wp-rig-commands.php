@@ -19,14 +19,12 @@ class Rig_Command extends WP_CLI_Command {
 
 
 	/**
-	 * Sets up the development environment by installing curated plugins and configuring a static front page with a blog page.
-	 *
-	 * @param array $args Positional arguments passed to the command.
-	 * @param array $assoc_args Associative arguments passed to the command.
-	 *
-	 * @return void
-	 */
-	public function dev_setup( array $args, array $assoc_args ): void {
+     * Sets up the development environment by installing curated plugins and configuring a static front page with a blog page.
+     *
+     * @param array $args Positional arguments passed to the command.
+     * @param array $assoc_args Associative arguments passed to the command.
+     */
+    public function dev_setup( array $args, array $assoc_args ): void {
 		$curated_plugins = array(
 			'fakerpress',
 			'theme-check',

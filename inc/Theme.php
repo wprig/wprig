@@ -24,11 +24,9 @@ class Theme {
 	protected $components = array();
 
 	/**
-	 * The template tags instance, providing access to all available template tags.
-	 *
-	 * @var Template_Tags
-	 */
-	protected $template_tags;
+     * The template tags instance, providing access to all available template tags.
+     */
+    protected \WP_Rig\WP_Rig\Template_Tags $template_tags;
 
 	/**
 	 * Constructor.
@@ -42,7 +40,7 @@ class Theme {
 	 * @throws InvalidArgumentException Thrown if one of the $components does not implement Component_Interface.
 	 */
 	public function __construct( array $components = array() ) {
-		if ( empty( $components ) ) {
+		if ( $components === [] ) {
 			$components = $this->get_default_components();
 		}
 
