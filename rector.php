@@ -30,6 +30,12 @@ return static function ( RectorConfig $rector_config ): void {
 		)
 	);
 
+	$rector_config->skip(
+		array(
+			Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector::class,
+		)
+	);
+
 	// Add single rule.
 	$rector_config->rule( TypedPropertyFromStrictConstructorRector::class );
 
