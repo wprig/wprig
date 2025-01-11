@@ -54,9 +54,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
-     * Enqueues the theme options admin scripts.
-     */
-    public function theme_options_enqueue_scripts(): void {
+	 * Enqueues the theme options admin scripts.
+	 */
+	public function theme_options_enqueue_scripts(): void {
 		wp_enqueue_script(
 			'wp-rig-theme-settings',
 			get_template_directory_uri() . '/assets/js/admin/index.min.js',
@@ -85,9 +85,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
-     * Adds an admin menu page for WP Rig settings.
-     */
-    public function add_admin_menu(): void {
+	 * Adds an admin menu page for WP Rig settings.
+	 */
+	public function add_admin_menu(): void {
 		add_menu_page(
 			__( 'WP Rig Settings', 'wp-rig' ),
 			__( 'WP Rig Settings', 'wp-rig' ),
@@ -98,16 +98,16 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 	/**
-     * Renders the settings page by including the settings-page.php file from the theme's inc/Options directory.
-     */
-    public function render_settings_page(): void {
+	 * Renders the settings page by including the settings-page.php file from the theme's inc/Options directory.
+	 */
+	public function render_settings_page(): void {
 		require get_template_directory() . '/inc/Options/settings-page.php';
 	}
 
 	/**
-     * Registers the settings endpoint for the REST API.
-     */
-    public function register_settings_endpoint(): void {
+	 * Registers the settings endpoint for the REST API.
+	 */
+	public function register_settings_endpoint(): void {
 		register_rest_route(
 			'my-theme/v1',
 			'/settings',

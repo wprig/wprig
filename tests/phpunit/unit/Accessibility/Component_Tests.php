@@ -41,9 +41,9 @@ class Component_Tests extends Unit_Test_Case {
 		parent::setUp();
 
 		$this->component = new Component();
-		$this->mock_post = $this->getMockBuilder(\WP_Post::class)
-		                        ->disableOriginalConstructor()
-		                        ->getMock();
+		$this->mock_post = $this->getMockBuilder( \WP_Post::class )
+								->disableOriginalConstructor()
+								->getMock();
 	}
 
 	/**
@@ -124,7 +124,7 @@ class Component_Tests extends Unit_Test_Case {
 	public function test_filter_nav_menu_link_attributes_aria_current() {
 		$atts = array();
 		$item = $this->mock_post;
-		$atts = $this->component->filter_nav_menu_link_attributes_aria_current($atts, $item);
+		$atts = $this->component->filter_nav_menu_link_attributes_aria_current( $atts, $item );
 		$this->assertEmpty( $atts );
 	}
 

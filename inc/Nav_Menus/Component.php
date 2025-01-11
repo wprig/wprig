@@ -90,7 +90,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$theme_settings_json  = wp_remote_retrieve_body( $response );
 			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
 		}
-        return null;
+		return null;
 	}
 
 	/**
