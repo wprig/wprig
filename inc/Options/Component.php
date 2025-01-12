@@ -55,8 +55,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Enqueues the theme options admin scripts.
-	 *
-	 * @return void
 	 */
 	public function theme_options_enqueue_scripts(): void {
 		wp_enqueue_script(
@@ -88,8 +86,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Adds an admin menu page for WP Rig settings.
-	 *
-	 * @return void
 	 */
 	public function add_admin_menu(): void {
 		add_menu_page(
@@ -103,8 +99,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Renders the settings page by including the settings-page.php file from the theme's inc/Options directory.
-	 *
-	 * @return void
 	 */
 	public function render_settings_page(): void {
 		require get_template_directory() . '/inc/Options/settings-page.php';
@@ -112,8 +106,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Registers the settings endpoint for the REST API.
-	 *
-	 * @return void
 	 */
 	public function register_settings_endpoint(): void {
 		register_rest_route(

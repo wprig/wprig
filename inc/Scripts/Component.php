@@ -151,7 +151,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 		);
 
-		if ( empty( $handles ) ) {
+		if ( array() === $handles ) {
 			return;
 		}
 

@@ -121,7 +121,7 @@ input[type="submit"] {
 	border-color: var(--border-color-light) var(--border-color-light) #bbb;
 	border-radius: 3px;
 	background: #eee;
-	color: rgba(0, 0, 0, 0.8);
+	color: var(--global-font-color);
 	font-size: 0.75rem;
 	line-height: 1;
 	padding: 0.6em 1em 0.4em;
@@ -318,6 +318,9 @@ nav div.wp-block-navigation__responsive-dialog {
 			display: none;
 		}
 	}
+	svg {
+		fill: var(--global-font-color);
+	}
 }
 
 .nav--toggle-small {
@@ -368,7 +371,7 @@ nav div.wp-block-navigation__responsive-dialog {
 			& .primary-menu-container {
 				position: absolute;
 				z-index: -5;
-				background: #fff;
+				background: var(--content-background-color);
 				width: 100vw;
 				top: 300px;
 				left: 0;
@@ -416,7 +419,9 @@ nav div.wp-block-navigation__responsive-dialog {
 	padding: 0;
 	border: none;
 	border-radius: 0;
-	transform: translateY(-50%);
+	@media (--wide-menu-query) {
+		transform: translateY(-50%);
+	}
 	overflow: visible;
 }
 
@@ -468,7 +473,7 @@ nav div.wp-block-navigation__responsive-dialog {
 		position: absolute;
 		top: 100%;
 		flex-direction: column;
-		background: #fff;
+		background: var(--sub-content-background-color);
 		margin-left: 0;
 		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
 		z-index: 100;
@@ -569,9 +574,13 @@ nav div.wp-block-navigation__responsive-dialog {
 	& ul.wp-block-navigation-submenu li {
 		padding: 0.3em 0.5em;
 	}
+
+	a:hover, a:focus, button:hover, button:focus {
+		text-decoration: underline;
+	}
 }
 
-.main-navigation a {
+.main-navigation a, .main-navigation button {
 	display: block;
 	width: 100%;
 	padding: 0.5em 1em 0.5em 0;
@@ -579,9 +588,12 @@ nav div.wp-block-navigation__responsive-dialog {
 	color: var(--global-font-color);
 }
 
-.main-navigation a:hover,
-.main-navigation a:focus {
-	text-decoration: underline;
+.main-navigation button {
+	background:none;
+	border:none;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
 }
 
 .main-navigation .current-menu-item > a,
@@ -639,8 +651,10 @@ nav div.wp-block-navigation__responsive-dialog {
 
 @media (--wide-menu-query) {
 
-	.main-navigation ul li a {
-		padding: 0.4em 0.5em;
+	.main-navigation ul li {
+		a, button {
+			padding: 0.4em 0.5em;
+		}
 	}
 
 	.main-navigation ul li {
@@ -688,12 +702,18 @@ nav div.wp-block-navigation__responsive-dialog {
 @media (--narrow-menu-query) {
 
 	.main-navigation {
-
-		& a {
-			flex: 90%;
+		li.menu-item{
+			button {
+				text-align: left;
+			}
+		}
+		li.menu-item-has-children {
+			a, button:not(.dropdown-toggle) {
+				flex: 90%;
+			}
 		}
 
-		& li.menu-item {
+		& li.menu-item-has-children.menu-item {
 			display: flex;
 			flex-direction: row;
 			flex-wrap: wrap;

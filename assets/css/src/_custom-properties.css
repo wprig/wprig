@@ -23,6 +23,11 @@
 
 	/* Colors */
 	--global-font-color: #333;
+	--background-color: #fff; /* Page background color */
+	--content-background-color: #fff; /* Content-specific background */
+	--sub-content-background-color: #f6f6f6; /* Content-specific background */
+	--header-background-color: #f6f6f6;
+	--footer-background-color: #fbfbfb;
 	--border-color-dark: #333;
 	--border-color-light: #ccc;
 	--color-link: #0073aa;
@@ -43,4 +48,23 @@
 	--color-theme-white: #ecf0f1;
 	--color-custom-daylight: #97c0b7;
 	--color-custom-sun: #eee9d1;
+
+	@media (prefers-color-scheme: dark) {
+		/* Global color adjustments for dark mode */
+		--global-font-color: #ffffff; /* Default text color */
+		--border-color-light: #444444; /* Light border color */
+		--border-color-dark: #333333; /* Dark border color */
+		--background-color: #121212; /* Page background color */
+		--content-background-color: #181818; /* Content-specific background */
+		--sub-content-background-color: #333333;
+		--header-background-color: #1a1a1a;
+		--footer-background-color: #1a1a1a;
+		--color-link: #4e9efd; /* Link color */
+		--color-link-active: #bbdfff; /* Link hover/focus color */
+		--color-link-visited: #bbdfff; /* Link hover/focus color */
+
+		/* reverse dark/light colors */
+		--border-color-dark: #ccc;
+		--border-color-light: #333;
+	}
 }

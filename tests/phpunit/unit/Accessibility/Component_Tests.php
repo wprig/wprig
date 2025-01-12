@@ -37,10 +37,13 @@ class Component_Tests extends Unit_Test_Case {
 	/**
 	 * Sets up the environment before each test.
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->component = new Component();
+		$this->mock_post = $this->getMockBuilder( \WP_Post::class )
+								->disableOriginalConstructor()
+								->getMock();
 	}
 
 	/**
@@ -120,8 +123,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current() {
 		$atts = array();
-		$item = $this->mock_post->getMock();
-
+		$item = $this->mock_post;
 		$atts = $this->component->filter_nav_menu_link_attributes_aria_current( $atts, $item );
 		$this->assertEmpty( $atts );
 	}
@@ -133,7 +135,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current_with_current_item() {
 		$atts          = array();
-		$item          = $this->mock_post->getMock();
+		$item          = $this->mock_post;
 		$item->current = true;
 
 		$atts = $this->component->filter_nav_menu_link_attributes_aria_current( $atts, $item );
@@ -147,7 +149,7 @@ class Component_Tests extends Unit_Test_Case {
 	 */
 	public function test_filter_nav_menu_link_attributes_aria_current_with_current_post() {
 		$atts     = array();
-		$item     = $this->mock_post->getMock();
+		$item     = $this->mock_post;
 		$item->ID = 1;
 
 		$GLOBALS['post'] = $item; // phpcs:ignore WordPress.WP.GlobalVariablesOverride

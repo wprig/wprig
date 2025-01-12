@@ -54,7 +54,7 @@ if ( ! empty( $post->post_parent ) && 'attachment' === get_post_type() ) {
 ?>
 <div class="entry-meta">
 	<?php
-	if ( ! empty( $time_string ) ) {
+	if ( '' !== $time_string && '0' !== $time_string ) {
 		?>
 		<span class="posted-on">
 			<?php
@@ -68,13 +68,13 @@ if ( ! empty( $post->post_parent ) && 'attachment' === get_post_type() ) {
 		<?php
 	}
 
-	if ( ! empty( $author_string ) ) {
+	if ( '' !== $author_string && '0' !== $author_string ) {
 		?>
 		<span class="posted-by">
 			<?php
 			/* translators: %s: post author */
 			$author_byline = _x( 'By %s', 'post author', 'wp-rig' );
-			if ( ! empty( $time_string ) ) {
+			if ( '' !== $time_string && '0' !== $time_string ) {
 				/* translators: %s: post author */
 				$author_byline = _x( 'by %s', 'post author', 'wp-rig' );
 			}
@@ -87,15 +87,18 @@ if ( ! empty( $post->post_parent ) && 'attachment' === get_post_type() ) {
 		<?php
 	}
 
-	if ( ! empty( $parent_string ) ) {
+	if ( '' !== $parent_string && '0' !== $parent_string ) {
 		?>
 		<span class="posted-in">
 			<?php
 			/* translators: %s: post parent title */
 			$parent_note = _x( 'In %s', 'post parent', 'wp-rig' );
-			if ( ! empty( $time_string ) || ! empty( $author_string ) ) {
+			if ( ( '' !== $time_string && '0' !== $time_string ) || ( '' !== $author_string && '0' !== $author_string ) ) {
 				/* translators: %s: post parent title */
 				$parent_note = _x( 'in %s', 'post parent', 'wp-rig' );
+			} else {
+				/* translators: %s: post parent title */
+				$parent_note = _x( 'In %s', 'post parent', 'wp-rig' );
 			}
 			printf(
 				esc_html( $parent_note ),

@@ -23,8 +23,6 @@ class Rig_Command extends WP_CLI_Command {
 	 *
 	 * @param array $args Positional arguments passed to the command.
 	 * @param array $assoc_args Associative arguments passed to the command.
-	 *
-	 * @return void
 	 */
 	public function dev_setup( array $args, array $assoc_args ): void {
 		$curated_plugins = array(

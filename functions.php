@@ -36,7 +36,7 @@ if ( file_exists( get_template_directory() . '/vendor/autoload.php' ) ) {
 	function _wp_rig_autoload( $class_name ) {
 		$namespace = 'WP_Rig\WP_Rig';
 
-		if ( strpos( $class_name, $namespace . '\\' ) !== 0 ) {
+		if ( 0 !== strpos( $class_name, $namespace . '\\' ) ) {
 			return false;
 		}
 

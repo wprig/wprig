@@ -91,8 +91,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Registers font collections with WordPress if the wp_register_font_collection function exists.
-	 *
-	 * @return void
 	 */
 	public function wprig_register_fonts(): void {
 		if ( function_exists( 'wp_register_font_collection' ) ) {
@@ -159,12 +157,15 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			wp_register_font_collection(
 				'local-fonts',
 				array(
-					array(
-						'family' => 'My Local Font',
-						'file'   => get_template_directory_uri() . '/assets/fonts/my-local-font/my-local-font.woff2',
-						'weight' => '400',
-						'style'  => 'normal',
-					),
+					'name'   => __( 'Local Fonts', 'wp-rig' ),
+					'font_families' => array(
+						array(
+							'family' => 'My Local Font',
+							'file'   => get_template_directory_uri() . '/assets/fonts/my-local-font/my-local-font.woff2',
+							'weight' => '400',
+							'style'  => 'normal',
+						),
+					)
 				)
 			);
 		}
@@ -172,13 +173,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Enqueues Google Fonts for the theme.
-	 *
-	 * @return void
 	 */
 	public function action_enqueue_fonts(): void {
 		// Enqueue Google Fonts.
 		$google_fonts_url = $this->get_google_fonts_url();
-		if ( ! empty( $google_fonts_url ) ) {
+		if ( '' !== $google_fonts_url && '0' !== $google_fonts_url ) {
 			wp_enqueue_style( 'wp-rig-fonts', $google_fonts_url, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		}
 	}
@@ -188,13 +187,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * Retrieves the URL for the Google Fonts and, if it is not empty,
 	 * adds the editor styles to the WordPress editor.
-	 *
-	 * @return void
 	 */
 	public function action_add_editor_fonts(): void {
 		// Enqueue Google Fonts.
 		$google_fonts_url = $this->get_google_fonts_url();
-		if ( ! empty( $google_fonts_url ) ) {
+		if ( '' !== $google_fonts_url && '0' !== $google_fonts_url ) {
 			add_editor_style( $this->get_google_fonts_url() );
 		}
 	}
@@ -252,7 +249,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	protected function get_google_fonts_url(): string {
 		$google_fonts = $this->get_google_fonts();
 
-		if ( empty( $google_fonts ) ) {
+		if ( array() === $google_fonts ) {
 			return '';
 		}
 
