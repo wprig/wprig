@@ -62,6 +62,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ) );
 		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ) );
 		add_filter( 'render_block_core/navigation', array( $this, 'add_nav_class_to_navigation_block' ), 10, 3 );
+		add_filter('walker_nav_menu_start_el', array( $this, 'modify_menu_items_for_accessibility'), 10, 4);
 	}
 
 	/**
@@ -213,5 +214,34 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Return the block content.
 		return $block_content;
+	}
+
+	public function modify_menu_items_for_accessibility($item_output, $item, $depth, $args) {
+		// Ensure we're working with the correct nav menu theme location.
+		if (empty($args->theme_location) || 'primary' !== $args->theme_location) {
+			return $item_output;
+		}
+
+		// Check if the `href` is empty or `#`.
+		if (empty($item->url) || $item->url === '#') {
+			// Extract the original link content (e.g., the text inside the original <a> tag).
+			$item_label = $item->title;
+
+			// Add dropdown symbol inside the button.
+			$dropdown_symbol = '<span class="dropdown"><i class="dropdown-symbol"></i></span>';
+			$has_submenu = in_array( 'menu-item-has-children', $item->classes, true );
+
+			// Replace `<a>` with `<button>` for accessibility and meaningful semantics.
+			return sprintf(
+				'<button class="%s" type="button" aria-expanded="false" aria-controls="submenu-%s">%s %s</button>',
+				$has_submenu ? 'submenu-toggle' : '',
+				esc_attr($item->ID),
+				esc_html($item_label),
+				$has_submenu ? $dropdown_symbol : ''
+			);
+		}
+
+		// Leave items unaffected that have valid URLs or do not meet conditions.
+		return $item_output;
 	}
 }
