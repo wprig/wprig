@@ -18,23 +18,8 @@
             "type": "text"
           },
           {
-            "name": "option7",
-            "label": "Robs Custom Setting",
-            "type": "text"
-          },
-          {
-            "name": "option8",
-            "label": "Robs Now with Gulp?",
-            "type": "text"
-          },
-          {
             "name": "option5",
             "label": "On/Off",
-            "type": "toggle"
-          },
-          {
-            "name": "option9",
-            "label": "Live/Die",
             "type": "toggle"
           }
         ]
