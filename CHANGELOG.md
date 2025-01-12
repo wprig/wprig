@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.2
+
+- Accessibility improvements - Empty main menu items (no-link parent menu items) now change to buttons instead of ) Props @robruiz
+- PHPUnit upgrade and improvements Props @robruiz
+- Added PHP CS Fixer and Rector to code quality checking Props @robruiz
+- Added new composer fix script that runs a sequence of checks using all code quality checks Props @robruiz
+- Added dark mode support to base starter theme Props @robruiz
+
 ## 3.0.1
 
 - Updated some packages. Props @robruiz
