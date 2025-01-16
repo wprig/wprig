@@ -23,7 +23,6 @@ use function the_comments_navigation;
  * Exposes template tags:
  * * `wp_rig()->the_comments( array $args = array() )`
  *
- * @link https://wordpress.org/plugins/amp/
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
@@ -88,8 +87,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Displays the list of comments for the current post.
 	 *
 	 * Internally this method calls `wp_list_comments()`. However, in addition to that it will render the wrapping
-	 * element for the list, so that must not be added manually. The method will also take care of generating the
-	 * necessary markup if amp-live-list should be used for comments.
+	 * element for the list, so that must not be added manually.
 	 *
 	 * @param array $args Optional. Array of arguments. See `wp_list_comments()` documentation for a list of supported
 	 *                    arguments.
