@@ -111,7 +111,7 @@
     "generateCert": "gulp generateCert",
     "build:js": "node build-js.js",
     "dev:js": "node build-js.js --dev",
-    "lint:js": "eslint assets/js/src",
+    "lint:js": "eslint --fix assets/js/src",
     "build:css": "node build-css.js",
     "dev:css": "node build-css.js --dev",
     "lint:css": "node lint-css.js",

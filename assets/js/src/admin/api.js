@@ -8,5 +8,5 @@ export const updateSettings = (settings) => {
 			'X-WP-Nonce': window.wpRigThemeSettings.nonce,
 		},
 		body: JSON.stringify({ settings }),
-	}).then(response => response.json());
+	}).then((response) => response.json());
 };
