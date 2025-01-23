@@ -1,5 +1,5 @@
-import { createRoot } from "react-dom/client";
-import { useState, useCallback } from "react";
+import { createRoot } from 'react-dom/client';
+import { useState, useCallback } from 'react';
 import {
 	PanelRow,
 	TabPanel,
@@ -8,9 +8,9 @@ import {
 	BaseControl,
 	SelectControl,
 	FormToggle,
-} from "@wordpress/components";
-import { updateSettings } from "./api.js";
-import formFieldsData from "./settingsFields.json";
+} from '@wordpress/components';
+import { updateSettings } from './api.js';
+import formFieldsData from './settingsFields.json';
 
 // Debounce function to limit the frequency of calling a function
 const debounce = (func, wait) => {
@@ -22,21 +22,21 @@ const debounce = (func, wait) => {
 };
 
 const textControlTypes = [
-	"text",
-	"email",
-	"url",
-	"password",
-	"number",
-	"search",
-	"tel",
-	"date",
-	"time",
-	"datetime-local",
+	'text',
+	'email',
+	'url',
+	'password',
+	'number',
+	'search',
+	'tel',
+	'date',
+	'time',
+	'datetime-local',
 ];
 
 const SettingsPage = () => {
 	const [settings, setSettings] = useState(
-		window["wpRigThemeSettings"].settings,
+		window.wpRigThemeSettings.settings
 	);
 	const [snackbarNotices, setSnackbarNotices] = useState([]);
 
@@ -48,8 +48,8 @@ const SettingsPage = () => {
 						...snackbarNotices,
 						{
 							id: Date.now(),
-							content: "Settings saved!",
-							spokenMessage: "Settings saved!",
+							content: 'Settings saved!',
+							spokenMessage: 'Settings saved!',
 						},
 					];
 					setSnackbarNotices(newSnackbarNotices);
@@ -57,16 +57,16 @@ const SettingsPage = () => {
 						setSnackbarNotices((prevNotices) =>
 							prevNotices.filter(
 								(notice) =>
-									notice.id !== newSnackbarNotices[0].id,
-							),
+									notice.id !== newSnackbarNotices[0].id
+							)
 						);
 					}, 2000);
 				} else {
-					console.error("Failed to save settings:", response);
+					console.error('Failed to save settings:', response);
 				}
 			});
 		}, 1500),
-		[snackbarNotices],
+		[snackbarNotices]
 	);
 
 	const handleChange = (settingKey, value) => {
@@ -80,32 +80,33 @@ const SettingsPage = () => {
 			<TabPanel
 				tabs={formFieldsData.tabs.map((tab) => ({
 					name: tab.id,
-					title: tab["tabControl"].label,
+					title: tab.tabControl.label,
 				}))}
 			>
 				{(tab) => (
 					<div>
 						{formFieldsData.tabs
-							.find((t) => t.id === tab.name)["tabContent"].fields.map((field) => (
+							.find((t) => t.id === tab.name)
+							.tabContent.fields.map((field) => (
 								<PanelRow key={field.name}>
-									{field.type === "toggle" && (
+									{field.type === 'toggle' && (
 										<BaseControl label={field.label}>
 											<FormToggle
 												checked={!!settings[field.name]}
 												onChange={(event) =>
 													handleChange(
 														field.name,
-														event.target.checked,
+														event.target.checked
 													)
 												}
 											/>
 										</BaseControl>
 									)}
-									{field.type === "select" && (
+									{field.type === 'select' && (
 										<SelectControl
 											__nextHasNoMarginBottom
 											label={field.label}
-											value={settings[field.name] || ""}
+											value={settings[field.name] || ''}
 											onChange={(value) =>
 												handleChange(field.name, value)
 											}
@@ -116,7 +117,7 @@ const SettingsPage = () => {
 										<TextControl
 											label={field.label}
 											type={field.type}
-											value={settings[field.name] || ""}
+											value={settings[field.name] || ''}
 											onChange={(value) =>
 												handleChange(field.name, value)
 											}
@@ -137,11 +138,11 @@ const SettingsPage = () => {
 export default SettingsPage;
 
 const renderSettingsPage = () => {
-	const container = document.getElementById("wp-rig-settings-page");
+	const container = document.getElementById('wp-rig-settings-page');
 	if (container) {
 		const root = createRoot(container);
 		root.render(<SettingsPage />);
 	}
 };
 
-document.addEventListener("DOMContentLoaded", renderSettingsPage);
+document.addEventListener('DOMContentLoaded', renderSettingsPage);

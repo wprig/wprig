@@ -18,8 +18,10 @@
     "url": "https://github.com/wprig/wprig/issues"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.26.5",
     "@eslint/js": "^9.14.0",
     "@parcel/css": "^1.14.0",
+    "@typescript-eslint/parser": "^8.21.0",
     "@wordpress/components": "^28.12.0",
     "@wordpress/data": "^10.12.0",
     "@wordpress/eslint-plugin": "^21.4.0",
@@ -38,7 +40,10 @@
     "eslint": "^8.0.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-standard": "^5.0.0",
     "esm": "^3.2.25",
     "esvalidate": "^0.1.3",
