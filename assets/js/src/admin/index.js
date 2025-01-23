@@ -40,6 +40,7 @@ const SettingsPage = () => {
 	);
 	const [snackbarNotices, setSnackbarNotices] = useState([]);
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedUpdateSettings = useCallback(
 		debounce((newSettings) => {
 			updateSettings(newSettings).then((response) => {
@@ -62,6 +63,7 @@ const SettingsPage = () => {
 						);
 					}, 2000);
 				} else {
+					//eslint-disable-next-line
 					console.error('Failed to save settings:', response);
 				}
 			});
@@ -90,7 +92,10 @@ const SettingsPage = () => {
 							.tabContent.fields.map((field) => (
 								<PanelRow key={field.name}>
 									{field.type === 'toggle' && (
-										<BaseControl label={field.label}>
+										<BaseControl
+											id={field.name}
+											label={field.label}
+										>
 											<FormToggle
 												checked={!!settings[field.name]}
 												onChange={(event) =>
