@@ -64,8 +64,8 @@ files.forEach(file => {
 	esbuild.build({
 		entryPoints: [file],
 		outfile: outputPath,
-		minify: isProd,
-		sourcemap: !isProd,
+		minify: true,
+		sourcemap: isProd ? false : 'inline',
 		bundle: true,
 		target: ['es6'], // Adjust based on your target environments
 		loader: {

@@ -1,4 +1,5 @@
 # Changelog
+ - Fixed js minification and removes obsolete dev dependency
 
 ## 3.0.2
 
