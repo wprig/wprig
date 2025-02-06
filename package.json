@@ -53,7 +53,6 @@
     "gulp-newer": "^1.4.0",
     "gulp-shell": "^0.8.0",
     "gulp-sort": "^2.0.0",
-    "gulp-sourcemaps": "^3.0.0",
     "gulp-wp-pot": "^2.5.0",
     "gulp-zip": "^6.0.0",
     "imagemin": "^9.0.0",
