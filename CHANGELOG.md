@@ -1,5 +1,6 @@
 # Changelog
  - Fixed js minification and removes obsolete dev dependency
+ - Fixed corruption for files during the bundle for filesToCopy files
 
 ## 3.0.2
 
