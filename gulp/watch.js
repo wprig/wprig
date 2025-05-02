@@ -13,7 +13,7 @@ import pump from 'pump';
 import { paths } from './constants.js';
 import { getThemeConfig, backslashToForwardSlash } from './utils.js';
 import { reload } from './browserSync.js';
-import { images } from "./images.js";
+import { images } from './images.js';
 
 /**
  * Watch everything
@@ -24,20 +24,18 @@ export default function watch() {
 	 * in file paths, so they are replaced with forward slashes, which are
 	 * valid for Windows paths in a Node.js context.
 	 */
-	const PHPwatcher = gulpWatch( backslashToForwardSlash( paths.php.src ), reload );
+	const PHPwatcher = gulpWatch(
+		backslashToForwardSlash( paths.php.src ),
+		reload
+	);
 	const config = getThemeConfig();
 
 	if ( config.dev.debug.phpcs ) {
-		PHPwatcher.on( 'change', function( path ) {
-			return pump( [
-				src( path ),
-				// Run code sniffing
-				//gulpPlugins.phpcs( PHPCSOptions ),
-				// Log all problems that were found.
-				//gulpPlugins.phpcs.reporter( 'log' ),
-			] );
+		// Simply reload on PHP changes - remove the problematic pump call
+		// If you need to restore PHPCS functionality, ensure you have at least two valid streams
+		PHPwatcher.on( 'change', function ( path ) {
+			console.log( 'PHP file changed:', path );
+			// If you want to do something with the changed file, you can add it here
 		} );
 	}
-
-	gulpWatch( backslashToForwardSlash( paths.images.src ), series( images, reload ) );
 }
