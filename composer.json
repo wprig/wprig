@@ -8,14 +8,16 @@
     "wp-coding-standards/wpcs": "^3.1.0",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
     "squizlabs/php_codesniffer": "3.*",
-    "phpunit/phpunit": "^6",
     "brain/monkey": "^2",
     "phpcompatibility/php-compatibility": "^9",
-    "yoast/phpunit-polyfills": "^1.0"
+    "yoast/phpunit-polyfills": "^1.0",
+    "phpunit/phpunit": "^9.5",
+    "rector/rector": "^2.0",
+    "friendsofphp/php-cs-fixer": "^3.67"
   },
   "config": {
     "platform": {
-      "php": "7.0"
+      "php": "8.1"
     },
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
@@ -34,10 +36,12 @@
     "run-phpcbf": [
       "@phpcbf-dev"
     ],
-    "phpcs-dev": "\"vendor/bin/phpcs\"",
+    "phpcs-dev": "\"vendor/bin/phpcs\" -s --parallel=4 --standard=phpcs.xml.dist",
+    "phpcs-config": "\"vendor/bin/phpcs\" --config-show",
     "run-phpcs": [
       "@phpcs-dev"
     ],
+    "fix": "vendor/bin/rector process && vendor/bin/php-cs-fixer fix && vendor/bin/phpcbf",
     "phpunit-dev": "\"vendor/bin/phpunit\"",
     "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
   }

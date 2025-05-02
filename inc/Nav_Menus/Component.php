@@ -62,6 +62,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ) );
 		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ) );
 		add_filter( 'render_block_core/navigation', array( $this, 'add_nav_class_to_navigation_block' ), 10, 3 );
+		add_filter( 'walker_nav_menu_start_el', array( $this, 'modify_menu_items_for_accessibility' ), 10, 4 );
 	}
 
 	/**
@@ -90,6 +91,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$theme_settings_json  = wp_remote_retrieve_body( $response );
 			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
 		}
+		return null;
 	}
 
 	/**
@@ -170,7 +172,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function customize_mobile_menu_toggle() {
 		$get_menu_icon  = wp_remote_get( get_theme_file_uri() . '/assets/svg/menu-icon.svg' );
-		$get_close_icon = wp_remote_get( get_theme_file_path() . '/assets/svg/close-icon.svg' );
+		$get_close_icon = wp_remote_get( get_theme_file_uri() . '/assets/svg/close-icon.svg' );
 		return '<button class="menu-toggle icon" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
 					' . wp_remote_retrieve_body( $get_menu_icon ) . '
 					' . wp_remote_retrieve_body( $get_close_icon ) . '
@@ -212,5 +214,48 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Return the block content.
 		return $block_content;
+	}
+
+	/**
+	 * Modifies menu item output for improved accessibility.
+	 *
+	 * This method replaces `<a>` tags with `<button>` elements for menu items that have no valid URL
+	 * or only contain `#`, adding appropriate accessibility attributes when necessary.
+	 * It ensures meaningful semantics and better navigation for assistive technologies.
+	 *
+	 * @param string $item_output The HTML output for the current menu item.
+	 * @param object $item WP_Post object for the current menu item.
+	 * @param int    $depth Depth of the menu item. Used for nesting levels.
+	 * @param array  $args An associative array of arguments passed to `wp_nav_menu()`.
+	 *
+	 * @return string Modified HTML output for the menu item.
+	 */
+	public function modify_menu_items_for_accessibility( $item_output, $item, $depth, $args ) {
+		// Ensure we're working with the correct nav menu theme location.
+		if ( empty( $args->theme_location ) || 'primary' !== $args->theme_location ) {
+			return $item_output;
+		}
+
+		// Check if the `href` is empty or `#`.
+		if ( empty( $item->url ) || '#' === $item->url ) {
+			// Extract the original link content (e.g., the text inside the original <a> tag).
+			$item_label = $item->title;
+
+			// Add dropdown symbol inside the button.
+			$dropdown_symbol = '<span class="dropdown"><i class="dropdown-symbol"></i></span>';
+			$has_submenu     = in_array( 'menu-item-has-children', $item->classes, true );
+
+			// Replace `<a>` with `<button>` for accessibility and meaningful semantics.
+			return sprintf(
+				'<button class="%s" type="button" aria-expanded="false" aria-controls="submenu-%s">%s %s</button>',
+				$has_submenu ? 'submenu-toggle' : '',
+				esc_attr( $item->ID ),
+				esc_html( $item_label ),
+				$has_submenu ? $dropdown_symbol : ''
+			);
+		}
+
+		// Leave items unaffected that have valid URLs or do not meet conditions.
+		return $item_output;
 	}
 }

@@ -1,0 +1,64 @@
+{
+  "tabs": [
+    {
+      "id": "tab1",
+      "tabControl": {
+        "label": "Page 1"
+      },
+      "tabContent": {
+        "fields": [
+          {
+            "name": "option1",
+            "label": "Option 1",
+            "type": "text"
+          },
+          {
+            "name": "option2",
+            "label": "Option 2",
+            "type": "text"
+          },
+          {
+            "name": "option5",
+            "label": "On/Off",
+            "type": "toggle"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tab2",
+      "tabControl": {
+        "label": "Page 2"
+      },
+      "tabContent": {
+        "fields": [
+          {
+            "name": "option3",
+            "label": "Option 3",
+            "type": "email"
+          },
+          {
+            "name": "option4",
+            "label": "Option 4",
+            "type": "url"
+          },
+          {
+            "name": "option6",
+            "label": "Select one",
+            "type": "select",
+            "options": [
+              {
+                "label": "Option 1",
+                "value": "option-1"
+              },
+              {
+                "label": "Option 2",
+                "value": "option-2"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

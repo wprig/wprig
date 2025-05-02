@@ -4,38 +4,25 @@
 /**
  * External dependencies
  */
-export const gulpPlugins = require( 'gulp-load-plugins' )();
 import path from 'path';
+import * as process from 'node:process';
 
 /**
  * Internal dependencies
  */
-import {
-	getThemeConfig,
-	configValueDefined,
-} from './utils';
+import { configValueDefined } from './utils.js';
+
+import config from '../config/themeConfig.js';
 
 // Root path is where npm run commands happen
 export const rootPath = process.cwd();
-
-export const gulpPath = `${ rootPath }/gulp`;
-
 export const gulpTestPath = `${ rootPath }/gulp/tests`;
 
 // Dev or production
-export const isProd = ( process.env.NODE_ENV === 'production' );
+export const isProd = process.env.NODE_ENV === 'production';
 
-// get the config
-const config = getThemeConfig();
-
-// directory for the production theme
-export const prodThemePath = path.normalize( `${ rootPath }/../${ config.theme.slug }` );
-
-// directory for assets (CSS, JS, images)
+// Directory for assets (CSS, JS, images)
 export const assetsDir = `${ rootPath }/assets`;
-
-// directory for assets (CSS, JS, images) in production
-export const prodAssetsDir = `${ prodThemePath }/assets`;
 
 // PHPCS options
 export const PHPCSOptions = {
@@ -54,15 +41,21 @@ export const nameFieldDefaults = {
 	author: 'The WP Rig Contributors',
 	author_uri: 'https://wprig.io/',
 	description: 'A progressive theme development rig for WordPress.',
-	version: '2.2.0',
+	version: '3.0.1',
 	underscoreCase: 'wp_rig',
 	constant: 'WP_RIG',
 	camelCase: 'WpRig',
 	camelCaseVar: 'wpRig',
 };
 
+// Default Theme Paths
+export const prodThemePath = isProd
+	? path.normalize( `${ rootPath }/../${ config.theme.slug }` )
+	: undefined;
+export const prodAssetsDir = isProd ? `${ prodThemePath }/assets` : assetsDir;
+
 // Project paths
-const paths = {
+export const paths = {
 	assetsDir,
 	browserSync: {
 		dir: `${ rootPath }/BrowserSync`,
@@ -79,6 +72,8 @@ const paths = {
 			`!${ rootPath }/optional/**/*.*`,
 			`!${ rootPath }/tests/**/*.*`,
 			`!${ rootPath }/vendor/**/*.*`,
+			`!${ rootPath }/wp-cli/**/*.*`,
+			`!${ rootPath }/node_modules/**/*.*`,
 		],
 		dest: `${ rootPath }/`,
 	},
@@ -101,11 +96,7 @@ const paths = {
 		dest: `${ assetsDir }/css`,
 	},
 	scripts: {
-		src: [
-			`${ assetsDir }/js/src/**/*.js`,
-			// Ignore partial files.
-			`!${ assetsDir }/js/src/**/_*.js`,
-		],
+		src: [ `${ assetsDir }/js/src/**/*.js`, `!${ assetsDir }/js/src/**/_*.js` ],
 		srcDir: `${ assetsDir }/js/src`,
 		dest: `${ assetsDir }/js`,
 	},
@@ -136,9 +127,12 @@ const paths = {
 };
 
 // Add rootPath to filesToCopy and additionalFilesToCopy
-/* eslint no-unused-vars: 0 */
-const additionalFilesToCopy = configValueDefined( 'export.additionalFilesToCopy' ) ? config.export.additionalFilesToCopy : [];
-const filesToCopy = configValueDefined( 'export.filesToCopy' ) ? config.export.filesToCopy : [];
+const additionalFilesToCopy = configValueDefined( 'export.additionalFilesToCopy' )
+	? config.export.additionalFilesToCopy
+	: [];
+const filesToCopy = configValueDefined( 'export.filesToCopy' )
+	? config.export.filesToCopy
+	: [];
 for ( const filePath of filesToCopy.concat( additionalFilesToCopy ) ) {
 	// Add the files to export src
 	paths.export.src.push( `${ rootPath }/${ filePath }` );
@@ -157,5 +151,3 @@ if ( isProd ) {
 		dest: `${ prodThemePath }/languages/${ config.theme.slug }.pot`,
 	};
 }
-
-export { paths };

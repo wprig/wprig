@@ -28,7 +28,7 @@ if ( is_singular( get_post_type() ) ) {
 		ob_start();
 		previous_image_link( false );
 		$prev_link = ob_get_clean();
-		if ( ! empty( $prev_link ) ) {
+		if ( ! ( '' === $prev_link || '0' === $prev_link || false === $prev_link ) ) {
 			$attachment_navigation .= '<div class="nav-previous">';
 			$attachment_navigation .= '<div class="post-navigation-sub"><span>' . esc_html__( 'Previous:', 'wp-rig' ) . '</span></div>';
 			$attachment_navigation .= $prev_link;
@@ -38,14 +38,14 @@ if ( is_singular( get_post_type() ) ) {
 		ob_start();
 		next_image_link( false );
 		$next_link = ob_get_clean();
-		if ( ! empty( $next_link ) ) {
+		if ( ! ( '' === $next_link || '0' === $next_link || false === $next_link ) ) {
 			$attachment_navigation .= '<div class="nav-next">';
 			$attachment_navigation .= '<div class="post-navigation-sub"><span>' . esc_html__( 'Next:', 'wp-rig' ) . '</span></div>';
 			$attachment_navigation .= $next_link;
 			$attachment_navigation .= '</div>';
 		}
 
-		if ( ! empty( $attachment_navigation ) ) {
+		if ( '' !== $attachment_navigation && '0' !== $attachment_navigation ) {
 			echo _navigation_markup( $attachment_navigation, $class = 'post-navigation', __( 'Post navigation', 'wp-rig' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}

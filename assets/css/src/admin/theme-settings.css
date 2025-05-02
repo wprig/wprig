@@ -1,0 +1,37 @@
+#wp-rig-settings-page {
+	.components-panel__row {
+		flex-direction: column;
+		max-width: 45%;
+		align-items: normal;
+		margin-top: 1.3em;
+	}
+	#settings-saved {
+		position: fixed;
+		width: 50%;
+		top: 50px;
+
+
+		.components-snackbar-list {
+			position: relative;
+
+			& > div {
+				position: relative;
+				left: 0;
+				animation: swipeIn .2s forwards;
+
+				.components-snackbar {
+					background: #3c8000;
+				}
+			}
+		}
+	}
+}
+
+@keyframes swipeIn {
+	from {
+		left: -100%; /* Start fully out of sight */
+	}
+	to {
+		left: 0; /* End at the intended position */
+	}
+}

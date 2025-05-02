@@ -12,8 +12,8 @@ import fs from 'fs';
 /**
  * Internal dependencies
  */
-import { paths } from './constants';
-import { getThemeConfig } from './utils';
+import { paths } from './constants.js';
+import { getThemeConfig } from './utils.js';
 
 /**
  * Conditionally set up BrowserSync.
@@ -27,9 +27,9 @@ export const server = browserSync.create();
 export function serve( done ) {
 	const config = getThemeConfig();
 
-	// bail early if not serving via BrowserSync
 	if ( ! config.dev.browserSync.live ) {
 		done();
+		return;
 	}
 
 	const serverConfig = {
@@ -77,6 +77,7 @@ export function serve( done ) {
 	server.init( serverConfig );
 
 	done();
+
 }
 
 // Reload the live site:

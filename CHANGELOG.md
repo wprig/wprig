@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.0.2
+
+- Accessibility improvements - Empty main menu items (no-link parent menu items) now change to buttons instead of ) Props @robruiz
+- PHPUnit upgrade and improvements Props @robruiz
+- Added PHP CS Fixer and Rector to code quality checking Props @robruiz
+- Added new composer fix script that runs a sequence of checks using all code quality checks Props @robruiz
+- Added dark mode support to base starter theme Props @robruiz
+
+## 3.0.1
+
+- Updated some packages. Props @robruiz
+- Improved some command line messaging. Props @robruiz
+- Replaced gulp-imagemin and gulp-webp for compatibility reasons. Props @robruiz
+- Now supporting Node v22+. Props @robruiz
+
+## 3.0.0
+
+- Complete Rewrite of Javascript and CSS build systems. Introduced esbuild and Lightning CSS. Props @robruiz
+- Full Typescript support added. Props @robruiz
+- Added base CSS framework for layout purposes. Props @robruiz
+- Min version of PHP bumped to PHP 8. Type checking added. Props @robruiz
+- React-based options/settings page framework for theme devs added. @robruiz
+- Removed support for AMP Plugin. @robruiz
+- Now compatible with up to PHP 8.3. Props @robruiz
+
 ## 2.3.2
 
 - Updated WPCS to V3.1. Props @robruiz

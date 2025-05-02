@@ -4,12 +4,12 @@
 /**
  * External dependencies
  */
-import del from 'del';
+import { deleteAsync } from 'del';
 
 /**
  * Internal dependencies
  */
-import { paths } from './constants';
+import { paths } from './constants.js';
 
 /**
  * Clean CSS
@@ -26,7 +26,7 @@ export function cleanCSS() {
 		.filter( ( path ) => path.indexOf( '/css/' ) !== -1 )
 		.map( ( path ) => `!${ path }` );
 
-	return del( delPath.concat( keepExportPath ) );
+	return deleteAsync( delPath.concat( keepExportPath ) );
 }
 
 /**
@@ -44,5 +44,5 @@ export function cleanJS() {
 		.filter( ( path ) => path.indexOf( '/js/' ) !== -1 )
 		.map( ( path ) => `!${ path }` );
 
-	return del( delPath.concat( keepExportPath ) );
+	return deleteAsync( delPath.concat( keepExportPath ) );
 }

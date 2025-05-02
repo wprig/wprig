@@ -11,19 +11,11 @@
 	stopOnFailure="false"
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
-	syntaxCheck="false"
 	verbose="true"
 	>
 	<testsuites>
-		<testsuite>
+		<testsuite name="Unit Tests">
 			<directory suffix=".php">./tests/phpunit/unit/</directory>
 		</testsuite>
 	</testsuites>
-
-	<filter>
-		<whitelist>
-			<file>./functions.php</file>
-			<directory>./inc</directory>
-		</whitelist>
-	</filter>
 </phpunit>
