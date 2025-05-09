@@ -12,10 +12,7 @@ import { paths } from './constants.js';
 /**
  * Copy the fonts folder from wp-rig to the production theme
  * @param {Function} done function to call when async processes finish
- * @return {Stream} single stream or undefined if fonts directory does not exist
  */
-
-// The below works perfectly
 
 export default function fonts( done ) {
 	try {
@@ -28,9 +25,6 @@ export default function fonts( done ) {
 
 		// Find all font files
 		const fontFiles = glob.sync( fontSrcPattern );
-
-		// Count successful copies
-		let successCount = 0;
 
 		fontFiles.forEach( ( srcFile ) => {
 			// Calculate the relative path to maintain directory structure
@@ -49,14 +43,6 @@ export default function fonts( done ) {
 
 				// Write directly as binary buffer
 				fs.writeFileSync( destFile, buffer );
-
-				// Verify file sizes match
-				const srcSize = fs.statSync( srcFile ).size;
-				const destSize = fs.statSync( destFile ).size;
-
-				if ( srcSize === destSize ) {
-					successCount++;
-				}
 			} catch ( err ) {
 				console.error( `Error copying ${ srcFile }: ${ err.message }` );
 			}
