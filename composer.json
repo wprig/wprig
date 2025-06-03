@@ -29,6 +29,13 @@
     }
   },
   "scripts": {
+    "setup-wp-tests": "php tests/phpunit/setup-wp-env.php",
+    "test:unit": "\"vendor/bin/phpunit\"",
+    "test:integration": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\"",
+    "test:all": [
+      "@test:unit",
+      "@test:integration"
+    ],
     "install-codestandards": [
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
     ],
@@ -42,7 +49,7 @@
       "@phpcs-dev"
     ],
     "fix": "vendor/bin/rector process && vendor/bin/php-cs-fixer fix && vendor/bin/phpcbf",
-    "phpunit-dev": "\"vendor/bin/phpunit\"",
-    "phpunit-integration-dev": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\""
+    "phpunit-dev": "@test:unit",
+    "phpunit-integration-dev": "@test:integration"
   }
 }

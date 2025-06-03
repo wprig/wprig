@@ -42,13 +42,22 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_action( 'after_setup_theme', array( $this, 'action_essential_theme_support' ) );
+		add_action( 'init', array( $this, 'action_title_tag_support' ), -999 );
+		add_action( 'after_setup_theme', array( $this, 'action_essential_theme_support' ), 1 );
 		add_action( 'wp_head', array( $this, 'action_add_pingback_header' ) );
 		add_filter( 'body_class', array( $this, 'filter_body_classes_add_hfeed' ) );
 		add_filter( 'embed_defaults', array( $this, 'filter_embed_dimensions' ) );
 		add_filter( 'theme_scandir_exclusions', array( $this, 'filter_scandir_exclusions_for_optional_templates' ) );
 		add_filter( 'script_loader_tag', array( $this, 'filter_script_loader_tag' ), 10, 2 );
 	}
+
+	/**
+	 * Adds title-tag theme support very early.
+	 */
+	public function action_title_tag_support() {
+		add_theme_support( 'title-tag' );
+	}
+
 
 	/**
 	 * Gets template tags to expose as methods on the Template_Tags class instance, accessible through `wp_rig()`.
@@ -70,9 +79,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function action_essential_theme_support() {
 		// Add default RSS feed links to head.
 		add_theme_support( 'automatic-feed-links' );
-
-		// Ensure WordPress manages the document title.
-		add_theme_support( 'title-tag' );
 
 		// Ensure WordPress theme features render in HTML5 markup.
 		add_theme_support(
