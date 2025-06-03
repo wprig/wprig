@@ -3,7 +3,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import glob from 'glob';
 /**
  * Internal dependencies
  */
@@ -23,8 +22,8 @@ export default function fonts( done ) {
 		const fontSrcPattern = paths.fonts.src;
 		const fontDestDir = paths.fonts.dest;
 
-		// Find all font files
-		const fontFiles = glob.sync( fontSrcPattern );
+		// Find all font files using Node.js built-in fs.glob (Node 20+)
+		const fontFiles = fs.globSync( fontSrcPattern );
 
 		fontFiles.forEach( ( srcFile ) => {
 			// Calculate the relative path to maintain directory structure

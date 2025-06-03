@@ -96,7 +96,10 @@ export const paths = {
 		dest: `${ assetsDir }/css`,
 	},
 	scripts: {
-		src: [ `${ assetsDir }/js/src/**/*.js`, `!${ assetsDir }/js/src/**/_*.js` ],
+		src: [
+			`${ assetsDir }/js/src/**/*.js`,
+			`!${ assetsDir }/js/src/**/_*.js`,
+		],
 		srcDir: `${ assetsDir }/js/src`,
 		dest: `${ assetsDir }/js`,
 	},
@@ -127,7 +130,9 @@ export const paths = {
 };
 
 // Add rootPath to filesToCopy and additionalFilesToCopy
-const additionalFilesToCopy = configValueDefined( 'export.additionalFilesToCopy' )
+const additionalFilesToCopy = configValueDefined(
+	'export.additionalFilesToCopy'
+)
 	? config.export.additionalFilesToCopy
 	: [];
 const filesToCopy = configValueDefined( 'export.filesToCopy' )
