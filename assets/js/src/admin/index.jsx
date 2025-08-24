@@ -36,7 +36,7 @@ const textControlTypes = [
 
 const SettingsPage = () => {
 	const [settings, setSettings] = useState(
-		window["wpRigThemeSettings"].settings,
+		window.wpRigThemeSettings.settings,
 	);
 	const [snackbarNotices, setSnackbarNotices] = useState([]);
 
@@ -80,13 +80,13 @@ const SettingsPage = () => {
 			<TabPanel
 				tabs={formFieldsData.tabs.map((tab) => ({
 					name: tab.id,
-					title: tab["tabControl"].label,
+					title: tab.tabControl.label,
 				}))}
 			>
 				{(tab) => (
 					<div>
 						{formFieldsData.tabs
-							.find((t) => t.id === tab.name)["tabContent"].fields.map((field) => (
+							.find((t) => t.id === tab.name).tabContent.fields.map((field) => (
 								<PanelRow key={field.name}>
 									{field.type === "toggle" && (
 										<BaseControl label={field.label}>
