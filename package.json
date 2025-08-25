@@ -18,6 +18,10 @@
     "url": "https://github.com/wprig/wprig/issues"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.3",
+    "@babel/eslint-parser": "^7.28.0",
+    "@babel/preset-react": "^7.27.1",
+    "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.14.0",
     "@parcel/css": "^1.14.0",
     "@wordpress/components": "^28.12.0",
