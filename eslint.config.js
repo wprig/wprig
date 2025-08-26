@@ -2,7 +2,7 @@
 
 // Using FlatCompat to convert @wordpress/eslint-plugin to flat config format
 import { FlatCompat } from '@eslint/eslintrc';
-import babelParser from '@babel/eslint-parser';
+import tsParser from '@typescript-eslint/parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -52,20 +52,16 @@ export default [
 		},
 	},
 
-	// JSX-specific configuration - MUST come AFTER WordPress config to override it
+	// JSX/TSX files - Use TypeScript parser for JSX support
 	{
-		files: [ '**/*.jsx' ],
+		files: [ '**/*.jsx', '**/*.tsx' ],
 		languageOptions: {
 			ecmaVersion: 'latest',
 			sourceType: 'module',
-			parser: babelParser,
+			parser: tsParser,
 			parserOptions: {
 				ecmaFeatures: {
 					jsx: true,
-				},
-				requireConfigFile: false,
-				babelOptions: {
-					presets: [ '@babel/preset-react' ],
 				},
 			},
 			globals: {
@@ -89,12 +85,11 @@ export default [
 		},
 	},
 
-	// Console rule for all JavaScript/TypeScript files
+	// Console rule for all file types
 	{
-		files: [ '**/*.{js,ts,jsx,tsx}' ],
+		files: [ '**/*.{js,jsx,ts,tsx}' ],
 		rules: {
-			// Allow console for development, but warn
-			'no-console': 'warn', // You can set it to 'error' if you like.
+			'no-console': 'warn',
 		},
 	},
 ];
