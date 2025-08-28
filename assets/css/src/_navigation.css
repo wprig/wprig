@@ -1,0 +1,334 @@
+/* Do not show the outline on the skip link target. */
+#primary[tabindex="-1"]:focus {
+	outline: 0;
+}
+
+/*--------------------------------------------------------------
+## Basic navigation menus - handles submenu and small screen toggle
+--------------------------------------------------------------*/
+.nav--toggle-small .menu-toggle {
+	display: block;
+	margin: 1.2em auto;
+	padding: 0.6em 1.2em 0.5em;
+	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
+	font-size: 80%;
+	text-transform: uppercase;
+	border: 2px solid var(--border-color-dark);
+	border-radius: 0;
+	background: transparent;
+}
+
+.nav--toggle-small .menu {
+	display: none;
+}
+
+/* FIX: Changed positioning and properties to correctly place the toggle button. */
+.nav--toggle-sub .dropdown,
+.nav--toggle-sub .dropdown-toggle {
+	font-size: 1em;
+	float: right;
+	position: absolute;
+	right: 10px;
+	padding: .8em .6em .5em;
+	border: none;
+	background: transparent;
+}
+
+/* FIX: Simplified symbol styling for consistent appearance. */
+.nav--toggle-sub .dropdown-symbol {
+	display: block;
+	background: transparent;
+	border: solid var(--border-color-dark);
+	border-width: 0 2px 2px 0;
+	transform: translateY(-50%) rotate(45deg);
+	padding: 5px;
+	transition: transform 0.2s;
+}
+
+/* FIX: Added rule to rotate symbol when the menu is open. */
+.nav--toggle-sub li.menu-item--toggled-on > button.dropdown-toggle .dropdown-symbol {
+	transform: translateY(-50%) rotate(225deg);
+}
+
+/* FIX: This is a key rule. Hide all submenus by default. */
+.menu-item--has-toggle ul {
+	display: none;
+}
+
+/* FIX: This rule shows the submenu when its parent is toggled on. */
+.menu-item--toggled-on > ul.toggle-show {
+	display: block;
+}
+
+/* FIX: Added base styles for sub-submenus. */
+.nav--toggle-sub ul ul {
+	display: none;
+	position: relative;
+	flex-direction: column;
+	background: #fff;
+	margin-left: 0;
+	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+	z-index: 100;
+}
+
+@media (--narrow-menu-query) {
+	.nav--toggle-small.nav--toggled-on .menu {
+		display: block;
+	}
+}
+
+@media (--wide-menu-query) {
+
+	.nav--toggle-small .menu-toggle {
+		display: none;
+	}
+
+	.nav--toggle-small .menu {
+		display: block;
+	}
+
+	.nav--toggle-sub ul ul {
+		position: absolute;
+		top: 100%;
+		left: 0;
+	}
+
+	.nav--toggle-sub .dropdown,
+	.nav--toggle-sub .dropdown-toggle {
+		display: block;
+		background: transparent;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		width: var(--dropdown-symbol-width);
+		height: var(--dropdown-symbol-width);
+		font-size: .8em;
+		line-height: inherit;
+		margin: 0;
+		padding: 0;
+		border: none;
+		border-radius: 0;
+		transform: translateY(-50%);
+		overflow: visible;
+		float: none;
+	}
+
+	.nav--toggle-sub .dropdown-symbol {
+		display: block;
+		position: absolute;
+		right: 20%;
+		top: 35%;
+		width: 60%;
+		height: 60%;
+		border-width: 0 2px 2px 0;
+		transform: translateY(-50%) rotate(45deg);
+		padding: 0;
+	}
+
+	.nav--toggle-sub ul ul .dropdown,
+	.nav--toggle-sub ul ul .dropdown-toggle {
+		top: 40%;
+		right: 0.2em;
+	}
+
+	.nav--toggle-sub ul ul .dropdown-symbol {
+		transform: rotate(-45deg);
+	}
+
+	.nav--toggle-sub .dropdown-toggle:hover,
+	.nav--toggle-sub .menu-item--has-toggle:hover .dropdown-toggle {
+		pointer-events: none;
+	}
+
+	.nav--toggle-sub li.menu-item-has-children,
+	.nav--toggle-sub li.menu-item--has-toggle {
+		position: relative;
+		padding-right: var(--dropdown-symbol-width);
+	}
+
+	.nav--toggle-sub li:hover > ul,
+	.nav--toggle-sub li.menu-item--toggled-on > ul,
+	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
+		display: block;
+	}
+
+	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
+		display: block;
+	}
+}
+
+/*--------------------------------------------------------------
+## Main navigation menu
+--------------------------------------------------------------*/
+.main-navigation {
+	display: block;
+	margin: 0 auto 2em;
+	padding: 0 1em;
+	max-width: var(--content-width);
+	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
+
+	& ul ul li {
+		padding-left: 1em;
+	}
+
+	& ul.wp-block-navigation-submenu li {
+		padding: 0.3em 0.5em;
+	}
+
+	a:hover, a:focus, button:hover, button:focus {
+		text-decoration: underline;
+	}
+}
+
+.main-navigation a, .main-navigation button {
+	display: block;
+	width: 100%;
+	padding: 0.5em 1em 0.5em 0;
+	text-decoration: none;
+	color: var(--global-font-color);
+}
+
+.main-navigation button {
+	background:none;
+	border:none;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.main-navigation .current-menu-item > a,
+.main-navigation .current-menu-ancestor > a {
+	font-weight: 600;
+}
+
+.main-navigation ul {
+	display: block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/*--------------------------------------------------------------
+## Main navigation menu - overrides for navigation block
+--------------------------------------------------------------*/
+
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content {
+
+	& ul.wp-block-navigation__container {
+		width: 100%;
+	}
+
+	& .wp-block-navigation__submenu-icon {
+		display: block;
+	}
+
+	& li.wp-block-navigation-item {
+		width: 100%;
+	}
+
+	& li.wp-block-navigation-submenu.has-child {
+		flex-direction: row;
+		flex-wrap: wrap;
+
+		& ul.wp-block-navigation__submenu-container {
+			display: none;
+			width: 100%;
+
+			&.toggle-show {
+				display: block;
+			}
+		}
+
+		& a.wp-block-navigation-item__content {
+			flex: 90%;
+		}
+	}
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content .has-child .wp-block-navigation__submenu-container {
+	padding: 0.3em 0.5em;
+}
+
+@media (--wide-menu-query) {
+
+	.main-navigation ul li {
+		a, button {
+			padding: 0.4em 0.5em;
+		}
+	}
+
+	.main-navigation ul li {
+		margin: 0 0 0 0.5em;
+	}
+
+	.main-navigation ul li:first-child {
+		margin-left: 0;
+	}
+
+	.main-navigation ul ul a {
+		width: 200px;
+	}
+
+	/* stylelint-disable */
+	.main-navigation ul ul li {
+		padding-left: 0;
+		margin-left: 0;
+	}
+	/* stylelint-enable */
+
+	.main-navigation ul ul li a {
+		width: 218px;
+		background: none;
+	}
+
+	.main-navigation ul ul ul {
+		top: 0;
+		left: 100%;
+		min-height: 100%;
+	}
+
+	.main-navigation .menu {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	.main-navigation.wp-block-navigation ul {
+		display: flex;
+	}
+
+}
+
+@media (--narrow-menu-query) {
+
+	.main-navigation {
+		li.menu-item{
+			button {
+				text-align: left;
+			}
+		}
+		li.menu-item-has-children {
+			a, button:not(.dropdown-toggle) {
+				flex: 90%;
+			}
+		}
+
+		& li.menu-item-has-children.menu-item {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			align-items: baseline;
+		}
+
+		& ul.sub-menu {
+			flex-basis: 100%;
+			display: none;
+
+			&.toggle-show {
+				display: block;
+			}
+		}
+	}
+}

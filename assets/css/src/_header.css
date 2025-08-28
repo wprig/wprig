@@ -1,0 +1,96 @@
+/*--------------------------------------------------------------
+# Imports
+--------------------------------------------------------------*/
+@import "_navigation.css";
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+
+.site-header {
+	padding-bottom: 1em;
+}
+
+.header-image {
+	margin: 0 auto;
+}
+
+.header-image img {
+	display: block;
+	margin: 0 auto;
+}
+
+.custom-logo-link {
+	display: inline-block;
+	margin: 0 auto 1em;
+}
+
+.site-branding {
+	text-align: center;
+	padding: 60px 0 1.75em;
+
+	@media (--narrow-menu-query) {
+		padding: 1.75em 0;
+		margin: 0;
+	}
+}
+
+.site-title {
+	margin: 0 1em;
+	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
+	font-size: 38px;
+	font-weight: 700;
+	line-height: 1.2;
+}
+
+.site-title a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.site-description {
+	margin: 0.4375em 0 0;
+	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
+	font-size: 17px;
+	font-weight: inherit;
+	line-height: 1.4;
+	word-wrap: break-word;
+	color: #757575;
+}
+
+@media (--narrow-menu-query) {
+
+	header#masthead:has(nav) {
+		display: grid;
+		grid-template-columns: 1fr 6fr;
+
+		& .site-branding {
+			order: 2;
+			padding: 0;
+
+			& .site-title {
+				margin: 0.5em 0;
+			}
+
+		}
+
+		& .main-navigation.nav--toggle-sub {
+			padding: initial;
+			margin: 1em 0;
+
+			& .menu-toggle.icon {
+				top: 0;
+			}
+		}
+
+	}
+}
+
+nav div.wp-block-navigation__responsive-dialog {
+
+	@media (--narrow-menu-query) {
+		margin: 1em;
+	}
+}
