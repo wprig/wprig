@@ -13,7 +13,7 @@ import pump from 'pump';
 import { paths } from './constants.js';
 import { getThemeConfig, backslashToForwardSlash } from './utils.js';
 import { reload } from './browserSync.js';
-import { images } from "./images.js";
+import { images } from './images.js';
 
 /**
  * Watch everything

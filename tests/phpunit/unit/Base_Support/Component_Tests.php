@@ -96,7 +96,6 @@ class Component_Tests extends Unit_Test_Case {
 		$this->assertEqualSets(
 			array(
 				'automatic-feed-links',
-				'title-tag',
 				'html5',
 				'customize-selective-refresh-widgets',
 				'responsive-embeds',
