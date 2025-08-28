@@ -20,22 +20,31 @@ import { images } from './images.js';
  */
 export default function watch() {
 	/**
-	 * gulp watch uses chokidar, which doesn't play well with backslashes
-	 * in file paths, so they are replaced with forward slashes, which are
-	 * valid for Windows paths in a Node.js context.
+	 * gulp watch uses chokidar, which does not handle backslashes
+	 * in file paths well, so they are replaced with forward slashes,
+	 * which are valid in Windows paths in a Node.js context.
 	 */
-	const PHPwatcher = gulpWatch(
-		backslashToForwardSlash( paths.php.src ),
-		reload
-	);
+	const PHPwatcher = gulpWatch(backslashToForwardSlash(paths.php.src), reload);
 	const config = getThemeConfig();
 
-	if ( config.dev.debug.phpcs ) {
-		// Simply reload on PHP changes - remove the problematic pump call
-		// If you need to restore PHPCS functionality, ensure you have at least two valid streams
-		PHPwatcher.on( 'change', function ( path ) {
-			console.log( 'PHP file changed:', path );
-			// If you want to do something with the changed file, you can add it here
-		} );
+	if (config.dev.debug.phpcs) {
+		PHPwatcher.on('change', function(path) {
+			// Prepare the stream array
+			const streams = [
+				src(path),
+				// Run code sniffing (uncomment when configured)
+				// gulpPlugins.phpcs(PHPCSOptions),
+				// Log all problems found
+				// gulpPlugins.phpcs.reporter('log'),
+			].filter(Boolean); // Remove undefined values
+
+			// Only run pump if at least two streams are defined
+			if (streams.length >= 2) {
+				return pump(streams);
+			}
+		});
 	}
+
+	// Watch for changes in image files and run the image task, then reload
+	gulpWatch(backslashToForwardSlash(paths.images.src), series(images, reload));
 }
