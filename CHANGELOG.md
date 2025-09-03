@@ -4,7 +4,7 @@
  - Fixed js minification and removes obsolete dev dependency. Props @robruiz
  - Fixed corruption for files during the bundle for filesToCopy files. Props @skywardpro
  - Minor accessibility improvements to navigation. Props @SinghCod3r
- - Improvements to eslint system, TS compiling, and js minification. Props @erdmann040
+ - Improvements to eslint system, TS compiling, styles and js minification. Props @erdmann040
  - Improvements to asset bundling. Props @robruiz
  - Theme.json file now created when block-based conversion is run. Props @SinghCod3r
  - New relative image path generation during css transpile. Props @robruiz
