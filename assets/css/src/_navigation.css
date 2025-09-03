@@ -169,12 +169,36 @@
 	font-family: var(--highlight-font-family);
 	font-stretch: condensed;
 
-	& ul ul li {
+	/* stylelint-disable-next-line no-descending-specificity */
+	ul {
+		display: block;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	ul ul li {
 		padding-left: 1em;
 	}
 
-	& ul.wp-block-navigation-submenu li {
+	ul.wp-block-navigation-submenu li {
 		padding: 0.3em 0.5em;
+	}
+
+	a, button {
+		display: block;
+		width: 100%;
+		padding: 0.5em 1em 0.5em 0;
+		text-decoration: none;
+		color: var(--global-font-color);
+	}
+
+	button {
+		background:none;
+		border:none;
+		font-family: inherit;
+		font-size: inherit;
+		line-height: inherit;
 	}
 
 	a:hover, a:focus, button:hover, button:focus {
@@ -182,33 +206,12 @@
 	}
 }
 
-.main-navigation a, .main-navigation button {
-	display: block;
-	width: 100%;
-	padding: 0.5em 1em 0.5em 0;
-	text-decoration: none;
-	color: var(--global-font-color);
-}
-
-.main-navigation button {
-	background:none;
-	border:none;
-	font-family: inherit;
-	font-size: inherit;
-	line-height: inherit;
-}
 
 .main-navigation .current-menu-item > a,
 .main-navigation .current-menu-ancestor > a {
 	font-weight: 600;
 }
 
-.main-navigation ul {
-	display: block;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
 
 /*--------------------------------------------------------------
 ## Main navigation menu - overrides for navigation block
@@ -254,13 +257,16 @@
 @media (--wide-menu-query) {
 
 	.main-navigation ul li {
+		margin: 0 0 0 0.5em;
+
 		a, button {
 			padding: 0.4em 0.5em;
 		}
 	}
 
-	.main-navigation ul li {
-		margin: 0 0 0 0.5em;
+	.main-navigation ul ul li {
+		padding-left: 0;
+		margin-left: 0;
 	}
 
 	.main-navigation ul li:first-child {
@@ -270,13 +276,6 @@
 	.main-navigation ul ul a {
 		width: 200px;
 	}
-
-	/* stylelint-disable */
-	.main-navigation ul ul li {
-		padding-left: 0;
-		margin-left: 0;
-	}
-	/* stylelint-enable */
 
 	.main-navigation ul ul li a {
 		width: 218px;
