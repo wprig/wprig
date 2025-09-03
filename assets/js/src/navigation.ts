@@ -65,13 +65,19 @@ function handleToggleSubMenuEvents( parentMenuItem: ParentNode ): void {
 		'ul.toggle-show > li > a, ul.toggle-show > li > button';
 	const anchor = parentMenuItem.querySelector< HTMLAnchorElement >( 'a' );
 	anchor?.addEventListener( 'focus', ( e ) => {
-		const parentMenuItemsToggled: NodeListOf< HTMLElement > =
-			e.currentTarget.parentNode!.parentNode.querySelectorAll(
-				'li.menu-item--toggled-on'
-			);
-		parentMenuItemsToggled.forEach( ( menuItem ) =>
-			toggleSubMenu( menuItem, false )
-		);
+		// Fix: Type guard for currentTarget and cast to HTMLElement
+		if ( e.currentTarget && e.currentTarget instanceof HTMLElement ) {
+			const parentNode = e.currentTarget.parentNode;
+			if ( parentNode && parentNode.parentNode ) {
+				const parentMenuItemsToggled: NodeListOf< HTMLElement > =
+					parentNode.parentNode.querySelectorAll(
+						'li.menu-item--toggled-on'
+					);
+				parentMenuItemsToggled.forEach( ( menuItem ) =>
+					toggleSubMenu( menuItem, false )
+				);
+			}
+		}
 	} );
 
 	parentMenuItem.addEventListener( 'keydown', ( e ) => {
@@ -101,7 +107,12 @@ function shouldToggleSubMenu(
 	const container = e.shiftKey
 		? isFirstFocusableElement
 		: isLastFocusableElement;
-	return container( document, e.target as HTMLElement, focusSelector );
+	// Fix: Use document.documentElement instead of document
+	return container(
+		document.documentElement,
+		e.target as HTMLElement,
+		focusSelector
+	);
 }
 
 /**
@@ -306,9 +317,17 @@ function toggleSubMenu(
 	limitOpenSubmenus = false
 ): void {
 	const toggleButton = parentMenuItem.querySelector< HTMLElement >(
-			'.dropdown-toggle, .wp-block-navigation-submenu__toggle'
-		),
-		subMenu = parentMenuItem.querySelector< HTMLElement >( 'ul' );
+		'.dropdown-toggle, .wp-block-navigation-submenu__toggle'
+	);
+
+	// Fix: Add null check for toggleButton before assigning subMenu
+	if ( ! toggleButton ) {
+		return;
+	}
+
+	// Assign subMenu only after null check
+	const subMenu = parentMenuItem.querySelector< HTMLElement >( 'ul' );
+
 	const parentMenuItemToggled = parentMenuItem.classList.contains(
 		'menu-item--toggled-on'
 	);

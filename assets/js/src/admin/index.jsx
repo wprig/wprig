@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
 	PanelRow,
 	TabPanel,
@@ -11,15 +11,6 @@ import {
 } from '@wordpress/components';
 import { updateSettings } from './api.js';
 import formFieldsData from './settingsFields.json';
-
-// Debounce function to limit the frequency of calling a function
-const debounce = ( func, wait ) => {
-	let timeout;
-	return ( ...args ) => {
-		clearTimeout( timeout );
-		timeout = setTimeout( () => func( ...args ), wait );
-	};
-};
 
 const textControlTypes = [
 	'text',
@@ -39,35 +30,44 @@ const SettingsPage = () => {
 		window.wpRigThemeSettings.settings
 	);
 	const [ snackbarNotices, setSnackbarNotices ] = useState( [] );
+	const timeoutRef = useRef( null );
 
-	const debouncedUpdateSettings = useCallback(
-		debounce( ( newSettings ) => {
+	const debouncedUpdateSettings = useCallback( ( newSettings ) => {
+		// Clear previous timeout
+		if ( timeoutRef.current ) {
+			clearTimeout( timeoutRef.current );
+		}
+
+		// Set new timeout
+		timeoutRef.current = setTimeout( () => {
 			updateSettings( newSettings ).then( ( response ) => {
 				if ( response.success ) {
-					const newSnackbarNotices = [
-						...snackbarNotices,
-						{
-							id: Date.now(),
-							content: 'Settings saved!',
-							spokenMessage: 'Settings saved!',
-						},
-					];
-					setSnackbarNotices( newSnackbarNotices );
+					const newNotice = {
+						id: Date.now(),
+						content: 'Settings saved!',
+						spokenMessage: 'Settings saved!',
+					};
+
+					// Use functional update to avoid dependency
+					setSnackbarNotices( ( prevNotices ) => [
+						...prevNotices,
+						newNotice,
+					] );
+
 					setTimeout( () => {
 						setSnackbarNotices( ( prevNotices ) =>
 							prevNotices.filter(
-								( notice ) =>
-									notice.id !== newSnackbarNotices[ 0 ].id
+								( notice ) => notice.id !== newNotice.id
 							)
 						);
 					}, 2000 );
 				} else {
+					// eslint-disable-next-line no-console
 					console.error( 'Failed to save settings:', response );
 				}
 			} );
-		}, 1500 ),
-		[ snackbarNotices ]
-	);
+		}, 1500 );
+	}, [] ); // Empty dependency array - function never changes
 
 	const handleChange = ( settingKey, value ) => {
 		const newSettings = { ...settings, [ settingKey ]: value };
@@ -90,8 +90,13 @@ const SettingsPage = () => {
 							.tabContent.fields.map( ( field ) => (
 								<PanelRow key={ field.name }>
 									{ field.type === 'toggle' && (
-										<BaseControl label={ field.label }>
+										<BaseControl
+											label={ field.label }
+											id={ `wp-rig-control-${ field.name }` } // ID for the label element
+											htmlFor={ `wp-rig-toggle-${ field.name }` } // Links label to toggle
+										>
 											<FormToggle
+												id={ `wp-rig-toggle-${ field.name }` } // ID for the toggle input
 												checked={
 													!! settings[ field.name ]
 												}
