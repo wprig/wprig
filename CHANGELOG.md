@@ -1,6 +1,17 @@
 # Changelog
- - Fixed js minification and removes obsolete dev dependency
- - Fixed corruption for files during the bundle for filesToCopy files
+
+## 3.0.3
+ - Fixed js minification and removes obsolete dev dependency. Props @robruiz
+ - Fixed corruption for files during the bundle for filesToCopy files. Props @skywardpro
+ - Minor accessibility improvements to navigation. Props @SinghCod3r
+ - Improvements to eslint system, TS compiling, and js minification. Props @erdmann040
+ - Improvements to asset bundling. Props @robruiz
+ - Theme.json file now created when block-based conversion is run. Props @SinghCod3r
+ - New relative image path generation during css transpile. Props @robruiz
+ - Added new cli command to auto-generate menu items. Props @robruiz
+ - Fixed initial tests. All tests should pass now on fresh install. Props @robruiz
+ - Removed outdated/deprecated/unnecessary deps. Props @robruiz
+ - Fixed a bug that caused Gulp to crash frequently. Props @erdmann040
 
 ## 3.0.2
 
