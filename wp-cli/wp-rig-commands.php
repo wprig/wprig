@@ -103,10 +103,10 @@ class Rig_Command extends WP_CLI_Command {
 		$prefix         = WP_CLI\Utils\get_flag_value( $assoc_args, 'prefix', 'Menu Item' );
 		$location       = WP_CLI\Utils\get_flag_value( $assoc_args, 'assign-location', '' );
 
-		// Validate parameters
+		// Validate parameters.
 		$max_depth = min( max( $max_depth, 1 ), 3 ); // Limit depth between 1-3
 
-		// Either get existing menu or create a new one
+		// Either get existing menu or create a new one.
 		$menu_id = $this->get_or_create_menu( $menu );
 		if ( ! $menu_id ) {
 			WP_CLI::error( 'Failed to create or find menu.' );
@@ -118,7 +118,7 @@ class Rig_Command extends WP_CLI_Command {
 
 		WP_CLI::log( sprintf( 'Generating dummy menu items for menu "%s" (ID: %d)', $menu_name, $menu_id ) );
 
-		// Create top-level items
+		// Create top-level items.
 		$progress      = \WP_CLI\Utils\make_progress_bar( 'Creating menu items', $items_count );
 		$created_count = 0;
 
@@ -147,7 +147,7 @@ class Rig_Command extends WP_CLI_Command {
 
 		$progress->finish();
 
-		// Assign to location if requested
+		// Assign to location if requested.
 		if ( ! empty( $location ) ) {
 			$locations              = get_theme_mod( 'nav_menu_locations' );
 			$locations[ $location ] = $menu_id;
@@ -215,7 +215,7 @@ class Rig_Command extends WP_CLI_Command {
 				)
 			);
 
-			// Add deeper levels if needed and if we haven't reached max depth
+			// Add deeper levels if needed and if we haven't reached max depth.
 			if ( $item_id && ! is_wp_error( $item_id ) && $current_depth < $max_depth ) {
 				// Create fewer items at deeper levels
 				$next_level_count = max( 2, intval( $count / 2 ) );
@@ -242,7 +242,7 @@ class Rig_Command extends WP_CLI_Command {
 			return $menu_id;
 		}
 
-		// Check if menu exists by ID
+		// Check if menu exists by ID.
 		if ( is_numeric( $menu ) ) {
 			$menu_obj = wp_get_nav_menu_object( $menu );
 			if ( $menu_obj ) {
@@ -250,13 +250,13 @@ class Rig_Command extends WP_CLI_Command {
 			}
 		}
 
-		// Check if menu exists by name
+		// Check if menu exists by name.
 		$menu_obj = wp_get_nav_menu_object( $menu );
 		if ( $menu_obj ) {
 			return $menu_obj->term_id;
 		}
 
-		// Create a new menu with the given name
+		// Create a new menu with the given name.
 		$menu_id = wp_create_nav_menu( $menu );
 		if ( is_wp_error( $menu_id ) ) {
 			WP_CLI::error( $menu_id->get_error_message() );
