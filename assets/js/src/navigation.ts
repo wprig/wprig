@@ -4,14 +4,14 @@ declare const wpRigScreenReaderText: { [ key: string ]: string };
 if ( document.readyState === 'loading' ) {
 	document.addEventListener( 'DOMContentLoaded', initNavigation );
 } else {
-    initNavigation();
+	initNavigation();
 }
 
 function initNavigation(): void {
-    initNavToggleSubmenus();
-    initNavToggleSmall();
-    setMenuHeight();
-    watchForWindowSizeChanges();
+	initNavToggleSubmenus();
+	initNavToggleSmall();
+	setMenuHeight();
+	watchForWindowSizeChanges();
 }
 
 /**
