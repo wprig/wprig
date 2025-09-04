@@ -5,9 +5,8 @@ import {
 	TabPanel,
 	TextControl,
 	SnackbarList,
-	BaseControl,
 	SelectControl,
-	FormToggle,
+	ToggleControl,
 } from '@wordpress/components';
 import { updateSettings } from './api.js';
 import formFieldsData from './settingsFields.json';
@@ -16,8 +15,8 @@ const textControlTypes = [
 	'text',
 	'email',
 	'url',
-	'password',
 	'number',
+	'password',
 	'search',
 	'tel',
 	'date',
@@ -25,106 +24,118 @@ const textControlTypes = [
 	'datetime-local',
 ];
 
+function getInitialSettings() {
+	if ( typeof window !== 'undefined' && window.wpRigSettings ) {
+		return { ...window.wpRigSettings };
+	}
+	return {};
+}
+
 const SettingsPage = () => {
-	const [ settings, setSettings ] = useState(
-		window.wpRigThemeSettings.settings
+	const [ settings, setSettings ] = useState( getInitialSettings() );
+	const [ notices, setNotices ] = useState( [] );
+	const debounceRef = useRef(
+		/** @type {ReturnType<typeof setTimeout> | null} */ ( null )
 	);
-	const [ snackbarNotices, setSnackbarNotices ] = useState( [] );
-	const timeoutRef = useRef( null );
 
-	const debouncedUpdateSettings = useCallback( ( newSettings ) => {
-		// Clear previous timeout
-		if ( timeoutRef.current ) {
-			clearTimeout( timeoutRef.current );
+	const debouncedUpdateSettings = useCallback( ( next ) => {
+		if ( debounceRef.current ) {
+			clearTimeout( debounceRef.current );
 		}
-
-		// Set new timeout
-		timeoutRef.current = setTimeout( () => {
-			updateSettings( newSettings ).then( ( response ) => {
-				if ( response.success ) {
-					const newNotice = {
-						id: Date.now(),
-						content: 'Settings saved!',
-						spokenMessage: 'Settings saved!',
-					};
-
-					// Use functional update to avoid dependency
-					setSnackbarNotices( ( prevNotices ) => [
-						...prevNotices,
-						newNotice,
-					] );
-
-					setTimeout( () => {
-						setSnackbarNotices( ( prevNotices ) =>
-							prevNotices.filter(
-								( notice ) => notice.id !== newNotice.id
-							)
-						);
-					}, 2000 );
-				} else {
-					// eslint-disable-next-line no-console
-					console.error( 'Failed to save settings:', response );
-				}
-			} );
+		debounceRef.current = setTimeout( async () => {
+			try {
+				await updateSettings( next );
+				setNotices( ( prev ) => [
+					...prev,
+					{
+						id: String( Date.now() ),
+						status: 'success',
+						content: 'Settings saved.',
+					},
+				] );
+			} catch ( err ) {
+				// eslint-disable-next-line no-console
+				console.error( err );
+				setNotices( ( prev ) => [
+					...prev,
+					{
+						id: String( Date.now() ),
+						status: 'error',
+						content: 'Failed to save settings.',
+					},
+				] );
+			}
 		}, 1500 );
-	}, [] ); // Empty dependency array - function never changes
+	}, [] );
 
-	const handleChange = ( settingKey, value ) => {
-		const newSettings = { ...settings, [ settingKey ]: value };
-		setSettings( newSettings );
-		debouncedUpdateSettings( newSettings );
+	const handleChange = ( key, value ) => {
+		const next = { ...settings, [ key ]: value };
+		setSettings( next );
+		debouncedUpdateSettings( next );
 	};
 
 	return (
 		<div className="settings-page">
+			<SnackbarList
+				notices={ notices }
+				className="wp-rig-settings__notices"
+				onRemove={ ( id ) =>
+					setNotices( ( prev ) =>
+						prev.filter( ( n ) => n.id !== id )
+					)
+				}
+			/>
+
 			<TabPanel
 				tabs={ formFieldsData.tabs.map( ( tab ) => ( {
 					name: tab.id,
-					title: tab.tabControl.label,
+					title: tab.tabControl?.label ?? tab.id,
 				} ) ) }
 			>
-				{ ( tab ) => (
-					<div>
-						{ formFieldsData.tabs
-							.find( ( t ) => t.id === tab.name )
-							.tabContent.fields.map( ( field ) => (
+				{ ( tab ) => {
+					const activeTab = formFieldsData.tabs.find(
+						( t ) => t.id === tab.name
+					);
+					const fields = activeTab?.tabContent?.fields ?? [];
+
+					return (
+						<div className="wp-rig-settings__tab">
+							{ fields.map( ( field ) => (
 								<PanelRow key={ field.name }>
 									{ field.type === 'toggle' && (
-										<BaseControl
+										<ToggleControl
 											label={ field.label }
-											id={ `wp-rig-control-${ field.name }` } // ID for the label element
-											htmlFor={ `wp-rig-toggle-${ field.name }` } // Links label to toggle
-										>
-											<FormToggle
-												id={ `wp-rig-toggle-${ field.name }` } // ID for the toggle input
-												checked={
-													!! settings[ field.name ]
-												}
-												onChange={ ( event ) =>
-													handleChange(
-														field.name,
-														event.target.checked
-													)
-												}
-											/>
-										</BaseControl>
+											checked={
+												!! settings[ field.name ]
+											}
+											onChange={ () =>
+												handleChange(
+													field.name,
+													! settings[ field.name ]
+												)
+											}
+											__nextHasNoMarginBottom
+										/>
 									) }
+
 									{ field.type === 'select' && (
 										<SelectControl
-											__nextHasNoMarginBottom
 											label={ field.label }
 											value={
 												settings[ field.name ] || ''
 											}
+											options={ field.options || [] }
 											onChange={ ( value ) =>
 												handleChange(
 													field.name,
 													value
 												)
 											}
-											options={ field.options }
+											__next40pxDefaultSize
+											__nextHasNoMarginBottom
 										/>
 									) }
+
 									{ textControlTypes.includes(
 										field.type
 									) && (
@@ -140,16 +151,16 @@ const SettingsPage = () => {
 													value
 												)
 											}
+											__next40pxDefaultSize
+											__nextHasNoMarginBottom
 										/>
 									) }
 								</PanelRow>
 							) ) }
-					</div>
-				) }
+						</div>
+					);
+				} }
 			</TabPanel>
-			<div id="settings-saved">
-				<SnackbarList notices={ snackbarNotices } />
-			</div>
 		</div>
 	);
 };
