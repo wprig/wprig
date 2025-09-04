@@ -2,6 +2,7 @@
 
 // Using FlatCompat to convert @wordpress/eslint-plugin to flat config format
 import { FlatCompat } from '@eslint/eslintrc';
+// eslint-disable-next-line import/no-unresolved
 import tsParser from '@typescript-eslint/parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
