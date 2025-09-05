@@ -1,6 +1,7 @@
 # Changelog
 
 ## 3.0.3
+ - Reorganization of the CSS source files. Props @robruiz
  - Fixed js minification and removes obsolete dev dependency. Props @robruiz
  - Fixed corruption for files during the bundle for filesToCopy files. Props @skywardpro
  - Minor accessibility improvements to navigation. Props @SinghCod3r
