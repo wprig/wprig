@@ -48,19 +48,19 @@ function processThemeUrls( css ) {
 	// First replace all ~theme references (with or without quotes)
 	let processedCSS = css.replace(
 		/url\((['"]?)~theme\/([^'")]+)(['"]?)\)/g,
-		( match, openQuote, path, closeQuote ) => {
+		( match, openQuote, assetPath, closeQuote ) => {
 			// Ensure quotes are consistent
 			const quote = openQuote || "'";
 			const endQuote = closeQuote || "'";
-			return `url(${ quote }/wp-content/themes/${ themeName }/${ path }${ endQuote })`;
+			return `url(${ quote }/wp-content/themes/${ themeName }/${ assetPath }${ endQuote })`;
 		}
 	);
 
 	// Then replace var(--theme-assets-path) pattern with proper URL format
 	processedCSS = processedCSS.replace(
 		/var\(--theme-assets-path\)\/([^\s;)]+)/g,
-		( match, path ) => {
-			return `url('/wp-content/themes/${ themeName }/assets/${ path }')`;
+		( match, assetPath ) => {
+			return `url('/wp-content/themes/${ themeName }/assets/${ assetPath }')`;
 		}
 	);
 
