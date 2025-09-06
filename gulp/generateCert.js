@@ -61,7 +61,11 @@ export default function generateCert( done ) {
 			}
 		} );
 
-		log( colors.green( 'Custom SSL key and certificate generated successfully!' ) );
+		log(
+			colors.green(
+				'Custom SSL key and certificate generated successfully!'
+			)
+		);
 
 		done();
 	} );
