@@ -52,36 +52,31 @@ export function editorStylesAfterReplacementStream() {
 	const postcssPlugins = [
 		stylelint(),
 		postcssPresetEnv( {
-			importFrom: (
-				configValueDefined( 'config.dev.styles.importFrom' ) ?
-					appendBaseToFilePathArray( config.dev.styles.importFrom, paths.styles.srcDir ) :
-					[]
-			),
-			stage: (
-				configValueDefined( 'config.dev.styles.stage' ) ?
-					config.dev.styles.stage :
-					3
-			),
-			autoprefixer: (
-				configValueDefined( 'config.dev.styles.autoprefixer' ) ?
-					config.dev.styles.autoprefixer :
-					{}
-			),
+			importFrom: configValueDefined( 'config.dev.styles.importFrom' )
+				? appendBaseToFilePathArray(
+						config.dev.styles.importFrom,
+						paths.styles.srcDir
+				  )
+				: [],
+			stage: configValueDefined( 'config.dev.styles.stage' )
+				? config.dev.styles.stage
+				: 3,
+			autoprefixer: configValueDefined( 'config.dev.styles.autoprefixer' )
+				? config.dev.styles.autoprefixer
+				: {},
 			preserve: false,
-			features: (
-				configValueDefined( 'config.dev.styles.features' ) ?
-					config.dev.styles.features :
-					{
+			features: configValueDefined( 'config.dev.styles.features' )
+				? config.dev.styles.features
+				: {
 						'custom-media-queries': {
 							preserve: false,
 						},
 						'custom-properties': {
-						// Preserve must always be false for the editor
+							// Preserve must always be false for the editor
 							preserve: false,
 						},
 						'nesting-rules': true,
-					}
-			),
+				  },
 		} ),
 		calc( {
 			preserve: false,
@@ -96,9 +91,7 @@ export function editorStylesAfterReplacementStream() {
 	}
 
 	// Report messages from other postcss plugins
-	postcssPlugins.push(
-		reporter( { clearReportedMessages: true } )
-	);
+	postcssPlugins.push( reporter( { clearReportedMessages: true } ) );
 
 	// Return a single stream containing all the
 	// after replacement functionality
@@ -106,9 +99,7 @@ export function editorStylesAfterReplacementStream() {
 		gulpPlugins.postcss( [
 			AtImport( {
 				path: [ paths.styles.srcDir ],
-				plugins: [
-					stylelint(),
-				],
+				plugins: [ stylelint() ],
 			} ),
 		] ),
 		gulpPlugins.postcss( postcssPlugins ),
@@ -124,20 +115,20 @@ export function editorStylesAfterReplacementStream() {
 }
 
 /**
-* CSS via PostCSS + CSSNext (includes Autoprefixer by default).
-* @param {function} done function to call when async processes finish
-* @return {Stream} single stream
-*/
+ * CSS via PostCSS + CSSNext (includes Autoprefixer by default).
+ * @param {Function} done function to call when async processes finish
+ * @return {Stream} single stream
+ */
 export default function editorStyles( done ) {
-	return pump( [
-		src( paths.styles.editorSrc, { sourcemaps: ! isProd } ),
-		editorStylesBeforeReplacementStream(),
-		// Only do string replacements when building for production
-		gulpPlugins.if(
-			isProd,
-			getStringReplacementTasks()
-		),
-		editorStylesAfterReplacementStream(),
-		dest( paths.styles.editorDest, { sourcemaps: ! isProd } ),
-	], done );
+	return pump(
+		[
+			src( paths.styles.editorSrc, { sourcemaps: ! isProd } ),
+			editorStylesBeforeReplacementStream(),
+			// Only do string replacements when building for production
+			gulpPlugins.if( isProd, getStringReplacementTasks() ),
+			editorStylesAfterReplacementStream(),
+			dest( paths.styles.editorDest, { sourcemaps: ! isProd } ),
+		],
+		done
+	);
 }

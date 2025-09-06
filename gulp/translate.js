@@ -17,7 +17,7 @@ import { getThemeConfig } from './utils.js';
 
 /**
  * Generate translation files.
- * @param {function} done function to call when async processes finish
+ * @param {Function} done function to call when async processes finish
  * @return {Stream} single stream
  */
 export default function translate( done ) {
@@ -28,15 +28,22 @@ export default function translate( done ) {
 		return done();
 	}
 
-	pump([
-		src( paths.languages.src ),
-		sort(),
-		wpPot({
-			domain: ( isProd ) ? config.theme.slug : nameFieldDefaults.slug,
-			package: ( isProd ) ? config.theme.name : nameFieldDefaults.name,
-			bugReport: ( isProd ) ? config.theme.author : nameFieldDefaults.author,
-			lastTranslator: ( isProd ) ? config.theme.author : nameFieldDefaults.author,
-		}),
-		dest( paths.languages.dest ),
-	], done);
+	pump(
+		[
+			src( paths.languages.src ),
+			sort(),
+			wpPot( {
+				domain: isProd ? config.theme.slug : nameFieldDefaults.slug,
+				package: isProd ? config.theme.name : nameFieldDefaults.name,
+				bugReport: isProd
+					? config.theme.author
+					: nameFieldDefaults.author,
+				lastTranslator: isProd
+					? config.theme.author
+					: nameFieldDefaults.author,
+			} ),
+			dest( paths.languages.dest ),
+		],
+		done
+	);
 }
