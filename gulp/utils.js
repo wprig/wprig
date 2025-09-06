@@ -6,8 +6,6 @@ import colors from 'ansi-colors';
 import { rimraf } from 'rimraf';
 import { mkdirp } from 'mkdirp';
 import fs from 'fs';
-import { createRequire } from 'module';
-const require = createRequire( import.meta.url );
 import through2 from 'through2';
 import replaceStream from 'replacestream';
 
@@ -21,7 +19,8 @@ import {
 	rootPath,
 } from './constants.js';
 
-import config from '../config/themeConfig.js';
+// renamed to avoid shadowing in functions
+import themeConfig from '../config/themeConfig.js';
 
 export const getDefaultConfig = () =>
 	import( `${ rootPath }/config/config.default.json` );
@@ -32,35 +31,39 @@ export const getDefaultConfig = () =>
  * @return {Object} Theme configuration data.
  */
 export function getThemeConfig() {
-	if ( ! config.theme.slug ) {
-		config.theme.slug = config.theme.name
+	if ( ! themeConfig.theme.slug ) {
+		themeConfig.theme.slug = themeConfig.theme.name
 			.toLowerCase()
 			.replace( /[\s_]+/g, '-' )
 			.replace( /[^a-z0-9-]+/g, '' );
 	}
 
-	if ( ! config.theme.underscoreCase ) {
-		config.theme.underscoreCase = config.theme.slug.replace( /-/g, '_' );
+	if ( ! themeConfig.theme.underscoreCase ) {
+		themeConfig.theme.underscoreCase = themeConfig.theme.slug.replace(
+			/-/g,
+			'_'
+		);
 	}
 
-	if ( ! config.theme.constant ) {
-		config.theme.constant = config.theme.underscoreCase.toUpperCase();
+	if ( ! themeConfig.theme.constant ) {
+		themeConfig.theme.constant =
+			themeConfig.theme.underscoreCase.toUpperCase();
 	}
 
-	if ( ! config.theme.camelCase ) {
-		config.theme.camelCase = config.theme.slug
+	if ( ! themeConfig.theme.camelCase ) {
+		themeConfig.theme.camelCase = themeConfig.theme.slug
 			.split( '-' )
 			.map( ( part ) => part[ 0 ].toUpperCase() + part.substring( 1 ) )
 			.join( '' );
 	}
 
-	if ( ! config.theme.camelCaseVar ) {
-		config.theme.camelCaseVar =
-			config.theme.camelCase[ 0 ].toLowerCase() +
-			config.theme.camelCase.substring( 1 );
+	if ( ! themeConfig.theme.camelCaseVar ) {
+		themeConfig.theme.camelCaseVar =
+			themeConfig.theme.camelCase[ 0 ].toLowerCase() +
+			themeConfig.theme.camelCase.substring( 1 );
 	}
 
-	return config;
+	return themeConfig;
 }
 
 /**
@@ -83,11 +86,10 @@ function processBuffer( content, replacements ) {
 
 /**
  * Creates a stream transformation for replacing strings based on the theme config.
- * @param {boolean} isProd - Flag indicating whether it's in production mode.
  * @return {Stream.Transform} - A stream transformation for string replacements.
  */
-export function getStringReplacementTasks( isProd ) {
-	const config = getThemeConfig( isProd ); // Assuming `isProd` is passed correctly
+export function getStringReplacementTasks() {
+	const cfg = getThemeConfig();
 
 	const replacements = Object.keys( nameFieldDefaults ).map(
 		( nameField ) => ( {
@@ -95,7 +97,7 @@ export function getStringReplacementTasks( isProd ) {
 				nameFieldDefaults[ nameField ].replace( /\\/g, '\\\\' ),
 				'g'
 			),
-			replaceValue: config.theme[ nameField ],
+			replaceValue: cfg.theme[ nameField ],
 		} )
 	);
 
@@ -182,7 +184,7 @@ export function backslashToForwardSlash( path ) {
 /**
  * Determine if a config value is defined
  * @param {string} configValueLocation a config value path to search for, e.g. 'config.theme.slug'
- * @return {boolean} whethere the config value is defined
+ * @return {boolean} whether the config value is defined
  */
 export function configValueDefined( configValueLocation ) {
 	if ( 0 === configValueLocation.length ) {
@@ -246,7 +248,8 @@ export function replaceInlineCSS( code ) {
 		return code;
 	}
 	const searchValue = nameFieldDefaults.slug;
-	const replaceValue = config.theme.slug;
+	const { theme } = getThemeConfig();
+	const replaceValue = theme.slug;
 	return code.replace( new RegExp( searchValue, 'g' ), replaceValue );
 }
 
@@ -272,14 +275,15 @@ export function replaceInlineJS( code ) {
 	if ( ! isProd ) {
 		return code;
 	}
+	const { theme } = getThemeConfig();
 	const replacements = [
 		{
 			searchValue: nameFieldDefaults.slug,
-			replaceValue: config.theme.slug,
+			replaceValue: theme.slug,
 		},
 		{
 			searchValue: toCamelCase( nameFieldDefaults.slug ),
-			replaceValue: toCamelCase( config.theme.slug ),
+			replaceValue: toCamelCase( theme.slug ),
 		},
 	];
 

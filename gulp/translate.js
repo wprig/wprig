@@ -18,7 +18,7 @@ import { getThemeConfig } from './utils.js';
 /**
  * Generate translation files.
  * @param {Function} done function to call when async processes finish
- * @return {Stream} single stream
+ * @return {Stream|void} single stream
  */
 export default function translate( done ) {
 	const config = getThemeConfig();
