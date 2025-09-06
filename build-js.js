@@ -58,6 +58,21 @@ const replaceInlineJSPlugin = {
 	},
 };
 
+// Tiny plugin: ignore the broken source map reference in @wordpress/i18n ESM entry
+const stripI18nSourceMapPlugin = {
+	name: 'stripI18nSourceMap',
+	setup( build ) {
+		// Cross-platform match for .../@wordpress/i18n/build-module/index.js
+		const filter = /@wordpress[\/\\]i18n[\/\\]build-module[\/\\]index\.js$/;
+		build.onLoad( { filter }, ( args ) => {
+			const code = readFileSync( args.path, 'utf8' )
+				// remove any `//# sourceMappingURL=...` so esbuild won't try to parse the broken map
+				.replace( /\/\/\s*#\s*sourceMappingURL=.*$/gm, '' );
+			return { contents: code, loader: 'js' };
+		} );
+	},
+};
+
 files.forEach( ( file ) => {
 	const relativePath = path.relative( srcDir, file );
 
@@ -86,7 +101,7 @@ files.forEach( ( file ) => {
 				'.ts': 'ts',
 				'.tsx': 'tsx',
 			},
-			plugins: [ replaceInlineJSPlugin ],
+			plugins: [ stripI18nSourceMapPlugin, replaceInlineJSPlugin ],
 		} )
 		.catch( () => process.exit( 1 ) );
 } );
