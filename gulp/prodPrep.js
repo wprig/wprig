@@ -46,8 +46,6 @@ export default function prodPrep( done ) {
 		return done( new Error( 'prodPrep requires NODE_ENV=production' ) );
 	}
 
-	const config = getThemeConfig( true ); // Get production config
-
 	// --- Environment & Config Checks ---
 	if ( ! prodThemePath ) {
 		log(
@@ -74,6 +72,8 @@ export default function prodPrep( done ) {
 		);
 	}
 	const requiredConfigUpdates = [ 'slug', 'name' ];
+	const config = getThemeConfig( true ); // Get production config
+
 	for ( const requiredConfigField of requiredConfigUpdates ) {
 		if (
 			nameFieldDefaults[ requiredConfigField ] ===
