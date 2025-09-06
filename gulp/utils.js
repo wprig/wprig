@@ -6,8 +6,6 @@ import colors from 'ansi-colors';
 import { rimraf } from 'rimraf';
 import { mkdirp } from 'mkdirp';
 import fs from 'fs';
-import { createRequire } from 'module';
-const require = createRequire( import.meta.url );
 import through2 from 'through2';
 import replaceStream from 'replacestream';
 
