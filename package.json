@@ -119,8 +119,5 @@
     "bundle": "cross-env NODE_ENV=production gulp bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs",
     "bundle:check-all": "cross-env NODE_ENV=production gulp bundle --phpcs"
-  },
-  "dependencies": {
-    "lightningcss": "^1.30.1"
   }
 }
