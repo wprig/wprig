@@ -29,6 +29,7 @@
     "ansi-colors": "^4.1.1",
     "autoprefixer": "^9.6.1",
     "browser-sync": "^2.27.10",
+    "browserslist": "^4.25.4",
     "create-cert": "^1.0.6",
     "cross-env": "^5.2.0",
     "cssnano": "^4.1.10",
@@ -118,5 +119,8 @@
     "bundle": "cross-env NODE_ENV=production gulp bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs",
     "bundle:check-all": "cross-env NODE_ENV=production gulp bundle --phpcs"
+  },
+  "dependencies": {
+    "lightningcss": "^1.30.1"
   }
 }
