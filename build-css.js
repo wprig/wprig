@@ -134,8 +134,23 @@ const processCSSFile = ( filePath, outputPath ) => {
 	} );
 
 	writeFileSync( outputPath, result.code );
+
+	// Append a comment at the end of the CSS file that allows browsers to locate the corresponding map file.
 	if ( result.map ) {
-		writeFileSync( `${ outputPath }.map`, result.map );
+		const mapFile = `${ outputPath }.map`;
+		writeFileSync( mapFile, result.map );
+
+		const cssWithMap = Buffer.concat( [
+			result.code,
+			Buffer.from(
+				`\n/*# sourceMappingURL=${ path.basename( mapFile ) } */\n`
+			),
+		] );
+
+		writeFileSync( outputPath, cssWithMap );
+	} else {
+		// No source map, just write the CSS code
+		writeFileSync( outputPath, result.code );
 	}
 };
 
