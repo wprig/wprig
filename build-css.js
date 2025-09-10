@@ -7,6 +7,7 @@ import {
 	statSync,
 } from 'fs';
 import path from 'path';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import browserslist from 'browserslist';
 import { bundleAsync, browserslistToTargets } from 'lightningcss';
 import themeConfig from './config/themeConfig.js'; // merged WP Rig config (default -> config -> local)
@@ -280,18 +281,26 @@ const processCSSFile = async ( filePath, outputPath ) => {
 		},
 	} );
 
-	// Optional: quick visibility into sources in dev
 	if ( isDev && result.map ) {
 		try {
 			const mapJson = JSON.parse( result.map.toString() );
-			console.log(
-				'[css] map sources:',
-				Array.isArray( mapJson.sources )
-					? mapJson.sources.slice( 0, 5 )
-					: mapJson.sources
+			if (
+				! Array.isArray( mapJson.sources ) ||
+				mapJson.sources.length === 0
+			) {
+				// eslint-disable-next-line no-console
+				console.warn(
+					'[css] Warning: sourcemap has no sources for',
+					filePath
+				);
+			}
+		} catch ( err ) {
+			// eslint-disable-next-line no-console
+			console.warn(
+				'[css] Failed to parse sourcemap for',
+				filePath,
+				err
 			);
-		} catch {
-			/* ignore */
 		}
 	}
 
