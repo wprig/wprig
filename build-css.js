@@ -7,7 +7,9 @@ import {
 	statSync,
 } from 'fs';
 import path from 'path';
-import { bundleAsync } from 'lightningcss';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import browserslist from 'browserslist';
+import { bundleAsync, browserslistToTargets } from 'lightningcss';
 import { paths } from './gulp/constants.js';
 import { replaceInlineCSS } from './gulp/utils.js';
 
@@ -188,6 +190,9 @@ const getAllFiles = ( dir ) => {
 
 /**
  * Process a single CSS file with LightningCSS bundler.
+ * - Targets are derived from Browserslist (env-aware)
+ * - Virtual preload import is injected after top-level @import block
+ * - Source map is emitted and linked via sourceMappingURL
  *
  * @param {string} filePath   - Path to input CSS file
  * @param {string} outputPath - Path to output CSS file
@@ -196,12 +201,23 @@ const getAllFiles = ( dir ) => {
 const processCSSFile = async ( filePath, outputPath ) => {
 	const entryAbs = path.resolve( filePath );
 
+	// Resolve Browserslist targets from project config (.browserslistrc / package.json)
+	const browserslistEnv =
+		process.env.BROWSERSLIST_ENV ||
+		( isDev ? 'development' : 'production' );
+	const browsers = browserslist( null, {
+		path: process.cwd(),
+		env: browserslistEnv,
+	} );
+	const targets = browserslistToTargets( browsers );
+
 	const result = await bundleAsync( {
 		filename: entryAbs,
 		minify: ! isDev,
 		sourceMap: isDev,
 		sourceMapIncludeSources: true, // embed original sources so DevTools can jump to them
 		drafts: { customMedia: true },
+		targets, // <- derived from Browserslist
 		resolver: {
 			// Provide processed source per file so each keeps its identity in the map
 			read( readPath ) {
@@ -235,7 +251,6 @@ const processCSSFile = async ( filePath, outputPath ) => {
 				return path.resolve( path.dirname( from ), specifier );
 			},
 		},
-		targets: { browsers: [ '>0.2%', 'not dead', 'not op_mini all' ] },
 	} );
 
 	// Write CSS (and map) + append sourceMappingURL in one go
