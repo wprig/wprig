@@ -21,7 +21,7 @@
       "autoprefixer": {
         "grid": false
       },
-      "importFrom": [
+      "preload": [
         "_custom-media.css"
       ],
       "features": {

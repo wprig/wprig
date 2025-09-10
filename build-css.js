@@ -7,18 +7,20 @@ import {
 	statSync,
 } from 'fs';
 import path from 'path';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import browserslist from 'browserslist';
 import { bundleAsync, browserslistToTargets } from 'lightningcss';
+import themeConfig from './config/themeConfig.js'; // merged WP Rig config (default -> config -> local)
 import { paths } from './gulp/constants.js';
 import { replaceInlineCSS } from './gulp/utils.js';
 
-// get this from config
-const themeSlug = 'wp-rig';
 // Determine if running in development mode
 const isDev = process.argv.includes( '--dev' );
 
-// Ensure output directories exist
+/**
+ * Ensure output directory exists.
+ * @param {string} dir
+ * @return {void}
+ */
 const ensureDirectoryExistence = ( dir ) => {
 	if ( ! existsSync( dir ) ) {
 		mkdirSync( dir, { recursive: true } );
@@ -29,25 +31,49 @@ ensureDirectoryExistence( paths.styles.dest );
 ensureDirectoryExistence( paths.styles.editorDest );
 
 /**
- * Build a virtual preload from dev.styles.importFrom in config.
- * All listed files are concatenated and exposed via a virtual import id so
- * we don't break CSS @import ordering in real files.
+ * Get theme slug from merged config (fallback to 'wp-rig').
+ * @type {string}
  */
-const rigConfig = JSON.parse(
-	readFileSync( path.resolve( 'config/config.default.json' ), 'utf8' )
-);
-const importFromList = ( rigConfig?.dev?.styles?.importFrom ?? [] ).map(
-	( p ) => path.resolve( paths.styles.srcDir, p )
+const themeSlug = themeConfig?.theme?.slug || 'wp-rig';
+
+/**
+ * Resolve preload entries from config:
+ * - prefer dev.styles.preload (new)
+ * - fallback to deprecated dev.styles.importFrom with a warning
+ * @param {Object} cfg - Theme config object
+ * @return {string[]} Array of relative preload file paths.
+ */
+function resolvePreloadList( cfg ) {
+	const styles = cfg?.dev?.styles ?? {};
+	if ( Array.isArray( styles.preload ) && styles.preload.length ) {
+		return styles.preload;
+	}
+	if ( Array.isArray( styles.importFrom ) && styles.importFrom.length ) {
+		// eslint-disable-next-line no-console
+		console.warn(
+			'[deprecation] config.dev.styles.importFrom is deprecated. ' +
+				'Use config.dev.styles.preload instead.'
+		);
+		return styles.importFrom;
+	}
+	return [];
+}
+
+/** Preload list from merged config (relative to styles srcDir). */
+const preloadListRel = resolvePreloadList( themeConfig );
+
+/** Map relative entries to absolute paths using WP Rig paths.styles.srcDir. */
+const preloadListAbs = preloadListRel.map( ( p ) =>
+	path.resolve( paths.styles.srcDir, p )
 );
 
 /**
- * Concatenate preload content (kept simple & predictable).
- *
- * @return {string} - Concatenated content of all preload files
- */
-function loadPreloadSnippet() {
+ * Concatenate all preload files into a single virtual snippet.
+ * Missing files are silently skipped to match legacy behavior.
+ * @return {string} Concatenated preload CSS snippet.
+ */ function loadPreloadSnippet() {
 	let buf = '';
-	for ( const file of importFromList ) {
+	for ( const file of preloadListAbs ) {
 		try {
 			buf += readFileSync( file, 'utf8' ) + '\n';
 		} catch {
@@ -56,6 +82,7 @@ function loadPreloadSnippet() {
 	}
 	return buf;
 }
+
 const PRELOAD_SNIPPET = loadPreloadSnippet();
 const VIRTUAL_ID = 'virtual:preload.css';
 
@@ -217,7 +244,7 @@ const processCSSFile = async ( filePath, outputPath ) => {
 		sourceMap: isDev,
 		sourceMapIncludeSources: true, // embed original sources so DevTools can jump to them
 		drafts: { customMedia: true },
-		targets, // <- derived from Browserslist
+		targets,
 		resolver: {
 			// Provide processed source per file so each keeps its identity in the map
 			read( readPath ) {
@@ -252,6 +279,21 @@ const processCSSFile = async ( filePath, outputPath ) => {
 			},
 		},
 	} );
+
+	// Optional: quick visibility into sources in dev
+	if ( isDev && result.map ) {
+		try {
+			const mapJson = JSON.parse( result.map.toString() );
+			console.log(
+				'[css] map sources:',
+				Array.isArray( mapJson.sources )
+					? mapJson.sources.slice( 0, 5 )
+					: mapJson.sources
+			);
+		} catch {
+			/* ignore */
+		}
+	}
 
 	// Write CSS (and map) + append sourceMappingURL in one go
 	if ( result.map ) {
