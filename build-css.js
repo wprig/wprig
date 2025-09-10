@@ -7,7 +7,7 @@ import {
 	statSync,
 } from 'fs';
 import path from 'path';
-import { transform } from '@parcel/css'; // Use LightningCSS or the package you intended to use
+import { bundleAsync } from 'lightningcss';
 import { paths } from './gulp/constants.js';
 import { replaceInlineCSS } from './gulp/utils.js';
 
@@ -67,31 +67,6 @@ function processThemeUrls( css ) {
 	return processedCSS;
 }
 
-// Function to recursively inline @import statements and move them to the top
-function inlineImports( filePath, seenFiles = new Set() ) {
-	if ( seenFiles.has( filePath ) ) {
-		return ''; // Handle circular imports by skipping already processed files
-	}
-	seenFiles.add( filePath );
-
-	const css = readFileSync( filePath, 'utf8' );
-	const dir = path.dirname( filePath );
-
-	let inlinedCSS = '';
-	let imports = '';
-
-	css.replace( /@import\s+["']([^"']+)["'];/g, ( match, importPath ) => {
-		const fullPath = path.resolve( dir, importPath );
-		const importCSS = inlineImports( fullPath, seenFiles );
-		imports += importCSS;
-		return '';
-	} );
-
-	inlinedCSS = imports + css.replace( /@import\s+["']([^"']+)["'];/g, '' );
-
-	return inlinedCSS;
-}
-
 // Recursive function to find all files
 const getAllFiles = ( dir ) => {
 	const files = readdirSync( dir );
@@ -109,47 +84,65 @@ const getAllFiles = ( dir ) => {
 };
 
 // Process CSS files recursively
-const processCSSFile = ( filePath, outputPath ) => {
-	let inlinedCSS = inlineImports( filePath );
+const processCSSFile = async ( filePath, outputPath ) => {
+	const entryAbs = path.resolve( filePath );
 
-	// Prepend the custom media CSS
-	inlinedCSS = customMediaCSS + inlinedCSS;
-	inlinedCSS = replaceInlineCSS( inlinedCSS );
-
-	// Process theme URLs before passing to Lightning CSS
-	inlinedCSS = processThemeUrls( inlinedCSS );
-
-	const result = transform( {
-		filename: filePath,
-		code: Buffer.from( inlinedCSS ),
+	const result = await bundleAsync( {
+		filename: entryAbs,
 		minify: ! isDev,
 		sourceMap: isDev,
-		targets: {
-			// Example: Adjust to fit your target environments
-			browsers: [ '>0.2%', 'not dead', 'not op_mini all' ],
+		sourceMapIncludeSources: true, // embed original sources so DevTools can jump to them
+		drafts: { customMedia: true },
+		resolver: {
+			// Return processed source per file so each keeps its identity in the map
+			read( readPath ) {
+				// Read original file content
+				let css = readFileSync( readPath, 'utf8' );
+
+				// Prepend custom media only for the entry file (appears once at top)
+				if ( path.resolve( readPath ) === entryAbs ) {
+					css = customMediaCSS + css;
+				}
+
+				// Apply your text-level transforms; LightningCSS treats this as the "original" for mapping
+				css = replaceInlineCSS( css );
+				css = processThemeUrls( css );
+
+				return css; // Important: return the string; bundler knows the file is `readPath`
+			},
+			resolve( specifier, from ) {
+				return path.resolve( path.dirname( from ), specifier );
+			},
 		},
-		drafts: {
-			customMedia: true,
-		},
+		targets: { browsers: [ '>0.2%', 'not dead', 'not op_mini all' ] },
 	} );
 
-	writeFileSync( outputPath, result.code );
+	// Optional sanity-check: log what sources ended up in the map during dev
+	if ( isDev && result.map ) {
+		try {
+			const mapJson = JSON.parse( result.map.toString() );
+			console.log(
+				'[css] map sources:',
+				Array.isArray( mapJson.sources )
+					? mapJson.sources.slice( 0, 5 )
+					: mapJson.sources
+			);
+		} catch {}
+	}
 
-	// Append a comment at the end of the CSS file that allows browsers to locate the corresponding map file.
 	if ( result.map ) {
 		const mapFile = `${ outputPath }.map`;
 		writeFileSync( mapFile, result.map );
 
+		// Append a comment at the end of the CSS file that allows browsers to locate the corresponding map file.
 		const cssWithMap = Buffer.concat( [
 			result.code,
 			Buffer.from(
 				`\n/*# sourceMappingURL=${ path.basename( mapFile ) } */\n`
 			),
 		] );
-
 		writeFileSync( outputPath, cssWithMap );
 	} else {
-		// No source map, just write the CSS code
 		writeFileSync( outputPath, result.code );
 	}
 };
