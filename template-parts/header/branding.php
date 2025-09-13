@@ -34,4 +34,4 @@ namespace WP_Rig\WP_Rig;
 
 	<?php } // End of the display_header_text check. ?>
 
-</div>```
+</div>
