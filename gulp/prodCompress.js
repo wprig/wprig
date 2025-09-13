@@ -17,7 +17,7 @@ import { getThemeConfig } from './utils.js';
 
 /**
  * Create the zip file
- * @param {function} done function to call when async processes finish
+ * @param {Function} done function to call when async processes finish
  * @return {Stream} single stream
  */
 export default function prodCompress( done ) {
