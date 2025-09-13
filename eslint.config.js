@@ -6,6 +6,7 @@ import { FlatCompat } from '@eslint/eslintrc';
 import tsParser from '@typescript-eslint/parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import globals from 'globals';
 
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
@@ -91,6 +92,35 @@ export default [
 		files: [ '**/*.{js,jsx,ts,tsx}' ],
 		rules: {
 			'no-console': 'warn',
+		},
+	},
+
+	// Overides rules for gulp folder. Replaces the former gulp/.eslintrc.json.
+	{
+		files: [ 'gulp/**/*.js', 'gulpfile.js' ],
+		languageOptions: {
+			ecmaVersion: 'latest',
+			sourceType: 'module',
+			globals: {
+				...globals.node, // Node globals for tooling. No node env in new syntax.
+			},
+		},
+		rules: {
+			'no-console': 'off',
+			semi: 'error',
+			'no-unused-vars': 'error',
+			'jsdoc/no-undefined-types': [
+				'error',
+				{ definedTypes: [ 'Stream' ] },
+			],
+			'import/no-extraneous-dependencies': [
+				'error',
+				{
+					devDependencies: true, // allow dev deps in tooling files
+					optionalDependencies: true,
+					peerDependencies: true,
+				},
+			],
 		},
 	},
 ];
