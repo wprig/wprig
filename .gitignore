@@ -49,7 +49,6 @@
 !.eslintrc.json
 !.gitignore
 !LICENSE
-!package-lock.json
 !package.json
 !phpcs.xml.dist
 !phpunit.integration.xml.dist
