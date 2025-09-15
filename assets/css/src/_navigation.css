@@ -428,6 +428,8 @@
 		li.menu-item-has-children {
 			a, button:not(.dropdown-toggle) {
 				flex: 90%;
+				display: flex;
+				justify-content: space-between;
 			}
 		}
 
