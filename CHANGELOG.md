@@ -13,7 +13,7 @@
  - Fixed initial tests. All tests should pass now on fresh install. Props @robruiz
  - Removed outdated/deprecated/unnecessary deps. Props @robruiz
  - Fixed a bug that caused Gulp to crash frequently. Props @erdmann040
-
+ - Fixed CSS source maps; now consistent & configurable. Props @erdmann040
 ## 3.0.2
 
 - Accessibility improvements - Empty main menu items (no-link parent menu items) now change to buttons instead of ) Props @robruiz
