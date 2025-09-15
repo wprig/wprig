@@ -27,6 +27,7 @@
     "@wordpress/eslint-plugin": "^21.4.0",
     "@wordpress/scripts": "^30.5.1",
     "ansi-colors": "^4.1.1",
+    "archiver": "^6.0.1",
     "autoprefixer": "^9.6.1",
     "browser-sync": "^2.27.10",
     "browserslist": "^4.25.4",
@@ -45,6 +46,8 @@
     "eslint-plugin-node": "^11.1.0",
     "esm": "^3.2.25",
     "fancy-log": "^1.3.3",
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.2.0",
     "globals": "^15.11.0",
     "gulp": "^5.0.0",
     "gulp-clean-css": "^4.3.0",
@@ -74,14 +77,11 @@
     "react-dom": "^18.3.1",
     "replacestream": "^4.0.3",
     "rimraf": "^6.0.1",
-    "through2": "^4.0.2",
-    "typescript-eslint": "^8.12.2",
-    "vinyl": "^2.2.0",
-    "fast-glob": "^3.3.2",
-    "fs-extra": "^11.2.0",
     "sharp": "^0.33.4",
     "svgo": "^3.3.2",
-    "archiver": "^6.0.1"
+    "through2": "^4.0.2",
+    "typescript-eslint": "^8.12.2",
+    "vinyl": "^2.2.0"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -111,5 +111,8 @@
     "bundle:phpcs": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
     "bundle:gulp": "cross-env NODE_ENV=production gulp bundle",
     "bundle:check-all": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs"
+  },
+  "dependencies": {
+    "glob": "^11.0.3"
   }
 }

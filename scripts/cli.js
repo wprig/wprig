@@ -10,15 +10,15 @@ import { promisify } from 'node:util';
 import { Command } from 'commander';
 
 // Reuse existing task modules from the project
-import { cleanCSS, cleanJS } from '../gulp/clean.js';
+import { cleanCSS, cleanJS } from './tasks/clean.js';
 import { images, convertToWebP } from './tasks/images.js';
 import phpTask from './tasks/php.js';
 import fonts from './tasks/fonts.js';
-import prodPrep from '../gulp/prodPrep.js';
+import prodPrep from './tasks/prodPrep.js';
 import prodStringReplace from './tasks/prodStringReplace.js';
 import prodCompress from './tasks/prodCompress.js';
-import { serve, server } from '../gulp/browserSync.js';
-import { paths } from '../gulp/constants.js';
+import { serve, server } from './tasks/browserSync.js';
+import { paths } from './lib/constants.js';
 
 const exec = promisify( execCb );
 const program = new Command();
@@ -118,7 +118,9 @@ async function runBuild( { phpcs = false, lint = false, dev = false } = {} ) {
 		new Promise( ( resolve, reject ) => {
 			try {
 				// Always run phpTask; pass through the phpcs flag to control linting only
-				phpTask( !! phpcs, ( err ) => ( err ? reject( err ) : resolve() ) );
+				phpTask( !! phpcs, ( err ) =>
+					err ? reject( err ) : resolve()
+				);
 			} catch ( e ) {
 				reject( e );
 			}
@@ -157,7 +159,9 @@ async function runBundle( { phpcs = false, lint = false } = {} ) {
 		new Promise( ( resolve, reject ) => {
 			try {
 				// Always run phpTask; pass through the phpcs flag
-				phpTask( !! phpcs, ( err ) => ( err ? reject( err ) : resolve() ) );
+				phpTask( !! phpcs, ( err ) =>
+					err ? reject( err ) : resolve()
+				);
 			} catch ( e ) {
 				reject( e );
 			}
@@ -212,8 +216,6 @@ program
 		}
 	} );
 
-
-
 // Development command: start server and watch source files without gulp
 program
 	.command( 'dev' )
@@ -233,7 +235,10 @@ program
 			}
 
 			// Initial dev builds
-			await Promise.all( [ buildCSS( { dev: true } ), buildJS( { dev: true } ) ] );
+			await Promise.all( [
+				buildCSS( { dev: true } ),
+				buildJS( { dev: true } ),
+			] );
 
 			// Start BrowserSync server (respects theme config)
 			await runTask( serve, 'serve' );
@@ -267,22 +272,42 @@ program
 			const reloadOnly = () => server.reload();
 
 			// Set up watchers using BrowserSync's built-in chokidar
-			const jsWatcher = server.watch( 'assets/js/src/**/*.{js,ts,tsx,json}', { ignoreInitial: true } );
-			jsWatcher.on( 'change', rebuildJS ).on( 'add', rebuildJS ).on( 'unlink', rebuildJS );
+			const jsWatcher = server.watch(
+				'assets/js/src/**/*.{js,ts,tsx,json}',
+				{ ignoreInitial: true }
+			);
+			jsWatcher
+				.on( 'change', rebuildJS )
+				.on( 'add', rebuildJS )
+				.on( 'unlink', rebuildJS );
 
-			const cssWatcher = server.watch( 'assets/css/src/**/*.css', { ignoreInitial: true } );
-			cssWatcher.on( 'change', rebuildCSS ).on( 'add', rebuildCSS ).on( 'unlink', rebuildCSS );
+			const cssWatcher = server.watch( 'assets/css/src/**/*.css', {
+				ignoreInitial: true,
+			} );
+			cssWatcher
+				.on( 'change', rebuildCSS )
+				.on( 'add', rebuildCSS )
+				.on( 'unlink', rebuildCSS );
 
-			const phpWatcher = server.watch( paths.php.src, { ignoreInitial: true } );
-			phpWatcher.on( 'change', reloadOnly ).on( 'add', reloadOnly ).on( 'unlink', reloadOnly );
+			const phpWatcher = server.watch( paths.php.src, {
+				ignoreInitial: true,
+			} );
+			phpWatcher
+				.on( 'change', reloadOnly )
+				.on( 'add', reloadOnly )
+				.on( 'unlink', reloadOnly );
 
-			const imageWatcher = server.watch( paths.images.src, { ignoreInitial: true } );
+			const imageWatcher = server.watch( paths.images.src, {
+				ignoreInitial: true,
+			} );
 			imageWatcher
 				.on( 'change', processImagesWatcher )
 				.on( 'add', processImagesWatcher )
 				.on( 'unlink', processImagesWatcher );
 
-			console.log( 'Development server running. Watching for changes...' );
+			console.log(
+				'Development server running. Watching for changes...'
+			);
 		} catch ( e ) {
 			console.error( e?.message || e );
 			process.exitCode = 1;
