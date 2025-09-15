@@ -12,7 +12,7 @@ import { Command } from 'commander';
 // Reuse existing task modules from the project
 import { cleanCSS, cleanJS } from '../gulp/clean.js';
 import { images, convertToWebP } from './tasks/images.js';
-import phpTask from '../gulp/php.js';
+import phpTask from './tasks/php.js';
 import fonts from '../gulp/fonts.js';
 import prodPrep from '../gulp/prodPrep.js';
 import prodStringReplace from '../gulp/prodStringReplace.js';
