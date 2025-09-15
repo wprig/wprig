@@ -109,7 +109,6 @@ async function optimizeSVG( srcFile, destFile ) {
 }
 
 export async function images() {
-	const srcRoot = getSrcRoot();
 	const patterns = [ paths.images.src ];
 	const files = await fg( patterns, {
 		caseSensitiveMatch: false,
