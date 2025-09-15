@@ -67,10 +67,13 @@ function handleToggleSubMenuEvents( parentMenuItem: ParentNode ): void {
 	anchor?.addEventListener( 'focus', ( e ) => {
 		// Fix: Type guard for currentTarget and cast to HTMLElement
 		if ( e.currentTarget && e.currentTarget instanceof HTMLElement ) {
-			const parentNode = e.currentTarget.parentNode;
-			if ( parentNode && parentNode.parentNode ) {
+			// Ensure we operate relative to the parent <li> element
+			const parentLi = ( e.currentTarget as HTMLElement ).closest(
+				'li'
+			) as HTMLElement | null;
+			if ( parentLi && parentLi.parentElement ) {
 				const parentMenuItemsToggled: NodeListOf< HTMLElement > =
-					parentNode.parentNode.querySelectorAll(
+					parentLi.parentElement.querySelectorAll(
 						'li.menu-item--toggled-on'
 					);
 				parentMenuItemsToggled.forEach( ( menuItem ) =>
@@ -86,9 +89,13 @@ function handleToggleSubMenuEvents( parentMenuItem: ParentNode ): void {
 			e.key === 'Tab' &&
 			shouldToggleSubMenu( e, FOCUS_ELEMENTS_SELECTOR )
 		) {
-			const parentNode = ( e.target as HTMLElement )
-				.parentNode as HTMLElement;
-			toggleSubMenu( parentNode, false );
+			// Always resolve to the parent <li>, even if the target is inside a button
+			const parentLi = ( e.target as HTMLElement ).closest(
+				'li'
+			) as HTMLElement | null;
+			if ( parentLi ) {
+				toggleSubMenu( parentLi, false );
+			}
 		}
 	} );
 }
@@ -204,9 +211,13 @@ function processEachSubMenu(
 				'.wp-block-navigation-submenu__toggle'
 			)
 			?.addEventListener( 'click', ( e ) => {
-				const parentNode = ( e.currentTarget as HTMLElement )
-					.parentNode as HTMLElement;
-				toggleSubMenu( parentNode );
+				// Ensure we pass the parent <li>
+				const parentLi = ( e.currentTarget as HTMLElement ).closest(
+					'li'
+				) as HTMLElement | null;
+				if ( parentLi ) {
+					toggleSubMenu( parentLi );
+				}
 			} );
 	}
 
@@ -218,9 +229,13 @@ function processEachSubMenu(
 	) {
 		subMenuParentLink.addEventListener( 'click', ( e ) => {
 			e.preventDefault();
-			const parentNode = ( e.currentTarget as HTMLElement )
-				.parentNode as HTMLElement;
-			toggleSubMenu( parentNode );
+			// Ensure we pass the parent <li>
+			const parentLi = ( e.currentTarget as HTMLElement ).closest(
+				'li'
+			) as HTMLElement | null;
+			if ( parentLi ) {
+				toggleSubMenu( parentLi );
+			}
 		} );
 	}
 
@@ -267,9 +282,13 @@ function convertDropdownToToggleButton(
 	thisDropdownButton.innerHTML = dropdown.innerHTML;
 	dropdown.parentNode!.replaceChild( thisDropdownButton, dropdown );
 	thisDropdownButton.addEventListener( 'click', ( e ) => {
-		const parentNode = ( e.currentTarget as HTMLElement )
-			.parentNode as HTMLElement;
-		toggleSubMenu( parentNode );
+		// Ensure we pass the parent <li>
+		const parentLi = ( e.currentTarget as HTMLElement ).closest(
+			'li'
+		) as HTMLElement | null;
+		if ( parentLi ) {
+			toggleSubMenu( parentLi );
+		}
 	} );
 }
 
