@@ -14,6 +14,8 @@
  - Removed outdated/deprecated/unnecessary deps. Props @robruiz
  - Fixed a bug that caused Gulp to crash frequently. Props @erdmann040
  - Fixed CSS source maps; now consistent & configurable. Props @erdmann040
+ - Removed package-lock.json from repo. Devs should manually add this. Props @robruiz
+
 ## 3.0.2
 
 - Accessibility improvements - Empty main menu items (no-link parent menu items) now change to buttons instead of ) Props @robruiz

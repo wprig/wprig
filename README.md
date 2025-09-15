@@ -70,6 +70,17 @@ extend any themes, whether they were originally built with WP Rig or not.
 	  afterwards.
 5. In WordPress admin, activate the WP Rig development theme.
 
+#### Recommended Git Workflow
+When working with WP Rig, it is important to understand the appropriate Git workflow depending on what you are working on.
+If you are using WP Rig as a starting point for a new theme, you should use the following workflow:
+
+[Recommended Git Workflow](https://wprig.io/documentation/recommended-git-workflow/)
+
+It is also important to note that the main branch now ignores the package-lock.json file.
+While this is ideal for how we distribute WP Rig, it can cause issues when working with a local development environment or on a team using a forked WP Rig.
+If you are using a local development environment, you should add the package-lock.json file to the .gitignore file
+with a ! in front to prevent ignoring the file in your new theme's repo.
+
 #### Defining custom settings for the project
 
 Here is an example of creating a custom theme config file for the project. In this example, we want a custom slug, name,
