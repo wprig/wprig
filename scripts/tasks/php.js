@@ -12,8 +12,8 @@ import {
 	rootPath,
 	nameFieldDefaults,
 } from '../../gulp/constants.js';
-import { getThemeConfig } from '../../gulp/utils.js';
-import removeWpCliBlock from '../../gulp/removeWpCliBlock.js';
+import { getThemeConfig } from '../lib/utils.js';
+import removeWpCliBlock from './removeWpCliBlock.js';
 
 /**
  * Build replacement table equivalent to getStringReplacementTasks() but without streams.

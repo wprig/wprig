@@ -82,7 +82,7 @@ function processBuffer( content, replacements ) {
 /**
  * Creates a stream transformation for replacing strings based on the theme config.
  * @param {boolean} isProdFlag - Flag indicating whether it's in production mode.
- * @return {Stream.Transform} - A stream transformation for string replacements.
+ * @return {import('stream').Transform} - A stream transformation for string replacements.
  */
 export function getStringReplacementTasks( isProdFlag ) {
 	const themeConfig = getThemeConfig( isProdFlag ); // keep call signature intact

@@ -8,7 +8,7 @@ import sharp from 'sharp';
 import { optimize as svgoOptimize } from 'svgo';
 
 // Reuse theme paths from existing constants (no gulp needed)
-import { paths, assetsDir } from '../../gulp/constants.js';
+import { paths, assetsDir } from '../lib/constants.js';
 
 function getSrcRoot() {
 	// Our images source lives at `${assetsDir}/images/src`
