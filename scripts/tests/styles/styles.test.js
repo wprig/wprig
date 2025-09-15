@@ -14,9 +14,9 @@ import fs from 'fs';
 /**
  * Internal dependencies
  */
-import { testPath } from '../../constants';
-import { getThemeConfig, getDefaultConfig } from '../../utils';
-import { stylesAfterReplacementStream } from '../../styles';
+import { testPath } from '../../lib/constants';
+import { getThemeConfig, getDefaultConfig } from '../../lib/utils';
+import { stylesAfterReplacementStream } from '../../lib/styles';
 
 function makeMockFiles() {
 	return [

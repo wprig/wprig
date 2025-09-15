@@ -92,7 +92,7 @@
   "scripts": {
     "editor-support": "node node/editorSupport.js",
     "rig-init": "npm install --loglevel=error --no-audit --no-fund && composer install --quiet",
-    "generateCert": "gulp generateCert",
+    "generateCert": "node scripts/cli.js generateCert",
     "build:js": "node build-js.js",
     "dev:js": "node build-js.js --dev",
     "lint:js": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint \"assets/js/src/**/*.{js,jsx,ts,tsx}\"",

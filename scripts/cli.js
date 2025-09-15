@@ -19,6 +19,7 @@ import prodStringReplace from './tasks/prodStringReplace.js';
 import prodCompress from './tasks/prodCompress.js';
 import { serve, server } from './tasks/browserSync.js';
 import { paths } from './lib/constants.js';
+import generateCert from './tasks/generateCert.js';
 
 const exec = promisify( execCb );
 const program = new Command();
@@ -322,6 +323,19 @@ program
 			await runTask( images, 'images' );
 			await runTask( convertToWebP, 'convertToWebP' );
 			console.log( 'Images processed.' );
+		} catch ( e ) {
+			console.error( e?.message || e );
+			process.exitCode = 1;
+		}
+	} );
+
+program
+	.command( 'generateCert' )
+	.description( 'Generate Certificate' )
+	.action( async () => {
+		try {
+			await runTask( generateCert, 'generateCert' );
+			console.log( 'Cert Generated' );
 		} catch ( e ) {
 			console.error( e?.message || e );
 			process.exitCode = 1;
