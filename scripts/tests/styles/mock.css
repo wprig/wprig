@@ -1,0 +1,24 @@
+@import "_custom-properties.css";
+
+.entry {
+	font-family: var(--global-font-family);
+	color: var(--color-theme-primary);
+	margin-bottom: 1rem;
+}
+
+.grid-wrap {
+	display: grid;
+}
+
+@media (--content-query) {
+
+	.entry {
+		padding: 0;
+
+		& .inner {
+			margin: 1rem;
+		}
+
+	}
+
+}

@@ -16,7 +16,7 @@ import config from '../../config/themeConfig.js';
 
 // Root path is where npm run commands happen
 export const rootPath = process.cwd();
-export const gulpTestPath = `${ rootPath }/gulp/tests`;
+export const testPath = `${ rootPath }/scripts/tests`;
 
 // Dev or production
 export const isProd = process.env.NODE_ENV === 'production';
