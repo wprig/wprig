@@ -6,8 +6,6 @@ import colors from 'ansi-colors';
 import { rimraf } from 'rimraf';
 import { mkdirp } from 'mkdirp';
 import fs from 'fs';
-import { createRequire } from 'module';
-const require = createRequire( import.meta.url );
 import through2 from 'through2';
 import replaceStream from 'replacestream';
 
@@ -83,11 +81,11 @@ function processBuffer( content, replacements ) {
 
 /**
  * Creates a stream transformation for replacing strings based on the theme config.
- * @param {boolean} isProd - Flag indicating whether it's in production mode.
+ * @param {boolean} isProdFlag - Flag indicating whether it's in production mode.
  * @return {Stream.Transform} - A stream transformation for string replacements.
  */
-export function getStringReplacementTasks( isProd ) {
-	const config = getThemeConfig( isProd ); // Assuming `isProd` is passed correctly
+export function getStringReplacementTasks( isProdFlag ) {
+	const themeConfig = getThemeConfig( isProdFlag ); // keep call signature intact
 
 	const replacements = Object.keys( nameFieldDefaults ).map(
 		( nameField ) => ( {
@@ -95,7 +93,7 @@ export function getStringReplacementTasks( isProd ) {
 				nameFieldDefaults[ nameField ].replace( /\\/g, '\\\\' ),
 				'g'
 			),
-			replaceValue: config.theme[ nameField ],
+			replaceValue: themeConfig.theme[ nameField ],
 		} )
 	);
 
@@ -189,7 +187,7 @@ export function configValueDefined( configValueLocation ) {
 		return false;
 	}
 
-	let config = getThemeConfig();
+	let themeConfig = getThemeConfig();
 
 	const configValueLocationArray = configValueLocation.split( '.' );
 
@@ -200,13 +198,13 @@ export function configValueDefined( configValueLocation ) {
 	for ( const currentValueLocation of configValueLocationArray ) {
 		if (
 			! Object.prototype.hasOwnProperty.call(
-				config,
+				themeConfig,
 				currentValueLocation
 			)
 		) {
 			return false;
 		}
-		config = config[ currentValueLocation ];
+		themeConfig = themeConfig[ currentValueLocation ];
 	}
 
 	return true;

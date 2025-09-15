@@ -30,8 +30,9 @@
     "autoprefixer": "^9.6.1",
     "browser-sync": "^2.27.10",
     "browserslist": "^4.25.4",
+    "chokidar-cli": "^3.0.0",
     "create-cert": "^1.0.6",
-    "cross-env": "^5.2.0",
+    "cross-env": "^5.2.1",
     "cssnano": "^4.1.10",
     "deepmerge": "^4.0.0",
     "del": "^8.0.0",
@@ -76,24 +77,6 @@
     "typescript-eslint": "^8.12.2",
     "vinyl": "^2.2.0"
   },
-  "babel": {
-    "presets": [
-      "@babel/env"
-    ]
-  },
-  "eslintConfig": {
-    "extends": "plugin:@wordpress/eslint-plugin/recommended",
-    "root": true,
-    "env": {
-      "browser": true,
-      "node": true,
-      "es6": true
-    },
-    "globals": {
-      "jQuery": "readonly",
-      "wp": "readonly"
-    }
-  },
   "jest": {
     "setupFilesAfterEnv": [
       "jest-expect-message"
@@ -106,7 +89,7 @@
     "generateCert": "gulp generateCert",
     "build:js": "node build-js.js",
     "dev:js": "node build-js.js --dev",
-    "lint:js": "eslint assets/js/src",
+    "lint:js": "cross-env ESLINT_USE_FLAT_CONFIG=true eslint \"assets/js/src/**/*.{js,jsx,ts,tsx}\"",
     "build:css": "node build-css.js",
     "dev:css": "node build-css.js --dev",
     "lint:css": "node lint-css.js",

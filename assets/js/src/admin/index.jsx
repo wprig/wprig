@@ -94,6 +94,7 @@ const SettingsPage = () => {
 											label={ field.label }
 											id={ `wp-rig-control-${ field.name }` } // ID for the label element
 											htmlFor={ `wp-rig-toggle-${ field.name }` } // Links label to toggle
+											__nextHasNoMarginBottom
 										>
 											<FormToggle
 												id={ `wp-rig-toggle-${ field.name }` } // ID for the toggle input
@@ -111,7 +112,6 @@ const SettingsPage = () => {
 									) }
 									{ field.type === 'select' && (
 										<SelectControl
-											__nextHasNoMarginBottom
 											label={ field.label }
 											value={
 												settings[ field.name ] || ''
@@ -123,6 +123,8 @@ const SettingsPage = () => {
 												)
 											}
 											options={ field.options }
+											__next40pxDefaultSize
+											__nextHasNoMarginBottom
 										/>
 									) }
 									{ textControlTypes.includes(
@@ -140,6 +142,8 @@ const SettingsPage = () => {
 													value
 												)
 											}
+											__next40pxDefaultSize
+											__nextHasNoMarginBottom
 										/>
 									) }
 								</PanelRow>

@@ -10,31 +10,25 @@ import pump from 'pump';
 /**
  * Internal dependencies
  */
-import {
-	isProd,
-	paths,
-} from './constants.js';
-import {
-	getStringReplacementTasks,
-	gulpRelativeDest,
-} from './utils.js';
+import { isProd, paths } from './constants.js';
+import { getStringReplacementTasks, gulpRelativeDest } from './utils.js';
 
 /**
  * Run string replacement on production files
- * @param {function} done function to call when async processes finish
+ * @param {Function} done function to call when async processes finish
  * @return {Stream} single stream
  */
-export default function prodStringReplace(done) {
+export default function prodStringReplace( done ) {
 	// Bail if not in production
-	if (!isProd) {
+	if ( ! isProd ) {
 		return done();
 	}
 
 	return pump(
 		[
-			src(paths.export.stringReplaceSrc),
+			src( paths.export.stringReplaceSrc ),
 			getStringReplacementTasks(),
-			dest(gulpRelativeDest),
+			dest( gulpRelativeDest ),
 		],
 		done
 	);

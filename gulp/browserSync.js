@@ -42,8 +42,18 @@ export function serve( done ) {
 	// Only setup HTTPS certificates if HTTPS is enabled
 	if ( config.dev.browserSync.https ) {
 		// Use a custom path key/cert if defined, otherwise use the default path
-		const certPath = Object.prototype.hasOwnProperty.call( config.dev.browserSync, 'certPath' ) ? config.dev.browserSync.certPath : paths.browserSync.cert;
-		const keyPath = Object.prototype.hasOwnProperty.call( config.dev.browserSync, 'keyPath' ) ? config.dev.browserSync.keyPath : paths.browserSync.key;
+		const certPath = Object.prototype.hasOwnProperty.call(
+			config.dev.browserSync,
+			'certPath'
+		)
+			? config.dev.browserSync.certPath
+			: paths.browserSync.cert;
+		const keyPath = Object.prototype.hasOwnProperty.call(
+			config.dev.browserSync,
+			'keyPath'
+		)
+			? config.dev.browserSync.keyPath
+			: paths.browserSync.key;
 
 		// Ensure the key/cert files exist
 		const certFound = fs.existsSync( certPath );
@@ -51,16 +61,34 @@ export function serve( done ) {
 
 		// Let the user know if we found a cert
 		if ( certFound ) {
-			log( colors.yellow( `Using the SSL certificate ${ colors.bold( certPath ) }` ) );
+			log(
+				colors.yellow(
+					`Using the SSL certificate ${ colors.bold( certPath ) }`
+				)
+			);
 		} else {
-			log( colors.yellow( `No SSL certificate found, HTTPS will ${ colors.bold( 'not' ) } be enabled` ) );
+			log(
+				colors.yellow(
+					`No SSL certificate found, HTTPS will ${ colors.bold(
+						'not'
+					) } be enabled`
+				)
+			);
 		}
 
 		// Let the user know if we found a key
 		if ( keyFound ) {
-			log( colors.yellow( `Using the SSL key ${ colors.bold( keyPath ) }` ) );
+			log(
+				colors.yellow( `Using the SSL key ${ colors.bold( keyPath ) }` )
+			);
 		} else {
-			log( colors.yellow( `No SSL key found, HTTPS will ${ colors.bold( 'not' ) } be enabled` ) );
+			log(
+				colors.yellow(
+					`No SSL key found, HTTPS will ${ colors.bold(
+						'not'
+					) } be enabled`
+				)
+			);
 		}
 
 		// Only enable HTTPS if there is a cert and a key
@@ -77,7 +105,6 @@ export function serve( done ) {
 	server.init( serverConfig );
 
 	done();
-
 }
 
 // Reload the live site:
