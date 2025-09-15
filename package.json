@@ -31,6 +31,7 @@
     "browser-sync": "^2.27.10",
     "browserslist": "^4.25.4",
     "chokidar-cli": "^3.0.0",
+    "commander": "^12.1.0",
     "create-cert": "^1.0.6",
     "cross-env": "^5.2.1",
     "cssnano": "^4.1.10",
@@ -96,11 +97,13 @@
     "watch:js": "node build-js.js",
     "watch:css": "npm run build:css && chokidar 'src/styles/**/*.css' -c 'npm run build:css'",
     "dev": "gulp",
-    "build": "gulp build",
-    "build:phpcs": "gulp build --phpcs",
+    "build": "node scripts/cli.js build",
+    "build:phpcs": "node scripts/cli.js build --phpcs",
+    "build:gulp": "gulp build",
     "images": "gulp images",
-    "bundle": "cross-env NODE_ENV=production gulp bundle",
-    "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs",
-    "bundle:check-all": "cross-env NODE_ENV=production gulp bundle --phpcs"
+    "bundle": "cross-env NODE_ENV=production node scripts/cli.js bundle",
+    "bundle:phpcs": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
+    "bundle:gulp": "cross-env NODE_ENV=production gulp bundle",
+    "bundle:check-all": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs"
   }
 }
