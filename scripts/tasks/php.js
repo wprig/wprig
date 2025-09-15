@@ -11,7 +11,7 @@ import {
 	isProd,
 	rootPath,
 	nameFieldDefaults,
-} from '../../gulp/constants.js';
+} from '../lib/constants.js';
 import { getThemeConfig } from '../lib/utils.js';
 import removeWpCliBlock from './removeWpCliBlock.js';
 
