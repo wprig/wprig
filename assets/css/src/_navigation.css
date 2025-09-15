@@ -417,7 +417,12 @@
 }
 
 @media (--narrow-menu-query) {
-
+	.wp-block-navigation:not(.has-text-color) .wp-block-navigation__responsive-container.is-menu-open {
+		color: var(--global-font-color);
+	}
+	.wp-block-navigation:not(.has-background) .wp-block-navigation__responsive-container.is-menu-open {
+		background: var(--content-background-color);
+	}
 	.main-navigation {
 		li.menu-item {
 			button {

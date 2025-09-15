@@ -17,6 +17,8 @@ import fonts from '../gulp/fonts.js';
 import prodPrep from '../gulp/prodPrep.js';
 import prodStringReplace from '../gulp/prodStringReplace.js';
 import prodCompress from '../gulp/prodCompress.js';
+import { serve, server } from '../gulp/browserSync.js';
+import { paths } from '../gulp/constants.js';
 
 const exec = promisify( execCb );
 const program = new Command();
@@ -204,6 +206,83 @@ program
 			process.env.NODE_ENV = 'production';
 			await runBundle( { phpcs: !! opts.phpcs, lint: !! opts.lint } );
 			console.log( 'Bundle completed.' );
+		} catch ( e ) {
+			console.error( e?.message || e );
+			process.exitCode = 1;
+		}
+	} );
+
+
+
+// Development command: start server and watch source files without gulp
+program
+	.command( 'dev' )
+	.description( 'Start development server with live reload (no gulp)' )
+	.option( '--lint', 'Run JS and CSS linters before starting' )
+	.action( async ( opts ) => {
+		try {
+			// Clean CSS/JS first
+			await Promise.all( [
+				runTask( cleanCSS, 'cleanCSS' ),
+				runTask( cleanJS, 'cleanJS' ),
+			] );
+
+			// Optional linting
+			if ( opts.lint ) {
+				await Promise.all( [ lintCSS(), lintJS() ] );
+			}
+
+			// Initial dev builds
+			await Promise.all( [ buildCSS( { dev: true } ), buildJS( { dev: true } ) ] );
+
+			// Start BrowserSync server (respects theme config)
+			await runTask( serve, 'serve' );
+
+			// Helper actions for watchers
+			const rebuildJS = async () => {
+				try {
+					await buildJS( { dev: true } );
+					server.reload();
+				} catch ( e ) {
+					console.error( e?.message || e );
+				}
+			};
+			const rebuildCSS = async () => {
+				try {
+					await buildCSS( { dev: true } );
+					server.reload();
+				} catch ( e ) {
+					console.error( e?.message || e );
+				}
+			};
+			const processImagesWatcher = async () => {
+				try {
+					await runTask( images, 'images' );
+					await runTask( convertToWebP, 'convertToWebP' );
+					server.reload();
+				} catch ( e ) {
+					console.error( e?.message || e );
+				}
+			};
+			const reloadOnly = () => server.reload();
+
+			// Set up watchers using BrowserSync's built-in chokidar
+			const jsWatcher = server.watch( 'assets/js/src/**/*.{js,ts,tsx,json}', { ignoreInitial: true } );
+			jsWatcher.on( 'change', rebuildJS ).on( 'add', rebuildJS ).on( 'unlink', rebuildJS );
+
+			const cssWatcher = server.watch( 'assets/css/src/**/*.css', { ignoreInitial: true } );
+			cssWatcher.on( 'change', rebuildCSS ).on( 'add', rebuildCSS ).on( 'unlink', rebuildCSS );
+
+			const phpWatcher = server.watch( paths.php.src, { ignoreInitial: true } );
+			phpWatcher.on( 'change', reloadOnly ).on( 'add', reloadOnly ).on( 'unlink', reloadOnly );
+
+			const imageWatcher = server.watch( paths.images.src, { ignoreInitial: true } );
+			imageWatcher
+				.on( 'change', processImagesWatcher )
+				.on( 'add', processImagesWatcher )
+				.on( 'unlink', processImagesWatcher );
+
+			console.log( 'Development server running. Watching for changes...' );
 		} catch ( e ) {
 			console.error( e?.message || e );
 			process.exitCode = 1;
