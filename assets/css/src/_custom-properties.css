@@ -51,12 +51,10 @@
 
 	@media (prefers-color-scheme: dark) {
 		/* Global color adjustments for dark mode */
-		--global-font-color: #ffffff; /* Default text color */
-		--border-color-light: #444444; /* Light border color */
-		--border-color-dark: #333333; /* Dark border color */
+		--global-font-color: #fff; /* Default text color */
 		--background-color: #121212; /* Page background color */
 		--content-background-color: #181818; /* Content-specific background */
-		--sub-content-background-color: #333333;
+		--sub-content-background-color: #333;
 		--header-background-color: #1a1a1a;
 		--footer-background-color: #1a1a1a;
 		--color-link: #4e9efd; /* Link color */

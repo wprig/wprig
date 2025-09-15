@@ -10,6 +10,9 @@
 	# Alignments
 	# Custom block colors
 	# Custom font sizes
+# Content Navigation
+# Infinite Scrool
+# Layouts
 --------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
@@ -17,6 +20,7 @@
 --------------------------------------------------------------*/
 @import "_blocks.css";
 @import "_media.css";
+@import "_forms.css";
 
 /*--------------------------------------------------------------
 # Post and page content
@@ -318,4 +322,167 @@
 
 .has-larger-font-size {
 	font-size: var(--font-size-larger);
+}
+
+/*--------------------------------------------------------------
+# Content navigation
+--------------------------------------------------------------*/
+.site-main .comment-navigation,
+.site-main .posts-navigation,
+.site-main .post-navigation,
+.site-main .pagination {
+	border-bottom: 1px solid var(--border-color-dark);
+	margin: 0 auto 2em;
+	max-width: var(--content-width);
+	overflow: hidden;
+	padding: 0 1.5rem 2em;
+	font-family: var(--highlight-font-family);
+	font-stretch: condensed;
+}
+
+@media (--content-query) {
+
+	.site-main .comment-navigation,
+	.site-main .posts-navigation,
+	.site-main .post-navigation,
+	.site-main .pagination {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
+.nav-links {
+	display: flex;
+}
+
+.comment-navigation .nav-previous,
+.posts-navigation .nav-previous,
+.post-navigation .nav-previous {
+	width: 50%;
+	flex: 1 0 50%;
+}
+
+.comment-navigation .nav-next,
+.posts-navigation .nav-next,
+.post-navigation .nav-next {
+	text-align: end;
+	flex: 1 0 50%;
+}
+
+.post-navigation-sub span {
+	color: var(--global-font-color);
+	text-decoration: none;
+	display: inline-block;
+}
+
+.site-main .pagination {
+	margin-bottom: 1.5em;
+}
+
+.pagination .nav-links {
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.pagination .page-numbers {
+	display: inline-block;
+	margin-bottom: 0.5em;
+	margin-right: 1em;
+	border: 1px solid var(--color-link);
+	min-width: 1.75em;
+	line-height: 1.75;
+	text-align: center;
+	text-decoration: none;
+}
+
+.pagination a:visited {
+	color: var(--color-link);
+}
+
+.pagination a:hover,
+.pagination a:focus,
+.pagination a:active {
+	border-color: var(--color-link-active);
+}
+
+.pagination .prev,
+.pagination .next {
+	min-width: auto;
+	border-color: transparent;
+	text-decoration: underline;
+}
+
+.pagination .prev:hover,
+.pagination .prev:focus,
+.pagination .prev:active,
+.pagination .next:hover,
+.pagination .next:focus,
+.pagination .next:active {
+	border-color: transparent;
+}
+
+.pagination .dots {
+	min-width: auto;
+	border: none;
+}
+
+.pagination .current {
+	border-color: var(--border-color-dark);
+}
+
+/*--------------------------------------------------------------
+# Infinite scroll
+--------------------------------------------------------------*/
+
+/* Globally hidden elements when Infinite Scroll is supported and in use. */
+.infinite-scroll .posts-navigation,
+.infinite-scroll .pagination,
+.infinite-scroll.neverending .site-footer {
+
+	/* Theme Footer (when set to scrolling) */
+	display: none;
+}
+
+/* When Infinite Scroll has reached its end we need to re-display elements that
+were hidden (via .neverending) before. */
+.infinity-end.neverending .site-footer {
+	display: block;
+}
+
+.wp-rig {
+	display:none;
+}
+
+/*--------------------------------------------------------------
+# Layouts
+--------------------------------------------------------------*/
+.site {
+	margin: 0 auto;
+	max-width: 100%;
+}
+
+@media (--sidebar-query) {
+
+	.has-sidebar .site {
+		margin: 0 1em;
+		display: grid;
+		grid-template-columns: 3fr 1fr;
+		grid-gap: 2rem;
+		justify-content: center;
+	}
+
+	.site-header,
+	.site-footer {
+		grid-column: 1 / -1;
+	}
+
+	.site-main {
+		grid-column: 1;
+		min-width: 0;
+	}
+
+	.primary-sidebar {
+		grid-column: 2;
+		min-width: 0;
+	}
 }

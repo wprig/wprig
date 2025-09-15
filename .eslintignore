@@ -1,8 +1,0 @@
-/assets/js/libs/**
-**/*min.js
-/node_modules/**
-/vendor/**
-/config/**
-
-# Because parsing error: 'import' and 'export' may appear only with 'sourceType: module'
-/gulpfile.babel.js

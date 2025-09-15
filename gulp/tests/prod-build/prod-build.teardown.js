@@ -11,10 +11,7 @@ import rimraf from 'rimraf';
  * Internal dependencies
  */
 import { filesToMock } from './prod-build.utils';
-import {
-	prodThemePath,
-	paths,
-} from '../../constants';
+import { prodThemePath, paths } from '../../constants';
 
 // Delete the mock files after testing.
 filesToMock.forEach( ( file ) => {

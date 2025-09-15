@@ -4,10 +4,7 @@
 /**
  * Internal dependencies
  */
-import {
-	gulpTestPath,
-	rootPath,
-} from '../../constants';
+import { gulpTestPath, rootPath } from '../../constants';
 
 export const filesToMock = [
 	{

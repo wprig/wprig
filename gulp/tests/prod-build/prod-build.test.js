@@ -47,15 +47,11 @@ test( 'config defined files to copy exist in the production theme', ( done ) => 
 			const filePathsArray = glob.sync( prodFilePath );
 			// And add each one to the copied files array
 			filePathsArray.forEach( ( globFilePath ) => {
-				copiedFiles.push(
-					globFilePath
-				);
+				copiedFiles.push( globFilePath );
 			} );
-		// If the path is a directory that exists
+			// If the path is a directory that exists
 		} else {
-			copiedFiles.push(
-				prodFilePath
-			);
+			copiedFiles.push( prodFilePath );
 		}
 	} );
 
@@ -84,8 +80,11 @@ test( 'string replacement files to copy exist in the production theme and do not
 					globFilePath.replace( rootPath, prodThemePath )
 				);
 			} );
-		// If the path is a directory that exists
-		} else if ( fs.lstatSync( filePath ).isDirectory() && fs.existsSync( filePath ) ) {
+			// If the path is a directory that exists
+		} else if (
+			fs.lstatSync( filePath ).isDirectory() &&
+			fs.existsSync( filePath )
+		) {
 			// Get the array of files in the directory
 			const filePathsArray = fs.readdirSync( filePath );
 			// And add each one to the copied files array
@@ -94,12 +93,10 @@ test( 'string replacement files to copy exist in the production theme and do not
 					globFilePath.replace( rootPath, prodThemePath )
 				);
 			} );
-		// Otherwise if it is a single file that exists
+			// Otherwise if it is a single file that exists
 		} else if ( fs.existsSync( filePath ) ) {
 			// Add it directly to the copied files array
-			copiedFiles.push(
-				filePath.replace( rootPath, prodThemePath )
-			);
+			copiedFiles.push( filePath.replace( rootPath, prodThemePath ) );
 		}
 	} );
 
@@ -109,13 +106,12 @@ test( 'string replacement files to copy exist in the production theme and do not
 		let failMessage = `The expected file ${ filePath } does not exist`;
 		expect( fileExists, failMessage ).toBe( true );
 		// And that it doesn't have any default strings.
-		const fileContents = fs.readFileSync(
-			filePath,
-			{ encoding: 'utf-8' }
-		);
+		const fileContents = fs.readFileSync( filePath, { encoding: 'utf-8' } );
 		Object.keys( nameFieldDefaults ).forEach( ( key ) => {
 			failMessage = `The file ${ filePath } contains the default string ${ nameFieldDefaults[ key ] }`;
-			expect( fileContents, failMessage ).not.toContain( nameFieldDefaults[ key ] );
+			expect( fileContents, failMessage ).not.toContain(
+				nameFieldDefaults[ key ]
+			);
 		} );
 	} );
 

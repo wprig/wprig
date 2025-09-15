@@ -22,7 +22,6 @@ use function the_comments_navigation;
  *
  * Exposes template tags:
  * * `wp_rig()->the_comments( array $args = array() )`
- *
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 

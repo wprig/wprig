@@ -4,7 +4,7 @@
 /**
  * External dependencies
  */
-import { src, dest } from 'gulp';
+import { src } from 'gulp';
 
 /**
  * Internal dependencies

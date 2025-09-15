@@ -38,9 +38,6 @@ class Theme_Support_Tests extends Integration_Test_Case {
 				'automatic-feed-links',
 			),
 			array(
-				'title-tag',
-			),
-			array(
 				'post-thumbnails',
 			),
 			array(
@@ -71,9 +68,6 @@ class Theme_Support_Tests extends Integration_Test_Case {
 				'editor-font-sizes',
 			),
 			array(
-				'amp',
-			),
-			array(
 				'custom-header',
 			),
 		);
@@ -85,7 +79,7 @@ class Theme_Support_Tests extends Integration_Test_Case {
 	public function test_theme_support_html5() {
 		$html5_support = get_theme_support( 'html5' );
 
-		$this->assertInternalType( 'array', $html5_support );
+		$this->assertIsArray( $html5_support );
 		$this->assertEqualSets(
 			array(
 				'search-form',

@@ -157,7 +157,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			wp_register_font_collection(
 				'local-fonts',
 				array(
-					'name'   => __( 'Local Fonts', 'wp-rig' ),
+					'name'          => __( 'Local Fonts', 'wp-rig' ),
 					'font_families' => array(
 						array(
 							'family' => 'My Local Font',
@@ -165,7 +165,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 							'weight' => '400',
 							'style'  => 'normal',
 						),
-					)
+					),
 				)
 			);
 		}
