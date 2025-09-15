@@ -111,11 +111,11 @@ only be executed in your local development environment.
 {
   "dev": {
 	"browserSync": {
-	"live": true,
-	"proxyURL": "localwprigenv.test",
-	"https": true,
-	"keyPath": "/path/to/my/browsersync/key",
-	"certPath": "/path/to/my/browsersync/certificate"
+		"live": true,
+		"proxyURL": "localwprigenv.test",
+		"https": true,
+		"keyPath": "/path/to/my/browsersync/key",
+		"certPath": "/path/to/my/browsersync/certificate"
 	}
   }
 }
