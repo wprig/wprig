@@ -76,7 +76,11 @@
     "rimraf": "^6.0.1",
     "through2": "^4.0.2",
     "typescript-eslint": "^8.12.2",
-    "vinyl": "^2.2.0"
+    "vinyl": "^2.2.0",
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.2.0",
+    "sharp": "^0.33.4",
+    "svgo": "^3.3.2"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -101,7 +105,7 @@
     "build": "node scripts/cli.js build",
     "build:phpcs": "node scripts/cli.js build --phpcs",
     "build:gulp": "gulp build",
-    "images": "gulp images",
+    "images": "node scripts/cli.js images",
     "bundle": "cross-env NODE_ENV=production node scripts/cli.js bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
     "bundle:gulp": "cross-env NODE_ENV=production gulp bundle",

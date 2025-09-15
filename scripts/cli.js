@@ -11,7 +11,7 @@ import { Command } from 'commander';
 
 // Reuse existing task modules from the project
 import { cleanCSS, cleanJS } from '../gulp/clean.js';
-import { images, convertToWebP } from '../gulp/images.js';
+import { images, convertToWebP } from './tasks/images.js';
 import phpTask from '../gulp/php.js';
 import fonts from '../gulp/fonts.js';
 import prodPrep from '../gulp/prodPrep.js';
@@ -283,6 +283,20 @@ program
 				.on( 'unlink', processImagesWatcher );
 
 			console.log( 'Development server running. Watching for changes...' );
+		} catch ( e ) {
+			console.error( e?.message || e );
+			process.exitCode = 1;
+		}
+	} );
+
+program
+	.command( 'images' )
+	.description( 'Optimize images and generate WebP (no gulp)' )
+	.action( async () => {
+		try {
+			await runTask( images, 'images' );
+			await runTask( convertToWebP, 'convertToWebP' );
+			console.log( 'Images processed.' );
 		} catch ( e ) {
 			console.error( e?.message || e );
 			process.exitCode = 1;
