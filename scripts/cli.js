@@ -13,10 +13,10 @@ import { Command } from 'commander';
 import { cleanCSS, cleanJS } from '../gulp/clean.js';
 import { images, convertToWebP } from './tasks/images.js';
 import phpTask from './tasks/php.js';
-import fonts from '../gulp/fonts.js';
+import fonts from './tasks/fonts.js';
 import prodPrep from '../gulp/prodPrep.js';
-import prodStringReplace from '../gulp/prodStringReplace.js';
-import prodCompress from '../gulp/prodCompress.js';
+import prodStringReplace from './tasks/prodStringReplace.js';
+import prodCompress from './tasks/prodCompress.js';
 import { serve, server } from '../gulp/browserSync.js';
 import { paths } from '../gulp/constants.js';
 

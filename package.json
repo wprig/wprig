@@ -80,7 +80,8 @@
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
     "sharp": "^0.33.4",
-    "svgo": "^3.3.2"
+    "svgo": "^3.3.2",
+    "archiver": "^6.0.1"
   },
   "jest": {
     "setupFilesAfterEnv": [
