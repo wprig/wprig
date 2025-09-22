@@ -94,7 +94,7 @@
     "dev": "node scripts/cli.js dev",
     "build": "node scripts/cli.js build",
     "build:phpcs": "node scripts/cli.js build --phpcs",
-\   "images": "node scripts/cli.js images",
+    "images": "node scripts/cli.js images",
     "bundle": "cross-env NODE_ENV=production node scripts/cli.js bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
     "bundle:check-all": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs"

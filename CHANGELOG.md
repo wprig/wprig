@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.1.0
+ - Removed Gulp from WP Rig. Processes are now replaced with custom scriptsnpm . Props @robruiz
+
 ## 3.0.3
  - Reorganization of the CSS source files. Props @robruiz
  - Fixed js minification and removes obsolete dev dependency. Props @robruiz
