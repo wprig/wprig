@@ -1,7 +1,8 @@
 # Changelog
 
 ## 3.1.0
- - Removed Gulp from WP Rig. Processes are now replaced with custom scriptsnpm . Props @robruiz
+ - Removed Gulp from WP Rig. Processes are now replaced with custom script. Props @robruiz
+ - Users can now use Bun or Node. Props @robruiz
 
 ## 3.0.3
  - Reorganization of the CSS source files. Props @robruiz
