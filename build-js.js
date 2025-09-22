@@ -32,8 +32,26 @@ const getAllFiles = ( dir ) => {
 	return filelist;
 };
 
-// Gather all JavaScript/TypeScript entries (including .jsx/.tsx)
+// Gather all JavaScript/TypeScript entries for theme scripts
 const files = getAllFiles( srcDir );
+
+// Also gather block entry points: assets/blocks/*/src/index.* and optional view.*
+const blocksDir = path.join(paths.assetsDir || path.join(process.cwd(), 'assets'), 'blocks');
+let blockEntries = [];
+try {
+	const blockSlugs = readdirSync(blocksDir, { withFileTypes: true }).filter(d=>d.isDirectory()).map(d=>d.name);
+	for (const slug of blockSlugs) {
+		const base = path.join(blocksDir, slug, 'src');
+		for (const baseName of ['index', 'view']) {
+			for (const ext of ['js','jsx','ts','tsx']) {
+				const p = path.join(base, `${baseName}.${ext}`);
+				if (existsSync(p)) blockEntries.push({ slug, baseName, file: p });
+			}
+		}
+	}
+} catch(e) {
+	// no blocks dir
+}
 
 // Plugin to transform code using replaceInlineJS before esbuild processes it
 const replaceInlineJSPlugin = {
@@ -73,35 +91,42 @@ const stripI18nSourceMapPlugin = {
 	},
 };
 
-files.forEach( ( file ) => {
-	const relativePath = path.relative( srcDir, file );
-
-	// Keep the original behavior: always write .min.js outputs
-	const outputPath = path.join(
-		outDir,
-		relativePath.replace( /\.(js|jsx|ts|tsx)$/, '.min.js' )
-	);
-	const outputDir = path.dirname( outputPath );
-
-	if ( ! existsSync( outputDir ) ) {
-		mkdirSync( outputDir, { recursive: true } );
+files.forEach((file) => {
+	const relativePath = path.relative(srcDir, file);
+	const outputPath = path.join(outDir, relativePath.replace(/\.(js|jsx|ts|tsx)$/, '.min.js'));
+	const outputDir = path.dirname(outputPath);
+	if (!existsSync(outputDir)) {
+		mkdirSync(outputDir, { recursive: true });
 	}
-
 	esbuild
-		.build( {
-			entryPoints: [ file ],
+		.build({
+			entryPoints: [file],
 			outfile: outputPath,
-			minify: true, // ensure minification for all supported types
-			sourcemap: isProd ? false : 'inline', // inline sourcemaps in dev
+			minify: true,
+			sourcemap: isProd ? false : 'inline',
 			bundle: true,
-			target: [ 'es6' ], // adjust as needed
-			loader: {
-				'.js': 'jsx', // allow JSX in .js
-				'.jsx': 'jsx', // explicit support for .jsx
-				'.ts': 'ts',
-				'.tsx': 'tsx',
-			},
-			plugins: [ stripI18nSourceMapPlugin, replaceInlineJSPlugin ],
-		} )
-		.catch( () => process.exit( 1 ) );
-} );
+			target: ['es6'],
+			loader: { '.js': 'jsx', '.jsx': 'jsx', '.ts': 'ts', '.tsx': 'tsx' },
+			plugins: [stripI18nSourceMapPlugin, replaceInlineJSPlugin],
+		})
+		.catch(() => process.exit(1));
+});
+
+// Build blocks: each entry to assets/blocks/<slug>/build/<baseName>.js
+blockEntries.forEach(({ slug, baseName, file }) => {
+	const outFile = path.join(blocksDir, slug, 'build', `${baseName}.js`);
+	const outFolder = path.dirname(outFile);
+	if (!existsSync(outFolder)) mkdirSync(outFolder, { recursive: true });
+	esbuild
+		.build({
+			entryPoints: [file],
+			outfile: outFile,
+			minify: !isProd ? false : true,
+			sourcemap: isProd ? false : 'inline',
+			bundle: true,
+			target: ['es6'],
+			loader: { '.js': 'jsx', '.jsx': 'jsx', '.ts': 'ts', '.tsx': 'tsx' },
+			plugins: [stripI18nSourceMapPlugin, replaceInlineJSPlugin],
+		})
+		.catch(() => process.exit(1));
+});

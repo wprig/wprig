@@ -1,6 +1,6 @@
 {
   "name": "wprig",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "description": "A progressive theme development rig for WordPress.",
   "author": "The WP Rig Contributors",
   "license": "GPL-3.0-or-later",
@@ -23,6 +23,7 @@
     "@parcel/css": "^1.14.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@wordpress/components": "^28.12.0",
+    "@wordpress/create-block": "^9.1.0",
     "@wordpress/data": "^10.12.0",
     "@wordpress/eslint-plugin": "^21.4.0",
     "@wordpress/scripts": "^30.5.1",
@@ -97,7 +98,11 @@
     "images": "node scripts/cli.js images",
     "bundle": "cross-env NODE_ENV=production node scripts/cli.js bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
-    "bundle:check-all": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs"
+    "bundle:check-all": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
+    "block:new": "node scripts/blocks.js block:new",
+    "block:list": "node scripts/blocks.js block:list",
+    "block:remove": "node scripts/blocks.js block:remove",
+    "block:promote-plugin": "node scripts/blocks.js block:promote-plugin"
   },
   "dependencies": {
     "glob": "^11.0.3"
