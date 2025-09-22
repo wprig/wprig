@@ -84,6 +84,14 @@ async function adjustBlockJson(dir, options) {
   // Minimal supports if not present
   raw.supports = raw.supports || { spacing: true, color: { text: true, background: true }, __experimentalBorder: false };
 
+  // Dynamic render callback reference when requested
+  if (options.dynamic) {
+    raw.render = 'file:./render.php';
+  } else if (raw.render) {
+    // Ensure static blocks don't keep a render property
+    delete raw.render;
+  }
+
   await fse.writeJSON(blockJsonPath, raw, { spaces: 2 });
 }
 
@@ -132,7 +140,7 @@ async function cmdNew(name, options) {
   const cbArgs = [
     `${namespace}/${slug}`,
     '--no-plugin',
-    '--variant=dynamic', // we will overwrite files; this helps ensure render support if needed
+    ...(options.dynamic ? ['--variant=dynamic'] : []),
     '--starter=false', // avoid extra boilerplate
   ];
   try {
