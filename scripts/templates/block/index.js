@@ -1,12 +1,12 @@
-import { registerBlockType } from '@wordpress/blocks';
-import { __ } from '@wordpress/i18n';
+// Use WordPress globals to avoid bundling duplicate registries
+const { registerBlockType } = wp.blocks;
+const { __ } = wp.i18n;
 import Edit from './edit';
 
 registerBlockType( 'wprig/example', {
 	apiVersion: 2,
 	title: __( 'Example Block', 'wp-rig' ),
-	edition: 'both',
-	edits: Edit,
+	edit: Edit,
 	save() {
 		return null; // Server-rendered or dynamic as needed
 	},

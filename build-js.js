@@ -1,5 +1,5 @@
 import esbuild from 'esbuild';
-import { readdirSync, existsSync, mkdirSync, statSync, readFileSync } from 'fs';
+import { readdirSync, existsSync, mkdirSync, statSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import { paths, isProd } from './gulp/constants.js';
 import { replaceInlineJS } from './gulp/utils.js';
@@ -126,7 +126,14 @@ blockEntries.forEach(({ slug, baseName, file }) => {
 			bundle: true,
 			target: ['es6'],
 			loader: { '.js': 'jsx', '.jsx': 'jsx', '.ts': 'ts', '.tsx': 'tsx' },
+			jsxFactory: 'wp.element.createElement',
+			jsxFragment: 'wp.element.Fragment',
 			plugins: [stripI18nSourceMapPlugin, replaceInlineJSPlugin],
+		})
+		.then(() => {
+			// Write WordPress asset metadata so core dependencies load first
+			const assetPhp = `<?php return array(\n  'dependencies' => array('wp-blocks','wp-i18n','wp-element','wp-block-editor'),\n  'version' => '${Date.now()}',\n);`;
+			writeFileSync(path.join(blocksDir, slug, 'build', `${baseName}.asset.php`), assetPhp);
 		})
 		.catch(() => process.exit(1));
 });

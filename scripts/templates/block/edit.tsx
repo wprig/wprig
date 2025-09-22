@@ -1,5 +1,7 @@
-import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const { __ } = (wp as any).i18n;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const { useBlockProps } = (wp as any).blockEditor;
 import type { FC } from 'react';
 
 const Edit: FC = () => {

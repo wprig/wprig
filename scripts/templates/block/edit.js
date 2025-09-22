@@ -1,5 +1,5 @@
-import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
+const { __ } = wp.i18n;
+const { useBlockProps } = wp.blockEditor;
 
 export default function Edit() {
 	const blockProps = useBlockProps();
