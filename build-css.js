@@ -219,14 +219,15 @@ const getAllFiles = ( dir ) => {
 /**
  * Process a single CSS file with LightningCSS bundler.
  * - Targets are derived from Browserslist (env-aware)
- * - Virtual preload import is injected after top-level @import block
- * - Source map is emitted and linked via sourceMappingURL
+ * - Virtual preload import can be injected after top-level @import block (theme CSS only)
+ * - Source map is emitted and linked via sourceMappingURL in dev mode
  *
- * @param {string} filePath   - Path to input CSS file
- * @param {string} outputPath - Path to output CSS file
+ * @param {string} filePath         - Path to input CSS file
+ * @param {string} outputPath       - Path to output CSS file
+ * @param {boolean} injectPreload   - Whether to inject theme preload snippet (default: true)
  * @return {Promise<void>}
  */
-const processCSSFile = async ( filePath, outputPath ) => {
+const processCSSFile = async ( filePath, outputPath, injectPreload = true ) => {
 	const entryAbs = path.resolve( filePath );
 
 	// Resolve Browserslist targets from project config (.browserslistrc / package.json)
@@ -264,8 +265,8 @@ const processCSSFile = async ( filePath, outputPath ) => {
 				css = replaceInlineCSS( css );
 				css = processThemeUrls( css );
 
-				// Inject the virtual preload import AFTER the top-level import block
-				if ( PRELOAD_SNIPPET ) {
+				// Inject the virtual preload import AFTER the top-level import block (theme CSS only)
+				if ( injectPreload && PRELOAD_SNIPPET ) {
 					css = ensureVirtualImportInserted( css );
 				}
 
@@ -346,9 +347,49 @@ const processDirectory = async ( dir, destDir ) => {
 
 // Kick off both directories (top-level await wrapper for Node ESM)
 ( async () => {
+	// Theme-level CSS (inject preload snippet if configured)
 	await processDirectory( paths.styles.srcDir, paths.styles.dest );
 	await processDirectory(
 		paths.styles.editorSrcDir,
 		paths.styles.editorDest
 	);
+
+	// Block-level CSS: compile each block's style.css and editor.css into build/ (no theme preload injection)
+	const blocksDir = path.join(
+		paths.assetsDir || path.join( process.cwd(), 'assets' ),
+		'blocks'
+	);
+	try {
+		const slugs = readdirSync( blocksDir, {
+			withFileTypes: true,
+		} )
+			.filter( ( d ) => d.isDirectory() )
+			.map( ( d ) => d.name );
+
+		for ( const slug of slugs ) {
+			const blockDir = path.join( blocksDir, slug );
+			const outDir = path.join( blockDir, 'build' );
+			if ( ! existsSync( outDir ) ) {
+				mkdirSync( outDir, { recursive: true } );
+			}
+			const styleIn = path.join( blockDir, 'style.css' );
+			const editorIn = path.join( blockDir, 'editor.css' );
+			if ( existsSync( styleIn ) ) {
+				await processCSSFile(
+					styleIn,
+					path.join( outDir, 'style.css' ),
+					false
+				);
+			}
+			if ( existsSync( editorIn ) ) {
+				await processCSSFile(
+					editorIn,
+					path.join( outDir, 'editor.css' ),
+					false
+				);
+			}
+		}
+	} catch {
+		// no blocks or cannot read; ignore
+	}
 } )();

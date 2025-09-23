@@ -143,11 +143,12 @@ Key features:
 
 Quick start
 - Create a block (static):
-	- npm: `npm run block:new wprig/hero --title="Hero"`
-	- bun: `bun run block:new wprig/hero --title="Hero"`
+	- npm: `npm run block:new -- hero --title="Hero"` (namespace defaults to your theme slug)
+	- bun: `bun run block:new hero --title="Hero"`
 - Create a dynamic block (server-rendered with render.php):
-	- npm: `npm run block:new wprig/testimonial --title="Testimonial" --dynamic`
-	- bun: `bun run block:new wprig/testimonial --title="Testimonial" --dynamic`
+	- npm (simplest): `npm run block:new:dynamic testimonial` (title auto-generated from slug)
+	- npm (explicit flags): `npm run block:new -- testimonial -d --title="Testimonial"`
+	- bun: `bun run block:new testimonial -d --title="Testimonial"`
 - List blocks: `npm run block:list` or `bun run block:list`
 - Remove a block (prompts to confirm): `npm run block:remove wprig/hero`
 - Promote to a plugin (exports minimal plugin skeleton): `npm run block:promote-plugin wprig/hero`
@@ -157,15 +158,16 @@ Command reference
 	- If no namespace is provided, it defaults to your theme slug from config (e.g., `wprig`).
 	- Options:
 		- `--title <string>`: Human title for the block
-		- `--dynamic`: Generate a dynamic block with `render.php` and set `block.json.render` to `file:./render.php`
+		- `-d, --dynamic`: Generate a dynamic block with `render.php` and set `block.json.render` to `file:./render.php`
 		- `--ts`: Use TypeScript template (`.tsx`)
 		- `--category <string>`: Defaults to `widgets`
 		- `--icon <dashicon|svg>`
 		- `--description <string>`
 		- `--keywords "word1,word2"`
-		- `--style`: Create `style.css` and wire as `file:./build/style.css`
-		- `--editor-style`: Create `editor.css` and wire as `file:./build/editor.css`
+		- `--no-style`: Do not create `style.css` or wire `file:./build/style.css`
+		- `--no-editor-style`: Do not create `editor.css` or wire `file:./build/editor.css`
 		- `--view`: Also generate an optional frontend-only script (`build/view.js`) and set `block.json.script`
+	- npm note: when passing flags via `npm run`, include a `--` before script args (e.g., `npm run block:new -- hero -d`).
 - `block:list` – prints discovered theme-scoped blocks.
 - `block:remove <namespace>/<slug>` – safe delete with confirmation prompt.
 - `block:promote-plugin <namespace>/<slug>` – exports the block to `optional/promoted-blocks/<slug>-block` with a minimal plugin wrapper.
@@ -184,8 +186,8 @@ block.json conventions
 WP Rig rewrites block.json so assets reference built files via `file:` protocol:
 - `editorScript: "file:./build/index.js"`
 - Optional `script: "file:./build/view.js"` when `--view` is used
-- Optional `style: "file:./build/style.css"` when `--style` is used
-- Optional `editorStyle: "file:./build/editor.css"` when `--editor-style` is used
+- `style: "file:./build/style.css"` (included by default; disable with `--no-style`)
+- `editorStyle: "file:./build/editor.css"` (included by default; disable with `--no-editor-style`)
 - For dynamic blocks (`--dynamic`), `render: "file:./render.php"` is added
 - `textdomain` is set to the theme’s slug (from config)
 
@@ -196,7 +198,7 @@ Auto-registration in PHP
 
 Build, watch, and bundle integration
 - JS: `build-js.js` discovers `assets/blocks/**/src/index.(js|ts|tsx)` (and optional `view.*`) and outputs to `assets/blocks/<slug>/build/`.
-- CSS: `build-css.js` compiles each block’s `style.css` -> `build/style.css` and `editor.css` -> `build/editor.css`.
+- CSS: `build-css.js` compiles each block’s `style.css` -> `build/style.css` and `editor.css` -> `build/editor.css` (with sourcemaps in dev; none in build/bundle).
 - Dev/watch: `npm run dev` or `bun run dev` runs the dev servers and rebuilds on changes to any block’s `src` or CSS, with live reload.
 - Production: `npm run bundle` or `bun run bundle` includes the compiled block assets in the production bundle.
 

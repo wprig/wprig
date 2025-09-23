@@ -1,13 +1,15 @@
-// Use WordPress globals to avoid bundling duplicate registries
-const { registerBlockType } = wp.blocks;
-const { __ } = wp.i18n;
+// Use WP globals
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const { registerBlockType } = (wp).blocks;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const { __ } = (wp).i18n;
 import Edit from './edit';
 
-registerBlockType( 'wprig/example', {
+registerBlockType('wprig/example', {
 	apiVersion: 2,
-	title: __( 'Example Block', 'wp-rig' ),
+	title: __('Example Block', 'wp-rig'),
 	edit: Edit,
 	save() {
-		return null; // Server-rendered or dynamic as needed
+		return null;
 	},
-} );
+});

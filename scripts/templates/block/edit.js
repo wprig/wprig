@@ -1,11 +1,25 @@
+// WP globals
 const { __ } = wp.i18n;
-const { useBlockProps } = wp.blockEditor;
+const { InspectorControls, InnerBlocks, useBlockProps } = wp.blockEditor;
+const { PanelBody, TextControl } = wp.components;
 
-export default function Edit() {
+export default function Edit(props) {
+	const { attributes = {}, setAttributes } = props || {};
+	const { title = '' } = attributes;
 	const blockProps = useBlockProps();
 	return (
 		<div {...blockProps}>
-			<p>{ __( 'Hello from WP Rig block!', 'wp-rig' ) }</p>
+			<InspectorControls>
+				<PanelBody title={__('Settings', 'wp-rig')}>
+					<TextControl
+						label={__('Title', 'wp-rig')}
+						value={title}
+						onChange={(v) => setAttributes && setAttributes({ title: v })}
+					/>
+				</PanelBody>
+			</InspectorControls>
+			{title ? <h3>{title}</h3> : null}
+			<InnerBlocks />
 		</div>
 	);
 }

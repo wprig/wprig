@@ -88,6 +88,43 @@ function execCreateBlock(cwd, args) {
 	});
 }
 
+// Remove stray subfolder (e.g., theme slug) created by create-block
+async function cleanupCreateBlockArtifacts(blockDir) {
+	try {
+		const normalize = (s) =>
+			String(s || '')
+				.toLowerCase()
+				.replace(/[^a-z0-9-]/g, '-')
+				.replace(/^-+|-+$/g, '');
+		const candidates = [];
+		const themeSlug = normalize(themeConfig?.theme?.slug || '');
+		if (themeSlug) {
+			candidates.push(themeSlug);
+		}
+		const projectDir = normalize(path.basename(root) || '');
+		if (projectDir) {
+			candidates.push(projectDir);
+		}
+
+		const entries = fs.readdirSync(blockDir, { withFileTypes: true });
+		for (const ent of entries) {
+			if (!ent.isDirectory()) {
+				continue;
+			}
+			const name = ent.name;
+			// Only remove known artifact names, never touch expected dirs
+			if (['src', 'build'].includes(name)) {
+				continue;
+			}
+			if (candidates.includes(name)) {
+				await fse.remove(path.join(blockDir, name));
+			}
+		}
+	} catch {
+		// best-effort cleanup; ignore errors
+	}
+}
+
 async function createMinimalBlockJson(dir, options) {
 	const raw = {
 		name: `${options.namespace}/${options.slug}`,
@@ -203,14 +240,19 @@ async function writeTemplates(dir, opts) {
 			'scripts',
 			'templates',
 			'block',
-			opts.ts ? 'edit.tsx' : 'edit.js'
+			opts.dynamic
+				? opts.ts
+					? 'edit.dynamic.tsx'
+					: 'edit.dynamic.js'
+				: opts.ts
+					? 'edit.tsx'
+					: 'edit.js'
 		),
 		'utf8'
 	);
 	// Replace placeholders in index.* for correct name/title
 	const fullName = `${opts.namespace}/${opts.slug}`;
 	idx = idx.replace(/wprig\/example/g, fullName);
-	console.log([opts]);
 	if (opts.title) {
 		idx = idx.replace(/Example Block/g, opts.title);
 	}
@@ -267,7 +309,6 @@ async function writeTemplates(dir, opts) {
 }
 
 async function cmdNew(name, options) {
-	console.log([`Creating block ${name}...`, options]);
 	ensureBlocksRoot();
 	const { namespace, slug, full } = parseName(name);
 	const dest = path.join(blocksRoot, slug);
@@ -281,8 +322,10 @@ async function cmdNew(name, options) {
 	const cbArgs = [
 		`${namespace}/${slug}`,
 		'--no-plugin',
-		...(options.dynamic ? ['--variant=dynamic'] : []),
-		'--starter=false', // avoid extra boilerplate
+		// Use supported flag for dynamic variant if available. Older versions ignore it harmlessly.
+		...(options.dynamic ? ['--variant', 'dynamic'] : []),
+		// Removed deprecated/unsupported flag that caused failures:
+		// '--starter=false',
 	];
 	try {
 		await execCreateBlock(dest, cbArgs);
@@ -292,6 +335,9 @@ async function cmdNew(name, options) {
 			'[warn] @wordpress/create-block failed or not present, proceeding with WP Rig templates only.'
 		);
 	}
+
+	// Remove any stray artifact folder (e.g., theme slug) created by create-block
+	await cleanupCreateBlockArtifacts(dest);
 
 	// Ensure block.json exists even if create-block produced nothing
 	const blockJsonPath = path.join(dest, 'block.json');
@@ -305,8 +351,9 @@ async function cmdNew(name, options) {
 			description: options.description,
 			keywords: options.keywords,
 			view: !!options.view,
-			styleFlag: !!options.style,
-			editorStyleFlag: !!options.editorStyle,
+			// Default to including CSS unless explicitly disabled by --no-style or --no-editor-style
+			styleFlag: options.style !== false,
+			editorStyleFlag: options.editorStyle !== false,
 			dynamic: !!options.dynamic,
 		});
 	}
@@ -315,8 +362,9 @@ async function cmdNew(name, options) {
 	await writeTemplates(dest, {
 		ts: !!options.ts,
 		dynamic: !!options.dynamic,
-		styleFlag: !!options.style,
-		editorStyleFlag: !!options.editorStyle,
+		// Default to including CSS unless explicitly disabled
+		styleFlag: options.style !== false,
+		editorStyleFlag: options.editorStyle !== false,
 		namespace,
 		slug,
 		title: options.title,
@@ -330,8 +378,9 @@ async function cmdNew(name, options) {
 		description: options.description,
 		keywords: options.keywords,
 		view: !!options.view,
-		styleFlag: !!options.style,
-		editorStyleFlag: !!options.editorStyle,
+		// Default to including CSS unless explicitly disabled
+		styleFlag: options.style !== false,
+		editorStyleFlag: options.editorStyle !== false,
 		dynamic: !!options.dynamic,
 	});
 	console.log(`Created block ${full} at ${path.relative(root, dest)}`);
@@ -422,20 +471,22 @@ program
 	.command('block:new')
 	.argument('<name>', 'Block name <namespace>/<slug> or <slug>')
 	.option('--title <title>', 'Human title')
-	.option('--dynamic', 'Create dynamic block with render.php')
+	.option('-d, --dynamic', 'Create dynamic block with render.php')
 	.option('--ts', 'Use TypeScript template')
 	.option('--category <category>', 'Block category', 'widgets')
 	.option('--icon <icon>', 'Dashicon or SVG')
 	.option('--description <description>', 'Block description')
 	.option('--keywords <csv>', 'Comma-separated keywords')
-	.option('--style', 'Generate style.css')
-	.option('--editor-style', 'Generate editor.css')
+	.option('--no-style', 'Do not generate style.css or wire style')
+	.option(
+		'--no-editor-style',
+		'Do not generate editor.css or wire editorStyle'
+	)
 	.option(
 		'--view',
 		'Generate separate frontend script loaded on frontend only'
 	)
 	.action((name, opts) => {
-		console.log(['what the fuck', name, opts]);
 		cmdNew(name, opts).catch((e) => {
 			console.error(e?.message || e);
 			process.exitCode = 1;

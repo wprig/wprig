@@ -1,22 +1,47 @@
 <?php
 /**
- * Template for dynamic block rendering.
- * Variables available in scope:
- * - $attributes (array)
- * - $content (string)
- * - $block (WP_Block)
+ * Dynamic block render template.
+ *
+ * WordPress includes this file when block.json contains: "render": "file:./render.php"
+ * Variables provided by core at include-time:
+ * - $attributes (array) Block attributes from block.json and user input.
+ * - $content (string)   Rendered inner blocks HTML (if the block supports innerBlocks).
+ * - $block (WP_Block)   Block instance (may be null in some contexts).
+ *
+ * This template echoes markup; WordPress captures the output as the block’s HTML.
+ *
+ * @link https://developer.wordpress.org/block-editor/reference-guides/block-api/block-metadata/#render
+ * @package wp_rig
  */
 
-$attrs   = wp_parse_args( (array) $attributes, array() );
-$title   = isset( $attrs['title'] ) ? sanitize_text_field( $attrs['title'] ) : '';
-$classes = isset( $attrs['className'] ) ? sanitize_html_class( $attrs['className'] ) : '';
+declare( strict_types=1 );
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+// Normalize core-provided variables with sane defaults.
+$attributes = is_array( $attributes ?? null ) ? $attributes : array();
+$content    = is_string( $content ?? null ) ? $content : '';
+/** @var WP_Block|null $block */
+$block      = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
+
+// Derive the block title via namespaced helper with smart fallbacks.
+$title     = wp_rig()->block_get_title( $block );
+$has_title = '' !== $title;
+
+// Build wrapper attributes via namespaced helper (it handles core fallback internally).
+$wrapper_attrs = wp_rig()->block_wrapper_attributes( array(), $attributes );
+
 ?>
-<div class="wp-block <?php echo esc_attr( $classes ); ?>">
-	<?php if ( $title ) : ?>
-		<h3><?php echo esc_html( $title ); ?></h3>
+<div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+	<?php if ( $has_title ) : ?>
+		<h3 class="wp-block-heading"><?php echo esc_html( $title ); ?></h3>
 	<?php endif; ?>
+
 	<?php
-	// $content is produced by inner blocks, already escaped appropriately upstream.
+	// Inner blocks/content: already prepared by WordPress and safe to output as-is.
+	// See https://developer.wordpress.org/reference/functions/render_block/
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo $content;
 	?>
