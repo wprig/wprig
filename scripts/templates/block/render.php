@@ -20,6 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use function WP_Rig\WP_Rig\wp_rig;
+
 // Normalize core-provided variables with sane defaults.
 $attributes = is_array( $attributes ?? null ) ? $attributes : array();
 $content    = is_string( $content ?? null ) ? $content : '';
