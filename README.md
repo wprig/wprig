@@ -4,7 +4,7 @@ title="WP Rig logo by Morten Rand-Hendriksen and Rob Ruiz">
 
 # WP Rig: WordPress Theme Boilerplate
 
-[![Build Status](https://travis-ci.com/wprig/wprig.svg?branch=master)](https://travis-ci.com/github/wprig/wprig)
+[![Build Status](https://github.com/wprig/wprig/workflows/Main/badge.svg)](https://github.com/wprig/wprig/actions)
 [![License: GPL](https://img.shields.io/github/license/wprig/wprig)](/LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/wprig/wprig?include_prereleases)](https://github.com/wprig/wprig/releases)
 
@@ -39,7 +39,7 @@ WP Rig has been tested on Linux, Mac, and Windows.
 
 WP Rig requires the following dependencies. Full installation instructions are provided at their respective websites.
 
-- [PHP](http://php.net/) 8.0 or higher (PHP 8.3 recommended)
+- [PHP](http://php.net/) 8.1 or higher (PHP 8.3 recommended)
 - [npm](https://www.npmjs.com/) or [bun](https://bun.com/)
 - [Composer](https://getcomposer.org/) (installed globally)
 

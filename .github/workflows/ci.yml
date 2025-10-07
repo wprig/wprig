@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.0', '8.1', '8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-interaction
+      - name: Run PHPCS
+        run: ./vendor/bin/phpcs --standard=WordPress *.php inc/ --extensions=php
+      - name: Run PHP CS Fixer (if configured)
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Build assets
+        run: npm run build  # Adjust to your Gulp/esbuild script
+      - name: Lint JS
+        run: npm run lint:js  # If you have ESLint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Install dependencies
+        run: composer install --no-progress
+      - name: Run PHPUnit
+        run: ./vendor/bin/phpunit  # Assumes tests in /tests
