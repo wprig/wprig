@@ -70,6 +70,7 @@
     "sharp": "^0.33.4",
     "svgo": "^3.3.2",
     "through2": "^4.0.2",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.12.2",
     "vinyl": "^2.2.0"
   },
