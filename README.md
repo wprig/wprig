@@ -40,7 +40,7 @@ WP Rig has been tested on Linux, Mac, and Windows.
 WP Rig requires the following dependencies. Full installation instructions are provided at their respective websites.
 
 - [PHP](http://php.net/) 8.0 or higher (PHP 8.3 recommended)
-- [npm](https://www.npmjs.com/)
+- [npm](https://www.npmjs.com/) or [bun](https://bun.com/)
 - [Composer](https://getcomposer.org/) (installed globally)
 
 ### WP Rig and child themes
@@ -69,6 +69,17 @@ extend any themes, whether they were originally built with WP Rig or not.
 	- `npm run build` can be used to process the source files and build the development theme without watching files
 	  afterwards.
 5. In WordPress admin, activate the WP Rig development theme.
+
+#### Recommended Git Workflow
+When working with WP Rig, it is important to understand the appropriate Git workflow depending on what you are working on.
+If you are using WP Rig as a starting point for a new theme, you should use the following workflow:
+
+[Recommended Git Workflow](https://wprig.io/documentation/recommended-git-workflow/)
+
+It is also important to note that the main branch now ignores the package-lock.json file.
+While this is ideal for how we distribute WP Rig, it can cause issues when working with a local development environment or on a team using a forked WP Rig.
+If you are using a local development environment, you should add the package-lock.json file to the .gitignore file
+with a ! in front to prevent ignoring the file in your new theme's repo.
 
 #### Defining custom settings for the project
 
