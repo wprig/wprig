@@ -148,11 +148,11 @@ function processComponentName(name) {
   // Remove any non-alphanumeric characters and spaces
   const cleanName = name.replace(/[^\w\s]/g, '');
 
-  // Convert to PascalCase
+  // Convert to Pascal_Case (with underscores)
   const pascalName = cleanName
-    .replace(/\s+(\w)/g, (_, char) => char.toUpperCase())
-    .replace(/\s/g, '')
-    .replace(/^(.)/, (_, char) => char.toUpperCase());
+    .split(/\s+/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('_');
 
   // Convert to kebab-case
   const kebabSlug = cleanName
@@ -250,6 +250,9 @@ async function createComponentFile(filePath, componentInfo, options) {
 		];
 	}`;
   }
+
+  // Define empty hookMethods variable
+  const hookMethods = '';
 
   // Combine everything into the full component template
   const componentTemplate = `<?php
@@ -369,26 +372,42 @@ async function wireComponent(componentInfo) {
     const themeContent = await fs.readFile(themePath, 'utf8');
 
     // Look for the components array in get_default_components method
-    const componentsArrayRegex = /protected function get_default_components\(\): array \{[\s\S]*?return array\(([\s\S]*?)\);[\s\S]*?\}/;
+    // Match the pattern where components are assigned to a variable
+    const componentsArrayRegex = /protected function get_default_components\(\): array \{[\s\S]*?\$components = array\(([\s\S]*?)\);/;
     const match = themeContent.match(componentsArrayRegex);
 
     if (match) {
       // Find the position to insert the new component
       const componentsArray = match[1];
-      const lastComponentPos = componentsArray.lastIndexOf('new ');
 
-      if (lastComponentPos !== -1) {
-        // Find the end of the last component line
-        const endOfLinePos = componentsArray.indexOf(',', lastComponentPos);
+      // Find all component entries in the array
+      const componentEntries = componentsArray.match(/new [A-Za-z_\\]+\\Component\(\)/g);
 
-        if (endOfLinePos !== -1) {
-          // Insert the new component after the last component
-          const newComponentLine = `\n\t\t\tnew ${componentInfo.pascalName}\\Component(),`;
-          const newContent = themeContent.slice(0, endOfLinePos + 1) + newComponentLine + themeContent.slice(endOfLinePos + 1);
+      if (componentEntries && componentEntries.length > 0) {
+        // Get the last component in the main array
+        const lastComponent = componentEntries[componentEntries.length - 1];
+        const lastComponentPos = componentsArray.lastIndexOf(lastComponent);
 
-          await fs.writeFile(themePath, newContent);
-          console.log(`Component wired in: ${themePath}`);
-          return;
+        if (lastComponentPos !== -1) {
+          // Find the end of the last component line (including the comma)
+          const endOfLinePos = componentsArray.indexOf(',', lastComponentPos);
+
+          if (endOfLinePos !== -1) {
+            // Calculate the position to insert the new component
+            const insertPos = match.index + match[0].indexOf(componentsArray) + endOfLinePos + 1;
+
+            // Create the new component line with proper indentation
+            const newComponentLine = `\n\t\t\tnew ${componentInfo.pascalName}\\Component(),`;
+
+            // Insert the new component after the last component
+            const newContent = themeContent.slice(0, insertPos) +
+                               newComponentLine +
+                               themeContent.slice(insertPos);
+
+            await fs.writeFile(themePath, newContent);
+            console.log(`Component wired in: ${themePath}`);
+            return;
+          }
         }
       }
     }
