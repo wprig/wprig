@@ -4,7 +4,7 @@ title="WP Rig logo by Morten Rand-Hendriksen and Rob Ruiz">
 
 # WP Rig: WordPress Theme Boilerplate
 
-[![Build Status](https://github.com/wprig/wprig/workflows/Main/badge.svg)](https://github.com/wprig/wprig/actions)
+[![Build Status](https://github.com/wprig/wprig/workflows/CI/badge.svg)](https://github.com/wprig/wprig/actions)
 [![License: GPL](https://img.shields.io/github/license/wprig/wprig)](/LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/wprig/wprig?include_prereleases)](https://github.com/wprig/wprig/releases)
 

@@ -5,6 +5,7 @@
  - Removed Gulp from WP Rig. Processes are now replaced with custom script while
 dramatically increasing build and bundle performance. Props @robruiz
  - Users can now use Bun or Node. Props @robruiz
+ - Now using Github CI/CD pipeline for automated testing. Props @robruiz
 
 ## 3.0.3
  - Reorganization of the CSS source files. Props @robruiz
