@@ -23,7 +23,7 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-progress --no-interaction
       - name: Run PHPCS linting
-        run: composer lint  # Uses WP Rig's script for WordPress standards
+        run: composer test:all  # Uses WP Rig's script for WordPress standards
 
   build:
     runs-on: ubuntu-latest
