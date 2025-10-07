@@ -4,15 +4,11 @@
  * WP Rig Component Scaffolding System
  *
  * This script generates a new component for WP Rig with minimal dependencies.
- * Usage: npm run create-rig-component -- "Component Name" [options]
+ * Usage: npm run create-rig-component "Component Name" [options]
  *
  * Options:
  *  --templating         Add Templating_Component_Interface and template_tags() method
- *  --tags=tag1,tag2     Template tag method names (requires --templating)
- *  --hooks=hook1,hook2  WordPress hooks to register (init, after_setup_theme, wp_enqueue_scripts, body_class)
  *  --tests              Create minimal PHPUnit test skeleton
- *  --template-part      Create template-parts/<slug>/content.php
- *  --wire               Auto-register component in Theme.php or functions.php
  *
  * @package wp_rig
  */
@@ -70,15 +66,8 @@ async function createRigComponent() {
       await createTestFile(componentInfo);
     }
 
-    // Create template part if requested
-    if (options.templatePart) {
-      await createTemplatePartFile(componentInfo);
-    }
-
-    // Auto-wire the component if requested
-    if (options.wire) {
-      await wireComponent(componentInfo);
-    }
+    // Always auto-wire the component
+    await wireComponent(componentInfo);
 
     console.log('Component created successfully!');
   } catch (error) {
@@ -97,11 +86,7 @@ function parseCommandLineArgs(args) {
   const options = {
     componentName: null,
     templating: false,
-    tags: [],
-    hooks: [],
-    tests: false,
-    templatePart: false,
-    wire: false
+    tests: false
   };
 
   // First non-flag argument is the component name
@@ -116,14 +101,6 @@ function parseCommandLineArgs(args) {
       options.templating = true;
     } else if (arg === '--tests') {
       options.tests = true;
-    } else if (arg === '--template-part') {
-      options.templatePart = true;
-    } else if (arg === '--wire') {
-      options.wire = true;
-    } else if (arg.startsWith('--tags=')) {
-      options.tags = arg.replace('--tags=', '').split(',').filter(Boolean);
-    } else if (arg.startsWith('--hooks=')) {
-      options.hooks = arg.replace('--hooks=', '').split(',').filter(Boolean);
     }
   }
 
@@ -158,19 +135,6 @@ function validateOptions(options) {
   if (!options.componentName) {
     console.error('Error: Component name is required');
     process.exit(1);
-  }
-
-  if (options.tags.length > 0 && !options.templating) {
-    console.error('Error: --tags can only be used with --templating');
-    process.exit(1);
-  }
-
-  // Validate hooks are from allowed list
-  const validHooks = ['init', 'after_setup_theme', 'wp_enqueue_scripts', 'body_class'];
-  for (const hook of options.hooks) {
-    if (!validHooks.includes(hook)) {
-      console.warn(`Warning: ${hook} is not in the recommended hooks list: ${validHooks.join(', ')}`);
-    }
   }
 }
 
@@ -239,7 +203,7 @@ async function fileExists(filePath) {
  */
 async function createComponentFile(filePath, componentInfo, options) {
   const { pascalName, kebabSlug } = componentInfo;
-  const { templating, tags, hooks } = options;
+  const { templating } = options;
 
   // Build the interfaces list
   const interfaces = ['Component_Interface'];
@@ -257,96 +221,15 @@ async function createComponentFile(filePath, componentInfo, options) {
   }
 
   useStatements.push(`use function add_action;`);
+  useStatements.push(`use function add_filter;`);
 
-  if (hooks.includes('body_class')) {
-    useStatements.push(`use function add_filter;`);
-  }
-
-  // Build the hook methods
-  let hookMethods = '';
-
-  if (hooks.includes('init')) {
-    hookMethods += `
-	/**
-	 * Initializes the component.
-	 */
-	public function action_init() {
-		// Add initialization code here.
-	}
-`;
-  }
-
-  if (hooks.includes('after_setup_theme')) {
-    hookMethods += `
-	/**
-	 * Adds theme support after setup.
-	 */
-	public function action_after_setup_theme() {
-		// Add theme support code here.
-	}
-`;
-  }
-
-  if (hooks.includes('wp_enqueue_scripts')) {
-    hookMethods += `
-	/**
-	 * Enqueues scripts and styles.
-	 */
-	public function action_wp_enqueue_scripts() {
-		// Enqueue scripts and styles here.
-	}
-`;
-  }
-
-  if (hooks.includes('body_class')) {
-    hookMethods += `
-	/**
-	 * Adds custom classes to the body element.
-	 *
-	 * @param array $classes Classes for the body element.
-	 * @return array Filtered body classes.
-	 */
-	public function filter_body_class( array $classes ): array {
-		// Add custom classes here.
-		return $classes;
-	}
-`;
-  }
-
-  // Build the initialize method
+  // Build a basic initialize method
   let initializeMethod = `
 	/**
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
-	public function initialize() {`;
-
-  if (hooks.includes('init')) {
-    initializeMethod += `
-		add_action( 'init', [ $this, 'action_init' ] );`;
-  }
-
-  if (hooks.includes('after_setup_theme')) {
-    initializeMethod += `
-		add_action( 'after_setup_theme', [ $this, 'action_after_setup_theme' ] );`;
-  }
-
-  if (hooks.includes('wp_enqueue_scripts')) {
-    initializeMethod += `
-		add_action( 'wp_enqueue_scripts', [ $this, 'action_wp_enqueue_scripts' ] );`;
-  }
-
-  if (hooks.includes('body_class')) {
-    initializeMethod += `
-		add_filter( 'body_class', [ $this, 'filter_body_class' ] );`;
-  }
-
-  // If no hooks were specified, add a comment
-  if (hooks.length === 0) {
-    initializeMethod += `
-		// Add hooks here.`;
-  }
-
-  initializeMethod += `
+	public function initialize() {
+		// Add hooks here.
 	}`;
 
   // Build the template_tags method
@@ -362,35 +245,10 @@ async function createComponentFile(filePath, componentInfo, options) {
 	 *               adding support for further arguments in the future.
 	 */
 	public function template_tags(): array {
-		return [`;
-
-    if (tags.length > 0) {
-      for (const tag of tags) {
-        templateTagsMethod += `
-			'${tag}' => [ $this, '${tag}' ],`;
-      }
-    } else {
-      templateTagsMethod += `
-			// Add template tags here.`;
-    }
-
-    templateTagsMethod += `
+		return [
+			// Add template tags here.
 		];
 	}`;
-
-    // Add tag methods
-    for (const tag of tags) {
-      templateTagsMethod += `
-
-	/**
-	 * ${capitalizeFirstLetter(tag.replace(/_/g, ' '))}
-	 *
-	 * @return void
-	 */
-	public function ${tag}() {
-		// Implement ${tag} functionality here.
-	}`;
-    }
   }
 
   // Combine everything into the full component template

@@ -101,6 +101,6 @@
     "bundle": "cross-env NODE_ENV=production gulp bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production gulp bundle --phpcs",
     "bundle:check-all": "cross-env NODE_ENV=production gulp bundle --phpcs",
-    "create-rig-component": "node ./node/create-rig-component.mjs"
+    "create-rig-component": "node ./node/create-component-wrapper.js"
   }
 }
