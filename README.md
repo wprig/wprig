@@ -211,6 +211,41 @@ WP Rig ships with advanced features, including:
 - Progressive loading of CSS
 - Modern CSS, custom properties (variables), autoprefixing, etc
 - Modern layouts through CSS grid, flex, and float
+- Component scaffolding system to easily create new theme components
+
+### Component Scaffolding
+
+WP Rig includes a component scaffolding system that makes it easy to create new PHP components under the `inc/` directory. This allows developers to quickly add new functionality to their theme following WP Rig's component architecture.
+
+#### Usage
+
+```bash
+npm run create-rig-component -- "Component Name" [options]
+```
+
+#### Options
+
+- `--templating`: Add Templating_Component_Interface and template_tags() method
+- `--tags=tag1,tag2`: Template tag method names (requires --templating)
+- `--hooks=hook1,hook2`: WordPress hooks to register (init, after_setup_theme, wp_enqueue_scripts, body_class)
+- `--tests`: Create minimal PHPUnit test skeleton
+- `--template-part`: Create template-parts/<slug>/content.php
+- `--wire`: Auto-register component in Theme.php or functions.php
+
+#### Example
+
+```bash
+npm run create-rig-component -- "Related Posts" --templating --tags=get_related_posts --hooks=init,body_class --tests --template-part --wire
+```
+
+This command will:
+1. Create a new component at `inc/Related_Posts/Component.php`
+2. Implement both Component_Interface and Templating_Component_Interface
+3. Add a template_tags() method with the get_related_posts tag
+4. Register hooks for init and body_class
+5. Create a test file at tests/phpunit/unit/inc/Related_Posts/ComponentTest.php
+6. Create a template part at template-parts/related-posts/content.php
+7. Attempt to auto-register the component in Theme.php
 
 For more information about the advanced features in WP Rig and how to use them, visit
 the [Advanced Features Wiki page](https://github.com/wprig/wprig/wiki/Advanced-Features-(and-how-to-use-them)).
