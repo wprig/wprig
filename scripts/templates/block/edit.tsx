@@ -2,7 +2,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 const { __ } = (wp as any).i18n;
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const { InspectorControls, InnerBlocks, useBlockProps } = (wp as any).blockEditor;
+import {
+	InspectorControls,
+	InnerBlocks,
+	useBlockProps,
+} from '@wordpress/block-editor';
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 const { PanelBody, TextControl } = (wp as any).components;
 import type { FC } from 'react';
@@ -23,7 +27,9 @@ const Edit: FC<Partial<EditProps>> = (props) => {
 					<TextControl
 						label={__('Title', 'wp-rig')}
 						value={title}
-						onChange={(v: string) => setAttributes && setAttributes({ title: v })}
+						onChange={(v: string) =>
+							setAttributes && setAttributes({ title: v })
+						}
 					/>
 				</PanelBody>
 			</InspectorControls>
