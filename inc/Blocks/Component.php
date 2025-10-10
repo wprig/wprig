@@ -24,7 +24,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function register_blocks() {
 		$theme_dir = get_template_directory();
+		$theme_uri = get_template_directory_uri();
 		$blocks_dir = trailingslashit( $theme_dir ) . 'assets/blocks';
+		$blocks_uri = trailingslashit( $theme_uri ) . 'assets/blocks';
+
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( '[WP Rig Blocks] init registrar at ' . $blocks_dir );
@@ -44,6 +47,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 			return;
 		}
+
 		foreach ( $dirs as $dir ) {
 			$block_json = $dir . '/block.json';
 			if ( ! file_exists( $block_json ) ) {
@@ -53,9 +57,35 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				}
 				continue;
 			}
-			// Do not include render.php manually; WordPress will include it at render time per block.json "render".
-			// Let WP parse block.json and register assets relative to the directory.
+
+			// Get the block name from the directory name
+			$block_name = basename( $dir );
+
+			// Register block scripts directly
+			$src_dir = $dir . '/src';
+			if ( file_exists( $src_dir ) ) {
+				$editor_js = $src_dir . '/index.js';
+				if ( file_exists( $editor_js ) ) {
+					// Register unminified script for development
+					wp_register_script(
+						"wprig-{$block_name}-editor",
+						"{$blocks_uri}/{$block_name}/src/index.js",
+						array(
+							'wp-blocks',
+							'wp-element',
+							'wp-i18n',
+							'wp-block-editor',
+							'wp-components',
+							'wp-server-side-render'
+						),
+						filemtime( $editor_js ),
+						true
+					);
+				}
+			}
+
 			try {
+				// Register the block using WordPress core function
 				register_block_type( $dir );
 				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log

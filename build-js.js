@@ -46,30 +46,14 @@ const getAllFiles = (dir) => {
 // Gather all JavaScript/TypeScript entries for theme scripts
 const files = getAllFiles(srcDir);
 
-// Also gather block entry points: assets/blocks/*/src/index.* and optional view.*
+// Blocks are now built separately using @wordpress/scripts
+// via the npm run build:blocks or npm run start:blocks commands
 const blocksDir = path.join(
 	paths.assetsDir || path.join(process.cwd(), 'assets'),
 	'blocks'
 );
-const blockEntries = [];
-try {
-	const blockSlugs = readdirSync(blocksDir, { withFileTypes: true })
-		.filter((d) => d.isDirectory())
-		.map((d) => d.name);
-	for (const slug of blockSlugs) {
-		const base = path.join(blocksDir, slug, 'src');
-		for (const baseName of ['index', 'view']) {
-			for (const ext of ['js', 'jsx', 'ts', 'tsx']) {
-				const p = path.join(base, `${baseName}.${ext}`);
-				if (existsSync(p)) {
-					blockEntries.push({ slug, baseName, file: p });
-				}
-			}
-		}
-	}
-} catch (e) {
-	// no blocks dir
-}
+
+// No block entries processing here - blocks are now built with wp-scripts
 
 // Plugin to transform code using replaceInlineJS before esbuild processes it
 const replaceInlineJSPlugin = {
@@ -129,49 +113,18 @@ files.forEach((file) => {
 			target: ['es6'],
 			loader: { '.js': 'jsx', '.jsx': 'jsx', '.ts': 'ts', '.tsx': 'tsx' },
 			plugins: [stripI18nSourceMapPlugin, replaceInlineJSPlugin],
+			external: [
+				'@wordpress/*',
+				'react',
+				'react-dom',
+				'react-dom/client',
+			],
 		})
 		.catch(() => process.exit(1));
 });
 
-// Build blocks: each entry to assets/blocks/<slug>/build/<baseName>.js
-blockEntries.forEach(({ slug, baseName, file }) => {
-	const outFile = path.join(blocksDir, slug, 'build', `${baseName}.js`);
-	const outFolder = path.dirname(outFile);
-	if (!existsSync(outFolder)) {
-		mkdirSync(outFolder, { recursive: true });
-	}
-	esbuild
-		.build({
-			entryPoints: [file],
-			outfile: outFile,
-			minify: !isProd ? false : true,
-			sourcemap: isProd ? false : 'inline',
-			bundle: true,
-			target: ['es6'],
-			// Mark React and WordPress packages as external so they're not bundled
-			external: [
-				'react',
-				'react-dom',
-				'@wordpress/*',
-				'wp-block-editor',
-				'wp-blocks',
-				'wp-components',
-				'wp-data',
-				'wp-element',
-				'wp-i18n',
-			],
-			loader: { '.js': 'jsx', '.jsx': 'jsx', '.ts': 'ts', '.tsx': 'tsx' },
-			jsxFactory: 'wp.element.createElement',
-			jsxFragment: 'wp.element.Fragment',
-			plugins: [stripI18nSourceMapPlugin, replaceInlineJSPlugin],
-		})
-		.then(() => {
-			// Write WordPress asset metadata so core dependencies load first
-			const assetPhp = `<?php return array(\n  'dependencies' => array('wp-blocks','wp-i18n','wp-element','wp-block-editor','wp-components','wp-server-side-render'),\n  'version' => '${Date.now()}',\n);`;
-			writeFileSync(
-				path.join(blocksDir, slug, 'build', `${baseName}.asset.php`),
-				assetPhp
-			);
-		})
-		.catch(() => process.exit(1));
-});
+// Log watch mode status
+if (isWatchMode) {
+	console.log('🔄 Watch mode enabled for theme JS files');
+	console.log('📝 Note: Blocks are built separately using `npm run start:blocks`');
+}
