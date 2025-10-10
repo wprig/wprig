@@ -130,10 +130,16 @@ async function createMinimalBlockJson(dir, options) {
 		name: `${options.namespace}/${options.slug}`,
 		apiVersion: 2,
 		title:
-			options.title ||
-			options.slug
-				.replace(/[-_]/g, ' ')
-				.replace(/\b\w/g, (m) => m.toUpperCase()),
+			(options.title ?
+				options.title.replace(/&quot;/g, '"')
+					.replace(/&amp;/g, '&')
+					.replace(/&lt;/g, '<')
+					.replace(/&gt;/g, '>')
+					.replace(/&#39;/g, "'")
+				:
+				options.slug
+					.replace(/[-_]/g, ' ')
+					.replace(/\b\w/g, (m) => m.toUpperCase())),
 		category: options.category || 'widgets',
 		icon: options.icon || 'block-default',
 		description: options.description || '',
@@ -162,6 +168,24 @@ async function createMinimalBlockJson(dir, options) {
 	await fse.writeJSON(path.join(dir, 'block.json'), raw, { spaces: 2 });
 }
 
+// Helper function to decode HTML entities
+function decodeHtmlEntities(text) {
+	if (!text || typeof text !== 'string') return text;
+
+	// Create a textarea element to use browser's built-in decoding
+	const textarea = document.createElement('textarea');
+	textarea.innerHTML = text;
+	const decoded = textarea.value;
+
+	// For Node.js environment, we need a different approach
+	// This simple regex handles the most common entities like &quot;
+	return decoded.replace(/&quot;/g, '"')
+		.replace(/&amp;/g, '&')
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>')
+		.replace(/&#39;/g, "'");
+}
+
 async function adjustBlockJson(dir, options) {
 	const blockJsonPath = path.join(dir, 'block.json');
 	if (!pathExists(blockJsonPath)) {
@@ -171,7 +195,12 @@ async function adjustBlockJson(dir, options) {
 	// Ensure name, title, category, icon, description. Use file: refs to build outputs.
 	raw.name = `${options.namespace}/${options.slug}`;
 	if (options.title) {
-		raw.title = options.title;
+		// Decode HTML entities in the title to prevent &quot; artifacts
+		raw.title = options.title.replace(/&quot;/g, '"')
+			.replace(/&amp;/g, '&')
+			.replace(/&lt;/g, '<')
+			.replace(/&gt;/g, '>')
+			.replace(/&#39;/g, "'");
 	}
 	raw.category = options.category || raw.category || 'widgets';
 	if (options.icon) {

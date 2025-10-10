@@ -128,7 +128,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function block_get_title( $block ) {
 		$block_type = $this->block_get_type( $block );
 		if ( $block_type instanceof \WP_Block_Type && ! empty( $block_type->title ) && is_string( $block_type->title ) ) {
-			return $block_type->title;
+			// Ensure the title is properly decoded
+			return html_entity_decode( $block_type->title, ENT_QUOTES, 'UTF-8' );
 		}
 
 		if ( $block instanceof \WP_Block && ! empty( $block->name ) && is_string( $block->name ) ) {

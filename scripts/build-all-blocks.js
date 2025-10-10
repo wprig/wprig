@@ -229,6 +229,18 @@ window.wp.components = window.wp.components || {};
 window.wp.element = window.wp.element || {};
 window.wp.i18n = window.wp.i18n || {};
 window.wp.serverSideRender = window.wp.serverSideRender || {};
+window.wp.htmlEntities = window.wp.htmlEntities || {
+  // Simple decoding function to handle common HTML entities
+  decode: function(text) {
+    if (!text) return text;
+    return String(text)
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&#39;/g, "'");
+  }
+};
 
 // Ensure ServerSideRender is available at runtime
 if (window.wp.serverSideRender) {
