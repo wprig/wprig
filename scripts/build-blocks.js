@@ -3,8 +3,6 @@
  */
 
 import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
 
 // Check if we're in watch mode
 const isWatchMode = process.argv.includes('--watch');

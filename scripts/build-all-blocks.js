@@ -3,8 +3,6 @@
 /**
  * Script to build all blocks in the assets/blocks directory using esbuild directly.
  */
-
-import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -102,9 +100,13 @@ const transformImportsPlugin = {
 				}
 
 				// Make sure React is available in the output
-				if (transformedCode.includes('React.') || transformedCode.includes('React,')) {
+				if (
+					transformedCode.includes('React.') ||
+					transformedCode.includes('React,')
+				) {
 					console.log('Adding React availability check');
-					transformedCode = 'const React = window.React;\n' + transformedCode;
+					transformedCode =
+						'const React = window.React;\n' + transformedCode;
 				}
 
 				return {
