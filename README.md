@@ -342,3 +342,46 @@ the [Advanced Features Wiki page](https://github.com/wprig/wprig/wiki/Advanced-F
 
 WP Rig is released
 under [GNU General Public License v3.0 (or later)](https://github.com/wprig/wprig/blob/master/LICENSE).
+
+
+## Childify: Convert this Starter into a Child Theme (optional)
+
+If you want to use WP Rig as a lightweight child theme of an existing parent, run the one-time Childify script.
+
+When to run:
+- After cloning and running `npm install` (or `bun install`)
+- Before you start development builds (`npm run dev` or `npm run build`)
+
+Commands:
+- npm: `npm run childify`
+- optional: `npm run setup-child` (runs childify then `rig-init` to ensure deps are installed)
+
+What it does (non-destructive):
+- Prompts for the parent theme slug (the folder name under wp-content/themes) and validates if present.
+- Adds `Template: <parent-slug>` to `style.css`.
+- Writes child mode to `config/config.default.json`:
+  - `child.enabled: true`
+  - `child.parentSlug: "<parent-slug>"`
+- Trims potentially conflicting overrides by moving them to `childify_backup/`:
+  - Moves `template-parts/` and `optional/` out of the theme to avoid overriding the parent.
+  - Moves most root PHP templates (e.g., `404.php`, `search.php`, `page.php`, etc.).
+  - Replaces `index.php` with a minimal stub (keeps a valid theme structure).
+- Comments out WP Rig’s local Styles/Scripts components so the parent controls enqueues.
+- Appends a dequeue helper in `functions.php` to optionally dequeue common parent handles.
+- Minimizes asset sources while keeping builds working:
+  - Backs up `assets/css/src/` and `assets/js/src/` to `childify_backup/`.
+  - Creates stubs at `assets/css/src/child.css` and `assets/js/src/child.ts`.
+- Writes a summary at `childify_backup/childify-summary.txt` for easy review.
+
+Reverting:
+- Restore any file or directory from `childify_backup/` to its original location.
+- Remove the `CHILDIFY` comments in `inc/Theme.php` and `functions.php` if you want to re-enable WP Rig’s enqueues/components.
+
+Caveats:
+- Childify is intended for a fresh clone and should be run once.
+- Always verify the parent’s script/style handles; adjust the dequeue helper in `functions.php` as needed.
+- For FSE/block themes as parent, consider using the existing editor support tooling and verify template compatibility.
+
+Build integration (esbuild/LightningCSS):
+- The stubs ensure `npm run dev` and `npm run build` still function after Childify.
+- You can add child-specific CSS in `assets/css/src/child.css` and JS in `assets/js/src/child.ts`.

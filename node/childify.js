@@ -1,0 +1,323 @@
+/**
+ * WP Rig Childify Script
+ *
+ * One-time converter to turn a fresh WP Rig clone into a lightweight child theme.
+ * - Prompts for parent theme slug
+ * - Validates parent presence (best-effort)
+ * - Backs up trimmed files into childify_backup/
+ * - Writes Template header in style.css
+ * - Adds child flags to config/config.default.json
+ * - Comments out heavy enqueues/components (Styles, Scripts)
+ * - Moves full template overrides (template-parts/, optional/, root templates) out of the way
+ * - Adds dequeue helpers to functions.php
+ * - Minimizes assets: keeps minimal stubs so builds still run
+ */
+
+import fs from 'fs';
+import fse from 'fs-extra';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import inquirer from 'inquirer';
+import replaceInFile from 'replace-in-file';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const themeRoot = path.resolve(__dirname, '..');
+
+const log = [];
+const addLog = (msg) => {
+	console.log(msg);
+	log.push(msg);
+};
+
+function findThemesDir() {
+	// node/childify.js -> theme root -> themes dir
+	return path.resolve(themeRoot, '..');
+}
+
+function pathExists(p) {
+	try {
+		fs.accessSync(p);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+async function promptForParentSlug() {
+	// Try to read existing config for default
+	let defaultSlug = '';
+	try {
+		const cfgPath = path.join(themeRoot, 'config', 'config.default.json');
+		if (pathExists(cfgPath)) {
+			const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+			defaultSlug = cfg?.child?.parentSlug || '';
+		}
+	} catch {/* noop */}
+
+	const answers = await inquirer.prompt([
+		{
+			type: 'input',
+			name: 'parentSlug',
+			message: 'Enter the parent theme folder slug (in wp-content/themes):',
+			default: defaultSlug,
+			validate: (input) => {
+				if (!input || !/^[a-z0-9\-\_]+$/.test(input)) {
+					return 'Please enter a valid theme slug (lowercase letters, numbers, dashes/underscores).';
+				}
+				return true;
+			},
+		},
+		{
+			type: 'confirm',
+			name: 'validateExists',
+			message: 'Attempt to validate that parent theme exists in wp-content/themes? (recommended)',
+			default: true,
+		},
+	]);
+
+	if (answers.validateExists) {
+		const themesDir = findThemesDir();
+		const parentDir = path.join(themesDir, answers.parentSlug);
+		if (!pathExists(themesDir)) {
+			addLog(`⚠️ Could not locate themes directory at ${themesDir}. Skipping existence validation.`);
+		} else if (!pathExists(parentDir)) {
+			addLog(`⚠️ Parent theme "${answers.parentSlug}" not found at ${parentDir}. You can continue, but ensure it exists in your WordPress install.`);
+		} else {
+			addLog(`✅ Found parent theme at ${parentDir}`);
+		}
+	}
+
+	return answers.parentSlug;
+}
+
+function ensureBackupDir() {
+	const backupDir = path.join(themeRoot, 'childify_backup');
+	fse.ensureDirSync(backupDir);
+	return backupDir;
+}
+
+function writeSummary(backupDir) {
+	try {
+		const logPath = path.join(backupDir, 'childify-summary.txt');
+		fs.writeFileSync(logPath, log.join('\n') + '\n', 'utf8');
+		console.log(`\n📄 Summary written to ${logPath}`);
+	} catch (e) {
+		console.warn('Could not write summary log:', e.message);
+	}
+}
+
+function upsertTemplateHeader(parentSlug) {
+	const stylePath = path.join(themeRoot, 'style.css');
+	if (!pathExists(stylePath)) {
+		addLog('❌ style.css not found. Cannot add Template header.');
+		return;
+	}
+	let css = fs.readFileSync(stylePath, 'utf8');
+	if (!css.trim().startsWith('/*')) {
+		addLog('⚠️ style.css does not start with a header comment. Skipping Template insertion.');
+		return;
+	}
+	if (/^\s*Template\s*:/m.test(css)) {
+		css = css.replace(/^(\s*Template\s*:\s*).*/m, `$1${parentSlug}`);
+		addLog(`🛠️ Updated existing Template header to "${parentSlug}" in style.css`);
+	} else {
+		// Insert after Theme Name or before closing header
+		const lines = css.split(/\r?\n/);
+		let inserted = false;
+		for (let i = 0; i < lines.length; i++) {
+			if (/^\s*Theme Name\s*:/.test(lines[i])) {
+				lines.splice(i + 1, 0, `Template: ${parentSlug}`);
+				inserted = true;
+				break;
+			}
+			if (/\*\//.test(lines[i])) {
+				lines.splice(i, 0, `Template: ${parentSlug}`);
+				inserted = true;
+				break;
+			}
+		}
+		if (!inserted) {
+			lines.unshift('/*');
+			lines.unshift(`Template: ${parentSlug}`);
+			lines.unshift('*/');
+		}
+		css = lines.join('\n');
+		addLog(`✅ Inserted Template: ${parentSlug} in style.css`);
+	}
+	fs.writeFileSync(stylePath, css, 'utf8');
+}
+
+function updateConfig(parentSlug) {
+	const cfgPath = path.join(themeRoot, 'config', 'config.default.json');
+	if (!pathExists(cfgPath)) {
+		addLog('⚠️ config/config.default.json not found. Skipping config update.');
+		return;
+	}
+	let cfg;
+	try {
+		cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+	} catch (e) {
+		addLog(`⚠️ Could not parse config.default.json: ${e.message}`);
+		return;
+	}
+	cfg.child = cfg.child || {};
+	cfg.child.enabled = true;
+	cfg.child.parentSlug = parentSlug;
+	// Optionally trim export: ensure style.css included; no need to add templates here.
+	cfg.export = cfg.export || {};
+	cfg.export.filesToCopy = Array.isArray(cfg.export.filesToCopy)
+		? cfg.export.filesToCopy
+		: [];
+	if (!cfg.export.filesToCopy.includes('style.css')) {
+		cfg.export.filesToCopy.push('style.css');
+	}
+	fs.writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + '\n', 'utf8');
+	addLog('🛠️ Updated config.default.json with child mode settings');
+}
+
+function commentOutComponents() {
+	const themePhp = path.join(themeRoot, 'inc', 'Theme.php');
+	if (!pathExists(themePhp)) {
+		addLog('⚠️ inc/Theme.php not found. Skipping component adjustments.');
+		return;
+	}
+	try {
+		const res = replaceInFile.sync({
+			files: themePhp,
+			from: [
+				/\n\s*new\s+Styles\\Component\(\),/,
+				/\n\s*new\s+Scripts\\Component\(\),/,
+			],
+			to: [
+				"\n/* CHILDIFY: disabled for child theme */ // new Styles\\Component(),",
+				"\n/* CHILDIFY: disabled for child theme */ // new Scripts\\Component(),",
+			],
+		});
+		if (Array.isArray(res)) {
+			res.forEach((r) => {
+				if (r.hasChanged) {
+					addLog(`✅ Commented out components in inc/Theme.php (${r.numReplacements} change(s))`);
+				}
+			});
+		}
+	} catch (e) {
+		addLog(`⚠️ Failed to modify inc/Theme.php: ${e.message}`);
+	}
+}
+
+function appendDequeueHelper(parentSlug) {
+	const fnPath = path.join(themeRoot, 'functions.php');
+	if (!pathExists(fnPath)) {
+		addLog('⚠️ functions.php not found. Skipping dequeue helper.');
+		return;
+	}
+	let php = fs.readFileSync(fnPath, 'utf8');
+	if (php.includes('CHILDIFY: dequeue parent assets')) {
+		addLog('ℹ️ Dequeue helper already present in functions.php.');
+		return;
+	}
+	const snippet = `\n/**\n * CHILDIFY: dequeue parent assets if needed.\n * Adjust handles as necessary for your parent theme.\n */\nadd_action( 'wp_enqueue_scripts', function() {\n\t$handles = array(\n\t\t'parent-style',\n\t\t'${parentSlug}-style',\n\t\t'${parentSlug}-global',\n\t\t'${parentSlug}-scripts',\n\t);\n\tforeach ( $handles as $h ) {\n\t\twp_dequeue_style( $h );\n\t\twp_deregister_style( $h );\n\t\twp_dequeue_script( $h );\n\t\twp_deregister_script( $h );\n\t}\n}, 20 );\n// CHILDIFY: dequeue parent assets end\n`;
+	// Insert before final initialize call to keep file readable
+	php = php.replace(/\n\s*call_user_func\(\s*'WP_Rig\\\\WP_Rig\\\\wp_rig'\s*\);\s*\n?$/, `\n${snippet}\ncall_user_func( 'WP_Rig\\WP_Rig\\wp_rig' );\n`);
+	fs.writeFileSync(fnPath, php, 'utf8');
+	addLog('✅ Appended dequeue helper to functions.php');
+}
+
+function moveFileOrDir(relPath, backupDir) {
+	const abs = path.join(themeRoot, relPath);
+	if (!pathExists(abs)) {
+		return false;
+	}
+	const dest = path.join(backupDir, relPath);
+	fse.ensureDirSync(path.dirname(dest));
+	fse.moveSync(abs, dest, { overwrite: true });
+	addLog(`📦 Moved ${relPath} -> childify_backup/${relPath}`);
+	return true;
+}
+
+function ensureMinimalIndex() {
+	const indexPath = path.join(themeRoot, 'index.php');
+	let needsStub = true;
+	if (pathExists(indexPath)) {
+		const content = fs.readFileSync(indexPath, 'utf8');
+		if (/Silence is golden/i.test(content)) {
+			needsStub = false;
+		} else {
+			// Backup existing heavy index
+			const backupDir = ensureBackupDir();
+			moveFileOrDir('index.php', backupDir);
+		}
+	}
+	if (needsStub) {
+		fs.writeFileSync(indexPath, "<?php\n// CHILDIFY: Minimal index.php to satisfy theme requirements.\n// Silence is golden.\n", 'utf8');
+		addLog('✅ Wrote minimal index.php stub');
+	}
+}
+
+function trimTemplatesAndPartials(backupDir) {
+	// Move directories that commonly override parent
+	['template-parts', 'optional'].forEach((dir) => moveFileOrDir(dir, backupDir));
+	// Move top-level template PHP files except functions.php and index.php
+	const rootFiles = fs.readdirSync(themeRoot);
+	const moveList = rootFiles.filter((f) =>
+		/\.php$/.test(f) &&
+		!['functions.php', 'index.php'].includes(f) &&
+		!['wp-cli'].includes(f)
+	);
+	moveList.forEach((f) => moveFileOrDir(f, backupDir));
+	ensureMinimalIndex();
+}
+
+function minimizeAssets(backupDir) {
+	const cssSrc = path.join(themeRoot, 'assets', 'css', 'src');
+	const jsSrc = path.join(themeRoot, 'assets', 'js', 'src');
+	if (pathExists(cssSrc)) {
+		// backup existing
+		const cssBackup = path.join(backupDir, 'assets', 'css', 'src');
+		fse.ensureDirSync(cssBackup);
+		fse.copySync(cssSrc, cssBackup, { overwrite: true });
+		// remove everything then write stub
+		fse.emptyDirSync(cssSrc);
+		fs.writeFileSync(path.join(cssSrc, 'child.css'), '/* Child theme CSS overrides go here */\n', 'utf8');
+		addLog('🧹 Trimmed CSS src to a single child.css stub');
+	}
+	if (pathExists(jsSrc)) {
+		const jsBackup = path.join(backupDir, 'assets', 'js', 'src');
+		fse.ensureDirSync(jsBackup);
+		fse.copySync(jsSrc, jsBackup, { overwrite: true });
+		fse.emptyDirSync(jsSrc);
+		fs.writeFileSync(path.join(jsSrc, 'child.ts'), '// Child theme JS overrides go here\n', 'utf8');
+		addLog('🧹 Trimmed JS src to a single child.ts stub');
+	}
+}
+
+async function main() {
+	console.log('WP Rig Childify – convert this theme into a lightweight child theme');
+	const { proceed } = await inquirer.prompt([
+		{ type: 'confirm', name: 'proceed', message: 'This will modify files in-place and create a childify_backup/. Continue?', default: true },
+	]);
+	if (!proceed) {
+		console.log('Aborted. No changes made.');
+		return;
+	}
+
+	const parentSlug = await promptForParentSlug();
+	const backupDir = ensureBackupDir();
+
+	upsertTemplateHeader(parentSlug);
+	updateConfig(parentSlug);
+	commentOutComponents();
+	appendDequeueHelper(parentSlug);
+	trimTemplatesAndPartials(backupDir);
+	minimizeAssets(backupDir);
+
+	writeSummary(backupDir);
+	console.log('\n✅ Childify complete. You can now run `npm run dev` or `npm run build`.');
+	console.log('If something looks off, see childify_backup/ to restore files.');
+}
+
+main().catch((e) => {
+	console.error('Childify failed:', e);
+	process.exitCode = 1;
+});

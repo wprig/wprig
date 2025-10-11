@@ -36,6 +36,10 @@
       "phpcs": true
     }
   },
+  "child": {
+    "enabled": false,
+    "parentSlug": ""
+  },
   "export": {
     "compress": true,
     "generatePotFile": true,
