@@ -9,6 +9,7 @@
  * - Adds child flags to config/config.default.json
  * - Removes all components except Styles and Scripts from Theme.php
  * - Removes most components from inc directory (keeps only Styles and Scripts)
+ * - Preserves essential PHP files (functions.php, Template_Tags.php, etc.)
  * - Moves full template overrides (template-parts/, optional/, root templates) out of the way
  * - Adds dequeue helpers to functions.php
  * - Minimizes assets: keeps minimal stubs so builds still run (preserves editor/ directory)
@@ -436,6 +437,9 @@ function removeIncComponents(backupDir) {
 			'Templating_Component_Interface.php',
 			'Template_Tags.php',
 			'Theme.php',
+			'functions.php',
+			'back-compat.php',
+			'wordpress-shims.php'
 		];
 
 		const dirsToMove = items.filter((item) => {
@@ -459,7 +463,7 @@ function removeIncComponents(backupDir) {
 		});
 
 		addLog(
-			`🧹 Removed ${movedCount} items from /inc (keeping only ${COMPONENTS_TO_KEEP.join(', ')} components and required files)`
+			`🧹 Removed ${movedCount} items from /inc (keeping only ${COMPONENTS_TO_KEEP.join(', ')} components and required PHP files)`
 		);
 	} catch (e) {
 		addLog(`⚠️ Failed to clean up inc directory: ${e.message}`);
