@@ -12,6 +12,7 @@
  * - Preserves essential PHP files (functions.php, Template_Tags.php, etc.)
  * - Moves full template overrides (template-parts/, optional/, root templates) out of the way
  * - Adds dequeue helpers to functions.php
+ * - Converts get_template_directory() calls to get_stylesheet_directory() for proper child theme path handling
  * - Minimizes assets: keeps minimal stubs so builds still run (preserves editor/ directory)
  */
 
@@ -285,6 +286,59 @@ function appendDequeueHelper(parentSlug) {
 	addLog('✅ Appended dequeue helper to functions.php');
 }
 
+/**
+ * Converts get_template_directory() calls to get_stylesheet_directory() in functions.php
+ * and other PHP files to ensure proper child theme functionality.
+ */
+function convertTemplateToCssDirectory() {
+	// The list of files to process
+	const filesToProcess = [
+		path.join(themeRoot, 'functions.php'),
+		path.join(themeRoot, 'inc', 'functions.php'),
+		// Add other PHP files that might need conversion
+	];
+
+	let convertCount = 0;
+
+	filesToProcess.forEach(filePath => {
+		if (!pathExists(filePath)) {
+			return; // Skip if file doesn't exist
+		}
+
+		try {
+			let fileContent = fs.readFileSync(filePath, 'utf8');
+
+			// Create backup of original file
+			const backupPath = `${filePath}.bak`;
+			fs.writeFileSync(backupPath, fileContent, 'utf8');
+
+			// Perform replacements
+			const originalContent = fileContent;
+
+			// Replace all instances of get_template_directory() with get_stylesheet_directory()
+			fileContent = fileContent.replace(/get_template_directory\(\)/g, 'get_stylesheet_directory()');
+
+			// Replace all instances of get_template_directory_uri() with get_stylesheet_directory_uri()
+			fileContent = fileContent.replace(/get_template_directory_uri\(\)/g, 'get_stylesheet_directory_uri()');
+
+			// If changes were made, write the file and log it
+			if (fileContent !== originalContent) {
+				fs.writeFileSync(filePath, fileContent, 'utf8');
+				const relPath = path.relative(themeRoot, filePath);
+				addLog(`✅ Converted template directory calls to stylesheet directory in ${relPath}`);
+				convertCount++;
+			}
+		} catch (e) {
+			const relPath = path.relative(themeRoot, filePath);
+			addLog(`⚠️ Failed to update directory references in ${relPath}: ${e.message}`);
+		}
+	});
+
+	if (convertCount > 0) {
+		addLog(`🔄 Updated ${convertCount} files to use get_stylesheet_directory() instead of get_template_directory()`);
+	}
+}
+
 function moveFileOrDir(relPath, backupDir) {
 	const abs = path.join(themeRoot, relPath);
 	if (!pathExists(abs)) {
@@ -498,6 +552,7 @@ async function main() {
 	trimTemplatesAndPartials(backupDir);
 	minimizeAssets(backupDir);
 	removeIncComponents(backupDir);
+	convertTemplateToCssDirectory();
 
 	writeSummary(backupDir);
 	console.log(
