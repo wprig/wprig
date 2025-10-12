@@ -8,6 +8,7 @@
  * - Writes Template header in style.css
  * - Adds child flags to config/config.default.json
  * - Comments out heavy enqueues/components (Styles, Scripts)
+ * - Removes most components from inc directory (keeps only Styles and Scripts)
  * - Moves full template overrides (template-parts/, optional/, root templates) out of the way
  * - Adds dequeue helpers to functions.php
  * - Minimizes assets: keeps minimal stubs so builds still run
@@ -53,13 +54,16 @@ async function promptForParentSlug() {
 			const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
 			defaultSlug = cfg?.child?.parentSlug || '';
 		}
-	} catch {/* noop */}
+	} catch {
+		/* noop */
+	}
 
 	const answers = await inquirer.prompt([
 		{
 			type: 'input',
 			name: 'parentSlug',
-			message: 'Enter the parent theme folder slug (in wp-content/themes):',
+			message:
+				'Enter the parent theme folder slug (in wp-content/themes):',
 			default: defaultSlug,
 			validate: (input) => {
 				if (!input || !/^[a-z0-9\-\_]+$/.test(input)) {
@@ -71,7 +75,8 @@ async function promptForParentSlug() {
 		{
 			type: 'confirm',
 			name: 'validateExists',
-			message: 'Attempt to validate that parent theme exists in wp-content/themes? (recommended)',
+			message:
+				'Attempt to validate that parent theme exists in wp-content/themes? (recommended)',
 			default: true,
 		},
 	]);
@@ -80,9 +85,13 @@ async function promptForParentSlug() {
 		const themesDir = findThemesDir();
 		const parentDir = path.join(themesDir, answers.parentSlug);
 		if (!pathExists(themesDir)) {
-			addLog(`⚠️ Could not locate themes directory at ${themesDir}. Skipping existence validation.`);
+			addLog(
+				`⚠️ Could not locate themes directory at ${themesDir}. Skipping existence validation.`
+			);
 		} else if (!pathExists(parentDir)) {
-			addLog(`⚠️ Parent theme "${answers.parentSlug}" not found at ${parentDir}. You can continue, but ensure it exists in your WordPress install.`);
+			addLog(
+				`⚠️ Parent theme "${answers.parentSlug}" not found at ${parentDir}. You can continue, but ensure it exists in your WordPress install.`
+			);
 		} else {
 			addLog(`✅ Found parent theme at ${parentDir}`);
 		}
@@ -115,12 +124,16 @@ function upsertTemplateHeader(parentSlug) {
 	}
 	let css = fs.readFileSync(stylePath, 'utf8');
 	if (!css.trim().startsWith('/*')) {
-		addLog('⚠️ style.css does not start with a header comment. Skipping Template insertion.');
+		addLog(
+			'⚠️ style.css does not start with a header comment. Skipping Template insertion.'
+		);
 		return;
 	}
 	if (/^\s*Template\s*:/m.test(css)) {
 		css = css.replace(/^(\s*Template\s*:\s*).*/m, `$1${parentSlug}`);
-		addLog(`🛠️ Updated existing Template header to "${parentSlug}" in style.css`);
+		addLog(
+			`🛠️ Updated existing Template header to "${parentSlug}" in style.css`
+		);
 	} else {
 		// Insert after Theme Name or before closing header
 		const lines = css.split(/\r?\n/);
@@ -151,7 +164,9 @@ function upsertTemplateHeader(parentSlug) {
 function updateConfig(parentSlug) {
 	const cfgPath = path.join(themeRoot, 'config', 'config.default.json');
 	if (!pathExists(cfgPath)) {
-		addLog('⚠️ config/config.default.json not found. Skipping config update.');
+		addLog(
+			'⚠️ config/config.default.json not found. Skipping config update.'
+		);
 		return;
 	}
 	let cfg;
@@ -183,6 +198,8 @@ function commentOutComponents() {
 		return;
 	}
 	try {
+		// First, we need to comment out Styles and Scripts components
+		// These components will still exist in the directory, but they will be disabled in Theme.php
 		const res = replaceInFile.sync({
 			files: themePhp,
 			from: [
@@ -190,16 +207,42 @@ function commentOutComponents() {
 				/\n\s*new\s+Scripts\\Component\(\),/,
 			],
 			to: [
-				"\n/* CHILDIFY: disabled for child theme */ // new Styles\\Component(),",
-				"\n/* CHILDIFY: disabled for child theme */ // new Scripts\\Component(),",
+				'\n/* CHILDIFY: disabled for child theme */ // new Styles\\Component(),',
+				'\n/* CHILDIFY: disabled for child theme */ // new Scripts\\Component(),',
 			],
 		});
+
+		// Then, we need to remove all other component instantiations
+		// This is separate from removing the component directories themselves
+		const allComponentsRes = replaceInFile.sync({
+			files: themePhp,
+			from: [
+				/\n\s*new\s+[^\s\\]+\\Component\(\),(?!.*(?:Styles|Scripts))/g
+			],
+			to: [
+				'\n/* CHILDIFY: removed component */ // Removed by childify script',
+			],
+		});
+
+		let changes = 0;
 		if (Array.isArray(res)) {
 			res.forEach((r) => {
 				if (r.hasChanged) {
-					addLog(`✅ Commented out components in inc/Theme.php (${r.numReplacements} change(s))`);
+					changes += r.numReplacements;
 				}
 			});
+		}
+
+		if (Array.isArray(allComponentsRes)) {
+			allComponentsRes.forEach((r) => {
+				if (r.hasChanged) {
+					changes += r.numReplacements;
+				}
+			});
+		}
+
+		if (changes > 0) {
+			addLog(`✅ Modified components in inc/Theme.php (${changes} change(s))`);
 		}
 	} catch (e) {
 		addLog(`⚠️ Failed to modify inc/Theme.php: ${e.message}`);
@@ -219,7 +262,10 @@ function appendDequeueHelper(parentSlug) {
 	}
 	const snippet = `\n/**\n * CHILDIFY: dequeue parent assets if needed.\n * Adjust handles as necessary for your parent theme.\n */\nadd_action( 'wp_enqueue_scripts', function() {\n\t$handles = array(\n\t\t'parent-style',\n\t\t'${parentSlug}-style',\n\t\t'${parentSlug}-global',\n\t\t'${parentSlug}-scripts',\n\t);\n\tforeach ( $handles as $h ) {\n\t\twp_dequeue_style( $h );\n\t\twp_deregister_style( $h );\n\t\twp_dequeue_script( $h );\n\t\twp_deregister_script( $h );\n\t}\n}, 20 );\n// CHILDIFY: dequeue parent assets end\n`;
 	// Insert before final initialize call to keep file readable
-	php = php.replace(/\n\s*call_user_func\(\s*'WP_Rig\\\\WP_Rig\\\\wp_rig'\s*\);\s*\n?$/, `\n${snippet}\ncall_user_func( 'WP_Rig\\WP_Rig\\wp_rig' );\n`);
+	php = php.replace(
+		/\n\s*call_user_func\(\s*'WP_Rig\\\\WP_Rig\\\\wp_rig'\s*\);\s*\n?$/,
+		`\n${snippet}\ncall_user_func( 'WP_Rig\\WP_Rig\\wp_rig' );\n`
+	);
 	fs.writeFileSync(fnPath, php, 'utf8');
 	addLog('✅ Appended dequeue helper to functions.php');
 }
@@ -250,20 +296,27 @@ function ensureMinimalIndex() {
 		}
 	}
 	if (needsStub) {
-		fs.writeFileSync(indexPath, "<?php\n// CHILDIFY: Minimal index.php to satisfy theme requirements.\n// Silence is golden.\n", 'utf8');
+		fs.writeFileSync(
+			indexPath,
+			'<?php\n// CHILDIFY: Minimal index.php to satisfy theme requirements.\n// Silence is golden.\n',
+			'utf8'
+		);
 		addLog('✅ Wrote minimal index.php stub');
 	}
 }
 
 function trimTemplatesAndPartials(backupDir) {
 	// Move directories that commonly override parent
-	['template-parts', 'optional'].forEach((dir) => moveFileOrDir(dir, backupDir));
+	['template-parts', 'optional'].forEach((dir) =>
+		moveFileOrDir(dir, backupDir)
+	);
 	// Move top-level template PHP files except functions.php and index.php
 	const rootFiles = fs.readdirSync(themeRoot);
-	const moveList = rootFiles.filter((f) =>
-		/\.php$/.test(f) &&
-		!['functions.php', 'index.php'].includes(f) &&
-		!['wp-cli'].includes(f)
+	const moveList = rootFiles.filter(
+		(f) =>
+			/\.php$/.test(f) &&
+			!['functions.php', 'index.php'].includes(f) &&
+			!['wp-cli'].includes(f)
 	);
 	moveList.forEach((f) => moveFileOrDir(f, backupDir));
 	ensureMinimalIndex();
@@ -272,30 +325,127 @@ function trimTemplatesAndPartials(backupDir) {
 function minimizeAssets(backupDir) {
 	const cssSrc = path.join(themeRoot, 'assets', 'css', 'src');
 	const jsSrc = path.join(themeRoot, 'assets', 'js', 'src');
+
 	if (pathExists(cssSrc)) {
 		// backup existing
 		const cssBackup = path.join(backupDir, 'assets', 'css', 'src');
 		fse.ensureDirSync(cssBackup);
 		fse.copySync(cssSrc, cssBackup, { overwrite: true });
-		// remove everything then write stub
-		fse.emptyDirSync(cssSrc);
-		fs.writeFileSync(path.join(cssSrc, 'child.css'), '/* Child theme CSS overrides go here */\n', 'utf8');
-		addLog('🧹 Trimmed CSS src to a single child.css stub');
+
+		// Check for editor directory
+		const editorDir = path.join(cssSrc, 'editor');
+		const hasEditorDir = pathExists(editorDir);
+
+		// Instead of emptying the whole directory, we'll selectively handle files
+		// Get all files and directories in cssSrc
+		const items = fs.readdirSync(cssSrc);
+
+		// Remove everything except the editor directory
+		items.forEach(item => {
+			const itemPath = path.join(cssSrc, item);
+			if (item !== 'editor') {
+				if (fs.statSync(itemPath).isDirectory()) {
+					fse.removeSync(itemPath);
+				} else {
+					fs.unlinkSync(itemPath);
+				}
+			}
+		});
+
+		// Make sure editor directory exists
+		fse.ensureDirSync(editorDir);
+
+		// If editor directory existed, empty it but keep the directory
+		if (hasEditorDir) {
+			const editorItems = fs.readdirSync(editorDir);
+			editorItems.forEach(item => {
+				const itemPath = path.join(editorDir, item);
+				if (fs.statSync(itemPath).isDirectory()) {
+					fse.removeSync(itemPath);
+				} else {
+					fs.unlinkSync(itemPath);
+				}
+			});
+
+			// Add a placeholder file in editor directory
+			fs.writeFileSync(
+				path.join(editorDir, 'editor.css'),
+				'/* Child theme editor CSS overrides go here */\n',
+				'utf8'
+			);
+		}
+
+		// Write stub CSS file
+		fs.writeFileSync(
+			path.join(cssSrc, 'child.css'),
+			'/* Child theme CSS overrides go here */\n',
+			'utf8'
+		);
+
+		addLog('🧹 Trimmed CSS src to a child.css stub (preserving editor/ directory)');
 	}
+
 	if (pathExists(jsSrc)) {
 		const jsBackup = path.join(backupDir, 'assets', 'js', 'src');
 		fse.ensureDirSync(jsBackup);
 		fse.copySync(jsSrc, jsBackup, { overwrite: true });
 		fse.emptyDirSync(jsSrc);
-		fs.writeFileSync(path.join(jsSrc, 'child.ts'), '// Child theme JS overrides go here\n', 'utf8');
+		fs.writeFileSync(
+			path.join(jsSrc, 'child.ts'),
+			'// Child theme JS overrides go here\n',
+			'utf8'
+		);
 		addLog('🧹 Trimmed JS src to a single child.ts stub');
 	}
 }
 
+function removeIncComponents(backupDir) {
+	const incDir = path.join(themeRoot, 'inc');
+	if (!pathExists(incDir)) {
+		addLog('⚠️ inc directory not found. Skipping component removal.');
+		return;
+	}
+
+	try {
+		// Get all directories inside inc
+		const items = fs.readdirSync(incDir);
+
+		// Components to keep
+		const keepComponents = ['Styles', 'Scripts'];
+
+		// Filter out directories that should be moved (everything except those we want to keep)
+		const dirsToMove = items.filter(item => {
+			const itemPath = path.join(incDir, item);
+			// Only process directories, not individual files
+			return fs.statSync(itemPath).isDirectory() && !keepComponents.includes(item);
+		});
+
+		// Move each directory to the backup
+		let movedCount = 0;
+		dirsToMove.forEach(dir => {
+			if (moveFileOrDir(path.join('inc', dir), backupDir)) {
+				movedCount++;
+			}
+		});
+
+		addLog(`🧹 Removed ${movedCount} component directories from /inc (keeping only Styles and Scripts)`);
+	} catch (e) {
+		addLog(`⚠️ Failed to clean up inc directory: ${e.message}`);
+	}
+}
+
 async function main() {
-	console.log('WP Rig Childify – convert this theme into a lightweight child theme');
+	console.log(
+		'WP Rig Childify – convert this theme into a lightweight child theme'
+	);
 	const { proceed } = await inquirer.prompt([
-		{ type: 'confirm', name: 'proceed', message: 'This will modify files in-place and create a childify_backup/. Continue?', default: true },
+		{
+			type: 'confirm',
+			name: 'proceed',
+			message:
+				'This will modify files in-place and create a childify_backup/. Continue?',
+			default: true,
+		},
 	]);
 	if (!proceed) {
 		console.log('Aborted. No changes made.');
@@ -311,10 +461,15 @@ async function main() {
 	appendDequeueHelper(parentSlug);
 	trimTemplatesAndPartials(backupDir);
 	minimizeAssets(backupDir);
+	removeIncComponents(backupDir);
 
 	writeSummary(backupDir);
-	console.log('\n✅ Childify complete. You can now run `npm run dev` or `npm run build`.');
-	console.log('If something looks off, see childify_backup/ to restore files.');
+	console.log(
+		'\n✅ Childify complete. You can now run `npm run dev` or `npm run build`.'
+	);
+	console.log(
+		'If something looks off, see childify_backup/ to restore files.'
+	);
 }
 
 main().catch((e) => {
