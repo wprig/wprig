@@ -199,7 +199,7 @@ function updateThemeComponents() {
 	}
 
 	// Components to keep (should match the list in removeIncComponents)
-	const keepComponents = ['Styles', 'Scripts', 'Template_Tags'];
+	const keepComponents = ['Styles', 'Scripts', 'Sidebars'];
 
 	try {
 		// Read the Theme.php file
@@ -417,7 +417,7 @@ function minimizeAssets(backupDir) {
 }
 
 // Define components to keep in a const at the top level for consistency
-const COMPONENTS_TO_KEEP = ['Styles', 'Scripts'];
+const COMPONENTS_TO_KEEP = ['Styles', 'Scripts', 'Sidebars'];
 
 function removeIncComponents(backupDir) {
 	const incDir = path.join(themeRoot, 'inc');
