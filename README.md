@@ -45,9 +45,7 @@ WP Rig requires the following dependencies. Full installation instructions are p
 
 ### WP Rig and child themes
 
-WP Rig is built to lay a solid theme foundation, which is excellent for a parent theme but not for a child theme. A
-child theme is meant to only add on or modify the foundation. As such, WP Rig is not intended for making child themes to
-extend any themes, whether they were originally built with WP Rig or not.
+WP Rig is built to lay a solid theme foundation, which makes it excellent for both parent themes and child themes. WP Rig now includes a dedicated childify script that optimizes the theme for use as a child theme while maintaining all the development benefits of the WP Rig workflow. This allows you to create lightweight child themes that inherit functionality from any parent theme while still leveraging WP Rig's build system.
 
 ### How to install WP Rig:
 
@@ -68,6 +66,7 @@ extend any themes, whether they were originally built with WP Rig or not.
    subsequent changes.
 	- `npm run build` can be used to process the source files and build the development theme without watching files
 	  afterwards.
+	- `npm run childify` can be used to convert your WP Rig theme into a lightweight child theme that inherits from any parent theme.
 5. In WordPress admin, activate the WP Rig development theme.
 
 #### Recommended Git Workflow

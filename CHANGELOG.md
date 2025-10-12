@@ -1,6 +1,7 @@
 # Changelog
 
 ## 3.1.0
+ - Added a new command to convert WP Rig into a child theme build system. Props @robruiz
  - Added a new command to scaffold new PHP components. Props @robruiz
  - Removed Gulp from WP Rig. Processes are now replaced with custom script while
 dramatically increasing build and bundle performance. Props @robruiz
