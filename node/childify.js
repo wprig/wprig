@@ -19,7 +19,6 @@ import fse from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
-import replaceInFile from 'replace-in-file';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -440,7 +439,6 @@ function removeIncComponents(backupDir) {
 		];
 
 		const dirsToMove = items.filter((item) => {
-			const itemPath = path.join(incDir, item);
 			// Keep our desired components and required files
 			if (
 				COMPONENTS_TO_KEEP.includes(item) ||
