@@ -7,11 +7,11 @@
  * - Backs up trimmed files into childify_backup/
  * - Writes Template header in style.css
  * - Adds child flags to config/config.default.json
- * - Comments out heavy enqueues/components (Styles, Scripts)
+ * - Removes all components except Styles and Scripts from Theme.php
  * - Removes most components from inc directory (keeps only Styles and Scripts)
  * - Moves full template overrides (template-parts/, optional/, root templates) out of the way
  * - Adds dequeue helpers to functions.php
- * - Minimizes assets: keeps minimal stubs so builds still run
+ * - Minimizes assets: keeps minimal stubs so builds still run (preserves editor/ directory)
  */
 
 import fs from 'fs';
@@ -191,61 +191,76 @@ function updateConfig(parentSlug) {
 	addLog('🛠️ Updated config.default.json with child mode settings');
 }
 
-function commentOutComponents() {
+function updateThemeComponents() {
 	const themePhp = path.join(themeRoot, 'inc', 'Theme.php');
 	if (!pathExists(themePhp)) {
 		addLog('⚠️ inc/Theme.php not found. Skipping component adjustments.');
 		return;
 	}
+
+	// Components to keep (should match the list in removeIncComponents)
+	const keepComponents = ['Styles', 'Scripts', 'Template_Tags'];
+
 	try {
-		// First, we need to comment out Styles and Scripts components
-		// These components will still exist in the directory, but they will be disabled in Theme.php
-		const res = replaceInFile.sync({
-			files: themePhp,
-			from: [
-				/\n\s*new\s+Styles\\Component\(\),/,
-				/\n\s*new\s+Scripts\\Component\(\),/,
-			],
-			to: [
-				'\n/* CHILDIFY: disabled for child theme */ // new Styles\\Component(),',
-				'\n/* CHILDIFY: disabled for child theme */ // new Scripts\\Component(),',
-			],
-		});
+		// Read the Theme.php file
+		const themeContent = fs.readFileSync(themePhp, 'utf8');
 
-		// Then, we need to remove all other component instantiations
-		// This is separate from removing the component directories themselves
-		const allComponentsRes = replaceInFile.sync({
-			files: themePhp,
-			from: [
-				/\n\s*new\s+[^\s\\]+\\Component\(\),(?!.*(?:Styles|Scripts))/g
-			],
-			to: [
-				'\n/* CHILDIFY: removed component */ // Removed by childify script',
-			],
-		});
+		// Find the get_default_components method
+		const componentsMethodMatch = themeContent.match(
+			/protected\s+function\s+get_default_components\(\)[\s\S]*?\{([\s\S]*?)\}/
+		);
 
-		let changes = 0;
-		if (Array.isArray(res)) {
-			res.forEach((r) => {
-				if (r.hasChanged) {
-					changes += r.numReplacements;
-				}
-			});
+		if (!componentsMethodMatch) {
+			addLog(
+				'⚠️ Could not find get_default_components method in Theme.php'
+			);
+			return;
 		}
 
-		if (Array.isArray(allComponentsRes)) {
-			allComponentsRes.forEach((r) => {
-				if (r.hasChanged) {
-					changes += r.numReplacements;
-				}
-			});
+		// Get the method body
+		const methodBody = componentsMethodMatch[1];
+
+		// Find all component instantiations in the array
+		const componentRegex = /\s*new\s+([^\s\\]+)\\Component\(\),/g;
+		let matches;
+		let updatedMethodBody = methodBody;
+		const removedComponents = [];
+
+		// Keep track of what we find in order to log it
+		const keptComponents = [];
+
+		// Process each component line
+		while ((matches = componentRegex.exec(methodBody)) !== null) {
+			const fullMatch = matches[0];
+			const componentName = matches[1];
+
+			// If this component is not in our keep list, remove it
+			if (!keepComponents.includes(componentName)) {
+				updatedMethodBody = updatedMethodBody.replace(
+					fullMatch,
+					`\n\t\t// CHILDIFY: removed ${componentName}\\Component`
+				);
+				removedComponents.push(componentName);
+			} else {
+				keptComponents.push(componentName);
+			}
 		}
 
-		if (changes > 0) {
-			addLog(`✅ Modified components in inc/Theme.php (${changes} change(s))`);
-		}
+		// Replace the method body in the full file content
+		const updatedThemeContent = themeContent.replace(
+			componentsMethodMatch[0],
+			`protected function get_default_components() {${updatedMethodBody}}`
+		);
+
+		// Write the updated file
+		fs.writeFileSync(themePhp, updatedThemeContent, 'utf8');
+
+		addLog(`✅ Kept components in Theme.php: ${keptComponents.join(', ')}`);
+		addLog(
+			`🧹 Removed ${removedComponents.length} components from Theme.php`
+		);
 	} catch (e) {
-		addLog(`⚠️ Failed to modify inc/Theme.php: ${e.message}`);
+		addLog(`⚠️ Failed to update Theme.php: ${e.message}`);
 	}
 }
 
@@ -341,7 +356,7 @@ function minimizeAssets(backupDir) {
 		const items = fs.readdirSync(cssSrc);
 
 		// Remove everything except the editor directory
-		items.forEach(item => {
+		items.forEach((item) => {
 			const itemPath = path.join(cssSrc, item);
 			if (item !== 'editor') {
 				if (fs.statSync(itemPath).isDirectory()) {
@@ -358,7 +373,7 @@ function minimizeAssets(backupDir) {
 		// If editor directory existed, empty it but keep the directory
 		if (hasEditorDir) {
 			const editorItems = fs.readdirSync(editorDir);
-			editorItems.forEach(item => {
+			editorItems.forEach((item) => {
 				const itemPath = path.join(editorDir, item);
 				if (fs.statSync(itemPath).isDirectory()) {
 					fse.removeSync(itemPath);
@@ -377,12 +392,14 @@ function minimizeAssets(backupDir) {
 
 		// Write stub CSS file
 		fs.writeFileSync(
-			path.join(cssSrc, 'child.css'),
+			path.join(cssSrc, 'global.css'),
 			'/* Child theme CSS overrides go here */\n',
 			'utf8'
 		);
 
-		addLog('🧹 Trimmed CSS src to a child.css stub (preserving editor/ directory)');
+		addLog(
+			'🧹 Trimmed CSS src to a global.css stub (preserving editor/ directory)'
+		);
 	}
 
 	if (pathExists(jsSrc)) {
@@ -399,6 +416,9 @@ function minimizeAssets(backupDir) {
 	}
 }
 
+// Define components to keep in a const at the top level for consistency
+const COMPONENTS_TO_KEEP = ['Styles', 'Scripts'];
+
 function removeIncComponents(backupDir) {
 	const incDir = path.join(themeRoot, 'inc');
 	if (!pathExists(incDir)) {
@@ -410,25 +430,39 @@ function removeIncComponents(backupDir) {
 		// Get all directories inside inc
 		const items = fs.readdirSync(incDir);
 
-		// Components to keep
-		const keepComponents = ['Styles', 'Scripts'];
-
 		// Filter out directories that should be moved (everything except those we want to keep)
-		const dirsToMove = items.filter(item => {
+		// Also keep non-component files that are needed
+		const requiredFiles = [
+			'Component_Interface.php',
+			'Templating_Component_Interface.php',
+			'Template_Tags.php',
+			'Theme.php',
+		];
+
+		const dirsToMove = items.filter((item) => {
 			const itemPath = path.join(incDir, item);
-			// Only process directories, not individual files
-			return fs.statSync(itemPath).isDirectory() && !keepComponents.includes(item);
+			// Keep our desired components and required files
+			if (
+				COMPONENTS_TO_KEEP.includes(item) ||
+				requiredFiles.includes(item)
+			) {
+				return false;
+			}
+			// Move directories and non-required files
+			return true;
 		});
 
-		// Move each directory to the backup
+		// Move each directory/file to the backup
 		let movedCount = 0;
-		dirsToMove.forEach(dir => {
-			if (moveFileOrDir(path.join('inc', dir), backupDir)) {
+		dirsToMove.forEach((item) => {
+			if (moveFileOrDir(path.join('inc', item), backupDir)) {
 				movedCount++;
 			}
 		});
 
-		addLog(`🧹 Removed ${movedCount} component directories from /inc (keeping only Styles and Scripts)`);
+		addLog(
+			`🧹 Removed ${movedCount} items from /inc (keeping only ${COMPONENTS_TO_KEEP.join(', ')} components and required files)`
+		);
 	} catch (e) {
 		addLog(`⚠️ Failed to clean up inc directory: ${e.message}`);
 	}
@@ -457,7 +491,7 @@ async function main() {
 
 	upsertTemplateHeader(parentSlug);
 	updateConfig(parentSlug);
-	commentOutComponents();
+	updateThemeComponents();
 	appendDequeueHelper(parentSlug);
 	trimTemplatesAndPartials(backupDir);
 	minimizeAssets(backupDir);
