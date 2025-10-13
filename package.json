@@ -105,7 +105,7 @@
     "block:promote-plugin": "node scripts/blocks.js block:promote-plugin",
     "childify": "node node/childify.js",
     "setup-child": "npm run rig-init && npm run childify",
-    "setup-child:bun": "bun run rig-init && bun run childify"
+    "setup-child:bun": "bun run rig-init:bun && bun run childify"
   },
   "dependencies": {
     "glob": "^11.0.3"
