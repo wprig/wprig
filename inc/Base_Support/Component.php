@@ -8,7 +8,6 @@
 namespace WP_Rig\WP_Rig\Base_Support;
 
 use WP_Rig\WP_Rig\Component_Interface;
-use WP_Rig\WP_Rig\Templating_Component_Interface;
 use function add_action;
 use function add_filter;
 use function add_theme_support;
@@ -17,8 +16,6 @@ use function pings_open;
 use function esc_url;
 use function get_bloginfo;
 use function wp_scripts;
-use function wp_get_theme;
-use function get_template;
 
 /**
  * Class for adding basic theme support, most of which is mandatory to be implemented by all themes.
@@ -27,7 +24,7 @@ use function get_template;
  * * `wp_rig()->get_version()`
  * * `wp_rig()->get_asset_version( string $filepath )`
  */
-class Component implements Component_Interface, Templating_Component_Interface {
+class Component implements Component_Interface {
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -56,21 +53,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function action_title_tag_support() {
 		add_theme_support( 'title-tag' );
-	}
-
-
-	/**
-	 * Gets template tags to expose as methods on the Template_Tags class instance, accessible through `wp_rig()`.
-	 *
-	 * @return array Associative array of $method_name => $callback_info pairs. Each $callback_info must either be
-	 *               a callable or an array with key 'callable'. This approach is used to reserve the possibility of
-	 *               adding support for further arguments in the future.
-	 */
-	public function template_tags(): array {
-		return array(
-			'get_version'       => array( $this, 'get_version' ),
-			'get_asset_version' => array( $this, 'get_asset_version' ),
-		);
 	}
 
 	/**
