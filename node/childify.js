@@ -163,20 +163,23 @@ function upsertTemplateHeader(parentSlug) {
 }
 
 function updateConfig(parentSlug) {
-	const cfgPath = path.join(themeRoot, 'config', 'config.default.json');
-	if (!pathExists(cfgPath)) {
+	// Update config.default.json
+	const defaultCfgPath = path.join(themeRoot, 'config', 'config.default.json');
+	if (!pathExists(defaultCfgPath)) {
 		addLog(
 			'⚠️ config/config.default.json not found. Skipping config update.'
 		);
 		return;
 	}
+
 	let cfg;
 	try {
-		cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+		cfg = JSON.parse(fs.readFileSync(defaultCfgPath, 'utf8'));
 	} catch (e) {
 		addLog(`⚠️ Could not parse config.default.json: ${e.message}`);
 		return;
 	}
+
 	cfg.child = cfg.child || {};
 	cfg.child.enabled = true;
 	cfg.child.parentSlug = parentSlug;
@@ -188,8 +191,41 @@ function updateConfig(parentSlug) {
 	if (!cfg.export.filesToCopy.includes('style.css')) {
 		cfg.export.filesToCopy.push('style.css');
 	}
-	fs.writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + '\n', 'utf8');
+
+	// Write updated config to config.default.json
+	fs.writeFileSync(defaultCfgPath, JSON.stringify(cfg, null, 2) + '\n', 'utf8');
 	addLog('🛠️ Updated config.default.json with child mode settings');
+
+	// Also create or update config.json with the same settings
+	const cfgPath = path.join(themeRoot, 'config', 'config.json');
+	let existingCfg = {};
+
+	// Try to read existing config.json if it exists
+	if (pathExists(cfgPath)) {
+		try {
+			existingCfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+		} catch (e) {
+			addLog(`⚠️ Could not parse existing config.json: ${e.message}`);
+			// Continue with empty object if parsing fails
+		}
+	}
+
+	// Merge child and export settings into existing config or create new
+	existingCfg.child = existingCfg.child || {};
+	existingCfg.child.enabled = true;
+	existingCfg.child.parentSlug = parentSlug;
+
+	existingCfg.export = existingCfg.export || {};
+	existingCfg.export.filesToCopy = Array.isArray(existingCfg.export.filesToCopy)
+		? existingCfg.export.filesToCopy
+		: [];
+	if (!existingCfg.export.filesToCopy.includes('style.css')) {
+		existingCfg.export.filesToCopy.push('style.css');
+	}
+
+	// Write updated config to config.json
+	fs.writeFileSync(cfgPath, JSON.stringify(existingCfg, null, 2) + '\n', 'utf8');
+	addLog('✅ Created/updated config.json with child mode settings');
 }
 
 function updateThemeComponents() {
