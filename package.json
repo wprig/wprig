@@ -78,8 +78,8 @@
   "type": "module",
   "scripts": {
     "editor-support": "node node/editorSupport.js",
-    "rig-init": "npm install --loglevel=error --no-audit --no-fund && composer install --quiet",
-    "rig-init:bun": "bun install --loglevel=error --no-audit --no-fund && composer install --quiet",
+    "rig-init": "npm install --loglevel=error --no-audit --no-fund && composer install --quiet && node scripts/cli.js init",
+    "rig-init:bun": "bun install --loglevel=error --no-audit --no-fund && composer install --quiet && node scripts/cli.js init",
     "generateCert": "node scripts/cli.js generateCert",
     "build:js": "node build-js.js",
     "dev:js": "node build-js.js --dev",

@@ -7,6 +7,9 @@
 
 import { exec as execCb } from 'node:child_process';
 import { promisify } from 'node:util';
+import fs from 'node:fs';
+import path from 'node:path';
+import inquirer from 'inquirer';
 import { Command } from 'commander';
 
 // Reuse existing task modules from the project
@@ -336,6 +339,155 @@ program
 		try {
 			await runTask( generateCert, 'generateCert' );
 			console.log( 'Cert Generated' );
+		} catch ( e ) {
+			console.error( e?.message || e );
+			process.exitCode = 1;
+		}
+	} );
+
+program
+	.command( 'init' )
+	.description(
+		'Post-install setup: create config.json and guide next steps'
+	)
+	.option( '--non-interactive', 'Skip prompts and use defaults/placeholders' )
+	.action( async ( opts ) => {
+		try {
+			const root = process.cwd();
+			const configDir = path.join( root, 'config' );
+			const defaultConfigPath = path.join(
+				configDir,
+				'config.default.json'
+			);
+			const configJsonPath = path.join( configDir, 'config.json' );
+			const localConfigPath = path.join( configDir, 'config.local.json' );
+
+			// Ensure config directory exists
+			if ( ! fs.existsSync( configDir ) ) {
+				fs.mkdirSync( configDir, { recursive: true } );
+			}
+
+			// Load default config for sensible defaults
+			let defaults = {};
+			try {
+				if ( fs.existsSync( defaultConfigPath ) ) {
+					defaults = JSON.parse(
+						fs.readFileSync( defaultConfigPath, 'utf-8' )
+					);
+				}
+			} catch {}
+
+			// Load existing user config if present (to merge)
+			let userConfig = {};
+			if ( fs.existsSync( configJsonPath ) ) {
+				try {
+					userConfig = JSON.parse(
+						fs.readFileSync( configJsonPath, 'utf-8' )
+					);
+				} catch {}
+			}
+
+			const isInteractive =
+				process.stdout.isTTY &&
+				process.stdin.isTTY &&
+				! process.env.CI &&
+				! opts.nonInteractive;
+			let answers = null;
+
+			if ( isInteractive ) {
+				answers = await inquirer.prompt( [
+					{
+						type: 'input',
+						name: 'proxyURL',
+						message:
+							'Enter your local development domain (without protocol), e.g. mysite.local:10004',
+						default:
+							defaults?.dev?.browserSync?.proxyURL ||
+							'wprig.test:8888',
+						validate: ( input ) =>
+							!! String( input ).trim() ||
+							'Please enter a domain (e.g. mysite.local:10004)',
+					},
+					{
+						type: 'confirm',
+						name: 'https',
+						message: 'Use HTTPS with BrowserSync?',
+						default: !! defaults?.dev?.browserSync?.https,
+					},
+					{
+						type: 'input',
+						name: 'bypassPort',
+						message: 'BrowserSync UI/Bypass port to use',
+						default: String(
+							defaults?.dev?.browserSync?.bypassPort || '8181'
+						),
+						validate: ( input ) =>
+							/^\d{2,5}$/.test( String( input ).trim() ) ||
+							'Enter a valid port number (e.g. 8181)',
+					},
+					{
+						type: 'confirm',
+						name: 'live',
+						message: 'Enable live reload (BrowserSync live)?',
+						default: defaults?.dev?.browserSync?.live !== false,
+					},
+				] );
+			} else {
+				answers = {
+					proxyURL:
+						defaults?.dev?.browserSync?.proxyURL ||
+						'wprig.test:8888',
+					bypassPort: String(
+						defaults?.dev?.browserSync?.bypassPort || '8181'
+					),
+					live: defaults?.dev?.browserSync?.live !== false,
+					https: !! defaults?.dev?.browserSync?.https,
+				};
+			}
+
+			// Merge into userConfig without clobbering other keys
+			userConfig.dev = userConfig.dev || {};
+			userConfig.dev.browserSync = {
+				...( userConfig.dev.browserSync || {} ),
+				proxyURL: answers.proxyURL,
+				bypassPort: answers.bypassPort,
+				live: !! answers.live,
+				https: !! answers.https,
+			};
+
+			fs.writeFileSync(
+				configJsonPath,
+				JSON.stringify( userConfig, null, 2 ) + '\n',
+				'utf-8'
+			);
+
+			// Guidance output
+			console.log( '' );
+			console.log( 'WP Rig initialization complete.' );
+			console.log(
+				`- Wrote ${ configJsonPath } (overrides defaults in ${ defaultConfigPath }).`
+			);
+			if ( ! fs.existsSync( localConfigPath ) ) {
+				console.log(
+					`- Optional: create ${ localConfigPath } for machine-only settings (gitignored).`
+				);
+			}
+			console.log( '' );
+			console.log( 'Next steps:' );
+			console.log(
+				'  1) Review config at ./config/config.json and tweak theme settings as needed.'
+			);
+			console.log(
+				'  2) If you enabled HTTPS, generate a local certificate: npm run generateCert'
+			);
+			console.log(
+				'  3) Start development server with live reload: npm run dev'
+			);
+			console.log( '  4) Build assets once: npm run build' );
+			console.log(
+				'  5) Learn common WP Rig workflows: https://wprig.io/getting-started'
+			);
+			console.log( '  6) Create a production bundle: npm run bundle' );
 		} catch ( e ) {
 			console.error( e?.message || e );
 			process.exitCode = 1;
