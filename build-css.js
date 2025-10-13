@@ -11,8 +11,8 @@ import path from 'path';
 import browserslist from 'browserslist';
 import { bundleAsync, browserslistToTargets } from 'lightningcss';
 import themeConfig from './config/themeConfig.js'; // merged WP Rig config (default -> config -> local)
-import { paths } from './gulp/constants.js';
-import { replaceInlineCSS } from './gulp/utils.js';
+import { paths } from './scripts/lib/constants.js';
+import { replaceInlineCSS } from './scripts/lib/utils.js';
 
 // Determine if running in development mode
 const isDev = process.argv.includes( '--dev' );

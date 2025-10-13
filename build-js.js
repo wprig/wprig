@@ -8,8 +8,8 @@ import {
 	writeFileSync,
 } from 'fs';
 import path from 'path';
-import { paths, isProd } from './gulp/constants.js';
-import { replaceInlineJS } from './gulp/utils.js';
+import { paths, isProd } from './scripts/lib/constants.js';
+import { replaceInlineJS } from './scripts/lib/utils.js';
 
 // Check if we're in watch mode
 const isWatchMode =

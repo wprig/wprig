@@ -4,7 +4,6 @@
 /**
  * External dependencies
  */
-// Use Node's fs and glob directly for copying, remove Gulp src/dest/pump
 import log from 'fancy-log';
 import colors from 'ansi-colors';
 import path from 'path';

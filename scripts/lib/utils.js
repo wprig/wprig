@@ -6,8 +6,7 @@ import colors from 'ansi-colors';
 import { rimraf } from 'rimraf';
 import { mkdirp } from 'mkdirp';
 import fs from 'fs';
-import through2 from 'through2';
-import replaceStream from 'replacestream';
+import { Transform } from 'node:stream';
 
 /**
  * Internal dependencies
@@ -80,6 +79,48 @@ function processBuffer( content, replacements ) {
 }
 
 /**
+ * Creates a transform stream that replaces occurrences of a search value with a replacement value.
+ * This is a simpler alternative to the 'replacestream' package.
+ *
+ * @param {string|RegExp} searchValue  - The value to search for in the stream chunks.
+ * @param {string} replaceValue - The value to replace the found occurrences with.
+ * @return {Transform} A transform stream that performs the replacements.
+ */
+function createReplaceStream( searchValue, replaceValue ) {
+	let buffer = '';
+
+	return new Transform({
+		transform( chunk, encoding, callback ) {
+			const str = buffer + chunk.toString();
+			const replaced = str.replace( searchValue, replaceValue );
+
+			// Keep a small buffer in case the search pattern spans chunk boundaries
+			const maxPatternLength = searchValue instanceof RegExp ?
+				100 : // Reasonable buffer size for regex
+				searchValue.length;
+
+			if (str.length > maxPatternLength) {
+				// Push most of the processed content, but keep a small buffer
+				// in case the pattern spans across chunks
+				buffer = str.slice(str.length - maxPatternLength);
+				this.push(replaced.slice(0, replaced.length - maxPatternLength));
+			} else {
+				buffer = str;
+			}
+
+			callback();
+		},
+		flush( callback ) {
+			// Process any remaining buffered content
+			if (buffer.length > 0) {
+				this.push(buffer.replace(searchValue, replaceValue));
+			}
+			callback();
+		}
+	});
+}
+
+/**
  * Creates a stream transformation for replacing strings based on the theme config.
  * @param {boolean} isProdFlag - Flag indicating whether it's in production mode.
  * @return {import('stream').Transform} - A stream transformation for string replacements.
@@ -97,25 +138,28 @@ export function getStringReplacementTasks( isProdFlag ) {
 		} )
 	);
 
-	return through2.obj( ( file, enc, callback ) => {
-		if ( file.isBuffer() ) {
-			file.contents = processBuffer( file.contents, replacements );
-			callback( null, file );
-		} else if ( file.isStream() ) {
-			let stream = file.contents;
-			replacements.forEach(
-				( { searchValue, replaceValue } ) =>
-					( stream = stream.pipe(
-						replaceStream( searchValue, replaceValue )
-					) )
-			);
-			file.contents = stream;
-			stream.on( 'finish', () => callback( null, file ) );
-			stream.on( 'error', callback );
-		} else {
-			callback( null, file );
+	return new Transform({
+		objectMode: true,
+		transform(file, encoding, callback) {
+			if ( file.isBuffer() ) {
+				file.contents = processBuffer( file.contents, replacements );
+				callback( null, file );
+			} else if ( file.isStream() ) {
+				let stream = file.contents;
+				replacements.forEach(
+					( { searchValue, replaceValue } ) =>
+						( stream = stream.pipe(
+							createReplaceStream( searchValue, replaceValue )
+						) )
+				);
+				file.contents = stream;
+				stream.on( 'finish', () => callback( null, file ) );
+				stream.on( 'error', callback );
+			} else {
+				callback( null, file );
+			}
 		}
-	} );
+	});
 }
 
 /**
