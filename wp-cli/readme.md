@@ -62,7 +62,7 @@ wp rig fake_menu_items --menu="Main Navigation" --items=10 --prefix="Page"
 - Deeper levels automatically have fewer items to maintain usability
 - All items link to "#" as placeholders
 
-### `wp rig menu export`
+### `wp rig menu_export`
 Exports a WordPress navigation menu to JSON format.
 **Options:**
 
@@ -74,22 +74,22 @@ Exports a WordPress navigation menu to JSON format.
 
 **Usage:**
 ``` bash
-wp rig menu export <menu_name> [--file=<filename>] [--pretty]
+wp rig menu_export <menu_name> [--file=<filename>] [--pretty]
 ```
 
 **Examples:**
 ``` bash
 # Export menu to stdout
-wp rig menu export "Main Menu"
+wp rig menu_export "Main Menu"
 
 # Export menu to a file
-wp rig menu export "Main Menu" --file=main-menu.json
+wp rig menu_export "Main Menu" --file=main-menu.json
 
 # Export menu to a file with formatted JSON
-wp rig menu export "Main Menu" --file=main-menu.json --pretty
+wp rig menu_export "Main Menu" --file=main-menu.json --pretty
 ```
 
-### `wp rig menu import`
+### `wp rig menu_import`
 Imports a WordPress navigation menu from JSON format.
 **Options:**
 
@@ -101,7 +101,7 @@ Imports a WordPress navigation menu from JSON format.
 
 **Usage:**
 ``` bash
-wp rig menu import <file> [--overwrite] [--dry-run]
+wp rig menu_import <file> [--overwrite] [--dry-run]
 ```
 
 **Examples:**
@@ -116,7 +116,7 @@ wp rig menu import main-menu.json --overwrite
 wp rig menu import main-menu.json --dry-run
 ```
 
-### `wp rig menu list`
+### `wp rig menu_list`
 Lists all available WordPress navigation menus.
 **Options:**
 
@@ -126,16 +126,16 @@ Lists all available WordPress navigation menus.
 
 **Usage:**
 ``` bash
-wp rig menu list [--format=<format>]
+wp rig menu_list [--format=<format>]
 ```
 
 **Examples:**
 ``` bash
 # List all menus in table format
-wp rig menu list
+wp rig menu_list
 
 # List all menus in JSON format
-wp rig menu list --format=json
+wp rig menu_list --format=json
 ```
 
 ## Development Notes
