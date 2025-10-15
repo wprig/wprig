@@ -7,7 +7,8 @@
 /**
  * External dependencies
  */
-import { pipe as pump, from, concat } from 'mississippi';
+import { pipeline } from 'node:stream/promises';
+import { Readable, Transform, Writable } from 'node:stream';
 import Vinyl from 'vinyl';
 import fs from 'fs';
 
@@ -17,6 +18,30 @@ import fs from 'fs';
 import { testPath } from '../../lib/constants';
 import { getThemeConfig, getDefaultConfig } from '../../lib/utils';
 import { stylesAfterReplacementStream } from '../../lib/styles';
+
+/**
+ * Helper functions to replace mississippi functionality
+ */
+// Create readable stream from array of objects
+const fromArray = (array) => {
+	return Readable.from(array, { objectMode: true });
+};
+
+// Create transform stream that collects objects and passes them to callback
+const concatStream = (callback) => {
+	const objects = [];
+	return new Transform({
+		objectMode: true,
+		transform(chunk, encoding, done) {
+			objects.push(chunk);
+			done(null, chunk);
+		},
+		flush(done) {
+			callback(objects);
+			done();
+		}
+	});
+};
 
 function makeMockFiles() {
 	return [
@@ -40,14 +65,13 @@ test( 'nesting', ( done ) => {
 		expect( fileContents ).toContain( '.entry .inner' );
 	}
 
-	pump(
-		[
-			from.obj( mockFiles ),
-			stylesAfterReplacementStream(),
-			concat( assert ),
-		],
-		done
-	);
+	pipeline(
+		fromArray(mockFiles),
+		stylesAfterReplacementStream(),
+		concatStream(assert)
+	)
+		.then(() => done())
+		.catch(done);
 } );
 
 test( 'partials are imported', ( done ) => {
@@ -64,14 +88,13 @@ test( 'partials are imported', ( done ) => {
 		expect( fileContents ).toContain( '--global-font-color:#333' );
 	}
 
-	pump(
-		[
-			from.obj( mockFiles ),
-			stylesAfterReplacementStream(),
-			concat( assert ),
-		],
-		done
-	);
+	pipeline(
+		fromArray(mockFiles),
+		stylesAfterReplacementStream(),
+		concatStream(assert)
+	)
+		.then(() => done())
+		.catch(done);
 } );
 
 test( 'custom properties processed', ( done ) => {
@@ -88,14 +111,13 @@ test( 'custom properties processed', ( done ) => {
 		expect( fileContents ).toContain( 'font-family:"Crimson Text",serif' );
 	}
 
-	pump(
-		[
-			from.obj( mockFiles ),
-			stylesAfterReplacementStream(),
-			concat( assert ),
-		],
-		done
-	);
+	pipeline(
+		fromArray(mockFiles),
+		stylesAfterReplacementStream(),
+		concatStream(assert)
+	)
+		.then(() => done())
+		.catch(done);
 } );
 
 test( 'custom media is processed', ( done ) => {
@@ -113,14 +135,13 @@ test( 'custom media is processed', ( done ) => {
 		);
 	}
 
-	pump(
-		[
-			from.obj( mockFiles ),
-			stylesAfterReplacementStream(),
-			concat( assert ),
-		],
-		done
-	);
+	pipeline(
+		fromArray(mockFiles),
+		stylesAfterReplacementStream(),
+		concatStream(assert)
+	)
+		.then(() => done())
+		.catch(done);
 } );
 
 test( 'minifies by default', ( done ) => {
@@ -139,14 +160,13 @@ test( 'minifies by default', ( done ) => {
 		expect( fileContents ).not.toContain( '\n' );
 	}
 
-	pump(
-		[
-			from.obj( mockFiles ),
-			stylesAfterReplacementStream(),
-			concat( assert ),
-		],
-		done
-	);
+	pipeline(
+		fromArray(mockFiles),
+		stylesAfterReplacementStream(),
+		concatStream(assert)
+	)
+		.then(() => done())
+		.catch(done);
 } );
 
 test( 'debug config disables minify', ( done ) => {
@@ -162,14 +182,13 @@ test( 'debug config disables minify', ( done ) => {
 		expect( fileContents ).toContain( '\n' );
 	}
 
-	pump(
-		[
-			from.obj( mockFiles ),
-			stylesAfterReplacementStream(),
-			concat( assert ),
-		],
-		done
-	);
+	pipeline(
+		fromArray(mockFiles),
+		stylesAfterReplacementStream(),
+		concatStream(assert)
+	)
+		.then(() => done())
+		.catch(done);
 } );
 
 test( 'IE grid prefix if configured', ( done ) => {
@@ -184,14 +203,13 @@ test( 'IE grid prefix if configured', ( done ) => {
 		expect( fileContents ).toContain( '-ms-grid' );
 	}
 
-	pump(
-		[
-			from.obj( mockFiles ),
-			stylesAfterReplacementStream(),
-			concat( assert ),
-		],
-		done
-	);
+	pipeline(
+		fromArray(mockFiles),
+		stylesAfterReplacementStream(),
+		concatStream(assert)
+	)
+		.then(() => done())
+		.catch(done);
 } );
 
 test( 'No IE grid prefix by default', ( done ) => {
@@ -208,12 +226,11 @@ test( 'No IE grid prefix by default', ( done ) => {
 		expect( fileContents ).not.toContain( '-ms-grid' );
 	}
 
-	pump(
-		[
-			from.obj( mockFiles ),
-			stylesAfterReplacementStream(),
-			concat( assert ),
-		],
-		done
-	);
+	pipeline(
+		fromArray(mockFiles),
+		stylesAfterReplacementStream(),
+		concatStream(assert)
+	)
+		.then(() => done())
+		.catch(done);
 } );

@@ -45,9 +45,7 @@ WP Rig requires the following dependencies. Full installation instructions are p
 
 ### WP Rig and child themes
 
-WP Rig is built to lay a solid theme foundation, which is excellent for a parent theme but not for a child theme. A
-child theme is meant to only add on or modify the foundation. As such, WP Rig is not intended for making child themes to
-extend any themes, whether they were originally built with WP Rig or not.
+WP Rig is built to lay a solid theme foundation, which makes it excellent for both parent themes and child themes. WP Rig now includes a dedicated childify script that optimizes the theme for use as a child theme while maintaining all the development benefits of the WP Rig workflow. This allows you to create lightweight child themes that inherit functionality from any parent theme while still leveraging WP Rig's build system.
 
 ### How to install WP Rig:
 
@@ -68,6 +66,7 @@ extend any themes, whether they were originally built with WP Rig or not.
    subsequent changes.
 	- `npm run build` can be used to process the source files and build the development theme without watching files
 	  afterwards.
+	- `npm run childify` can be used to convert your WP Rig theme into a lightweight child theme that inherits from any parent theme.
 5. In WordPress admin, activate the WP Rig development theme.
 
 #### Recommended Git Workflow
@@ -132,6 +131,25 @@ If your local environment uses a specific port number, for example, `8888`, add 
 3. A new, production-ready theme will be generated in `wp-content/themes`.
 4. The production theme can be activated or uploaded to a production environment.
 
+Build, watch, and bundle integration
+- JS: `build-js.js` discovers `assets/blocks/**/src/index.(js|ts|tsx)` (and optional `view.*`) and outputs to `assets/blocks/<slug>/build/`.
+- CSS: `build-css.js` compiles each block’s `style.css` -> `build/style.css` and `editor.css` -> `build/editor.css` (with sourcemaps in dev; none in build/bundle).
+- Dev/watch: `npm run dev` or `bun run dev` runs the dev servers and rebuilds on changes to any block’s `src` or CSS, with live reload.
+- Production: `npm run bundle` or `bun run bundle` includes the compiled block assets in the production bundle.
+
+i18n
+- Block JavaScript uses `@wordpress/i18n`. The CLI templates set the `textdomain` to your theme slug so WordPress can load translations automatically.
+
+Notes and validation
+- Namespacing: Use `<namespace>/<slug>`; namespace defaults to your theme’s slug if omitted.
+- If a directory already exists for the slug, `block:new` fails with a friendly message.
+- Dynamic vs static: Use `--dynamic` when you want server-side rendering via `render.php`. Otherwise, the block is static (no `render` in block.json).
+
+We have a new Documentation area that can be found on the [WP Rig website](https://wprig.io/documentation/).
+If you would like to contribute to our documentation efforts, please submit a request on
+our [contribute page](https://wprig.io/contribute/) on our website.
+
+
 ### Wiki: Recommended code editor extensions
 
 To take full advantage of the features in WP Rig, visit
@@ -175,7 +193,7 @@ Non-essential files from the `wp-rig` development theme are not copied to the pr
 To bundle the theme without creating a zip archive, define the `export:compress` setting in `./config/config.json`
 to `false`:
 
-```javascript
+```
 export:
 {
 	compress: false
@@ -185,17 +203,47 @@ export:
 ### Build process
 
 WP Rig uses a fast end efficient build process to generate and optimize the code
-for the theme. [Gulp 5](https://gulpjs.com/), [Lightning CSS](https://lightningcss.dev/), and [esbuid](https://esbuild.github.io/) are mainly used to provide the underlying functionality.
+for the theme. Modern PHP, a curated set of Node/Bun and Composer scripts, [Lightning CSS](https://lightningcss.dev/), and [esbuid](https://esbuild.github.io/) are mainly used to provide the underlying functionality.
 All development is done in the `wp-rig` development theme. Feel free to edit any `.php` files.
 You should only edit the source asset files in the following
 locations:
 
 - CSS: `assets/css/src` (Processed by Lightning CSS)
 - JavaScript/Typescript: `assets/js/src` (Processed by esbuild)
-- images: `assets/images/src` (Processed by Gulp)
+- images: `assets/images/src` (Processed by imagemin)
 
-For more information about the Gulp processes, what processes are available, and how to run them individually, visit
-the [Gulp Wiki page](https://github.com/wprig/wprig/wiki/Gulp).
+### CLI Commands / Scripts
+
+WP Rig comes loaded with Node/Bun, Composer, and WP CLI scripts to dramatically improve the developer experience for WP theme devs.
+
+#### NPM/Bun Scripts
+
+- `dev`: Watch source files and rebuild on changes with BrowserSync
+- `build`: One-time build of source files without watching
+- `bundle`: Generate production-ready theme with optimizations
+- `translate`: Generate POT translation file
+- `block:new`: Create a new Gutenberg block
+- `block:list`: List all theme blocks
+- `block:remove`: Remove a block with confirmation
+- `block:promote-plugin`: Export block as plugin
+- `create-rig-component`: Scaffold new theme component
+
+#### Composer Scripts
+
+- `test:unit`: Run unit tests
+- `test:integration`: Run integration tests
+- `test:all`: Run all tests
+- `phpcbf-dev`: Run PHP Code Beautifier
+- `phpcs-dev`: Run PHP CodeSniffer
+- `fix`: Run all code fixers (Rector, PHP-CS-Fixer, PHPCBF)
+- `setup-wp-tests`: Setup WordPress test environment
+
+#### WP CLI Commands
+
+For [WP CLI](https://make.wordpress.org/cli/handbook/) commands documentation, visit the [WP Rig WP CLI Commands](https://github.com/wprig/wprig/tree/master/wp-cli)
+
+For more information about commands and useful workflows like scripts and other sub-systems, please visit
+the [WP Rig website](https://wprig.io/doc_cat/workflow/).
 
 ### Browser Support
 
@@ -204,9 +252,8 @@ As WP Rig processes CSS and JavaScript, it will support the browsers listed in `
 
 ## Advanced Features
 
-WP Rig gives the developer an out of the box environment with support for modern technologies, including ES2015, CSS
-grid, CSS custom properties (variables), CSS nesting and more, without making any configurations. Just write code, and
-WP Rig handles the heavy lifting for you.
+WP Rig gives the developer an out of the box environment with support for modern technologies, including ES6 and extremely modern CSS, without making any configurations.
+Just write code, and WP Rig handles the heavy lifting for you.
 
 Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name
 and theme author name (for translation files) and local server settings for BrowserSync. Additionally, compression of
@@ -217,11 +264,9 @@ in `./config/config.default.json`. Place local-only/untracked theme settings in 
 example, if you want to set local information for BrowserSync.
 
 WP Rig ships with advanced features, including:
-
 - Easily add custom Customizer settings using .json file
 - Progressive loading of CSS
-- Modern CSS, custom properties (variables), autoprefixing, etc
-- Modern layouts through CSS grid, flex, and float
+- Modern CSS features and layouts
 - Component scaffolding system to easily create new theme components
 
 ### Component Scaffolding
@@ -251,6 +296,71 @@ This command will:
 3. Add an empty template_tags() method ready to be customized
 4. Create a test file at tests/phpunit/unit/inc/Related_Posts/ComponentTest.php
 5. Auto-register the component in Theme.php
+
+### Theme-scoped Blocks (Gutenberg)
+WP Rig includes a built-in system for creating and managing theme-scoped Gutenberg blocks, powered by `@wordpress/create-block` under the hood and fully integrated with the theme’s build and dev workflows (Node and Bun).
+
+Key features:
+- Scaffold blocks inside the theme (never as a plugin) using `assets/blocks/<slug>/`.
+- Auto-registration: the theme automatically discovers and registers blocks on init.
+- Build integration: JS and CSS for blocks are built and watched by existing commands.
+- Supports both npm and bun for all commands.
+
+Quick start
+- Create a block (static):
+	- npm: `npm run block:new -- hero --title="Hero"` (namespace defaults to your theme slug)
+	- bun: `bun run block:new hero --title="Hero"`
+- Create a dynamic block (server-rendered with render.php):
+	- npm (simplest): `npm run block:new:dynamic testimonial` (title auto-generated from slug)
+	- npm (explicit flags): `npm run block:new -- testimonial -d --title="Testimonial"`
+	- bun: `bun run block:new testimonial -d --title="Testimonial"`
+- List blocks: `npm run block:list` or `bun run block:list`
+- Remove a block (prompts to confirm): `npm run block:remove wprig/hero`
+- Promote to a plugin (exports minimal plugin skeleton): `npm run block:promote-plugin wprig/hero`
+
+Command reference
+- `block:new <namespace>/<slug>` or `<slug>`
+	- If no namespace is provided, it defaults to your theme slug from config (e.g., `wprig`).
+	- Options:
+		- `--title <string>`: Human title for the block
+		- `-d, --dynamic`: Generate a dynamic block with `render.php` and set `block.json.render` to `file:./render.php`
+		- `--ts`: Use TypeScript template (`.tsx`)
+		- `--category <string>`: Defaults to `widgets`
+		- `--icon <dashicon|svg>`
+		- `--description <string>`
+		- `--keywords "word1,word2"`
+		- `--no-style`: Do not create `style.css` or wire `file:./build/style.css`
+		- `--no-editor-style`: Do not create `editor.css` or wire `file:./build/editor.css`
+		- `--view`: Also generate an optional frontend-only script (`build/view.js`) and set `block.json.script`
+	- npm note: when passing flags via `npm run`, include a `--` before script args (e.g., `npm run block:new -- hero -d`).
+- `block:list` – prints discovered theme-scoped blocks.
+- `block:remove <namespace>/<slug>` – safe delete with confirmation prompt.
+- `block:promote-plugin <namespace>/<slug>` – exports the block to `optional/promoted-blocks/<slug>-block` with a minimal plugin wrapper.
+
+Filesystem layout
+Each block lives under `assets/blocks/<slug>/`:
+- `block.json`
+- `src/index.(js|ts|tsx)` – entry point (editorScript)
+- `src/edit.(js|ts|tsx)` – edit component
+- `style.css` – frontend styles (optional)
+- `editor.css` – editor-only styles (optional)
+- `render.php` – only for dynamic blocks
+- `build/` – compiled assets output
+
+block.json conventions
+WP Rig rewrites block.json so assets reference built files via `file:` protocol:
+- `editorScript: "file:./build/index.js"`
+- Optional `script: "file:./build/view.js"` when `--view` is used
+- `style: "file:./build/style.css"` (included by default; disable with `--no-style`)
+- `editorStyle: "file:./build/editor.css"` (included by default; disable with `--no-editor-style`)
+- For dynamic blocks (`--dynamic`), `render: "file:./render.php"` is added
+- `textdomain` is set to the theme’s slug (from config)
+
+Auto-registration in PHP
+- The theme component at `inc/Blocks/Component.php` scans `assets/blocks/*/block.json` on `init`.
+- If `render.php` exists, it is automatically included before `register_block_type($dir)`.
+- No manual PHP changes are required after scaffolding a new block.
+
 
 For more information about the advanced features in WP Rig and how to use them, visit
 the [Advanced Features Wiki page](https://github.com/wprig/wprig/wiki/Advanced-Features-(and-how-to-use-them)).

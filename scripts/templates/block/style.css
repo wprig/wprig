@@ -1,0 +1,7 @@
+/* Frontend styles for the block */
+:root {
+	--block-padding: 1rem;
+}
+.wp-block {
+	padding: var(--block-padding);
+}
