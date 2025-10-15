@@ -148,3 +148,24 @@ wp rig menu_list --format=json
 - WordPress with WP-CLI installed
 - WP Rig theme framework
 - Appropriate WordPress permissions for plugin installation and menu management
+
+### `wp rig fonts_download`
+Downloads Google Fonts declared by the theme and saves them locally under the active theme directory so the theme can serve fonts without relying on the Google Fonts CDN.
+
+**Options:**
+
+| Option | Description | Default |
+| --- | --- | --- |
+| `--dir=<dir>` | Relative directory within the active theme where fonts and the generated CSS will be stored | `assets/fonts` |
+
+**Usage:**
+``` bash
+wp rig fonts_download
+wp rig fonts_download --dir=assets/fonts
+```
+
+**What it does:**
+- Reads the Google Fonts families declared in the theme’s Fonts Component
+- Downloads the corresponding .woff2 files into subfolders under the destination directory
+- Generates a google-fonts.css file with local URLs pointing to the downloaded assets
+- Prints the path to the generated CSS on success

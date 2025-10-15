@@ -553,6 +553,41 @@ class Rig_Command extends WP_CLI_Command {
 
 		return $menu_id;
 	}
+
+	/**
+	 * Download Google Fonts declared by the theme into a local directory.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--dir=<dir>]
+	 * : Relative directory under the active theme where fonts and CSS will be stored.
+	 * ---
+	 * default: assets/fonts
+	 * ---
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp rig fonts_download
+	 *     wp rig fonts_download --dir=assets/fonts
+	 *
+	 * @param array $args Positional args.
+	 * @param array $assoc_args Associative args.
+	 */
+	public function fonts_download( $args, $assoc_args ) {
+		$dir = WP_CLI\Utils\get_flag_value( $assoc_args, 'dir', 'assets/fonts' );
+		$dir = sanitize_text_field( (string) $dir );
+
+		// Instantiate the Fonts component and run the download.
+		$component = new \WP_Rig\WP_Rig\Fonts\Component();
+		$result = $component->download_all_google_fonts( $dir );
+
+		if ( is_wp_error( $result ) ) {
+			WP_CLI::error( $result->get_error_message() );
+			return;
+		}
+
+		WP_CLI::success( sprintf( 'Google Fonts downloaded. CSS saved at: %s', $result ) );
+	}
 }
 
 WP_CLI::add_command( 'rig', 'Rig_Command' );
