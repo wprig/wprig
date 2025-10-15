@@ -574,12 +574,15 @@ class Rig_Command extends WP_CLI_Command {
 	 * @param array $assoc_args Associative args.
 	 */
 	public function fonts_download( $args, $assoc_args ) {
-		$dir = WP_CLI\Utils\get_flag_value( $assoc_args, 'dir', 'assets/fonts' );
-		$dir = sanitize_text_field( (string) $dir );
+		$font_dir = WP_CLI\Utils\get_flag_value( $assoc_args, 'font-dir', 'assets/fonts' );
+		$font_dir = sanitize_text_field( (string) $font_dir );
+
+		$css_dir = WP_CLI\Utils\get_flag_value( $assoc_args, 'css-dir', 'assets/css/src' );
+		$css_dir = sanitize_text_field( (string) $css_dir );
 
 		// Instantiate the Fonts component and run the download.
 		$component = new \WP_Rig\WP_Rig\Fonts\Component();
-		$result = $component->download_all_google_fonts( $dir );
+		$result = $component->download_all_google_fonts( $font_dir, $css_dir );
 
 		if ( is_wp_error( $result ) ) {
 			WP_CLI::error( $result->get_error_message() );

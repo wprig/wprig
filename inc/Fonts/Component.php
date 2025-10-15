@@ -7,6 +7,7 @@
 
 namespace WP_Rig\WP_Rig\Fonts;
 
+use WP_Error;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 
@@ -280,10 +281,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	/**
 	 * Downloads Google Fonts found in the `get_google_fonts()` method.
 	 *
-	 * @param string $font_dir Relative directory within the active theme to store fonts and CSS. Default 'assets/fonts'.
+	 * @param string $font_dir Relative directory within the active theme to store font files. Default 'assets/fonts'.
+	 * @param string $css_dir Relative directory within the active theme to store the CSS file. Default 'assets/css/src'.
 	 * @return string|\WP_Error URL of the saved CSS file on success, or WP_Error on failure.
 	 */
-	public function download_all_google_fonts( string $font_dir = 'assets/fonts' ) {
+	public function download_all_google_fonts( string $font_dir = 'assets/fonts', string $css_dir = 'assets/css/src' ) {
 		// Get the list of Google Fonts
 		$google_fonts = $this->get_google_fonts();
 
@@ -302,7 +304,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Download and save all fonts locally in one go
 		if ( $fonts_to_download !== [] ) {
-			return $this->download_google_fonts_to_local( $fonts_to_download, $font_dir );
+			return $this->download_google_fonts_to_local( $fonts_to_download, $font_dir, $css_dir );
 		}
 
 		return new \WP_Error( 'no_fonts_to_download', 'No Google Fonts were found to download.' );
@@ -319,12 +321,14 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *                          are arrays of font variants to be downloaded. If no
 	 *                          valid fonts are provided, an error is returned.
 	 * @param string $font_dir The relative directory path within the theme where
-	 *                         fonts and CSS will be stored (default is 'assets/fonts').
+	 *                         font files will be stored (default is 'assets/fonts').
+	 * @param string $css_dir The relative directory path within the theme where
+	 *                        the CSS file will be stored (default is 'assets/css/src').
 	 *
 	 * @return string|\WP_Error The URL of the locally saved CSS file or a WP_Error
 	 *                          object if the process fails.
 	 */
-	public function download_google_fonts_to_local( $fonts = array(), $font_dir = 'assets/fonts' ): WP_Error|string {
+	public function download_google_fonts_to_local( $fonts = array(), $font_dir = 'assets/fonts', $css_dir = 'assets/css/src' ): WP_Error|string {
 		// Base URL for Google Fonts
 		$google_fonts_base_url = 'https://fonts.googleapis.com/css2?';
 		$query_fonts           = array();
@@ -362,7 +366,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$css_content = wp_remote_retrieve_body( $response );
 
 		// Extract font file URLs from CSS
-
 		preg_match_all(
 			'/@font-face\s*\{[^}]*font-family\s*:\s*[\'"]?([^\'";}\n]+)[\'"]?[^}]*url\s*\(\s*[\'"]?(https:\/\/fonts\.gstatic\.com\/[^)"\']+\.woff2)[\'"]?\s*\)/i',
 			$css_content,
@@ -388,11 +391,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 			$fonts_with_urls[ $font_name ][] = $font_url;
 		}
+
 		$theme_dir     = get_stylesheet_directory(); // Gets the current theme directory.
 		$font_dir_path = trailingslashit( $theme_dir ) . $font_dir;
 		if ( ! file_exists( $font_dir_path ) ) {
 			wp_mkdir_p( $font_dir_path );
 		}
+
 		foreach ( $fonts_with_urls as $font_name => $font_urls ) {
 			foreach ( $font_urls as $font_url ) {
 				// Extract font file name and font name.
@@ -424,18 +429,32 @@ class Component implements Component_Interface, Templating_Component_Interface {
 					file_put_contents( $local_font_path, wp_remote_retrieve_body( $font_response ) );
 				}
 
-				// Update the CSS content to point to the new local font path.
-				$local_font_url = trailingslashit( get_stylesheet_directory_uri() ) . trailingslashit( $font_dir ) . trailingslashit( $font_name_clean ) . $font_file_name;
-				$css_content    = str_replace( $font_url, $local_font_url, $css_content );
+				// Calculate the relative path from CSS directory to font directory
+				$css_to_font_relative_path = $this->get_relative_path( $css_dir, $font_dir );
+
+				// Build the relative path to the font file
+				$relative_font_path = trailingslashit( $css_to_font_relative_path ) .
+					trailingslashit( $font_name_clean ) .
+					$font_file_name;
+
+				// Update the CSS content to point to the relative font path
+				$css_content = str_replace( $font_url, $relative_font_path, $css_content );
 			}
 		}
 
-		// Save the CSS file in the active theme's fonts directory.
-		$css_file_name  = 'google-fonts.css';
-		$local_css_path = trailingslashit( $font_dir_path ) . $css_file_name;
+		// Save the CSS file in the specified CSS directory.
+		$css_file_name = 'google-fonts.css';
+
+		// Ensure the CSS directory exists
+		$css_dir_path = trailingslashit( $theme_dir ) . $css_dir;
+		if ( ! file_exists( $css_dir_path ) ) {
+			wp_mkdir_p( $css_dir_path );
+		}
+
+		$local_css_path = trailingslashit( $css_dir_path ) . $css_file_name;
 		file_put_contents( $local_css_path, $css_content );
 
-		return trailingslashit( get_stylesheet_directory_uri() ) . $font_dir . '/' . $css_file_name;
+		return trailingslashit( get_stylesheet_directory_uri() ) . $css_dir . '/' . $css_file_name;
 	}
 
 	/**
@@ -455,5 +474,43 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$local_css_path = trailingslashit( $font_dir ) . $css_file_name;
 
 		return file_exists( $local_css_path ) ? trailingslashit( $upload_dir['baseurl'] ) . 'fonts/' . $css_file_name : false;
+	}
+
+	/**
+	 * Calculates the relative path from one directory to another.
+	 *
+	 * @param string $from Source directory path (relative to theme root).
+	 * @param string $to Target directory path (relative to theme root).
+	 * @return string The relative path from $from to $to.
+	 */
+	protected function get_relative_path( string $from, string $to ): string {
+		// Convert paths to arrays
+		$from_parts = explode( '/', trim( $from, '/' ) );
+		$to_parts = explode( '/', trim( $to, '/' ) );
+
+		// Find common path
+		$common_length = 0;
+		$max = min( count( $from_parts ), count( $to_parts ) );
+
+		for ( $i = 0; $i < $max; $i++ ) {
+			if ( $from_parts[$i] === $to_parts[$i] ) {
+				$common_length++;
+			} else {
+				break;
+			}
+		}
+
+		// Calculate number of directories to go up from source
+		$up_levels = count( $from_parts ) - $common_length;
+
+		// Build the relative path
+		$relative_path = str_repeat( '../', $up_levels );
+
+		// Add the path down to the target
+		if ( $common_length < count( $to_parts ) ) {
+			$relative_path .= implode( '/', array_slice( $to_parts, $common_length ) );
+		}
+
+		return $relative_path;
 	}
 }
