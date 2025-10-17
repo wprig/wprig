@@ -104,7 +104,8 @@
     "block:remove": "node scripts/blocks.js block:remove",
     "block:promote-plugin": "node scripts/blocks.js block:promote-plugin",
     "childify": "node node/childify.js",
-    "setup-child": "npm run childify && npm run rig-init"
+    "setup-child": "npm run childify && npm run rig-init",
+    "block-based": "node scripts/convert-to-block-theme.js"
   },
   "dependencies": {
     "glob": "^11.0.3"
