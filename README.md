@@ -238,6 +238,32 @@ WP Rig comes loaded with Node/Bun, Composer, and WP CLI scripts to dramatically 
 - `fix`: Run all code fixers (Rector, PHP-CS-Fixer, PHPCBF)
 - `setup-wp-tests`: Setup WordPress test environment
 
+### Convert to a strictly block-based theme
+
+WP Rig includes a helper to strip classic-only code from the Base_Support component and align the theme with a Full Site Editing (block-based) setup.
+
+- Command: `npm run block-based`
+- Options:
+	- `--dry-run` Print a summary of intended changes without writing any files.
+	- `--prune-html5` Also remove the `add_theme_support( 'html5', ... )` block if present.
+	- `--drop-title-tag` Also remove the `action_title_tag_support()` method and its `init` hook.
+
+What it removes by default:
+- initialize() hooks for: `action_add_pingback_header`, `filter_body_classes_add_hfeed`, `filter_embed_dimensions`, `filter_script_loader_tag`.
+- Entire method definitions for: `action_add_pingback_header()`, `filter_body_classes_add_hfeed()`, `filter_embed_dimensions()`, `filter_script_loader_tag()`.
+- `add_theme_support( 'automatic-feed-links' )` and `add_theme_support( 'customize-selective-refresh-widgets' )` inside `action_essential_theme_support()`.
+- Optional with flags: the HTML5 support block and title-tag support as described above.
+
+Notes:
+- Only the Base_Support file is modified: `inc/Base_Support/Component.php`.
+- The script is idempotent: running it multiple times after the first change will result in "unchanged".
+- When writing changes, a one-time backup is created at `inc/Base_Support/Component.php.bak`.
+- Example:
+	- `npm run block-based`
+	- `npm run block-based -- --dry-run`
+	- `npm run block-based -- --prune-html5 --drop-title-tag`
+
+
 #### WP CLI Commands
 
 For [WP CLI](https://make.wordpress.org/cli/handbook/) commands documentation, visit the [WP Rig WP CLI Commands](https://github.com/wprig/wprig/tree/master/wp-cli)
@@ -369,29 +395,3 @@ the [Advanced Features Wiki page](https://github.com/wprig/wprig/wiki/Advanced-F
 
 WP Rig is released
 under [GNU General Public License v3.0 (or later)](https://github.com/wprig/wprig/blob/master/LICENSE).
-
-
-## Convert to a strictly block-based theme
-
-WP Rig includes a helper to strip classic-only code from the Base_Support component and align the theme with a Full Site Editing (block-based) setup.
-
-- Command: `npm run block-based`
-- Options:
-  - `--dry-run` Print a summary of intended changes without writing any files.
-  - `--prune-html5` Also remove the `add_theme_support( 'html5', ... )` block if present.
-  - `--drop-title-tag` Also remove the `action_title_tag_support()` method and its `init` hook.
-
-What it removes by default:
-- initialize() hooks for: `action_add_pingback_header`, `filter_body_classes_add_hfeed`, `filter_embed_dimensions`, `filter_script_loader_tag`.
-- Entire method definitions for: `action_add_pingback_header()`, `filter_body_classes_add_hfeed()`, `filter_embed_dimensions()`, `filter_script_loader_tag()`.
-- `add_theme_support( 'automatic-feed-links' )` and `add_theme_support( 'customize-selective-refresh-widgets' )` inside `action_essential_theme_support()`.
-- Optional with flags: the HTML5 support block and title-tag support as described above.
-
-Notes:
-- Only the Base_Support file is modified: `inc/Base_Support/Component.php`.
-- The script is idempotent: running it multiple times after the first change will result in "unchanged".
-- When writing changes, a one-time backup is created at `inc/Base_Support/Component.php.bak`.
-- Example:
-  - `npm run block-based`
-  - `npm run block-based -- --dry-run`
-  - `npm run block-based -- --prune-html5 --drop-title-tag`
