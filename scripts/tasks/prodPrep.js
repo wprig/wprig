@@ -181,6 +181,20 @@ export default function prodPrep( done ) {
 	// Manual file copy logic for each file listed in filesToCopy
 	filesToCopy.forEach( ( srcFilePath ) => {
 		const relativePath = path.relative( rootPath, srcFilePath );
+
+		// Exclude certain root-level directories from being bundled
+		try {
+			const topLevel = relativePath.split( path.sep )[ 0 ] || '';
+			const excludedDirs = new Set( [ 'childify_backup', 'scripts' ] );
+			if ( excludedDirs.has( topLevel ) ) {
+				log( colors.gray( `prodPrep: Skipping ${ relativePath } (excluded)` ) );
+				checkCompletion();
+				return; // Skip copying this file
+			}
+		} catch ( e ) {
+			// If any error occurs during exclusion check, proceed without excluding
+		}
+
 		const destFilePath = path.join( prodThemePath, relativePath );
 		const destDir = path.dirname( destFilePath );
 

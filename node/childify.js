@@ -196,8 +196,20 @@ function updateConfig(parentSlug) {
 	fs.writeFileSync(defaultCfgPath, JSON.stringify(cfg, null, 2) + '\n', 'utf8');
 	addLog('🛠️ Updated config.default.json with child mode settings');
 
-	// Also create or update config.json with the same settings
+	// Also create or update config.json ensuring it mirrors default structure
 	const cfgPath = path.join(themeRoot, 'config', 'config.json');
+
+	// Default list we expect in export.filesToCopy
+	const defaultFilesToCopy = [
+		'LICENSE',
+		'readme.txt',
+		'screenshot.png',
+		'assets/css/vendor/**/*.css',
+		'assets/js/vendor/**/*.js',
+		'assets/svg/*.svg',
+		'style.css',
+	];
+
 	let existingCfg = {};
 
 	// Try to read existing config.json if it exists
@@ -210,22 +222,34 @@ function updateConfig(parentSlug) {
 		}
 	}
 
-	// Merge child and export settings into existing config or create new
-	existingCfg.child = existingCfg.child || {};
-	existingCfg.child.enabled = true;
-	existingCfg.child.parentSlug = parentSlug;
+	// Start from updated default config (keeps theme and other defaults)
+	let targetCfg = JSON.parse(JSON.stringify(cfg));
 
-	existingCfg.export = existingCfg.export || {};
-	existingCfg.export.filesToCopy = Array.isArray(existingCfg.export.filesToCopy)
-		? existingCfg.export.filesToCopy
-		: [];
-	if (!existingCfg.export.filesToCopy.includes('style.css')) {
-		existingCfg.export.filesToCopy.push('style.css');
+	// Merge in any existing theme overrides (if present)
+	if (existingCfg.theme && typeof existingCfg.theme === 'object') {
+		targetCfg.theme = { ...(targetCfg.theme || {}), ...existingCfg.theme };
 	}
 
+	// Ensure child settings
+	targetCfg.child = targetCfg.child || {};
+	targetCfg.child.enabled = true;
+	targetCfg.child.parentSlug = parentSlug;
+
+	// Merge and normalize export.filesToCopy
+	const baseFiles = Array.isArray(targetCfg.export && targetCfg.export.filesToCopy)
+		? targetCfg.export.filesToCopy
+		: [];
+	const existingFiles = Array.isArray(existingCfg.export && existingCfg.export.filesToCopy)
+		? existingCfg.export.filesToCopy
+		: [];
+	targetCfg.export = targetCfg.export || {};
+	targetCfg.export.filesToCopy = Array.from(
+		new Set([].concat(defaultFilesToCopy, baseFiles, existingFiles))
+	);
+
 	// Write updated config to config.json
-	fs.writeFileSync(cfgPath, JSON.stringify(existingCfg, null, 2) + '\n', 'utf8');
-	addLog('✅ Created/updated config.json with child mode settings');
+	fs.writeFileSync(cfgPath, JSON.stringify(targetCfg, null, 2) + '\n', 'utf8');
+	addLog('✅ Created/updated config.json with child mode settings and defaults');
 }
 
 function updateThemeComponents() {
