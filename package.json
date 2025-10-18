@@ -107,7 +107,8 @@
     "childify": "node node/childify.js",
     "setup-child": "npm run rig-init && npm run childify",
     "setup-child:bun": "bun run rig-init:bun && bun run childify",
-    "block-based": "node scripts/convert-to-block-theme.js"
+    "block-based": "node scripts/convert-to-block-theme.js",
+    "create-rig-component": "node node/create-component-wrapper.js"
   },
   "dependencies": {
     "glob": "^11.0.3"
