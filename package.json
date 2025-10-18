@@ -93,6 +93,7 @@
     "build": "node scripts/cli.js build",
     "build:blocks": "node scripts/build-all-blocks.js",
     "start:blocks": "node scripts/build-all-blocks.js --watch",
+    "start": "node scripts/start.js",
     "build:phpcs": "node scripts/cli.js build --phpcs",
     "images": "node scripts/cli.js images",
     "bundle": "cross-env NODE_ENV=production node scripts/cli.js bundle",
