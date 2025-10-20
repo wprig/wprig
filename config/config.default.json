@@ -14,7 +14,10 @@
       "live": true,
       "proxyURL": "wprig.test:8888",
       "bypassPort": "8181",
-      "https": false
+      "https": false,
+      "keyPath": "",
+      "certPath": "",
+      "devPort": 3000
     },
     "styles": {
       "stage": 3,

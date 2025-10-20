@@ -68,7 +68,10 @@
     "svgo": "^3.3.2",
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.12.2",
-    "vinyl": "^2.2.0"
+    "vinyl": "^2.2.0",
+    "http-proxy-middleware": "^3.0.0",
+    "tiny-lr": "^2.0.0",
+    "chokidar": "^3.5.3"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -90,6 +93,8 @@
     "watch:js": "node build-js.js",
     "watch:css": "npm run build:css && chokidar 'src/styles/**/*.css' -c 'npm run build:css'",
     "dev": "node scripts/cli.js dev",
+    "dev:modern": "node scripts/dev-modern.js",
+    "dev:modern:debug": "cross-env WPRIG_DEBUG=1 node scripts/dev-modern.js --debug",
     "build": "node scripts/cli.js build",
     "build:blocks": "node scripts/build-all-blocks.js",
     "start:blocks": "node scripts/build-all-blocks.js --watch",

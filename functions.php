@@ -69,3 +69,22 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 // Initialize the theme.
 call_user_func( 'WP_Rig\WP_Rig\wp_rig' );
+
+/**
+ * Inject Tiny LiveReload client when browsing through the modern dev proxy.
+ * The proxy sets the X-WPRIG-DEV request header to signal dev mode.
+ */
+if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+	add_action( 'wp_head', function () {
+		if ( isset( $_SERVER['HTTP_X_WPRIG_DEV'] ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static local URL for dev only
+			echo "\n<script src=\"http://localhost:35729/livereload.js?snipver=1\"></script>\n";
+		}
+	} );
+	add_action( 'admin_head', function () {
+		if ( isset( $_SERVER['HTTP_X_WPRIG_DEV'] ) ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static local URL for dev only
+			echo "\n<script src=\"http://localhost:35729/livereload.js?snipver=1\"></script>\n";
+		}
+	} );
+}
