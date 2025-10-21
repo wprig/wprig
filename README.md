@@ -162,34 +162,6 @@ does not have an opinion about what local or virtual server solution the develop
 
 Before the first run, visit the [BrowserSync wiki page](https://github.com/wprig/wprig/wiki/BrowserSync).
 
-## Modern Dev Server (Opt-in)
-
-For a faster, Vite-like development experience without BrowserSync, use the new modern dev server:
-
-- Configure your local proxy in config/config.json under dev.browserSync:
-  - live: true
-  - proxyURL: "localwprigenv.test" (or include a port, e.g., "localwprigenv.test:8888")
-  - https: false (set true if your local site is HTTPS)
-  - keyPath/certPath: file paths to your SSL key/cert if https is true
-  - devPort: 3000 (port for the local proxy server)
-- Start it with: npm run dev:modern
-- Visit: http://localhost:3000 (or https if configured)
-
-Notes
-- Livereload is auto-injected only when browsing via the dev proxy. No code changes required.
-- JS is rebuilt with esbuild on save. CSS is built via Lightning CSS and watched for changes.
-- PHP/template edits trigger soft reloads.
-- Legacy dev flow is untouched; set dev.browserSync.live=false to disable modern server and use npm run dev instead.
-
-#### Debugging the modern dev server
-- Run in verbose mode: `npm run dev:modern:debug` (or `bun run dev:modern:debug`), which enables extra logging and stack traces.
-- Environment variable: set `WPRIG_DEBUG=1` to toggle debug logs.
-- Common checks:
-  - Ensure `config/config.json` has the correct `dev.browserSync.proxyURL` (and `https`, `keyPath`, `certPath` if needed).
-  - Verify ports are free: proxy `devPort` (default 3000) and LiveReload 35729. Change `devPort` in config if needed.
-  - If the process exits with code 1, re-run in debug to see detailed error logs.
-  - Check Node version (>= 20) and that dev deps are installed: `npm i`.
-
 ### Available Processes
 
 #### `dev watch` process
@@ -201,6 +173,36 @@ iterate quickly.
 #### `dev build` process
 
 `npm run build` processes source files one-time. It does not watch for changes nor start the BrowserSync server.
+
+### Modern Dev Server (Opt-in)
+
+For a faster, Vite-like development experience without BrowserSync, use the new modern dev server:
+
+- Configure your local proxy in config/config.json under dev.browserSync:
+	- live: true
+	- proxyURL: "localwprigenv.test" (or include a port, e.g., "localwprigenv.test:8888")
+	- https: false (set true if your local site is HTTPS)
+	- keyPath/certPath: file paths to your SSL key/cert if https is true
+	- devPort: 3000 (port for the local proxy server)
+- Start it with: npm run dev:modern
+- Visit: http://localhost:3000 (or https if configured)
+
+Notes
+- This should be considered a beta dev/watch server. We have not done enough testing to fully replace BrowserSync yet.
+However, the legacy system should be considered deprecated and will be fully replaced in later versions.
+- Livereload is auto-injected only when browsing via the dev proxy. No code changes required.
+- JS is rebuilt with esbuild on save. CSS is built via Lightning CSS and watched for changes.
+- PHP/template edits trigger soft reloads.
+- Legacy dev flow is untouched; set dev.browserSync.live=false to disable modern server and use npm run dev instead.
+
+#### Debugging the modern dev server
+- Run in verbose mode: `npm run dev:modern:debug` (or `bun run dev:modern:debug`), which enables extra logging and stack traces.
+- Environment variable: set `WPRIG_DEBUG=1` to toggle debug logs.
+- Common checks:
+	- Ensure `config/config.json` has the correct `dev.browserSync.proxyURL` (and `https`, `keyPath`, `certPath` if needed).
+	- Verify ports are free: proxy `devPort` (default 3000) and LiveReload 35729. Change `devPort` in config if needed.
+	- If the process exits with code 1, re-run in debug to see detailed error logs.
+	- Check Node version (>= 20) and that dev deps are installed: `npm i`.
 
 #### `translate` process
 
