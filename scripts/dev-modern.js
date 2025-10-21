@@ -12,7 +12,7 @@ import https from 'https';
 import esbuild from 'esbuild';
 import chokidar from 'chokidar';
 import livereload from 'tiny-lr';
-import { spawn } from 'node:child_process';
+import { spawn, exec } from 'node:child_process';
 
 // Theme utilities
 import config from '../config/themeConfig.js';
@@ -465,4 +465,37 @@ server.listen( DEV_PORT, () => {
 	);
 	console.log( `↪︎ Proxying to ${ PROXY_TARGET }` );
 	console.log( '💡 Tip: Keep your browser on the localhost URL above.' );
+	openBrowser();
 } );
+
+
+// Auto-open browser on startup for improved DX (cross-platform)
+function openBrowser() {
+	try {
+		const scheme = useHttps ? 'https' : 'http';
+		const url = `${ scheme }://localhost:${ DEV_PORT }`;
+		let command;
+		switch ( process.platform ) {
+			case 'darwin':
+				command = `open "${ url }"`;
+				break;
+			case 'win32':
+				// Use Windows 'start' via cmd shell (exec uses cmd.exe by default)
+				command = `start "" "${ url }"`;
+				break;
+			default:
+				command = `xdg-open "${ url }"`;
+		}
+		exec( command, ( err ) => {
+			if ( err ) {
+				console.warn( `[wprig] Auto-open failed (visit: ${ url })` );
+			} else {
+				console.log( `Opened browser at ${ url }` );
+			}
+		} );
+	} catch ( e ) {
+		const scheme = useHttps ? 'https' : 'http';
+		const fallbackUrl = `${ scheme }://localhost:${ DEV_PORT }`;
+		console.warn( `[wprig] Auto-open error (visit: ${ fallbackUrl })` );
+	}
+}
