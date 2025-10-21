@@ -9,6 +9,10 @@
  * @package wp_rig
  */
 
+ /**
+  * Add LiveReload script in development mode.
+  */
+
 define( 'WP_RIG_MINIMUM_WP_VERSION', '5.4' );
 define( 'WP_RIG_MINIMUM_PHP_VERSION', '8.0' );
 
@@ -72,19 +76,31 @@ call_user_func( 'WP_Rig\WP_Rig\wp_rig' );
 
 /**
  * Inject Tiny LiveReload client when browsing through the modern dev proxy.
- * The proxy sets the X-WPRIG-DEV request header to signal dev mode.
+ * Primary signal is the X-WPRIG-DEV request header set by the proxy.
+ * As a fallback, detect proxied requests via X-Forwarded-Host pointing to localhost:3000.
+ * This does not rely on WP_DEBUG.
  */
-if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-	add_action( 'wp_head', function () {
-		if ( isset( $_SERVER['HTTP_X_WPRIG_DEV'] ) ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static local URL for dev only
-			echo "\n<script src=\"http://localhost:35729/livereload.js?snipver=1\"></script>\n";
-		}
-	} );
-	add_action( 'admin_head', function () {
-		if ( isset( $_SERVER['HTTP_X_WPRIG_DEV'] ) ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static local URL for dev only
-			echo "\n<script src=\"http://localhost:35729/livereload.js?snipver=1\"></script>\n";
-		}
-	} );
+if ( ! function_exists( 'wprig_is_dev_proxy_request' ) ) {
+	function wprig_is_dev_proxy_request() {
+		$has_custom_header = ! empty( $_SERVER['HTTP_X_WPRIG_DEV'] );
+		$xfh = isset( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ? (string) $_SERVER['HTTP_X_FORWARDED_HOST'] : '';
+		// Accept any localhost forwarded host regardless of port (supports custom devPort)
+		$is_localhost_forward = ( false !== stripos( $xfh, 'localhost' ) ) || ( false !== stripos( $xfh, '127.0.0.1' ) );
+		$has_cookie = isset( $_COOKIE['wprig_dev'] ) && $_COOKIE['wprig_dev'] === '1';
+		//return true;
+		return $has_custom_header || $is_localhost_forward || $has_cookie;
+	}
 }
+
+add_action( 'wp_head', function () {
+	if ( wprig_is_dev_proxy_request() ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static local URL for dev only
+		echo "\n<script src=\"//localhost:35729/livereload.js?snipver=1\"></script>\n";
+	}
+} );
+add_action( 'admin_head', function () {
+	if ( wprig_is_dev_proxy_request() ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static local URL for dev only
+		echo "\n<script src=\"http://localhost:35729/livereload.js?snipver=1\"></script>\n";
+	}
+} );

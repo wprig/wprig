@@ -69,7 +69,6 @@
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.12.2",
     "vinyl": "^2.2.0",
-    "http-proxy-middleware": "^3.0.0",
     "tiny-lr": "^2.0.0",
     "chokidar": "^3.5.3"
   },
