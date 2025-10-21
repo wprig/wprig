@@ -321,73 +321,98 @@ function tryServeThemeAsset( req, res ) {
 }
 
 // Manual proxy configuration using core http/https
-const backendUrl = new URL(PROXY_TARGET);
+const backendUrl = new URL( PROXY_TARGET );
 const backendIsHttps = backendUrl.protocol === 'https:';
 const backendAgent = backendIsHttps
-	? new https.Agent({ rejectUnauthorized: false }) // tolerate self-signed certs in local envs
+	? new https.Agent( { rejectUnauthorized: false } ) // tolerate self-signed certs in local envs
 	: undefined;
 
-function setDevCookieHeader(res) {
+function setDevCookieHeader( res ) {
 	try {
-		const existing = res.getHeader('Set-Cookie');
+		const existing = res.getHeader( 'Set-Cookie' );
 		const cookie = 'wprig_dev=1; Path=/; SameSite=Lax; Max-Age=3600';
-		if (Array.isArray(existing)) {
-			res.setHeader('Set-Cookie', [...existing, cookie]);
-		} else if (typeof existing === 'string' && existing.length) {
-			res.setHeader('Set-Cookie', [existing, cookie]);
+		if ( Array.isArray( existing ) ) {
+			res.setHeader( 'Set-Cookie', [ ...existing, cookie ] );
+		} else if ( typeof existing === 'string' && existing.length ) {
+			res.setHeader( 'Set-Cookie', [ existing, cookie ] );
 		} else {
-			res.setHeader('Set-Cookie', cookie);
+			res.setHeader( 'Set-Cookie', cookie );
 		}
-	} catch (e) {
-  if (DEBUG) {
-  		console.warn('[wprig] Could not set cookie header:', e?.message || e);
-  	}
+	} catch ( e ) {
+		if ( DEBUG ) {
+			console.warn(
+				'[wprig] Could not set cookie header:',
+				e?.message || e
+			);
+		}
 	}
 }
 
-function forwardToBackend(req, res) {
+function forwardToBackend( req, res ) {
 	const requestHeaders = { ...req.headers };
 	// Ensure Host header matches backend
 	requestHeaders.host = backendUrl.host;
 	// Inject dev header for PHP detection
-	requestHeaders['x-wprig-dev'] = '1';
-	if (DEBUG) requestHeaders['x-wprig-dev-trace'] = '1';
+	requestHeaders[ 'x-wprig-dev' ] = '1';
+	if ( DEBUG ) {
+		requestHeaders[ 'x-wprig-dev-trace' ] = '1';
+	}
 	// Forwarded headers for awareness
-	requestHeaders['x-forwarded-host'] = requestHeaders['x-forwarded-host'] || `localhost:${DEV_PORT}`;
-	requestHeaders['x-forwarded-proto'] = requestHeaders['x-forwarded-proto'] || (useHttps ? 'https' : 'http');
+	requestHeaders[ 'x-forwarded-host' ] =
+		requestHeaders[ 'x-forwarded-host' ] || `localhost:${ DEV_PORT }`;
+	requestHeaders[ 'x-forwarded-proto' ] =
+		requestHeaders[ 'x-forwarded-proto' ] ||
+		( useHttps ? 'https' : 'http' );
 
 	const options = {
 		protocol: backendUrl.protocol,
 		hostname: backendUrl.hostname,
-		port: backendUrl.port || (backendIsHttps ? 443 : 80),
+		port: backendUrl.port || ( backendIsHttps ? 443 : 80 ),
 		path: req.url,
 		method: req.method,
 		headers: requestHeaders,
 		agent: backendAgent,
 	};
 
-	const client = (backendIsHttps ? https : http).request(options, (backendRes) => {
-		// Copy headers and inject the cookie fallback
-		for (const [key, value] of Object.entries(backendRes.headers)) {
-			if (value !== undefined) res.setHeader(key, value);
+	const client = ( backendIsHttps ? https : http ).request(
+		options,
+		( backendRes ) => {
+			// Copy headers and inject the cookie fallback
+			for ( const [ key, value ] of Object.entries(
+				backendRes.headers
+			) ) {
+				if ( value !== undefined ) {
+					res.setHeader( key, value );
+				}
+			}
+			setDevCookieHeader( res );
+			res.writeHead( backendRes.statusCode || 502 );
+			backendRes.pipe( res );
 		}
-		setDevCookieHeader(res);
-		res.writeHead(backendRes.statusCode || 502);
-		backendRes.pipe(res);
-	});
+	);
 
-	client.on('error', (err) => {
+	client.on( 'error', ( err ) => {
 		const code = err && err.code ? err.code : 'UNKNOWN';
-		const msg = err && err.message ? err.message : String(err);
-		console.error('[wprig] Proxy error:', code, msg, '\n', err?.stack || '');
+		const msg = err && err.message ? err.message : String( err );
+		console.error(
+			'[wprig] Proxy error:',
+			code,
+			msg,
+			'\n',
+			err?.stack || ''
+		);
 		try {
-			if (!res.headersSent) res.writeHead(502, { 'Content-Type': 'text/plain' });
-			res.end(`Proxy error to ${PROXY_TARGET} (code: ${code}): ${msg}\nTip: set WPRIG_DEBUG=1 for verbose logs.`);
+			if ( ! res.headersSent ) {
+				res.writeHead( 502, { 'Content-Type': 'text/plain' } );
+			}
+			res.end(
+				`Proxy error to ${ PROXY_TARGET } (code: ${ code }): ${ msg }\nTip: set WPRIG_DEBUG=1 for verbose logs.`
+			);
 		} catch {}
 		process.exitCode = 1;
-	});
+	} );
 
-	req.pipe(client);
+	req.pipe( client );
 }
 
 const serverOptions = {};
@@ -430,7 +455,13 @@ const server = ( useHttps ? https : http ).createServer(
 
 		// Otherwise proxy to WP using manual forwarder
 		if ( DEBUG ) {
-			console.log( '[wprig] → forward', req.method, req.url, 'to', PROXY_TARGET );
+			console.log(
+				'[wprig] → forward',
+				req.method,
+				req.url,
+				'to',
+				PROXY_TARGET
+			);
 		}
 		forwardToBackend( req, res );
 	}
@@ -451,7 +482,7 @@ server.on( 'clientError', ( err, socket ) => {
 server.on( 'upgrade', ( req, socket ) => {
 	try {
 		// No WS proxying needed for LiveReload (browser connects to :35729 directly)
-		socket.write('HTTP/1.1 501 Not Implemented\r\n\r\n');
+		socket.write( 'HTTP/1.1 501 Not Implemented\r\n\r\n' );
 		socket.destroy();
 	} catch ( err ) {
 		console.error( '[wprig] WS upgrade error:', err?.stack || err );
@@ -467,7 +498,6 @@ server.listen( DEV_PORT, () => {
 	console.log( '💡 Tip: Keep your browser on the localhost URL above.' );
 	openBrowser();
 } );
-
 
 // Auto-open browser on startup for improved DX (cross-platform)
 function openBrowser() {

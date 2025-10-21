@@ -1,6 +1,7 @@
 # Changelog
 
 ## 3.1.0
+ - HMR alternative for BrowserSync added. BrowserSync will now be considered deprecated. Props @robruiz
  - Added a download local wp cli command to download google fonts to the theme fonts folder. Props @robruiz
  - Updated rig-init command now provides better DX to devs during new installs. Props @robruiz
  - Added a new command to convert WP Rig into a child theme build system. Props @robruiz
