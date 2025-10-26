@@ -46,6 +46,10 @@
 	flex-wrap: wrap-reverse;
 }
 
+.flex-grow {
+	flex-grow: 1;
+}
+
 .items-baseline {
 	align-items: baseline;
 }

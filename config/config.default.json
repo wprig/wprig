@@ -30,7 +30,8 @@
       "features": {
         "custom-media-queries": true,
         "custom-properties": true,
-        "nesting-rules": true
+        "nesting-rules": true,
+        "mobile-nav-type": "modern"
       }
     },
     "debug": {

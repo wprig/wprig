@@ -1,5 +1,8 @@
 declare const wpRigScreenReaderText: { [ key: string ]: string };
 
+// Module-level variable to store navigation elements
+let navElements: NodeListOf< HTMLElement >;
+
 // Initiate the menus when the DOM loads.
 if ( document.readyState === 'loading' ) {
 	document.addEventListener( 'DOMContentLoaded', initNavigation );
@@ -125,19 +128,19 @@ function shouldToggleSubMenu(
 /**
  * Initializes the navigation toggle functionality for small navigation elements.
  * This method selects all elements with the class 'nav--toggle-small' and, if any are found,
- * initializes each one by passing it to the `initEachNavToggleSmall` function.
+ * stores them in a global variable and initializes the toggle functionality.
  *
  * @return {void}
  */
 function initNavToggleSmall(): void {
-	const navTOGGLE: NodeListOf< HTMLElement > =
-		document.querySelectorAll( '.nav--toggle-small' );
+	navElements =
+		document.querySelectorAll< HTMLElement >( '.nav--toggle-small' );
 
-	if ( ! navTOGGLE.length ) {
+	if ( ! navElements.length ) {
 		return;
 	}
 
-	navTOGGLE.forEach( ( nav ) => initEachNavToggleSmall( nav ) );
+	initEachNavToggleSmall();
 }
 
 /**
@@ -299,29 +302,51 @@ function convertDropdownToToggleButton(
  * @param {HTMLElement} nav - The navigation element containing the menu toggle button.
  * @return {void} This function does not return a value.
  */
-function initEachNavToggleSmall( nav: HTMLElement ): void {
-	const menuTOGGLE = nav.querySelector< HTMLElement >( '.menu-toggle' );
+function initEachNavToggleSmall(): void {
+	const menuToggles =
+		document.querySelectorAll< HTMLElement >( '.menu-toggle' );
 
-	if ( ! menuTOGGLE ) {
+	if ( ! menuToggles ) {
 		return;
 	}
 
-	menuTOGGLE.setAttribute( 'aria-expanded', 'false' );
+	menuToggles.forEach( ( menuToggle ) => {
+		menuToggle.setAttribute( 'aria-expanded', 'false' );
 
-	menuTOGGLE.addEventListener(
-		'click',
-		( e ) => {
-			nav.classList.toggle( 'nav--toggled-on' );
-			const target = e.target as HTMLElement;
-			target.setAttribute(
-				'aria-expanded',
-				target.getAttribute( 'aria-expanded' ) === 'false'
-					? 'true'
-					: 'false'
-			);
-		},
-		false
-	);
+		menuToggle.addEventListener( 'click', toggleMenuToggleState );
+	} );
+}
+
+function toggleMenuToggleState( e: Event ) {
+	const menuToggles =
+		document.querySelectorAll< HTMLElement >( '.menu-toggle' );
+
+	if ( ! menuToggles.length ) {
+		return;
+	}
+
+	// Get the current toggle that was clicked
+	const currentToggle = e.currentTarget as HTMLElement;
+
+	// Determine the new state based on the clicked toggle
+	const newExpandedState =
+		currentToggle.getAttribute( 'aria-expanded' ) === 'false' ? 'true' : 'false';
+
+	// Update all menu toggles to maintain sync
+	menuToggles.forEach( ( menuToggle ) => {
+		menuToggle.setAttribute( 'aria-expanded', newExpandedState );
+	});
+
+	// Toggle all navigation elements that have the 'nav--toggle-small' class
+	if ( navElements && navElements.length ) {
+		navElements.forEach( ( navElement ) => {
+			if ( newExpandedState === 'true' ) {
+				navElement.classList.add( 'nav--toggled-on' );
+			} else {
+				navElement.classList.remove( 'nav--toggled-on' );
+			}
+		});
+	}
 }
 
 /**

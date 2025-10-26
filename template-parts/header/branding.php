@@ -8,7 +8,7 @@
 namespace WP_Rig\WP_Rig;
 
 ?>
-<div class="site-branding">
+<div class="site-branding flex-1">
 
 	<?php the_custom_logo(); ?>
 
