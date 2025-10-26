@@ -63,6 +63,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ) );
 		add_filter( 'render_block_core/navigation', array( $this, 'add_nav_class_to_navigation_block' ), 10, 3 );
 		add_filter( 'walker_nav_menu_start_el', array( $this, 'modify_menu_items_for_accessibility' ), 10, 4 );
+		add_filter( 'wp_nav_menu_objects', array( $this, 'inject_parent_link_into_submenu' ), 10, 2 );
 	}
 
 	/**
@@ -214,6 +215,105 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Return the block content.
 		return $block_content;
+ }
+
+	/**
+	 * Inject a duplicate of the parent link as the first submenu item for parents that
+	 * have children AND a valid URL. This improves mobile UX: tapping the parent opens
+	 * the submenu, while the injected first child preserves access to the parent's URL.
+	 *
+	 * - Only applies to the Primary menu location.
+	 * - Skips if an injected item already exists.
+	 * - Marks injected items with a special class for styling/visibility control.
+	 *
+	 * @param WP_Post[] $items Menu items.
+	 * @param array     $args  Menu args from wp_nav_menu().
+	 * @return WP_Post[] Potentially modified items array.
+	 */
+	public function inject_parent_link_into_submenu( $items, $args ) {
+		// Ensure we're working with the correct nav menu theme location.
+		if ( empty( $args->theme_location ) || static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
+			return $items;
+		}
+
+		// Build a quick lookup of children by parent ID to detect existing injected links and ordering.
+		$children_by_parent = array();
+		foreach ( $items as $itm ) {
+			$parent_id = (int) ( $itm->menu_item_parent ?? 0 );
+			if ( ! isset( $children_by_parent[ $parent_id ] ) ) {
+				$children_by_parent[ $parent_id ] = array();
+			}
+			$children_by_parent[ $parent_id ][] = $itm;
+		}
+
+		$injected = array();
+
+		foreach ( $items as $item ) {
+			$has_children = ! empty( $item->classes ) && is_array( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true );
+			$has_valid_url = ! empty( $item->url ) && '#' !== $item->url;
+
+			if ( ! $has_children || ! $has_valid_url ) {
+				continue;
+			}
+
+			$already_has_injected = false;
+			$children              = $children_by_parent[ (int) $item->ID ] ?? array();
+			foreach ( $children as $child ) {
+				if ( ! empty( $child->classes ) && is_array( $child->classes ) && in_array( 'menu-item--injected-parent-link', $child->classes, true ) ) {
+					$already_has_injected = true;
+					break;
+				}
+			}
+
+			if ( $already_has_injected ) {
+				continue;
+			}
+
+			// Create a lightweight clone of the parent as a custom child item.
+			$new = clone $item;
+			// Ensure unique/harmless identifiers for the injected item.
+			$new->ID               = -1 * ( absint( $item->ID ) + 100000 );
+			$new->db_id            = 0;
+			$new->menu_item_parent = (int) $item->ID;
+			$new->type             = 'custom';
+			$new->object           = 'custom';
+			$new->object_id        = 0;
+			$new->title            = $item->title;
+			$new->url              = $item->url;
+			$new->xfn              = '';
+			$new->target           = $item->target ?? '';
+			$new->attr_title       = $item->attr_title ?? '';
+			$new->description      = '';
+			$base_classes         = array_diff( (array) ( $item->classes ?? array() ), array( 'menu-item-has-children' ) );
+			$new->classes          = array_unique( array_merge( $base_classes, array( 'menu-item--injected-parent-link' ) ) );
+
+			// Try to make it the first among this parent's children by using a very small menu_order.
+			$children_orders = array_map( function ( $c ) { return (int) ( $c->menu_order ?? 0 ); }, $children );
+			$min_order       = empty( $children_orders ) ? 0 : min( $children_orders );
+			$new->menu_order = $min_order - 1;
+
+			$injected[] = $new;
+		}
+
+		if ( empty( $injected ) ) {
+			return $items;
+		}
+
+		// Merge and sort items by menu_order to keep expected order.
+		$items = array_merge( $items, $injected );
+		usort(
+			$items,
+			function ( $a, $b ) {
+				$ao = (int) ( $a->menu_order ?? 0 );
+				$bo = (int) ( $b->menu_order ?? 0 );
+				if ( $ao === $bo ) {
+					return 0;
+				}
+				return ( $ao < $bo ) ? -1 : 1;
+			}
+		);
+
+		return $items;
 	}
 
 	/**

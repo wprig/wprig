@@ -182,6 +182,18 @@ function watchForWindowSizeChanges(): void {
 }
 
 /**
+ * Helper to determine if we are at or below the mobile breakpoint (55em).
+ */
+function isMobileWidth(): boolean {
+	const width = window.innerWidth;
+	const mobileBreakPoint = 55;
+	const emValue =
+		width /
+		parseFloat( getComputedStyle( document.documentElement ).fontSize );
+	return emValue <= mobileBreakPoint;
+}
+
+/**
  * Processes each submenu by checking its parent element, possibly creating a dropdown,
  * attaches toggle button functionality and event listeners for handling submenu actions.
  *
@@ -271,6 +283,19 @@ function processEachSubMenu(
 				}
 			} );
 		}
+	} else if ( subMenuParentLink ) {
+		// Parent has a valid link and also has children: on mobile, clicking the parent link should toggle
+		subMenuParentLink.addEventListener( 'click', ( e ) => {
+			if ( isMobileWidth() ) {
+				e.preventDefault();
+				const parentLi = ( e.currentTarget as HTMLElement ).closest(
+					'li'
+				) as HTMLElement | null;
+				if ( parentLi ) {
+					toggleSubMenu( parentLi );
+				}
+			}
+		} );
 	}
 
 	handleToggleSubMenuEvents( parentMenuItem );
