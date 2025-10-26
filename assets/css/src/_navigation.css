@@ -501,7 +501,6 @@
 	}
 	.main-navigation {
 		li.menu-item {
-
 			button {
 				text-align: left;
 				align-items: center;
@@ -511,6 +510,11 @@
 			}
 			a, button {
 				cursor: pointer;
+			}
+			&:has(> a){
+				button.dropdown-toggle {
+					margin: .5em 1em .5em 0;
+				}
 			}
 		}
 
