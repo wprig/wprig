@@ -66,26 +66,33 @@ async function optimizeRaster( srcFile, destFile ) {
 	const ext = path.extname( srcFile ).toLowerCase();
 	await fse.ensureDir( path.dirname( destFile ) );
 
-	// Configure sharp pipeline
-	let img = sharp( srcFile, { sequentialRead: true } );
-	// Respect EXIF orientation and strip metadata by default
-	img = img.rotate();
+	try {
+		// Configure sharp pipeline
+		let img = sharp( srcFile, { sequentialRead: true } );
+		// Respect EXIF orientation and strip metadata by default
+		img = img.rotate();
 
-	if ( ext === '.jpg' || ext === '.jpeg' ) {
-		await img
-			.jpeg( { quality: 75, mozjpeg: true, progressive: true } )
-			.toFile( destFile );
-		return;
-	}
+		if ( ext === '.jpg' || ext === '.jpeg' ) {
+			await img
+				.jpeg( { quality: 75, mozjpeg: true, progressive: true } )
+				.toFile( destFile );
+			return;
+		}
 
-	if ( ext === '.png' ) {
-		await img
-			.png( {
-				quality: 80,
-				compressionLevel: 9,
-				adaptiveFiltering: true,
-			} )
-			.toFile( destFile );
+		if ( ext === '.png' ) {
+			await img
+				.png( {
+					quality: 80,
+					compressionLevel: 9,
+					adaptiveFiltering: true,
+				} )
+				.toFile( destFile );
+			return;
+		}
+	} catch ( err ) {
+		console.warn( `Sharp couldn't process ${ srcFile }. Falling back to direct copy.` );
+		// If Sharp fails for any reason, fall back to copying
+		await fse.copy( srcFile, destFile, { overwrite: true } );
 		return;
 	}
 
@@ -171,10 +178,12 @@ export async function convertToWebP() {
 				.webp( { quality: 75 } )
 				.toFile( destFile );
 		} catch ( err ) {
-			console.error(
-				`Failed to convert to WebP: ${ path.basename( osFile ) }`,
-				err
+			console.warn(
+				`Failed to convert to WebP: ${ path.basename( osFile ) }. Skipping this file.`,
+				err.message
 			);
+			// Continue with next file - don't let this error stop the process
+			continue;
 		}
 	}
 }
