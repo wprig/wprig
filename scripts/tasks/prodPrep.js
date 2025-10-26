@@ -111,7 +111,9 @@ export default function prodPrep( done ) {
 	try {
 		// paths.export.src contains absolute paths built in constants.js for filesToCopy
 		paths.export.src.forEach( ( pattern ) => {
-			const files = globSync.sync( pattern, { nodir: true } ); // Exclude directories
+			// Normalize path separators for cross-platform compatibility (especially Windows)
+			const normalizedPattern = pattern.replace( /\\/g, '/' );
+			const files = globSync.sync( normalizedPattern, { nodir: true } ); // Exclude directories
 			filesToCopy = filesToCopy.concat( files );
 		} );
 	} catch ( err ) {
@@ -126,7 +128,6 @@ export default function prodPrep( done ) {
 		);
 		return done( err );
 	}
-
 	if ( filesToCopy.length === 0 ) {
 		log(
 			colors.yellow(
@@ -176,11 +177,16 @@ export default function prodPrep( done ) {
 
 	// Manual file copy logic for each file listed in filesToCopy
 	filesToCopy.forEach( ( srcFilePath ) => {
+		// Normalize source file path for consistent handling across platforms
 		const relativePath = path.relative( rootPath, srcFilePath );
 
 		// Exclude certain root-level directories from being bundled
 		try {
-			const topLevel = relativePath.split( path.sep )[ 0 ] || '';
+			// Use forward slash as separator for consistency across platforms
+			const topLevel =
+				relativePath.split( '/' )[ 0 ] ||
+				relativePath.split( '\\' )[ 0 ] ||
+				'';
 			const excludedDirs = new Set( [ 'childify_backup', 'scripts' ] );
 			if ( excludedDirs.has( topLevel ) ) {
 				log(

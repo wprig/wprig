@@ -12,11 +12,15 @@ import { paths } from '../lib/constants.js';
  */
 export default async function fonts( done ) {
 	try {
-		const pattern = paths.fonts.src;
-		const baseDir = path.resolve( pattern.replace( /\*\*\/\*.*$/, '' ) );
+		// Normalize glob pattern for cross-platform globbing (Windows)
+		const pattern = paths.fonts.src.replace( /\\/g, '/' );
+		// Derive base directory from the glob pattern (strip /**/… part)
+		const baseFromPattern = pattern.replace( /\*\*\/\*.*$/, '' );
+		const baseDir = path.resolve( baseFromPattern );
 		const files = await fg( pattern, { onlyFiles: true, dot: false } );
 		await Promise.all(
-			files.map( async ( srcFile ) => {
+			files.map( async ( srcFilePosix ) => {
+				const srcFile = path.normalize( srcFilePosix );
 				const rel = path.relative( baseDir, srcFile );
 				const destFile = path.join( paths.fonts.dest, rel );
 				await fse.ensureDir( path.dirname( destFile ) );

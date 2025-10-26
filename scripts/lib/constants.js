@@ -142,8 +142,10 @@ const filesToCopy = configValueDefined( 'export.filesToCopy' )
 	? config.export.filesToCopy
 	: [];
 for ( const filePath of filesToCopy.concat( additionalFilesToCopy ) ) {
-	// Add the files to export src
-	paths.export.src.push( `${ rootPath }/${ filePath }` );
+	// Add the files to export src - use path.posix.join to ensure forward slashes
+	// This ensures cross-platform compatibility (Windows/Mac/Linux)
+	const exportPath = `${ rootPath }/${ filePath }`.replace(/\\/g, '/');
+	paths.export.src.push( exportPath );
 }
 
 // Override paths for production

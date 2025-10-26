@@ -7,16 +7,34 @@ import fse from 'fs-extra';
 
 /**
  * Expand glob patterns to a file list.
- * @param {string|string[]} patterns
- * @param {Object}          [options]
- * @return {Promise<string[]>}
+ * @param {string|string[]} patterns - Glob pattern(s). Backslashes will be normalized to forward slashes on Windows.
+ * @param {Object}          [options] - fast-glob options; ignore patterns will also be normalized for Windows.
+ * @return {Promise<string[]>}        - Resolved file paths matching the glob(s).
  */
 export async function globFiles( patterns, options = {} ) {
-	const list = await fg( patterns, {
+	// Normalize patterns to use forward slashes for cross-platform (Windows) globbing
+	const normalize = ( p ) => {
+		if ( typeof p === 'string' ) {
+			return p.replace( /\\/g, '/' );
+		}
+		return p;
+	};
+	const normalizedPatterns = Array.isArray( patterns )
+		? patterns.map( ( p ) => normalize( p ) )
+		: normalize( patterns );
+	const normalizedOptions = { ...options };
+	if ( Array.isArray( options.ignore ) ) {
+		normalizedOptions.ignore = options.ignore.map( ( p ) =>
+			p.replace( /\\/g, '/' )
+		);
+	} else if ( typeof options.ignore === 'string' ) {
+		normalizedOptions.ignore = options.ignore.replace( /\\/g, '/' );
+	}
+	const list = await fg( normalizedPatterns, {
 		onlyFiles: true,
 		dot: false,
 		caseSensitiveMatch: false,
-		...options,
+		...normalizedOptions,
 	} );
 	return list;
 }

@@ -110,30 +110,33 @@ async function optimizeSVG( srcFile, destFile ) {
 
 export async function images() {
 	const patterns = [ paths.images.src ];
-	const files = await fg( patterns, {
+	// Normalize patterns for cross-platform globbing (Windows)
+	const normalizedPatterns = patterns.map( ( p ) => p.replace( /\\/g, '/' ) );
+	const files = await fg( normalizedPatterns, {
 		caseSensitiveMatch: false,
 		dot: false,
 		onlyFiles: true,
 	} );
 
 	for ( const file of files ) {
-		const dest = destPathFor( file );
-		if ( ! ( await isNewer( file, dest ) ) ) {
+		const osFile = path.normalize( file );
+		const dest = destPathFor( osFile );
+		if ( ! ( await isNewer( osFile, dest ) ) ) {
 			continue;
 		}
-		const ext = path.extname( file );
+		const ext = path.extname( osFile );
 		try {
 			if ( isSVG( ext ) ) {
-				await optimizeSVG( file, dest );
+				await optimizeSVG( osFile, dest );
 			} else if ( isRaster( ext ) ) {
-				await optimizeRaster( file, dest );
+				await optimizeRaster( osFile, dest );
 			} else {
 				// Fallback: copy as-is
 				await fse.ensureDir( path.dirname( dest ) );
-				await fse.copy( file, dest, { overwrite: true } );
+				await fse.copy( osFile, dest, { overwrite: true } );
 			}
 		} catch ( err ) {
-			console.error( `Failed to optimize: ${ file }`, err );
+			console.error( `Failed to optimize: ${ osFile }`, err );
 		}
 	}
 }
@@ -141,32 +144,35 @@ export async function images() {
 export async function convertToWebP() {
 	const srcRoot = getSrcRoot();
 	const patterns = [ paths.images.src ];
-	const files = await fg( patterns, {
+	// Normalize patterns for cross-platform globbing (Windows)
+	const normalizedPatterns = patterns.map( ( p ) => p.replace( /\\/g, '/' ) );
+	const files = await fg( normalizedPatterns, {
 		caseSensitiveMatch: false,
 		dot: false,
 		onlyFiles: true,
 	} );
 
 	for ( const file of files ) {
-		const ext = path.extname( file ).toLowerCase();
+		const osFile = path.normalize( file );
+		const ext = path.extname( osFile ).toLowerCase();
 		if ( ! [ '.jpg', '.jpeg', '.png' ].includes( ext ) ) {
 			continue; // Skip non-webp convertible types here
 		}
-		const rel = path.relative( srcRoot, file );
+		const rel = path.relative( srcRoot, osFile );
 		const destFile = path
 			.join( getDestRoot(), rel )
 			.replace( /\.[^.]+$/i, '.webp' );
-		if ( ! ( await isNewer( file, destFile ) ) ) {
+		if ( ! ( await isNewer( osFile, destFile ) ) ) {
 			continue;
 		}
 		try {
 			await fse.ensureDir( path.dirname( destFile ) );
-			await sharp( file, { sequentialRead: true } )
+			await sharp( osFile, { sequentialRead: true } )
 				.webp( { quality: 75 } )
 				.toFile( destFile );
 		} catch ( err ) {
 			console.error(
-				`Failed to convert to WebP: ${ path.basename( file ) }`,
+				`Failed to convert to WebP: ${ path.basename( osFile ) }`,
 				err
 			);
 		}
