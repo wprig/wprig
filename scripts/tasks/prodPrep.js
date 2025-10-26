@@ -83,7 +83,9 @@ export default function prodPrep( done ) {
 				colors.yellow(
 					`${ colors.bold(
 						'Warning:'
-					) } Using default theme ${ requiredConfigField } (${ nameFieldDefaults[ requiredConfigField ] }). Override it in ./config/config.json if desired.`
+					) } Using default theme ${ requiredConfigField } (${
+						nameFieldDefaults[ requiredConfigField ]
+					}). Override it in ./config/config.json if desired.`
 				)
 			);
 		}
@@ -181,7 +183,11 @@ export default function prodPrep( done ) {
 			const topLevel = relativePath.split( path.sep )[ 0 ] || '';
 			const excludedDirs = new Set( [ 'childify_backup', 'scripts' ] );
 			if ( excludedDirs.has( topLevel ) ) {
-				log( colors.gray( `prodPrep: Skipping ${ relativePath } (excluded)` ) );
+				log(
+					colors.gray(
+						`prodPrep: Skipping ${ relativePath } (excluded)`
+					)
+				);
 				checkCompletion();
 				return; // Skip copying this file
 			}
