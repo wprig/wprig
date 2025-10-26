@@ -1,10 +1,12 @@
 # Changelog
 
 ## 3.1.0
+ - New header and mobile nav experience. Props @robruiz
  - HMR alternative for BrowserSync added. BrowserSync will now be considered deprecated. Props @robruiz
  - Added a download local wp cli command to download google fonts to the theme fonts folder. Props @robruiz
  - Updated rig-init command now provides better DX to devs during new installs. Props @robruiz
  - Added a new command to convert WP Rig into a child theme build system. Props @robruiz
+ - Added a new theme-level block authoring/development and management system. Props @robruiz
  - Added a new command to scaffold new PHP components. Props @robruiz
  - Removed Gulp from WP Rig. Processes are now replaced with custom script while
 dramatically increasing build and bundle performance. Props @robruiz
