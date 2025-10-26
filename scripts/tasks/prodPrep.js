@@ -78,18 +78,12 @@ export default function prodPrep( done ) {
 			nameFieldDefaults[ requiredConfigField ] ===
 			config.theme[ requiredConfigField ]
 		) {
+			// Do not fail bundling if values are left at defaults. Warn and continue.
 			log(
-				colors.red(
+				colors.yellow(
 					`${ colors.bold(
-						'Error:'
-					) } The theme ${ requiredConfigField } must be different than the default value ${
-						nameFieldDefaults[ requiredConfigField ]
-					}.`
-				)
-			);
-			return done(
-				new Error(
-					`Theme config field '${ requiredConfigField }' is still default`
+						'Warning:'
+					) } Using default theme ${ requiredConfigField } (${ nameFieldDefaults[ requiredConfigField ] }). Override it in ./config/config.json if desired.`
 				)
 			);
 		}
