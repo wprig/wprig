@@ -61,6 +61,17 @@
 	}
 }
 
+.mobile-menu-header .menu-toggle {
+	&[aria-expanded="true"] {
+		svg.open-menu {
+			display: none;
+		}
+		svg.close {
+			display: block;
+		}
+	}
+}
+
 .nav--toggle-small {
 
 	& .menu {
@@ -490,8 +501,16 @@
 	}
 	.main-navigation {
 		li.menu-item {
+
 			button {
 				text-align: left;
+				align-items: center;
+				&[aria-expanded="true"] {
+					transform: rotate(180deg);
+				}
+			}
+			a, button {
+				cursor: pointer;
 			}
 		}
 

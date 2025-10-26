@@ -226,20 +226,51 @@ function processEachSubMenu(
 
 	const subMenuParentLink =
 		parentMenuItem.querySelector< HTMLAnchorElement >( ':scope > a' );
+
+	// Handle menu items with no link or "#" as href
 	if (
-		subMenuParentLink &&
-		subMenuParentLink.getAttribute( 'href' ) === '#'
+		! subMenuParentLink ||
+		( subMenuParentLink &&
+			( subMenuParentLink.getAttribute( 'href' ) === '#' ||
+				subMenuParentLink.getAttribute( 'href' ) === '' ||
+				subMenuParentLink.getAttribute( 'href' ) === null ) )
 	) {
-		subMenuParentLink.addEventListener( 'click', ( e ) => {
-			e.preventDefault();
-			// Ensure we pass the parent <li>
-			const parentLi = ( e.currentTarget as HTMLElement ).closest(
-				'li'
-			) as HTMLElement | null;
-			if ( parentLi ) {
-				toggleSubMenu( parentLi );
-			}
-		} );
+		// If there is a link, add the click event to it
+		if ( subMenuParentLink ) {
+			subMenuParentLink.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				// Ensure we pass the parent <li>
+				const parentLi = ( e.currentTarget as HTMLElement ).closest(
+					'li'
+				) as HTMLElement | null;
+				if ( parentLi ) {
+					toggleSubMenu( parentLi );
+				}
+			} );
+		}
+
+		// For items with no link, make the entire menu item clickable
+		if ( ! subMenuParentLink ) {
+			parentMenuItem.style.cursor = 'pointer';
+			parentMenuItem.addEventListener( 'click', ( e ) => {
+				// Only handle clicks directly on the parent item, not its children
+				if (
+					e.target === parentMenuItem ||
+					parentMenuItem.contains( e.target as Node )
+				) {
+					// Don't toggle if the click was on a child link or button
+					const isChildLink = ( e.target as HTMLElement ).closest(
+						'a, button'
+					);
+					if (
+						! isChildLink ||
+						isChildLink.parentElement === parentMenuItem
+					) {
+						toggleSubMenu( parentMenuItem );
+					}
+				}
+			} );
+		}
 	}
 
 	handleToggleSubMenuEvents( parentMenuItem );
@@ -299,7 +330,6 @@ function convertDropdownToToggleButton(
  * Initializes the navigation toggle for a given navigation element, setting up
  * aria attributes and click event listeners to handle the toggling of the navigation menu.
  *
- * @param {HTMLElement} nav - The navigation element containing the menu toggle button.
  * @return {void} This function does not return a value.
  */
 function initEachNavToggleSmall(): void {
@@ -330,12 +360,14 @@ function toggleMenuToggleState( e: Event ) {
 
 	// Determine the new state based on the clicked toggle
 	const newExpandedState =
-		currentToggle.getAttribute( 'aria-expanded' ) === 'false' ? 'true' : 'false';
+		currentToggle.getAttribute( 'aria-expanded' ) === 'false'
+			? 'true'
+			: 'false';
 
 	// Update all menu toggles to maintain sync
 	menuToggles.forEach( ( menuToggle ) => {
 		menuToggle.setAttribute( 'aria-expanded', newExpandedState );
-	});
+	} );
 
 	// Toggle all navigation elements that have the 'nav--toggle-small' class
 	if ( navElements && navElements.length ) {
@@ -345,7 +377,7 @@ function toggleMenuToggleState( e: Event ) {
 			} else {
 				navElement.classList.remove( 'nav--toggled-on' );
 			}
-		});
+		} );
 	}
 }
 
