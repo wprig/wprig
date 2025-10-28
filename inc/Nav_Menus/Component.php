@@ -86,7 +86,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	private function preload_svg_assets() {
 		// Load dropdown symbol SVG
-		$dropdown_svg = wp_rig()->get_theme_asset('dropdown-symbol.svg', 'svg', true);
+		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true );
 
 		/**
 		 * Filters the dropdown icon SVG markup used in navigation menus.
@@ -95,17 +95,17 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		 *
 		 * @param string $dropdown_svg The SVG markup for the dropdown arrow icon.
 		 */
-		$this->dropdown_symbol_svg = apply_filters('wp_rig_dropdown_icon_svg', $dropdown_svg);
+		$this->dropdown_symbol_svg = apply_filters( 'wp_rig_dropdown_icon_svg', $dropdown_svg );
 
 		// Load menu toggle icons
-		$menu_icon_path = get_theme_file_uri() . '/assets/svg/menu-icon.svg';
+		$menu_icon_path  = get_theme_file_uri() . '/assets/svg/menu-icon.svg';
 		$close_icon_path = get_theme_file_uri() . '/assets/svg/close-icon.svg';
 
-		$menu_response = wp_remote_get($menu_icon_path);
-		$close_response = wp_remote_get($close_icon_path);
+		$menu_response  = wp_remote_get( $menu_icon_path );
+		$close_response = wp_remote_get( $close_icon_path );
 
-		$menu_icon_svg = is_wp_error($menu_response) ? '' : wp_remote_retrieve_body($menu_response);
-		$close_icon_svg = is_wp_error($close_response) ? '' : wp_remote_retrieve_body($close_response);
+		$menu_icon_svg  = is_wp_error( $menu_response ) ? '' : wp_remote_retrieve_body( $menu_response );
+		$close_icon_svg = is_wp_error( $close_response ) ? '' : wp_remote_retrieve_body( $close_response );
 
 		/**
 		 * Filters the mobile menu toggle (hamburger) icon SVG markup.
@@ -114,7 +114,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		 *
 		 * @param string $menu_icon_svg The SVG markup for the hamburger menu icon.
 		 */
-		$this->menu_icon_svg = apply_filters('wp_rig_menu_toggle_icon_svg', $menu_icon_svg);
+		$this->menu_icon_svg = apply_filters( 'wp_rig_menu_toggle_icon_svg', $menu_icon_svg );
 
 		/**
 		 * Filters the mobile menu close (X) icon SVG markup.
@@ -123,7 +123,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		 *
 		 * @param string $close_icon_svg The SVG markup for the close menu icon.
 		 */
-		$this->close_icon_svg = apply_filters('wp_rig_menu_close_icon_svg', $close_icon_svg);
+		$this->close_icon_svg = apply_filters( 'wp_rig_menu_close_icon_svg', $close_icon_svg );
 	}
 
 	/**
@@ -257,7 +257,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string Mobile Nav Toggle classes.
 	 */
 	public function customize_mobile_menu_nav_classes() {
-		return esc_html( 'main-navigation nav--toggle-sub nav--toggle-small icon-nav');
+		return esc_html( 'main-navigation nav--toggle-sub nav--toggle-small icon-nav' );
 	}
 
 	// TODO: Please improve the following @param description.
@@ -286,7 +286,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Return the block content.
 		return $block_content;
- }
+	}
 
 	/**
 	 * Inject a duplicate of the parent link as the first submenu item for parents that
@@ -320,7 +320,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$injected = array();
 
 		foreach ( $items as $item ) {
-			$has_children = ! empty( $item->classes ) && is_array( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true );
+			$has_children  = ! empty( $item->classes ) && is_array( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true );
 			$has_valid_url = ! empty( $item->url ) && '#' !== $item->url;
 
 			if ( ! $has_children || ! $has_valid_url ) {
@@ -328,7 +328,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 
 			$already_has_injected = false;
-			$children              = $children_by_parent[ (int) $item->ID ] ?? array();
+			$children             = $children_by_parent[ (int) $item->ID ] ?? array();
 			foreach ( $children as $child ) {
 				if ( ! empty( $child->classes ) && is_array( $child->classes ) && in_array( 'menu-item--injected-parent-link', $child->classes, true ) ) {
 					$already_has_injected = true;
@@ -355,11 +355,16 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$new->target           = $item->target ?? '';
 			$new->attr_title       = $item->attr_title ?? '';
 			$new->description      = '';
-			$base_classes         = array_diff( (array) ( $item->classes ?? array() ), array( 'menu-item-has-children' ) );
+			$base_classes          = array_diff( (array) ( $item->classes ?? array() ), array( 'menu-item-has-children' ) );
 			$new->classes          = array_unique( array_merge( $base_classes, array( 'menu-item--injected-parent-link' ) ) );
 
 			// Try to make it the first among this parent's children by using a very small menu_order.
-			$children_orders = array_map( function ( $c ) { return (int) ( $c->menu_order ?? 0 ); }, $children );
+			$children_orders = array_map(
+				function ( $c ) {
+					return (int) ( $c->menu_order ?? 0 );
+				},
+				$children
+			);
 			$min_order       = empty( $children_orders ) ? 0 : min( $children_orders );
 			$new->menu_order = $min_order - 1;
 

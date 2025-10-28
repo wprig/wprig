@@ -86,11 +86,11 @@ class Rig_Command extends WP_CLI_Command {
 	 *
 	 *  ## EXAMPLES
 	 *
-  *      # Create 8 top-level items with 4 subitems each, with 3 levels of depth in a menu called "Main Menu"
-  *      $ wp rig fake_menu_items --menu="Main Menu" --items=8 --subitems=4 --depth=3
-  *
-  *      # Create a new menu with dummy items and assign it to primary location
-  *      $ wp rig fake_menu_items --items=6 --depth=2 --prefix="Nav Item" --assign-location=primary
+	 *      # Create 8 top-level items with 4 subitems each, with 3 levels of depth in a menu called "Main Menu"
+	 *      $ wp rig fake_menu_items --menu="Main Menu" --items=8 --subitems=4 --depth=3
+	 *
+	 *      # Create a new menu with dummy items and assign it to primary location
+	 *      $ wp rig fake_menu_items --items=6 --depth=2 --prefix="Nav Item" --assign-location=primary
 	 *
 	 * @return void
 	 */
@@ -119,8 +119,8 @@ class Rig_Command extends WP_CLI_Command {
 	 */
 	public function menu_export( $args, $assoc_args ) {
 		$menu_name = $args[0];
-		$filename = $assoc_args['file'] ?? null;
-		$pretty = isset( $assoc_args['pretty'] );
+		$filename  = $assoc_args['file'] ?? null;
+		$pretty    = isset( $assoc_args['pretty'] );
 
 		WP_CLI::log( "Exporting menu: {$menu_name}" );
 
@@ -139,30 +139,30 @@ class Rig_Command extends WP_CLI_Command {
 		}
 
 		$exported_data = array(
-			'menu_name' => $menu->name,
-			'menu_slug' => $menu->slug,
+			'menu_name'        => $menu->name,
+			'menu_slug'        => $menu->slug,
 			'menu_description' => $menu->description,
-			'menu_items' => array(),
+			'menu_items'       => array(),
 			'export_timestamp' => current_time( 'mysql' ),
-			'export_version' => '1.0.0'
+			'export_version'   => '1.0.0',
 		);
 
 		// Process menu items
 		foreach ( $menu_items as $item ) {
 			$menu_item_data = array(
-				'ID' => $item->ID,
-				'title' => $item->title,
-				'url' => $item->url,
-				'menu_order' => $item->menu_order,
+				'ID'               => $item->ID,
+				'title'            => $item->title,
+				'url'              => $item->url,
+				'menu_order'       => $item->menu_order,
 				'menu_item_parent' => $item->menu_item_parent,
-				'type' => $item->type,
-				'object' => $item->object,
-				'object_id' => $item->object_id,
-				'target' => $item->target,
-				'attr_title' => $item->attr_title,
-				'description' => $item->description,
-				'classes' => $item->classes,
-				'xfn' => $item->xfn,
+				'type'             => $item->type,
+				'object'           => $item->object,
+				'object_id'        => $item->object_id,
+				'target'           => $item->target,
+				'attr_title'       => $item->attr_title,
+				'description'      => $item->description,
+				'classes'          => $item->classes,
+				'xfn'              => $item->xfn,
 			);
 
 			$exported_data['menu_items'][] = $menu_item_data;
@@ -186,7 +186,7 @@ class Rig_Command extends WP_CLI_Command {
 			}
 
 			WP_CLI::success( "Menu exported to: {$filename}" );
-			WP_CLI::log( "Items exported: " . count( $exported_data['menu_items'] ) );
+			WP_CLI::log( 'Items exported: ' . count( $exported_data['menu_items'] ) );
 		} else {
 			WP_CLI::log( $json_output );
 		}
@@ -216,9 +216,9 @@ class Rig_Command extends WP_CLI_Command {
 	 * @param array $assoc_args Associative arguments
 	 */
 	public function menu_import( $args, $assoc_args ) {
-		$filename = $args[0];
+		$filename  = $args[0];
 		$overwrite = isset( $assoc_args['overwrite'] );
-		$dry_run = isset( $assoc_args['dry-run'] );
+		$dry_run   = isset( $assoc_args['dry-run'] );
 
 		if ( ! file_exists( $filename ) ) {
 			WP_CLI::error( "File not found: {$filename}" );
@@ -238,14 +238,14 @@ class Rig_Command extends WP_CLI_Command {
 
 		if ( $dry_run ) {
 			WP_CLI::log( "DRY RUN: Would import menu: {$menu_name}" );
-			WP_CLI::log( "Items to import: " . count( $menu_data['menu_items'] ?? array() ) );
+			WP_CLI::log( 'Items to import: ' . count( $menu_data['menu_items'] ?? array() ) );
 
 			$existing_menu = wp_get_nav_menu_object( $menu_name );
 			if ( $existing_menu && ! $overwrite ) {
 				WP_CLI::warning( "Menu '{$menu_name}' already exists. Use --overwrite to replace it." );
 			}
 
-			WP_CLI::success( "Dry run completed successfully." );
+			WP_CLI::success( 'Dry run completed successfully.' );
 			return;
 		}
 
@@ -271,24 +271,24 @@ class Rig_Command extends WP_CLI_Command {
 		$items_imported = 0;
 		foreach ( $menu_data['menu_items'] as $item_data ) {
 			$menu_item_args = array(
-				'menu-item-title' => sanitize_text_field( $item_data['title'] ),
-				'menu-item-url' => esc_url_raw( $item_data['url'] ),
-				'menu-item-status' => 'publish',
-				'menu-item-position' => intval( $item_data['menu_order'] ),
-				'menu-item-type' => sanitize_text_field( $item_data['type'] ),
-				'menu-item-object' => sanitize_text_field( $item_data['object'] ),
-				'menu-item-object-id' => intval( $item_data['object_id'] ),
-				'menu-item-target' => sanitize_text_field( $item_data['target'] ),
-				'menu-item-attr-title' => sanitize_text_field( $item_data['attr_title'] ),
+				'menu-item-title'       => sanitize_text_field( $item_data['title'] ),
+				'menu-item-url'         => esc_url_raw( $item_data['url'] ),
+				'menu-item-status'      => 'publish',
+				'menu-item-position'    => intval( $item_data['menu_order'] ),
+				'menu-item-type'        => sanitize_text_field( $item_data['type'] ),
+				'menu-item-object'      => sanitize_text_field( $item_data['object'] ),
+				'menu-item-object-id'   => intval( $item_data['object_id'] ),
+				'menu-item-target'      => sanitize_text_field( $item_data['target'] ),
+				'menu-item-attr-title'  => sanitize_text_field( $item_data['attr_title'] ),
 				'menu-item-description' => sanitize_textarea_field( $item_data['description'] ),
-				'menu-item-classes' => is_array( $item_data['classes'] ) ? implode( ' ', $item_data['classes'] ) : sanitize_text_field( $item_data['classes'] ),
-				'menu-item-xfn' => sanitize_text_field( $item_data['xfn'] ),
+				'menu-item-classes'     => is_array( $item_data['classes'] ) ? implode( ' ', $item_data['classes'] ) : sanitize_text_field( $item_data['classes'] ),
+				'menu-item-xfn'         => sanitize_text_field( $item_data['xfn'] ),
 			);
 
 			$new_item_id = wp_update_nav_menu_item( $menu_id, 0, $menu_item_args );
 
 			if ( ! is_wp_error( $new_item_id ) ) {
-				$items_imported++;
+				++$items_imported;
 			}
 		}
 
@@ -327,16 +327,16 @@ class Rig_Command extends WP_CLI_Command {
 			return;
 		}
 
-		$format = $assoc_args['format'] ?? 'table';
+		$format    = $assoc_args['format'] ?? 'table';
 		$menu_list = array();
 
 		foreach ( $menus as $menu ) {
 			$menu_list[] = array(
-				'id' => $menu->term_id,
-				'name' => $menu->name,
-				'slug' => $menu->slug,
-				'count' => $menu->count,
-				'description' => $menu->description
+				'id'          => $menu->term_id,
+				'name'        => $menu->name,
+				'slug'        => $menu->slug,
+				'count'       => $menu->count,
+				'description' => $menu->description,
 			);
 		}
 
@@ -582,7 +582,7 @@ class Rig_Command extends WP_CLI_Command {
 
 		// Instantiate the Fonts component and run the download.
 		$component = new \WP_Rig\WP_Rig\Fonts\Component();
-		$result = $component->download_all_google_fonts( $font_dir, $css_dir );
+		$result    = $component->download_all_google_fonts( $font_dir, $css_dir );
 
 		if ( is_wp_error( $result ) ) {
 			WP_CLI::error( $result->get_error_message() );

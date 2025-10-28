@@ -227,7 +227,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		$google_fonts = array(
 			'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
-			'Montserrat'     => array( '100', '100i', '300', '500', '500i', '700', '700i' ),
+			'Montserrat'       => array( '100', '100i', '300', '500', '500i', '700', '700i' ),
 		);
 
 		/**
@@ -303,7 +303,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		// Download and save all fonts locally in one go
-		if ( $fonts_to_download !== [] ) {
+		if ( $fonts_to_download !== array() ) {
 			return $this->download_google_fonts_to_local( $fonts_to_download, $font_dir, $css_dir );
 		}
 
@@ -340,7 +340,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		// If no fonts were added, return an error
-		if ( $query_fonts === [] ) {
+		if ( $query_fonts === array() ) {
 			return new \WP_Error( 'invalid_fonts', 'No valid fonts were provided.' );
 		}
 
@@ -486,15 +486,15 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	protected function get_relative_path( string $from, string $to ): string {
 		// Convert paths to arrays
 		$from_parts = explode( '/', trim( $from, '/' ) );
-		$to_parts = explode( '/', trim( $to, '/' ) );
+		$to_parts   = explode( '/', trim( $to, '/' ) );
 
 		// Find common path
 		$common_length = 0;
-		$max = min( count( $from_parts ), count( $to_parts ) );
+		$max           = min( count( $from_parts ), count( $to_parts ) );
 
 		for ( $i = 0; $i < $max; $i++ ) {
-			if ( $from_parts[$i] === $to_parts[$i] ) {
-				$common_length++;
+			if ( $from_parts[ $i ] === $to_parts[ $i ] ) {
+				++$common_length;
 			} else {
 				break;
 			}

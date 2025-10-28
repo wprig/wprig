@@ -26,7 +26,7 @@ use function WP_Rig\WP_Rig\wp_rig;
 $attributes = is_array( $attributes ?? null ) ? $attributes : array();
 $content    = is_string( $content ?? null ) ? $content : '';
 /** @var WP_Block|null $block */
-$block      = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
+$block = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
 
 // Derive the block title via namespaced helper with smart fallbacks.
 $title     = wp_rig()->block_get_title( $block );
