@@ -14,6 +14,7 @@ import {
 } from '../lib/constants.js';
 import { getThemeConfig } from '../lib/utils.js';
 import removeWpCliBlock from './removeWpCliBlock.js';
+import removeDevOnlyBlocks from './removeDevOnlyBlocks.js';
 
 /**
  * Build replacement table equivalent to getStringReplacementTasks() but without streams.
@@ -98,6 +99,9 @@ export default function php( runPhpcs, done ) {
 					if ( relToRoot === 'functions.php' ) {
 						content = removeWpCliBlock( content );
 					}
+
+					// Remove any dev-only blocks from all PHP files
+					content = removeDevOnlyBlocks( content );
 
 					const outPath = destPathFor(
 						srcFile,

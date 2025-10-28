@@ -7,11 +7,11 @@
 
 namespace WP_Rig\WP_Rig\Nav_Menus;
 
+use WP_Post;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
-use function WP_Rig\WP_Rig\wp_rig;
-use WP_Post;
 
+use function WP_Rig\WP_Rig\wp_rig;
 use function add_action;
 use function add_filter;
 use function register_nav_menus;
@@ -85,7 +85,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * - 'wp_rig_menu_close_icon_svg' - Filter the close (X) icon for the mobile menu
 	 */
 	private function preload_svg_assets() {
-		// Load dropdown symbol SVG
+		// Load dropdown symbol SVG.
 		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true );
 
 		/**
@@ -97,7 +97,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		 */
 		$this->dropdown_symbol_svg = apply_filters( 'wp_rig_dropdown_icon_svg', $dropdown_svg );
 
-		// Load menu toggle icons
+		// Load menu toggle icons.
 		$menu_icon_path  = get_theme_file_uri() . '/assets/svg/menu-icon.svg';
 		$close_icon_path = get_theme_file_uri() . '/assets/svg/close-icon.svg';
 

@@ -180,7 +180,7 @@ class Template_Tags {
 
 		if ( $content ) {
 			try {
-				// Initialize WordPress Filesystem
+				// Initialize WordPress Filesystem.
 				global $wp_filesystem;
 				if ( empty( $wp_filesystem ) ) {
 					require_once ABSPATH . '/wp-admin/includes/file.php';

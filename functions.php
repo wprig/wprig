@@ -74,39 +74,13 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 // Initialize the theme.
 call_user_func( 'WP_Rig\WP_Rig\wp_rig' );
 
+// @dev-only:start
 /**
- * Inject Tiny LiveReload client when browsing through the modern dev proxy.
- * Primary signal is the X-WPRIG-DEV request header set by the proxy.
- * As a fallback, detect proxied requests via X-Forwarded-Host pointing to localhost:3000.
- * This does not rely on WP_DEBUG.
+ * Load development-only helpers (LiveReload for dev proxy).
+ * This file resides under optional/ and is not bundled for production.
  */
-if ( ! function_exists( 'wprig_is_dev_proxy_request' ) ) {
-	function wprig_is_dev_proxy_request() {
-		$has_custom_header = ! empty( $_SERVER['HTTP_X_WPRIG_DEV'] );
-		$xfh               = isset( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ? (string) $_SERVER['HTTP_X_FORWARDED_HOST'] : '';
-		// Accept any localhost forwarded host regardless of port (supports custom devPort)
-		$is_localhost_forward = ( false !== stripos( $xfh, 'localhost' ) ) || ( false !== stripos( $xfh, '127.0.0.1' ) );
-		$has_cookie           = isset( $_COOKIE['wprig_dev'] ) && $_COOKIE['wprig_dev'] === '1';
-		// return true;
-		return $has_custom_header || $is_localhost_forward || $has_cookie;
-	}
+$__wprig_dev_helpers = get_template_directory() . '/optional/dev/dev-proxy-livereload.php';
+if ( file_exists( $__wprig_dev_helpers ) ) {
+	require_once $__wprig_dev_helpers;
 }
-
-add_action(
-	'wp_head',
-	function () {
-		if ( wprig_is_dev_proxy_request() ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static local URL for dev only
-			echo "\n<script src=\"//localhost:35729/livereload.js?snipver=1\"></script>\n";
-		}
-	}
-);
-add_action(
-	'admin_head',
-	function () {
-		if ( wprig_is_dev_proxy_request() ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static local URL for dev only
-			echo "\n<script src=\"http://localhost:35729/livereload.js?snipver=1\"></script>\n";
-		}
-	}
-);
+// @dev-only:end
