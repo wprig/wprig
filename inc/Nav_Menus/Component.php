@@ -9,6 +9,7 @@ namespace WP_Rig\WP_Rig\Nav_Menus;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
+use function WP_Rig\WP_Rig\wp_rig;
 use WP_Post;
 
 use function add_action;
@@ -135,7 +136,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Add the dropdown for items that have children.
 		if ( ! empty( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true ) ) {
-			return $item_output . '<span class="dropdown"><i class="dropdown-symbol"></i></span>';
+			return $item_output . '<span class="dropdown">'.wp_rig()->get_theme_asset('dropdown-symbol.svg', 'svg', true).'</span>';
 		}
 
 		return $item_output;
@@ -342,7 +343,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$item_label = $item->title;
 
 			// Add dropdown symbol inside the button.
-			$dropdown_symbol = '<span class="dropdown"><i class="dropdown-symbol"></i></span>';
+			$dropdown_symbol = '<span class="dropdown">'.wp_rig()->get_theme_asset('dropdown-symbol.svg', 'svg', true).'</span>';
 			$has_submenu     = in_array( 'menu-item-has-children', $item->classes, true );
 
 			// Replace `<a>` with `<button>` for accessibility and meaningful semantics.

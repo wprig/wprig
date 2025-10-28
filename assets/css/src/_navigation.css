@@ -17,14 +17,6 @@
 	left: 0;
 }
 
-#primary-menu {
-	gap: 1em;
-	.sub-menu {
-		width: 50vw;
-		max-width: 300px;
-	}
-}
-
 .menu-toggle,
 .nav--toggle-small .menu-toggle {
 	display: block;
@@ -152,7 +144,6 @@
 }
 
 .nav--toggle-sub .dropdown,
-.nav--toggle-sub .dropdown-toggle,
 .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content .wp-block-navigation__submenu-icon {
 	display: block;
 	background: transparent;
@@ -175,21 +166,22 @@
 }
 
 .nav--toggle-sub .dropdown-symbol {
-	display: block;
-	background: transparent;
-	position: absolute;
-	right: 20%;
-	top: 35%;
-	width: 60%;
-	height: 60%;
-	border: solid var(--border-color-dark);
-	border-width: 0 2px 2px 0;
-	transform: translateY(-50%) rotate(45deg);
-	transition: transform 0.2s;
+	display: inline-block;
+	width: 1em;          /* or a fixed px size */
+	height: 1em;
+	stroke: var(--border-color-dark);  /* inherit text color */
+	fill: none;
+	stroke-width: 2;
+	vector-effect: non-scaling-stroke; /* keeps stroke consistent when scaled */
+	transition: transform .2s ease;
+}
+
+.menu-item--toggled-on > .dropdown-toggle .dropdown-symbol {
+	transform: rotate(180deg);
 }
 
 .nav--toggle-sub li.menu-item--toggled-on > button.dropdown-toggle .dropdown-symbol {
-	transform: translateY(-50%) rotate(225deg);
+	transform: translateY(-50%) rotate(180deg);
 }
 
 .nav--toggle-sub li.menu-item--toggled-on button.wp-block-navigation__submenu-icon svg {
@@ -208,6 +200,13 @@
 }
 
 @media (--wide-menu-query) {
+	#primary-menu {
+		gap: 1em;
+		.sub-menu {
+			width: 50vw;
+			max-width: 300px;
+		}
+	}
 	.menu-toggle,
 	.nav--toggle-small .menu-toggle {
 		display: none;
@@ -228,8 +227,7 @@
 		z-index: 100;
 	}
 
-	.nav--toggle-sub .dropdown,
-	.nav--toggle-sub .dropdown-toggle {
+	.nav--toggle-sub .dropdown {
 		display: block;
 		background: transparent;
 		position: absolute;
@@ -247,32 +245,21 @@
 		overflow: visible;
 	}
 
-	.nav--toggle-sub .dropdown-symbol {
-		display: block;
-		background: transparent;
-		position: absolute;
-		right: 20%;
-		top: 35%;
-		width: 60%;
-		height: 60%;
-		border: solid var(--border-color-dark);
-		border-width: 0 2px 2px 0;
-		transform: translateY(-50%) rotate(45deg);
-	}
 
-	.nav--toggle-sub ul ul .dropdown,
-	.nav--toggle-sub ul ul .dropdown-toggle {
+
+	.nav--toggle-sub ul ul .dropdown {
 		top: 40%;
 		right: 0.2em;
 	}
 
 	.nav--toggle-sub ul ul .dropdown-symbol {
-		transform: rotate(-45deg);
+		transform: rotate(-90deg);
 	}
 
 	.nav--toggle-sub .dropdown-toggle:hover,
 	.nav--toggle-sub .menu-item--has-toggle:hover .dropdown-toggle {
 		pointer-events: none;
+		justify-content: end;
 	}
 
 	/* Need menu-item-has-children for non-JS */
@@ -341,6 +328,26 @@
 
 	a:hover, a:focus, button:hover, button:focus {
 		text-decoration: underline;
+	}
+	button.submenu-toggle, li.menu-item-has-children {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+		.dropdown-toggle {
+			margin: 0;
+			padding: 0;
+			flex: 10%;
+			display: flex;
+			align-items: center;
+		}
+	}
+	li.menu-item-has-children {
+		& > a {
+			padding-right: 0;
+		}
+	}
+	.sub-menu .li.menu-item-has-children button.submenu-toggle {
+		justify-content: space-between;
 	}
 }
 
@@ -504,12 +511,13 @@
 			button {
 				text-align: left;
 				align-items: center;
-				&[aria-expanded="true"] {
+				&[aria-expanded="true"] svg {
 					transform: rotate(180deg);
 				}
 			}
 			a, button {
 				cursor: pointer;
+				justify-content: end;
 			}
 			&:has(> a){
 				button.dropdown-toggle {
@@ -520,7 +528,7 @@
 
 		li.menu-item-has-children {
 			a, button:not(.dropdown-toggle) {
-				flex: 90%;
+				flex: 75%;
 				display: flex;
 				justify-content: space-between;
 			}
@@ -531,6 +539,9 @@
 			flex-direction: row;
 			flex-wrap: wrap;
 			align-items: baseline;
+			&:has(> a){
+				display: flex;
+			}
 		}
 
 		& ul.sub-menu {
