@@ -9,6 +9,10 @@
  * @package wp_rig
  */
 
+/**
+ * Add LiveReload script in development mode.
+ */
+
 define( 'WP_RIG_MINIMUM_WP_VERSION', '5.4' );
 define( 'WP_RIG_MINIMUM_PHP_VERSION', '8.0' );
 
@@ -69,3 +73,14 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
 // Initialize the theme.
 call_user_func( 'WP_Rig\WP_Rig\wp_rig' );
+
+// @dev-only:start
+/**
+ * Load development-only helpers (LiveReload for dev proxy).
+ * This file resides under optional/ and is not bundled for production.
+ */
+$__wprig_dev_helpers = get_template_directory() . '/optional/dev/dev-proxy-livereload.php';
+if ( file_exists( $__wprig_dev_helpers ) ) {
+	require_once $__wprig_dev_helpers;
+}
+// @dev-only:end

@@ -12,19 +12,12 @@ if ( ! wp_rig()->is_primary_nav_menu_active() ) {
 }
 
 ?>
-
-<nav id="<?php echo apply_filters( 'wp_rig_site_navigation_id', 'site-navigation' ); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>" class="<?php echo apply_filters( 'wp_rig_site_navigation_classes', 'main-navigation nav--toggle-sub nav--toggle-small' ); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>">
-
-	<?php
-	$menu_toggle_button = '<button class="menu-toggle" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
-					' . esc_html__( 'Menu', 'wp-rig' ) . '
-					</button>';
-	$menu_toggle_button = apply_filters( 'wp_rig_menu_toggle_button', $menu_toggle_button );
-	?>
-
-	<?php echo $menu_toggle_button; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
-
-	<div class="primary-menu-container">
-		<?php wp_rig()->display_primary_nav_menu( array( 'menu_id' => 'primary-menu' ) ); ?>
+<div class="primary-menu-container flex-grow">
+	<div class="mobile-menu-header">
+		<?php get_template_part( 'template-parts/header/mobile-menu-toggle' ); ?>
+		<?php get_template_part( 'template-parts/header/branding' ); ?>
 	</div>
-</nav><!-- #site-navigation -->
+	<nav id="<?php echo apply_filters( 'wp_rig_site_navigation_id', 'site-navigation' ); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>" class="<?php echo apply_filters( 'wp_rig_site_navigation_classes', 'main-navigation nav--toggle-sub nav--toggle-small' ); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>" aria-label="<?php esc_attr_e( 'Main menu', 'wp-rig' ); ?>">
+		<?php wp_rig()->display_primary_nav_menu( array( 'menu_id' => 'primary-menu' ) ); ?>
+	</nav><!-- #site-navigation -->
+</div>

@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.0', '8.1', '8.2', '8.3']
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-interaction
+      - name: Run PHPCS linting
+        run: composer test:unit  # Uses WP Rig's script for WordPress standards
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install npm dependencies
+        run: npm install
+      - name: Build assets
+        run: npm run build
+      - name: Lint JS (if script exists)
+        run: npm run lint:js || echo "No JS lint script; skipping"
+        continue-on-error: true

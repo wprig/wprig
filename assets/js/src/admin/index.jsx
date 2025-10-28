@@ -1,14 +1,7 @@
-import { createRoot } from 'react-dom/client';
-import { useState, useCallback, useRef } from 'react';
-import {
-	PanelRow,
-	TabPanel,
-	TextControl,
-	SnackbarList,
-	BaseControl,
-	SelectControl,
-	FormToggle,
-} from '@wordpress/components';
+// Use WordPress globals to avoid bundling @wordpress/* modules
+/* global wp */
+const { createRoot, useState, useCallback, useRef } = wp.element;
+const { PanelRow, TabPanel, TextControl, SnackbarList, BaseControl, SelectControl, FormToggle } = wp.components;
 import { updateSettings } from './api.js';
 import formFieldsData from './settingsFields.json';
 

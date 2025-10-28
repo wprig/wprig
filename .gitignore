@@ -31,6 +31,7 @@
 /config/config.local.json
 !/tests/
 !/optional/
+!/scripts/
 !build-css.js
 !build-js.js
 

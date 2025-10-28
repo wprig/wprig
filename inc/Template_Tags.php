@@ -128,4 +128,93 @@ class Template_Tags {
 			$this->template_tags[ $method_name ] = $callback;
 		}
 	}
+
+	/**
+	 * Gets the theme version.
+	 *
+	 * @return string Theme version number.
+	 */
+	public function get_version(): string {
+		static $theme_version = null;
+
+		if ( null === $theme_version ) {
+			$theme_version = wp_get_theme( get_template() )->get( 'Version' );
+		}
+
+		return $theme_version;
+	}
+
+	/**
+	 * Gets the version for a given asset.
+	 *
+	 * Returns filemtime when WP_DEBUG is true, otherwise the theme version.
+	 *
+	 * @param string $filepath Asset file path.
+	 * @return string Asset version number.
+	 */
+	public function get_asset_version( string $filepath ): string {
+		if ( WP_DEBUG ) {
+			return (string) filemtime( $filepath );
+		}
+
+		return $this->get_version();
+	}
+
+	/**
+	 * Gets a theme asset from the assets directory.
+	 *
+	 * @param string $filename The name of the asset file (with extension).
+	 * @param string $type The asset type/subdirectory (e.g., 'images', 'svg').
+	 * @param bool   $content Whether to return the file contents (true) or URL (false).
+	 * @return string|null The asset URL/contents or null if not found.
+	 *
+	 * @throws RuntimeException If the asset file cannot be read.
+	 */
+	public function get_theme_asset( string $filename, string $type = 'images', bool $content = false ): ?string {
+		$asset_path = get_template_directory() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
+		$asset_uri  = get_template_directory_uri() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
+
+		if ( ! file_exists( $asset_path ) ) {
+			return null;
+		}
+
+		if ( $content ) {
+			try {
+				// Initialize WordPress Filesystem.
+				global $wp_filesystem;
+				if ( empty( $wp_filesystem ) ) {
+					require_once ABSPATH . '/wp-admin/includes/file.php';
+					WP_Filesystem();
+				}
+
+				if ( ! $wp_filesystem ) {
+					throw new RuntimeException(
+						esc_html__( 'WordPress filesystem is not initialized properly.', 'wp-rig' )
+					);
+				}
+
+				$file_contents = $wp_filesystem->get_contents( $asset_path );
+				if ( false === $file_contents ) {
+					throw new RuntimeException(
+						sprintf(
+						/* translators: %s: asset file path */
+							esc_html__( 'Error reading asset file: %s', 'wp-rig' ),
+							esc_html( $asset_path )
+						)
+					);
+				}
+				return $file_contents;
+			} catch ( \Exception $e ) {
+				throw new RuntimeException(
+					sprintf(
+					/* translators: %s: error message */
+						esc_html__( 'Failed to get asset contents: %s', 'wp-rig' ),
+						esc_html( $e->getMessage() )
+					)
+				);
+			}
+		}
+
+		return $asset_uri;
+	}
 }

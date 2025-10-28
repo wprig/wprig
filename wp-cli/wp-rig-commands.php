@@ -87,10 +87,298 @@ class Rig_Command extends WP_CLI_Command {
 	 *  ## EXAMPLES
 	 *
 	 *      # Create 8 top-level items with 4 subitems each, with 3 levels of depth in a menu called "Main Menu"
-	 *      $ wp rig fake_menu_items generate --menu="Main Menu" --items=8 --subitems=4 --depth=3
+	 *      $ wp rig fake_menu_items --menu="Main Menu" --items=8 --subitems=4 --depth=3
 	 *
 	 *      # Create a new menu with dummy items and assign it to primary location
-	 *      $ wp rig fake_menu_items generate --items=6 --depth=2 --prefix="Nav Item" --assign-location=primary
+	 *      $ wp rig fake_menu_items --items=6 --depth=2 --prefix="Nav Item" --assign-location=primary
+	 *
+	 * @return void
+	 */
+	/**
+	 * Export a WordPress menu to JSON format
+	 *
+	 * ## OPTIONS
+	 *
+	 * <menu_name>
+	 * : The name of the menu to export
+	 *
+	 * [--file=<filename>]
+	 * : Save to a specific file. If not provided, outputs to stdout
+	 *
+	 * [--pretty]
+	 * : Format JSON with indentation for better readability
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp rig menu export "Main Menu"
+	 *     wp rig menu export "Main Menu" --file=main-menu.json
+	 *     wp rig menu export "Main Menu" --file=main-menu.json --pretty
+	 *
+	 * @param array $args Positional arguments
+	 * @param array $assoc_args Associative arguments
+	 */
+	public function menu_export( $args, $assoc_args ) {
+		$menu_name = $args[0];
+		$filename  = $assoc_args['file'] ?? null;
+		$pretty    = isset( $assoc_args['pretty'] );
+
+		WP_CLI::log( "Exporting menu: {$menu_name}" );
+
+		// Get menu by name
+		$menu = wp_get_nav_menu_object( $menu_name );
+
+		if ( ! $menu ) {
+			WP_CLI::error( "Menu '{$menu_name}' not found." );
+		}
+
+		// Get all menu items
+		$menu_items = wp_get_nav_menu_items( $menu->term_id, array( 'order' => 'ASC' ) );
+
+		if ( ! $menu_items ) {
+			WP_CLI::error( "Menu '{$menu_name}' has no items." );
+		}
+
+		$exported_data = array(
+			'menu_name'        => $menu->name,
+			'menu_slug'        => $menu->slug,
+			'menu_description' => $menu->description,
+			'menu_items'       => array(),
+			'export_timestamp' => current_time( 'mysql' ),
+			'export_version'   => '1.0.0',
+		);
+
+		// Process menu items
+		foreach ( $menu_items as $item ) {
+			$menu_item_data = array(
+				'ID'               => $item->ID,
+				'title'            => $item->title,
+				'url'              => $item->url,
+				'menu_order'       => $item->menu_order,
+				'menu_item_parent' => $item->menu_item_parent,
+				'type'             => $item->type,
+				'object'           => $item->object,
+				'object_id'        => $item->object_id,
+				'target'           => $item->target,
+				'attr_title'       => $item->attr_title,
+				'description'      => $item->description,
+				'classes'          => $item->classes,
+				'xfn'              => $item->xfn,
+			);
+
+			$exported_data['menu_items'][] = $menu_item_data;
+		}
+
+		$json_flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+		if ( $pretty ) {
+			$json_flags |= JSON_PRETTY_PRINT;
+		}
+
+		$json_output = wp_json_encode( $exported_data, $json_flags );
+
+		if ( false === $json_output ) {
+			WP_CLI::error( 'Failed to encode menu data to JSON.' );
+		}
+
+		if ( $filename ) {
+			$result = file_put_contents( $filename, $json_output );
+			if ( false === $result ) {
+				WP_CLI::error( "Failed to write to file: {$filename}" );
+			}
+
+			WP_CLI::success( "Menu exported to: {$filename}" );
+			WP_CLI::log( 'Items exported: ' . count( $exported_data['menu_items'] ) );
+		} else {
+			WP_CLI::log( $json_output );
+		}
+	}
+
+	/**
+	 * Import a WordPress menu from JSON format
+	 *
+	 * ## OPTIONS
+	 *
+	 * <file>
+	 * : Path to the JSON file containing menu data
+	 *
+	 * [--overwrite]
+	 * : Overwrite existing menu with the same name
+	 *
+	 * [--dry-run]
+	 * : Test the import without making changes
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp rig menu import main-menu.json
+	 *     wp rig menu import main-menu.json --overwrite
+	 *     wp rig menu import main-menu.json --dry-run
+	 *
+	 * @param array $args Positional arguments
+	 * @param array $assoc_args Associative arguments
+	 */
+	public function menu_import( $args, $assoc_args ) {
+		$filename  = $args[0];
+		$overwrite = isset( $assoc_args['overwrite'] );
+		$dry_run   = isset( $assoc_args['dry-run'] );
+
+		if ( ! file_exists( $filename ) ) {
+			WP_CLI::error( "File not found: {$filename}" );
+		}
+
+		$json_content = file_get_contents( $filename );
+		if ( false === $json_content ) {
+			WP_CLI::error( "Failed to read file: {$filename}" );
+		}
+
+		$menu_data = json_decode( $json_content, true );
+		if ( null === $menu_data ) {
+			WP_CLI::error( "Invalid JSON format in file: {$filename}" );
+		}
+
+		$menu_name = $menu_data['menu_name'] ?? 'Unknown';
+
+		if ( $dry_run ) {
+			WP_CLI::log( "DRY RUN: Would import menu: {$menu_name}" );
+			WP_CLI::log( 'Items to import: ' . count( $menu_data['menu_items'] ?? array() ) );
+
+			$existing_menu = wp_get_nav_menu_object( $menu_name );
+			if ( $existing_menu && ! $overwrite ) {
+				WP_CLI::warning( "Menu '{$menu_name}' already exists. Use --overwrite to replace it." );
+			}
+
+			WP_CLI::success( 'Dry run completed successfully.' );
+			return;
+		}
+
+		WP_CLI::log( "Importing menu: {$menu_name}" );
+
+		// Handle existing menu
+		$existing_menu = wp_get_nav_menu_object( $menu_name );
+		if ( $existing_menu ) {
+			if ( ! $overwrite ) {
+				WP_CLI::error( "Menu '{$menu_name}' already exists. Use --overwrite flag to replace it." );
+			}
+			wp_delete_nav_menu( $existing_menu->term_id );
+		}
+
+		// Create new menu
+		$menu_id = wp_create_nav_menu( $menu_name );
+
+		if ( is_wp_error( $menu_id ) ) {
+			WP_CLI::error( 'Failed to create menu: ' . $menu_id->get_error_message() );
+		}
+
+		// Import menu items
+		$items_imported = 0;
+		foreach ( $menu_data['menu_items'] as $item_data ) {
+			$menu_item_args = array(
+				'menu-item-title'       => sanitize_text_field( $item_data['title'] ),
+				'menu-item-url'         => esc_url_raw( $item_data['url'] ),
+				'menu-item-status'      => 'publish',
+				'menu-item-position'    => intval( $item_data['menu_order'] ),
+				'menu-item-type'        => sanitize_text_field( $item_data['type'] ),
+				'menu-item-object'      => sanitize_text_field( $item_data['object'] ),
+				'menu-item-object-id'   => intval( $item_data['object_id'] ),
+				'menu-item-target'      => sanitize_text_field( $item_data['target'] ),
+				'menu-item-attr-title'  => sanitize_text_field( $item_data['attr_title'] ),
+				'menu-item-description' => sanitize_textarea_field( $item_data['description'] ),
+				'menu-item-classes'     => is_array( $item_data['classes'] ) ? implode( ' ', $item_data['classes'] ) : sanitize_text_field( $item_data['classes'] ),
+				'menu-item-xfn'         => sanitize_text_field( $item_data['xfn'] ),
+			);
+
+			$new_item_id = wp_update_nav_menu_item( $menu_id, 0, $menu_item_args );
+
+			if ( ! is_wp_error( $new_item_id ) ) {
+				++$items_imported;
+			}
+		}
+
+		WP_CLI::success( "Menu '{$menu_name}' imported successfully with {$items_imported} items." );
+	}
+
+	/**
+	 * List all available WordPress menus
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--format=<format>]
+	 * : Render output in a particular format
+	 * ---
+	 * default: table
+	 * options:
+	 *   - table
+	 *   - csv
+	 *   - json
+	 *   - yaml
+	 * ---
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp rig menu list
+	 *     wp rig menu list --format=json
+	 *
+	 * @param array $args Positional arguments
+	 * @param array $assoc_args Associative arguments
+	 */
+	public function menu_list( $args, $assoc_args ) {
+		$menus = wp_get_nav_menus();
+
+		if ( empty( $menus ) ) {
+			WP_CLI::log( 'No menus found.' );
+			return;
+		}
+
+		$format    = $assoc_args['format'] ?? 'table';
+		$menu_list = array();
+
+		foreach ( $menus as $menu ) {
+			$menu_list[] = array(
+				'id'          => $menu->term_id,
+				'name'        => $menu->name,
+				'slug'        => $menu->slug,
+				'count'       => $menu->count,
+				'description' => $menu->description,
+			);
+		}
+
+		WP_CLI\Utils\format_items( $format, $menu_list, array( 'id', 'name', 'slug', 'count', 'description' ) );
+	}
+
+	/**
+	 * Generates a specified number of dummy menu items in a WordPress navigation menu, including optional hierarchical submenus.
+	 *
+	 *  Generate dummy menu items for WordPress theme development
+	 *
+	 *  ## OPTIONS
+	 *
+	 *  [--menu=<menu>]
+	 *  : The menu name or ID to add items to. If not provided, a new menu will be created.
+	 *
+	 *  [--items=<number>]
+	 *  : Number of top-level menu items to create.
+	 *  Default: 5
+	 *
+	 *  [--depth=<number>]
+	 *  : Maximum depth of submenu items (1-3).
+	 *  Default: 2
+	 *
+	 *  [--subitems=<number>]
+	 *  : Number of subitems per parent.
+	 *  Default: 3
+	 *
+	 *  [--prefix=<text>]
+	 *  : Prefix for menu item names.
+	 *  Default: 'Menu Item'
+	 *
+	 *  [--assign-location=<location>]
+	 *  : Assign the menu to a theme location after creating items.
+	 *
+	 *  ## EXAMPLES
+	 *
+	 *      # Create 8 top-level items with 4 subitems each, with 3 levels of depth in a menu called "Main Menu"
+	 *      $ wp rig fake_menu_items --menu="Main Menu" --items=8 --subitems=4 --depth=3
+	 *
+	 *      # Create a new menu with dummy items and assign it to primary location
+	 *      $ wp rig fake_menu_items --items=6 --depth=2 --prefix="Nav Item" --assign-location=primary
 	 *
 	 * @return void
 	 */
@@ -264,6 +552,44 @@ class Rig_Command extends WP_CLI_Command {
 		}
 
 		return $menu_id;
+	}
+
+	/**
+	 * Download Google Fonts declared by the theme into a local directory.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--dir=<dir>]
+	 * : Relative directory under the active theme where fonts and CSS will be stored.
+	 * ---
+	 * default: assets/fonts
+	 * ---
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp rig fonts_download
+	 *     wp rig fonts_download --dir=assets/fonts
+	 *
+	 * @param array $args Positional args.
+	 * @param array $assoc_args Associative args.
+	 */
+	public function fonts_download( $args, $assoc_args ) {
+		$font_dir = WP_CLI\Utils\get_flag_value( $assoc_args, 'font-dir', 'assets/fonts' );
+		$font_dir = sanitize_text_field( (string) $font_dir );
+
+		$css_dir = WP_CLI\Utils\get_flag_value( $assoc_args, 'css-dir', 'assets/css/src' );
+		$css_dir = sanitize_text_field( (string) $css_dir );
+
+		// Instantiate the Fonts component and run the download.
+		$component = new \WP_Rig\WP_Rig\Fonts\Component();
+		$result    = $component->download_all_google_fonts( $font_dir, $css_dir );
+
+		if ( is_wp_error( $result ) ) {
+			WP_CLI::error( $result->get_error_message() );
+			return;
+		}
+
+		WP_CLI::success( sprintf( 'Google Fonts downloaded. CSS saved at: %s', $result ) );
 	}
 }
 

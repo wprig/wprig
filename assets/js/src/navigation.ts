@@ -1,5 +1,8 @@
 declare const wpRigScreenReaderText: { [ key: string ]: string };
 
+// Module-level variable to store navigation elements
+let navElements: NodeListOf< HTMLElement >;
+
 // Initiate the menus when the DOM loads.
 if ( document.readyState === 'loading' ) {
 	document.addEventListener( 'DOMContentLoaded', initNavigation );
@@ -10,7 +13,6 @@ if ( document.readyState === 'loading' ) {
 function initNavigation(): void {
 	initNavToggleSubmenus();
 	initNavToggleSmall();
-	setMenuHeight();
 	watchForWindowSizeChanges();
 }
 
@@ -125,37 +127,19 @@ function shouldToggleSubMenu(
 /**
  * Initializes the navigation toggle functionality for small navigation elements.
  * This method selects all elements with the class 'nav--toggle-small' and, if any are found,
- * initializes each one by passing it to the `initEachNavToggleSmall` function.
+ * stores them in a global variable and initializes the toggle functionality.
  *
  * @return {void}
  */
 function initNavToggleSmall(): void {
-	const navTOGGLE: NodeListOf< HTMLElement > =
-		document.querySelectorAll( '.nav--toggle-small' );
+	navElements =
+		document.querySelectorAll< HTMLElement >( '.nav--toggle-small' );
 
-	if ( ! navTOGGLE.length ) {
+	if ( ! navElements.length ) {
 		return;
 	}
 
-	navTOGGLE.forEach( ( nav ) => initEachNavToggleSmall( nav ) );
-}
-
-/**
- * Sets the height of the menu element to the full height of the document
- * if the window's outer width is less than or equal to 800 pixels.
- *
- * @return {void} Does not return a value.
- */
-function setMenuHeight(): void {
-	if ( window.outerWidth <= 800 ) {
-		const docHeight = document.body.scrollHeight;
-		const menuElement = document.querySelector< HTMLElement >(
-			'.primary-menu-container'
-		);
-		if ( menuElement ) {
-			menuElement.style.height = `${ docHeight }px`;
-		}
-	}
+	initEachNavToggleSmall();
 }
 
 /**
@@ -176,6 +160,18 @@ function watchForWindowSizeChanges(): void {
 			closeAllSubMenus();
 		}
 	} );
+}
+
+/**
+ * Helper to determine if we are at or below the mobile breakpoint (55em).
+ */
+function isMobileWidth(): boolean {
+	const width = window.innerWidth;
+	const mobileBreakPoint = 55;
+	const emValue =
+		width /
+		parseFloat( getComputedStyle( document.documentElement ).fontSize );
+	return emValue <= mobileBreakPoint;
 }
 
 /**
@@ -223,18 +219,62 @@ function processEachSubMenu(
 
 	const subMenuParentLink =
 		parentMenuItem.querySelector< HTMLAnchorElement >( ':scope > a' );
+
+	// Handle menu items with no link or "#" as href
 	if (
-		subMenuParentLink &&
-		subMenuParentLink.getAttribute( 'href' ) === '#'
+		! subMenuParentLink ||
+		( subMenuParentLink &&
+			( subMenuParentLink.getAttribute( 'href' ) === '#' ||
+				subMenuParentLink.getAttribute( 'href' ) === '' ||
+				subMenuParentLink.getAttribute( 'href' ) === null ) )
 	) {
+		// If there is a link, add the click event to it
+		if ( subMenuParentLink ) {
+			subMenuParentLink.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				// Ensure we pass the parent <li>
+				const parentLi = ( e.currentTarget as HTMLElement ).closest(
+					'li'
+				) as HTMLElement | null;
+				if ( parentLi ) {
+					toggleSubMenu( parentLi );
+				}
+			} );
+		}
+
+		// For items with no link, make the entire menu item clickable
+		if ( ! subMenuParentLink ) {
+			parentMenuItem.style.cursor = 'pointer';
+			parentMenuItem.addEventListener( 'click', ( e ) => {
+				// Only handle clicks directly on the parent item, not its children
+				if (
+					e.target === parentMenuItem ||
+					parentMenuItem.contains( e.target as Node )
+				) {
+					// Don't toggle if the click was on a child link or button
+					const isChildLink = ( e.target as HTMLElement ).closest(
+						'a, button'
+					);
+					if (
+						! isChildLink ||
+						isChildLink.parentElement === parentMenuItem
+					) {
+						toggleSubMenu( parentMenuItem );
+					}
+				}
+			} );
+		}
+	} else if ( subMenuParentLink ) {
+		// Parent has a valid link and also has children: on mobile, clicking the parent link should toggle
 		subMenuParentLink.addEventListener( 'click', ( e ) => {
-			e.preventDefault();
-			// Ensure we pass the parent <li>
-			const parentLi = ( e.currentTarget as HTMLElement ).closest(
-				'li'
-			) as HTMLElement | null;
-			if ( parentLi ) {
-				toggleSubMenu( parentLi );
+			if ( isMobileWidth() ) {
+				e.preventDefault();
+				const parentLi = ( e.currentTarget as HTMLElement ).closest(
+					'li'
+				) as HTMLElement | null;
+				if ( parentLi ) {
+					toggleSubMenu( parentLi );
+				}
 			}
 		} );
 	}
@@ -296,32 +336,55 @@ function convertDropdownToToggleButton(
  * Initializes the navigation toggle for a given navigation element, setting up
  * aria attributes and click event listeners to handle the toggling of the navigation menu.
  *
- * @param {HTMLElement} nav - The navigation element containing the menu toggle button.
  * @return {void} This function does not return a value.
  */
-function initEachNavToggleSmall( nav: HTMLElement ): void {
-	const menuTOGGLE = nav.querySelector< HTMLElement >( '.menu-toggle' );
+function initEachNavToggleSmall(): void {
+	const menuToggles =
+		document.querySelectorAll< HTMLElement >( '.menu-toggle' );
 
-	if ( ! menuTOGGLE ) {
+	if ( ! menuToggles ) {
 		return;
 	}
 
-	menuTOGGLE.setAttribute( 'aria-expanded', 'false' );
+	menuToggles.forEach( ( menuToggle ) => {
+		menuToggle.setAttribute( 'aria-expanded', 'false' );
 
-	menuTOGGLE.addEventListener(
-		'click',
-		( e ) => {
-			nav.classList.toggle( 'nav--toggled-on' );
-			const target = e.target as HTMLElement;
-			target.setAttribute(
-				'aria-expanded',
-				target.getAttribute( 'aria-expanded' ) === 'false'
-					? 'true'
-					: 'false'
-			);
-		},
-		false
-	);
+		menuToggle.addEventListener( 'click', toggleMenuToggleState );
+	} );
+}
+
+function toggleMenuToggleState( e: Event ) {
+	const menuToggles =
+		document.querySelectorAll< HTMLElement >( '.menu-toggle' );
+
+	if ( ! menuToggles.length ) {
+		return;
+	}
+
+	// Get the current toggle that was clicked
+	const currentToggle = e.currentTarget as HTMLElement;
+
+	// Determine the new state based on the clicked toggle
+	const newExpandedState =
+		currentToggle.getAttribute( 'aria-expanded' ) === 'false'
+			? 'true'
+			: 'false';
+
+	// Update all menu toggles to maintain sync
+	menuToggles.forEach( ( menuToggle ) => {
+		menuToggle.setAttribute( 'aria-expanded', newExpandedState );
+	} );
+
+	// Toggle all navigation elements that have the 'nav--toggle-small' class
+	if ( navElements && navElements.length ) {
+		navElements.forEach( ( navElement ) => {
+			if ( newExpandedState === 'true' ) {
+				navElement.classList.add( 'nav--toggled-on' );
+			} else {
+				navElement.classList.remove( 'nav--toggled-on' );
+			}
+		} );
+	}
 }
 
 /**
