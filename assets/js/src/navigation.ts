@@ -13,7 +13,6 @@ if ( document.readyState === 'loading' ) {
 function initNavigation(): void {
 	initNavToggleSubmenus();
 	initNavToggleSmall();
-	setMenuHeight();
 	watchForWindowSizeChanges();
 }
 
@@ -141,24 +140,6 @@ function initNavToggleSmall(): void {
 	}
 
 	initEachNavToggleSmall();
-}
-
-/**
- * Sets the height of the menu element to the full height of the document
- * if the window's outer width is less than or equal to 800 pixels.
- *
- * @return {void} Does not return a value.
- */
-function setMenuHeight(): void {
-	if ( window.outerWidth <= 800 ) {
-		const docHeight = document.body.scrollHeight;
-		const menuElement = document.querySelector< HTMLElement >(
-			'.primary-menu-container'
-		);
-		if ( menuElement ) {
-			menuElement.style.height = `${ docHeight }px`;
-		}
-	}
 }
 
 /**
