@@ -286,24 +286,24 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string|\WP_Error URL of the saved CSS file on success, or WP_Error on failure.
 	 */
 	public function download_all_google_fonts( string $font_dir = 'assets/fonts', string $css_dir = 'assets/css/src' ) {
-		// Get the list of Google Fonts
+		// Get the list of Google Fonts.
 		$google_fonts = $this->get_google_fonts();
 
-		// Prepare an array for fonts to download
+		// Prepare an array for fonts to download.
 		$fonts_to_download = array();
 
 		foreach ( array_keys( $google_fonts ) as $font_name ) {
-			// Skip if font already exists locally
+			// Skip if font already exists locally.
 			if ( $this->get_local_font_path( $font_name ) ) {
 				continue;
 			}
 
-			// Add font with all variants (just include full range for simplicity)
+			// Add font with all variants (just include full range for simplicity).
 			$fonts_to_download[ $font_name ] = array( 'ital,wght@0,100..900' );
 		}
 
-		// Download and save all fonts locally in one go
-		if ( $fonts_to_download !== array() ) {
+		// Download and save all fonts locally in one go.
+		if ( array() !== $fonts_to_download ) {
 			return $this->download_google_fonts_to_local( $fonts_to_download, $font_dir, $css_dir );
 		}
 
@@ -329,43 +329,43 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *                          object if the process fails.
 	 */
 	public function download_google_fonts_to_local( $fonts = array(), $font_dir = 'assets/fonts', $css_dir = 'assets/css/src' ): WP_Error|string {
-		// Base URL for Google Fonts
+		// Base URL for Google Fonts.
 		$google_fonts_base_url = 'https://fonts.googleapis.com/css2?';
 		$query_fonts           = array();
 
-		// Loop through each font to build the query with a fixed variant range
+		// Loop through each font to build the query with a fixed variant range.
 		foreach ( $fonts as $font_family => $font_variants ) {
-			// Simply include the full range of italic and weight variants for each font family
+			// Simply include the full range of italic and weight variants for each font family.
 			$query_fonts[] = 'family=' . str_replace( ' ', '+', $font_family ) . ':ital,wght@0,100..900';
 		}
 
-		// If no fonts were added, return an error
-		if ( $query_fonts === array() ) {
+		// If no fonts were added, return an error.
+		if ( array() === $query_fonts ) {
 			return new \WP_Error( 'invalid_fonts', 'No valid fonts were provided.' );
 		}
 
-		// Build the full Google Fonts URL
+		// Build the full Google Fonts URL.
 		$google_fonts_url = $google_fonts_base_url . implode( '&', $query_fonts ) . '&display=swap';
 
-		// Fetch the Google Fonts CSS
+		// Fetch the Google Fonts CSS.
 		$response = wp_remote_get(
 			$google_fonts_url,
 			array(
 				'headers' => array(
-					// Use a modern User-Agent to ensure `.woff2` is returned
+					// Use a modern User-Agent to ensure `.woff2` is returned.
 					'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.5906.69 Safari/537.36',
 				),
 			)
 		);
 
-		// Check for request errors
+		// Check for request errors.
 		if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
 			return new \WP_Error( 'font_download_failed', 'Could not fetch Google Fonts CSS.' );
 		}
 
 		$css_content = wp_remote_retrieve_body( $response );
 
-		// Extract font file URLs from CSS
+		// Extract font file URLs from CSS.
 		preg_match_all(
 			'/@font-face\s*\{[^}]*font-family\s*:\s*[\'"]?([^\'";}\n]+)[\'"]?[^}]*url\s*\(\s*[\'"]?(https:\/\/fonts\.gstatic\.com\/[^)"\']+\.woff2)[\'"]?\s*\)/i',
 			$css_content,
@@ -373,19 +373,19 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			PREG_SET_ORDER
 		);
 
-		// Initialize an empty array to store fonts and their respective URLs
+		// Initialize an empty array to store fonts and their respective URLs.
 		$fonts_with_urls = array();
 
 		if ( empty( $matches ) ) {
 			return new \WP_Error( 'font_parse_failed', 'No font files found in CSS.' );
 		}
 
-		// Loop through matches and structure the array
+		// Loop through matches and structure the array.
 		foreach ( $matches as $match ) {
-			$font_name = trim( $match[1] ); // Extract `font-family` name
-			$font_url  = $match[2];       // Extract the `.woff2` file URL
+			$font_name = trim( $match[1] ); // Extract `font-family` name.
+			$font_url  = $match[2];       // Extract the `.woff2` file URL.
 
-			// Group URLs by font-family
+			// Group URLs by font-family.
 			if ( ! isset( $fonts_with_urls[ $font_name ] ) ) {
 				$fonts_with_urls[ $font_name ] = array();
 			}
@@ -426,18 +426,24 @@ class Component implements Component_Interface, Templating_Component_Interface {
 						continue; // Skip if the font file couldn't be downloaded.
 					}
 
-					file_put_contents( $local_font_path, wp_remote_retrieve_body( $font_response ) );
+					// Initialize WP_Filesystem.
+					global $wp_filesystem;
+					if ( ! $wp_filesystem ) {
+						require_once ABSPATH . '/wp-admin/includes/file.php';
+						WP_Filesystem();
+					}
+					$wp_filesystem->put_contents( $local_font_path, wp_remote_retrieve_body( $font_response ), FS_CHMOD_FILE );
 				}
 
-				// Calculate the relative path from CSS directory to font directory
+				// Calculate the relative path from CSS directory to font directory.
 				$css_to_font_relative_path = $this->get_relative_path( $css_dir, $font_dir );
 
-				// Build the relative path to the font file
+				// Build the relative path to the font file.
 				$relative_font_path = trailingslashit( $css_to_font_relative_path ) .
 					trailingslashit( $font_name_clean ) .
 					$font_file_name;
 
-				// Update the CSS content to point to the relative font path
+				// Update the CSS content to point to the relative font path.
 				$css_content = str_replace( $font_url, $relative_font_path, $css_content );
 			}
 		}
@@ -445,14 +451,20 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		// Save the CSS file in the specified CSS directory.
 		$css_file_name = 'google-fonts.css';
 
-		// Ensure the CSS directory exists
+		// Ensure the CSS directory exists.
 		$css_dir_path = trailingslashit( $theme_dir ) . $css_dir;
 		if ( ! file_exists( $css_dir_path ) ) {
 			wp_mkdir_p( $css_dir_path );
 		}
 
 		$local_css_path = trailingslashit( $css_dir_path ) . $css_file_name;
-		file_put_contents( $local_css_path, $css_content );
+		// Initialize WP_Filesystem if not already initialized.
+		global $wp_filesystem;
+		if ( ! $wp_filesystem ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+		$wp_filesystem->put_contents( $local_css_path, $css_content, FS_CHMOD_FILE );
 
 		return trailingslashit( get_stylesheet_directory_uri() ) . $css_dir . '/' . $css_file_name;
 	}
@@ -465,11 +477,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string|false Path to the local font CSS, or false if not available.
 	 */
 	protected function get_local_font_path( string $font_name, string $variants = '400;700' ) {
-		// Directory where fonts are stored
+		// Directory where fonts are stored.
 		$upload_dir = wp_upload_dir();
 		$font_dir   = trailingslashit( $upload_dir['basedir'] ) . 'fonts';
 
-		// Check if the font CSS exists locally
+		// Check if the font CSS exists locally.
 		$css_file_name  = strtolower( str_replace( ' ', '-', $font_name ) ) . '.css';
 		$local_css_path = trailingslashit( $font_dir ) . $css_file_name;
 
@@ -484,11 +496,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string The relative path from $from to $to.
 	 */
 	protected function get_relative_path( string $from, string $to ): string {
-		// Convert paths to arrays
+		// Convert paths to arrays.
 		$from_parts = explode( '/', trim( $from, '/' ) );
 		$to_parts   = explode( '/', trim( $to, '/' ) );
 
-		// Find common path
+		// Find common path.
 		$common_length = 0;
 		$max           = min( count( $from_parts ), count( $to_parts ) );
 
@@ -500,13 +512,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 		}
 
-		// Calculate number of directories to go up from source
+		// Calculate number of directories to go up from source.
 		$up_levels = count( $from_parts ) - $common_length;
 
-		// Build the relative path
+		// Build the relative path.
 		$relative_path = str_repeat( '../', $up_levels );
 
-		// Add the path down to the target
+		// Add the path down to the target.
 		if ( $common_length < count( $to_parts ) ) {
 			$relative_path .= implode( '/', array_slice( $to_parts, $common_length ) );
 		}
