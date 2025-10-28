@@ -38,6 +38,27 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public $theme_settings;
 
 	/**
+	 * Dropdown symbol SVG content.
+	 *
+	 * @var string
+	 */
+	private $dropdown_symbol_svg;
+
+	/**
+	 * Menu icon SVG content.
+	 *
+	 * @var string
+	 */
+	private $menu_icon_svg;
+
+	/**
+	 * Close icon SVG content.
+	 *
+	 * @var string
+	 */
+	private $close_icon_svg;
+
+	/**
 	 * Gets the unique identifier for the theme component.
 	 *
 	 * @return string Component slug.
@@ -51,7 +72,26 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function initialize() {
 		$this->get_theme_settings_config();
+		$this->preload_svg_assets();
 		$this->hooks();
+	}
+
+	/**
+	 * Preloads SVG assets to avoid multiple file reads during menu rendering.
+	 */
+	private function preload_svg_assets() {
+		// Load dropdown symbol SVG
+		$this->dropdown_symbol_svg = wp_rig()->get_theme_asset('dropdown-symbol.svg', 'svg', true);
+
+		// Load menu toggle icons
+		$menu_icon_path = get_theme_file_uri() . '/assets/svg/menu-icon.svg';
+		$close_icon_path = get_theme_file_uri() . '/assets/svg/close-icon.svg';
+
+		$menu_response = wp_remote_get($menu_icon_path);
+		$close_response = wp_remote_get($close_icon_path);
+
+		$this->menu_icon_svg = is_wp_error($menu_response) ? '' : wp_remote_retrieve_body($menu_response);
+		$this->close_icon_svg = is_wp_error($close_response) ? '' : wp_remote_retrieve_body($close_response);
 	}
 
 	/**
@@ -136,7 +176,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Add the dropdown for items that have children.
 		if ( ! empty( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true ) ) {
-			return $item_output . '<span class="dropdown">'.wp_rig()->get_theme_asset('dropdown-symbol.svg', 'svg', true).'</span>';
+			return $item_output . '<span class="dropdown">' . $this->dropdown_symbol_svg . '</span>';
 		}
 
 		return $item_output;
@@ -173,11 +213,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string Mobile Nav Toggle HTML.
 	 */
 	public function customize_mobile_menu_toggle() {
-		$get_menu_icon  = wp_remote_get( get_theme_file_uri() . '/assets/svg/menu-icon.svg' );
-		$get_close_icon = wp_remote_get( get_theme_file_uri() . '/assets/svg/close-icon.svg' );
 		return '<button class="menu-toggle icon" aria-label="' . esc_html__( 'Open menu', 'wp-rig' ) . '" aria-controls="primary-menu" aria-expanded="false">
-					' . wp_remote_retrieve_body( $get_menu_icon ) . '
-					' . wp_remote_retrieve_body( $get_close_icon ) . '
+					' . $this->menu_icon_svg . '
+					' . $this->close_icon_svg . '
 					</button>';
 	}
 
@@ -343,7 +381,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$item_label = $item->title;
 
 			// Add dropdown symbol inside the button.
-			$dropdown_symbol = '<span class="dropdown">'.wp_rig()->get_theme_asset('dropdown-symbol.svg', 'svg', true).'</span>';
+			$dropdown_symbol = '<span class="dropdown">' . $this->dropdown_symbol_svg . '</span>';
 			$has_submenu     = in_array( 'menu-item-has-children', $item->classes, true );
 
 			// Replace `<a>` with `<button>` for accessibility and meaningful semantics.
