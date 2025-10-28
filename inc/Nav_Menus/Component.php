@@ -78,10 +78,24 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Preloads SVG assets to avoid multiple file reads during menu rendering.
+	 *
+	 * Each SVG can be filtered by theme developers using the provided hooks:
+	 * - 'wp_rig_dropdown_icon_svg' - Filter the dropdown arrow icon used in navigation menus
+	 * - 'wp_rig_menu_toggle_icon_svg' - Filter the hamburger menu icon
+	 * - 'wp_rig_menu_close_icon_svg' - Filter the close (X) icon for the mobile menu
 	 */
 	private function preload_svg_assets() {
 		// Load dropdown symbol SVG
-		$this->dropdown_symbol_svg = wp_rig()->get_theme_asset('dropdown-symbol.svg', 'svg', true);
+		$dropdown_svg = wp_rig()->get_theme_asset('dropdown-symbol.svg', 'svg', true);
+
+		/**
+		 * Filters the dropdown icon SVG markup used in navigation menus.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $dropdown_svg The SVG markup for the dropdown arrow icon.
+		 */
+		$this->dropdown_symbol_svg = apply_filters('wp_rig_dropdown_icon_svg', $dropdown_svg);
 
 		// Load menu toggle icons
 		$menu_icon_path = get_theme_file_uri() . '/assets/svg/menu-icon.svg';
@@ -90,8 +104,26 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$menu_response = wp_remote_get($menu_icon_path);
 		$close_response = wp_remote_get($close_icon_path);
 
-		$this->menu_icon_svg = is_wp_error($menu_response) ? '' : wp_remote_retrieve_body($menu_response);
-		$this->close_icon_svg = is_wp_error($close_response) ? '' : wp_remote_retrieve_body($close_response);
+		$menu_icon_svg = is_wp_error($menu_response) ? '' : wp_remote_retrieve_body($menu_response);
+		$close_icon_svg = is_wp_error($close_response) ? '' : wp_remote_retrieve_body($close_response);
+
+		/**
+		 * Filters the mobile menu toggle (hamburger) icon SVG markup.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $menu_icon_svg The SVG markup for the hamburger menu icon.
+		 */
+		$this->menu_icon_svg = apply_filters('wp_rig_menu_toggle_icon_svg', $menu_icon_svg);
+
+		/**
+		 * Filters the mobile menu close (X) icon SVG markup.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $close_icon_svg The SVG markup for the close menu icon.
+		 */
+		$this->close_icon_svg = apply_filters('wp_rig_menu_close_icon_svg', $close_icon_svg);
 	}
 
 	/**
@@ -396,5 +428,32 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Leave items unaffected that have valid URLs or do not meet conditions.
 		return $item_output;
+	}
+
+	/**
+	 * Gets the dropdown symbol SVG content.
+	 *
+	 * @return string The dropdown symbol SVG markup.
+	 */
+	public function get_dropdown_symbol_svg() {
+		return $this->dropdown_symbol_svg;
+	}
+
+	/**
+	 * Gets the menu toggle icon SVG content.
+	 *
+	 * @return string The menu toggle icon SVG markup.
+	 */
+	public function get_menu_icon_svg() {
+		return $this->menu_icon_svg;
+	}
+
+	/**
+	 * Gets the menu close icon SVG content.
+	 *
+	 * @return string The menu close icon SVG markup.
+	 */
+	public function get_close_icon_svg() {
+		return $this->close_icon_svg;
 	}
 }
