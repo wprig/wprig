@@ -1,0 +1,13 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Class WP_Customize_Control referenced with incorrect case\: WP_Customize_control\.$#'
+			identifier: class.nameCase
+			count: 2
+			path: inc/EZ_Customizer/Component.php
+
+		-
+			message: '#^Call to static method error\(\) on an unknown class WP_CLI\.$#'
+			identifier: class.notFound
+			count: 1
+			path: inc/back-compat.php

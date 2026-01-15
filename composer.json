@@ -13,14 +13,18 @@
     "yoast/phpunit-polyfills": "^1.0",
     "phpunit/phpunit": "^9.5",
     "rector/rector": "^2.0",
-    "friendsofphp/php-cs-fixer": "^3.67"
+    "friendsofphp/php-cs-fixer": "^3.67",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/extension-installer": "^1.4",
+    "szepeviktor/phpstan-wordpress": "^2.0"
   },
   "config": {
     "platform": {
       "php": "8.1"
     },
     "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
     }
   },
   "autoload": {
@@ -34,11 +38,14 @@
     "test:integration": "\"vendor/bin/phpunit\" -c \"phpunit.integration.xml.dist\"",
     "test:all": [
       "@test:unit",
-      "@test:integration"
+      "@test:integration",
+      "@phpstan"
     ],
     "install-codestandards": [
       "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
     ],
+    "phpstan": "\"vendor/bin/phpstan\" analyze --memory-limit 1G",
+    "phpstan:baseline": "\"vendor/bin/phpstan\" analyze --generate-baseline --memory-limit 1G",
     "phpcbf-dev": "\"vendor/bin/phpcbf\"",
     "run-phpcbf": [
       "@phpcbf-dev"

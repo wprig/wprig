@@ -54,6 +54,8 @@
 !playwright.config.ts
 !.lighthouserc.cjs
 !phpcs.xml.dist
+!phpstan.neon.dist
+!phpstan-baseline.neon
 !phpunit.integration.xml.dist
 !phpunit.xml.dist
 !README.md
