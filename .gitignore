@@ -52,6 +52,7 @@
 !LICENSE
 !package.json
 !playwright.config.ts
+!.lighthouserc.cjs
 !phpcs.xml.dist
 !phpunit.integration.xml.dist
 !phpunit.xml.dist
@@ -67,3 +68,6 @@
 test-results/
 playwright-report/
 blob-report/
+
+# Lighthouse CI
+.lighthouseci/
