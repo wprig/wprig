@@ -56,6 +56,45 @@ class Rig_Command extends WP_CLI_Command {
 	}
 
 	/**
+	 * Imports the official WordPress Theme Unit Test Data.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp rig import-test-data
+	 *
+	 * @return void
+	 */
+	public function import_test_data(): void {
+		// 1. Ensure WordPress Importer is installed and active
+		WP_CLI::log( 'Installing and activating WordPress Importer...' );
+		WP_CLI::runcommand( 'plugin install wordpress-importer --activate' );
+
+		// 2. Download the test data
+		$file = 'themeunittestdata.wordpress.xml';
+		$url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
+
+		WP_CLI::log( 'Downloading Theme Unit Test Data...' );
+		$download = WP_CLI\Utils\http_request( 'GET', $url );
+
+		if ( 200 !== $download->status_code ) {
+			WP_CLI::error( 'Failed to download test data from GitHub.' );
+		}
+
+		file_put_contents( $file, $download->body );
+
+		// 3. Import the data
+		WP_CLI::log( 'Importing data (this may take a moment)...' );
+		WP_CLI::runcommand( "import $file --authors=create" );
+
+		// 4. Cleanup
+		if ( unlink( $file ) ) {
+			WP_CLI::success( 'Theme Unit Test Data imported and temporary file cleaned up!' );
+		} else {
+			WP_CLI::warning( "Import successful, but failed to delete $file. Please remove it manually." );
+		}
+	}
+
+	/**
 	 * Generates a specified number of dummy menu items in a WordPress navigation menu, including optional hierarchical submenus.
 	 *
 	 *  Generate dummy menu items for WordPress theme development
