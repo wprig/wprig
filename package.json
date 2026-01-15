@@ -105,6 +105,7 @@
     "bundle": "cross-env NODE_ENV=production node scripts/cli.js bundle",
     "bundle:phpcs": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
     "bundle:check-all": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
+    "theme:enable-blocks": "node scripts/enable-blocks.js",
     "block:new": "node scripts/blocks.js block:new",
     "block:new:dynamic": "node scripts/blocks.js block:new --dynamic",
     "block:list": "node scripts/blocks.js block:list",
