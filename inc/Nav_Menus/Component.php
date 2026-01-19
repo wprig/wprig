@@ -28,7 +28,7 @@ use function wp_nav_menu;
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
-	const PRIMARY_NAV_MENU_SLUG = 'primary';
+	const string PRIMARY_NAV_MENU_SLUG = 'primary';
 
 	/**
 	 * All theme settings - from JSON file.
@@ -196,10 +196,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param string  $item_output The menu item's starting HTML output.
 	 * @param WP_Post $item        Menu item data object.
 	 * @param int     $depth       Depth of menu item. Used for padding.
-	 * @param object  $args        An object of wp_nav_menu() arguments.
+	 * @param object $args        An object of wp_nav_menu() arguments.
+	 *
 	 * @return string Modified nav menu HTML.
 	 */
-	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ): string {
+	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, object $args ): string {
 
 		// Only for our primary menu location.
 		if ( empty( $args->theme_location ) || static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
@@ -270,7 +271,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param mixed $instance The instance. Type could possibly be more specific.
 	 * @return string.
 	 */
-	public function add_nav_class_to_navigation_block( $block_content, $block, $instance ) {
+	public function add_nav_class_to_navigation_block( mixed $block_content, mixed $block, mixed $instance ): string {
 		// Instantiate the tag processor.
 		$content = new \WP_HTML_Tag_Processor( $block_content );
 
@@ -298,10 +299,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * - Marks injected items with a special class for styling/visibility control.
 	 *
 	 * @param WP_Post[] $items Menu items.
-	 * @param array     $args  Menu args from wp_nav_menu().
+	 * @param object    $args  Menu args from wp_nav_menu().
+	 *
 	 * @return WP_Post[] Potentially modified items array.
 	 */
-	public function inject_parent_link_into_submenu( $items, $args ) {
+	public function inject_parent_link_into_submenu( array $items, object $args ): array {
 		// Ensure we're working with the correct nav menu theme location.
 		if ( empty( $args->theme_location ) || static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
 			return $items;
@@ -401,12 +403,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @param string $item_output The HTML output for the current menu item.
 	 * @param object $item WP_Post object for the current menu item.
-	 * @param int    $depth Depth of the menu item. Used for nesting levels.
-	 * @param array  $args An associative array of arguments passed to `wp_nav_menu()`.
+	 * @param int $depth Depth of the menu item. Used for nesting levels.
+	 * @param object $args An object of arguments passed to `wp_nav_menu()`.
 	 *
 	 * @return string Modified HTML output for the menu item.
 	 */
-	public function modify_menu_items_for_accessibility( $item_output, $item, $depth, $args ) {
+	public function modify_menu_items_for_accessibility( string $item_output, object $item, int $depth, object $args ): string {
 		// Ensure we're working with the correct nav menu theme location.
 		if ( empty( $args->theme_location ) || 'primary' !== $args->theme_location ) {
 			return $item_output;

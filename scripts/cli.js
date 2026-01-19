@@ -9,6 +9,7 @@ import { exec as execCb } from 'node:child_process';
 import { promisify } from 'node:util';
 import fs from 'node:fs';
 import path from 'node:path';
+import chokidar from 'chokidar';
 import inquirer from 'inquirer';
 import { Command } from 'commander';
 
@@ -275,25 +276,40 @@ program
 			};
 			const reloadOnly = () => server.reload();
 
-			// Set up watchers using BrowserSync's built-in chokidar
-			const jsWatcher = server.watch(
-				'assets/js/src/**/*.{js,ts,tsx,json}',
-				{ ignoreInitial: true }
-			);
-			jsWatcher
-				.on( 'change', rebuildJS )
-				.on( 'add', rebuildJS )
-				.on( 'unlink', rebuildJS );
-
-			const cssWatcher = server.watch( 'assets/css/src/**/*.css', {
+			// Set up watchers using chokidar directly for better new-file detection
+			// Watching directories instead of globs is more robust for new file detection
+			const jsWatcher = chokidar.watch( paths.scripts.srcDir, {
 				ignoreInitial: true,
 			} );
-			cssWatcher
-				.on( 'change', rebuildCSS )
-				.on( 'add', rebuildCSS )
-				.on( 'unlink', rebuildCSS );
+			jsWatcher.on( 'all', ( event, file ) => {
+				if (
+					file &&
+					/\.(js|ts|tsx|json)$/.test( file ) &&
+					! path.basename( file ).startsWith( '_' )
+				) {
+					rebuildJS();
+				}
+			} );
 
-			const phpWatcher = server.watch( paths.php.src, {
+			const cssWatcher = chokidar.watch(
+				[ paths.styles.srcDir, paths.styles.editorSrcDir ].filter(
+					Boolean
+				),
+				{
+					ignoreInitial: true,
+				}
+			);
+			cssWatcher.on( 'all', ( event, file ) => {
+				if (
+					file &&
+					file.endsWith( '.css' ) &&
+					! path.basename( file ).startsWith( '_' )
+				) {
+					rebuildCSS();
+				}
+			} );
+
+			const phpWatcher = chokidar.watch( paths.php.src, {
 				ignoreInitial: true,
 			} );
 			phpWatcher
@@ -301,7 +317,7 @@ program
 				.on( 'add', reloadOnly )
 				.on( 'unlink', reloadOnly );
 
-			const imageWatcher = server.watch( paths.images.src, {
+			const imageWatcher = chokidar.watch( paths.images.src, {
 				ignoreInitial: true,
 			} );
 			imageWatcher
