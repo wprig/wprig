@@ -86,7 +86,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	private function preload_svg_assets() {
 		// Load dropdown symbol SVG.
-		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true );
+		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true ) ?? '';
 
 		/**
 		 * Filters the dropdown icon SVG markup used in navigation menus.
