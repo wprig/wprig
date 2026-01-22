@@ -380,8 +380,10 @@ function toggleMenuToggleState( e: Event ) {
 		navElements.forEach( ( navElement ) => {
 			if ( newExpandedState === 'true' ) {
 				navElement.classList.add( 'nav--toggled-on' );
+				document.body.classList.add( 'mobile-menu-open' );
 			} else {
 				navElement.classList.remove( 'nav--toggled-on' );
+				document.body.classList.remove( 'mobile-menu-open' );
 			}
 		} );
 	}

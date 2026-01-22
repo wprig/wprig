@@ -6,6 +6,11 @@
 /*--------------------------------------------------------------
 ## Basic navigation menus - handles submenu and small screen toggle
 --------------------------------------------------------------*/
+/* Prevent page scrolling when mobile menu is open */
+body.mobile-menu-open {
+	overflow: hidden;
+}
+
 .primary-menu-container {
 	display: flex;
 	flex-direction: column;
@@ -466,13 +471,17 @@
 @media (--narrow-menu-query) {
 	.primary-menu-container {
 		position: absolute;
-		height:100vh;
+		height: 100vh;
 		width: 100vw;
 		justify-content: flex-start;
 		padding: 1em;
 		z-index: -1;
 		background: var(--content-background-color);
 		opacity: 0;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+
 		&:has(nav.nav--toggled-on) {
 			z-index: 5;
 			opacity: 1;
@@ -489,6 +498,7 @@
 			width: 100%;
 			display: flex;
 			justify-content: space-between;
+			flex-shrink: 0;
 
 			.site-branding,
 			.site-branding img {
@@ -499,6 +509,8 @@
 	#site-navigation {
 		width: 100%;
 		flex-grow: 1;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 	.wp-block-navigation:not(.has-text-color) .wp-block-navigation__responsive-container.is-menu-open {
 		color: var(--global-font-color);
