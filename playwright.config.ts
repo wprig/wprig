@@ -1,4 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as fs from 'fs';
+import * as path from 'path';
 
 /**
  * Read environment variables from file.
@@ -7,7 +9,21 @@ import { defineConfig, devices } from '@playwright/test';
 // import dotenv from 'dotenv';
 // dotenv.config();
 
-const wpBaseUrl = process.env.WP_BASE_URL || 'http://localhost:8888';
+const configPath = path.resolve( process.cwd(), 'config/config.json' );
+const config = JSON.parse( fs.readFileSync( configPath, 'utf-8' ) );
+
+const proxyURL = config.dev.browserSync.proxyURL || 'localhost';
+const protocol = config.dev.browserSync.https ? 'https' : 'http';
+const wpBaseUrl = process.env.WP_BASE_URL || `${ protocol }://${ proxyURL }`;
+
+// Set WordPress admin credentials for @wordpress/e2e-test-utils-playwright
+process.env.WP_ADMIN_USER =
+	process.env.WP_ADMIN_USER || config.dev.admin?.user || 'admin';
+process.env.WP_ADMIN_PASSWORD =
+	process.env.WP_ADMIN_PASSWORD || config.dev.admin?.password || 'password';
+process.env.WP_USERNAME = process.env.WP_USERNAME || process.env.WP_ADMIN_USER;
+process.env.WP_PASSWORD =
+	process.env.WP_PASSWORD || process.env.WP_ADMIN_PASSWORD;
 
 /**
  * See https://playwright.dev/docs/test-configuration.

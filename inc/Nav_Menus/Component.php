@@ -209,7 +209,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Add the dropdown for items that have children.
 		if ( ! empty( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true ) ) {
-			return $item_output . '<span class="dropdown">' . $this->dropdown_symbol_svg . '</span>';
+			return $item_output . '<button class="dropdown-toggle" aria-expanded="false" aria-label="' . esc_html__( 'Expand child menu', 'wp-rig' ) . '">' . $this->dropdown_symbol_svg . '</button>';
 		}
 
 		return $item_output;
@@ -419,9 +419,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			// Extract the original link content (e.g., the text inside the original <a> tag).
 			$item_label = $item->title;
 
-			// Add dropdown symbol inside the button.
-			$dropdown_symbol = '<span class="dropdown">' . $this->dropdown_symbol_svg . '</span>';
-			$has_submenu     = in_array( 'menu-item-has-children', $item->classes, true );
+			$has_submenu = in_array( 'menu-item-has-children', $item->classes, true );
 
 			// Replace `<a>` with `<button>` for accessibility and meaningful semantics.
 			return sprintf(
@@ -429,7 +427,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				$has_submenu ? 'submenu-toggle' : '',
 				esc_attr( $item->ID ),
 				esc_html( $item_label ),
-				$has_submenu ? $dropdown_symbol : ''
+				$has_submenu ? '<span class="dropdown-icon">' . $this->dropdown_symbol_svg . '</span>' : ''
 			);
 		}
 

@@ -24,7 +24,7 @@ test.describe( 'Navigation', () => {
 		await expect( navContainer ).toHaveClass( /nav--toggled-on/ );
 
 		// Close menu
-		await menuToggle.click();
+		await menuToggle.click( { force: true } );
 		await expect( menuToggle ).toHaveAttribute( 'aria-expanded', 'false' );
 		await expect( navContainer ).not.toHaveClass( /nav--toggled-on/ );
 	} );

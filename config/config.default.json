@@ -11,6 +11,10 @@
     "enableBlocks": false
   },
   "dev": {
+    "admin": {
+      "user": "admin",
+      "password": "password"
+    },
     "browserSync": {
       "live": true,
       "proxyURL": "wprig.test:8888",

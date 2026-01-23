@@ -23,11 +23,17 @@ if ( is_404() ) {
 		</h1>
 	</header><!-- .page-header -->
 	<?php
-} elseif ( is_home() && ! is_front_page() ) {
+} elseif ( is_home() ) {
 	?>
 	<header class="page-header">
 		<h1 class="page-title">
-			<?php single_post_title(); ?>
+			<?php
+			if ( is_front_page() ) {
+				esc_html_e( 'Latest Posts', 'wp-rig' );
+			} else {
+				single_post_title();
+			}
+			?>
 		</h1>
 	</header><!-- .page-header -->
 	<?php

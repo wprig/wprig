@@ -1,9 +1,5 @@
-import { test as base } from '@playwright/test';
-import { admin, editor } from '@wordpress/e2e-test-utils-playwright';
+import { test as base } from '@wordpress/e2e-test-utils-playwright';
 
-export const test = base.extend( {
-	admin,
-	editor,
-} );
+export const test = base.extend( {} );
 
-export { expect } from '@playwright/test';
+export { expect } from '@wordpress/e2e-test-utils-playwright';
