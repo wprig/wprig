@@ -300,7 +300,8 @@ Notes:
 
 #### WP CLI Commands
 
-For [WP CLI](https://make.wordpress.org/cli/handbook/) commands documentation, visit the [WP Rig WP CLI Commands](https://github.com/wprig/wprig/tree/master/wp-cli)
+- `wp rig test-setup`: Sets up the Theme Unit Test environment by importing official WordPress.org test data and configuring settings.
+- `wp rig import-test-data`: Imports the official WordPress Theme Unit Test Data.
 
 For more information about commands and useful workflows like scripts and other sub-systems, please visit
 the [WP Rig website](https://wprig.io/doc_cat/workflow/).
