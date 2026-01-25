@@ -186,7 +186,7 @@ body.mobile-menu-open {
 }
 
 .nav--toggle-sub li.menu-item--toggled-on > button.dropdown-toggle .dropdown-symbol {
-	transform: translateY(-50%) rotate(180deg);
+	transform: rotate(180deg);
 }
 
 .nav--toggle-sub li.menu-item--toggled-on button.wp-block-navigation__submenu-icon svg {

@@ -192,15 +192,15 @@ function processEachSubMenu(
 	const isNavigationBlock = parentMenuItem.classList.contains(
 		'wp-block-navigation-item'
 	);
-	let dropdown = parentMenuItem.querySelector< HTMLElement >( '.dropdown' );
+	//let dropdown = parentMenuItem.querySelector< HTMLElement >( '.dropdown' );
 
-	if ( ! dropdown && ! isNavigationBlock ) {
-		dropdown = createDropdown( parentMenuItem, SUBMENUS, index );
-		parentMenuItem.insertBefore( dropdown, SUBMENUS[ index ] );
-	}
+	// if ( ! dropdown && ! isNavigationBlock ) {
+	// 	dropdown = createDropdown( parentMenuItem, SUBMENUS, index );
+	// 	parentMenuItem.insertBefore( dropdown, SUBMENUS[ index ] );
+	// }
 
 	if ( ! isNavigationBlock ) {
-		convertDropdownToToggleButton( dropdown!, dropdownButton );
+		//convertDropdownToToggleButton( dropdown!, dropdownButton );
 	} else {
 		parentMenuItem
 			.querySelector< HTMLElement >(
