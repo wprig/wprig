@@ -97,6 +97,6 @@ export default defineConfig( {
 		reuseExistingServer: ! process.env.CI,
 		stdout: 'ignore',
 		stderr: 'pipe',
-		//ignoreHTTPSErrors: true,
+		ignoreHTTPSErrors: true,
 	},
 } );

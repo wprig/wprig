@@ -108,7 +108,7 @@ class Rig_Command extends WP_CLI_Command {
 		WP_CLI::log( 'Starting Theme Unit Test environment setup...' );
 
 		// 1. Download the Theme Unit Test Data
-		$xml_url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/theme-unit-test-data.xml';
+		$xml_url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
 
 		// Ensure download_url is available.
 		if ( ! function_exists( 'download_url' ) ) {
