@@ -29,7 +29,7 @@ if ( is_singular( get_post_type() ) ) {
 	<?php
 } else {
 	?>
-	<a class="post-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true">
+	<a class="post-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
 		<?php
 		global $wp_query;
 		if ( 0 === $wp_query->current_post ) {
