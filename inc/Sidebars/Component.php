@@ -27,7 +27,7 @@ use function dynamic_sidebar;
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
-	const string PRIMARY_SIDEBAR_SLUG = 'sidebar-1';
+	const PRIMARY_SIDEBAR_SLUG = 'sidebar-1';
 
 	/**
 	 * Gets the unique identifier for the theme component.

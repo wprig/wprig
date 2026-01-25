@@ -28,7 +28,7 @@ use function wp_nav_menu;
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
-	const string PRIMARY_NAV_MENU_SLUG = 'primary';
+	const PRIMARY_NAV_MENU_SLUG = 'primary';
 
 	/**
 	 * All theme settings - from JSON file.
@@ -163,7 +163,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			return null;
 		} else {
 			$theme_settings_json  = wp_remote_retrieve_body( $response );
-			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
+			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, true ) );
 		}
 		return null;
 	}

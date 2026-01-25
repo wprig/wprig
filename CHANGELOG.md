@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.2.0
+ - Added Playwright for E2E testing, including accessibility, navigation, and smoke tests. Props @robruiz
+ - Added Lighthouse CI configuration for performance, accessibility, and SEO checks. Props @robruiz
+ - Added PHPStan for static analysis and baseline configuration. Props @robruiz
+ - Theme-level blocks are now an opt-in feature via a custom script for WP.org theme checker compatibility. Props @robruiz
+ - Improved default mobile navigation and fixed mobile nav issues. Props @robruiz
+ - Improved PHP type declarations and dev modern server. Props @robruiz
+ - Added test data for theme testing and ensured E2E tests pass. Props @robruiz
+ - Prevented CLI errors and cleaned up unused packages in package.json. Props @robruiz
+
 ## 3.1.0
  - New header and mobile nav experience. Props @robruiz
  - HMR alternative for BrowserSync added. BrowserSync will now be considered deprecated. Props @robruiz
