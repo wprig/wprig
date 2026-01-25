@@ -282,11 +282,7 @@ program
 				ignoreInitial: true,
 			} );
 			jsWatcher.on( 'all', ( event, file ) => {
-				if (
-					file &&
-					/\.(js|ts|tsx|json)$/.test( file ) &&
-					! path.basename( file ).startsWith( '_' )
-				) {
+				if ( file && /\.(js|ts|tsx|json)$/.test( file ) ) {
 					rebuildJS();
 				}
 			} );
@@ -300,11 +296,7 @@ program
 				}
 			);
 			cssWatcher.on( 'all', ( event, file ) => {
-				if (
-					file &&
-					file.endsWith( '.css' ) &&
-					! path.basename( file ).startsWith( '_' )
-				) {
+				if ( file && file.endsWith( '.css' ) ) {
 					rebuildCSS();
 				}
 			} );
