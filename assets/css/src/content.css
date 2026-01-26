@@ -21,6 +21,8 @@
 @import "_blocks.css";
 @import "_media.css";
 @import "_forms.css";
+@import "_footer.css";
+@import "widgets.css";
 
 /*--------------------------------------------------------------
 # Post and page content
