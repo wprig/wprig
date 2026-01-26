@@ -6,6 +6,11 @@
 /*--------------------------------------------------------------
 ## Basic navigation menus - handles submenu and small screen toggle
 --------------------------------------------------------------*/
+/* Prevent page scrolling when mobile menu is open */
+body.mobile-menu-open {
+	overflow: hidden;
+}
+
 .primary-menu-container {
 	display: flex;
 	flex-direction: column;
@@ -54,6 +59,10 @@
 }
 
 .mobile-menu-header .menu-toggle {
+	& svg.open-menu {
+		display: none;
+	}
+
 	&[aria-expanded="true"] {
 		svg.open-menu {
 			display: none;
@@ -86,10 +95,6 @@
 
 		& .menu-toggle.icon svg.close {
 			display: block;
-		}
-
-		& svg.open-menu {
-			display: none;
 		}
 	}
 
@@ -181,7 +186,7 @@
 }
 
 .nav--toggle-sub li.menu-item--toggled-on > button.dropdown-toggle .dropdown-symbol {
-	transform: translateY(-50%) rotate(180deg);
+	transform: rotate(180deg);
 }
 
 .nav--toggle-sub li.menu-item--toggled-on button.wp-block-navigation__submenu-icon svg {
@@ -216,79 +221,141 @@
 		display: block;
 	}
 
-	.nav--toggle-sub ul ul {
-		display: none;
-		position: absolute;
-		top: 100%;
-		flex-direction: column;
-		background: var(--sub-content-background-color);
-		margin-left: 0;
-		box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
-		z-index: 100;
+	.nav--toggle-sub {
+		ul ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			flex-direction: column;
+			background: var(--sub-content-background-color);
+			margin-left: 0;
+			box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+			z-index: 100;
+		}
+
+		.dropdown {
+			display: block;
+			background: transparent;
+			position: absolute;
+			right: 0;
+			top: 50%;
+			width: var(--dropdown-symbol-width);
+			height: var(--dropdown-symbol-width);
+			font-size: inherit;
+			line-height: inherit;
+			margin: 0;
+			padding: 0;
+			border: none;
+			border-radius: 0;
+			transform: translateY(-50%);
+			overflow: visible;
+		}
+
+		ul ul .dropdown {
+			top: 40%;
+			right: 0.2em;
+		}
+
+		ul ul .dropdown-symbol {
+			transform: rotate(-90deg);
+		}
+
+		.dropdown-toggle:hover,
+		.menu-item--has-toggle:hover .dropdown-toggle {
+			pointer-events: none;
+			justify-content: end;
+		}
+
+		li.menu-item-has-children,
+		li.menu-item--has-toggle {
+			position: relative;
+			padding-right: var(--dropdown-symbol-width);
+		}
+
+		/*
+		 * If the dropdown toggle is active with JS, then
+		 * we'll take care of showing the submenu with JS.
+		 */
+		li:hover > ul,
+		li.menu-item--toggled-on > ul,
+		li:not(.menu-item--has-toggle):focus > ul {
+			display: block;
+		}
+		/*
+		 * "focus-within" is an alternative to focus class for
+		 * supporting browsers (all but IE/Edge) for no-JS context
+		 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
+		 *
+		 * This selector needs to stay separated, otherwise submenus
+		 * will not be displayed with IE/Edge.
+		 */
+		li:not(.menu-item--has-toggle):focus-within > ul {
+			display: block;
+		}
 	}
 
-	.nav--toggle-sub .dropdown {
-		display: block;
-		background: transparent;
-		position: absolute;
-		right: 0;
-		top: 50%;
-		width: var(--dropdown-symbol-width);
-		height: var(--dropdown-symbol-width);
-		font-size: inherit;
-		line-height: inherit;
-		margin: 0;
-		padding: 0;
+	.entry-content {
+		.nav--toggle-sub ul.wp-block-navigation__container > ul:not(.wp-block-navigation__submenu-container) {
+			position: relative;
+		}
+	}
+}
+
+.nav-links {
+	display: flex;
+}
+
+/*--------------------------------------------------------------
+## Basic Pagination
+--------------------------------------------------------------*/
+
+.site-main .pagination {
+	margin-bottom: 1.5em;
+}
+
+.pagination {
+	a:visited {
+		color: var(--color-link);
+	}
+	a:hover, a:focus, a:active {
+		border-color: var(--color-link-active);
+	}
+
+	.nav-links {
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+
+	.page-numbers {
+		display: inline-block;
+		margin-bottom: 0.5em;
+		margin-right: 1em;
+		border: 1px solid var(--color-link);
+		min-width: 1.75em;
+		line-height: 1.75;
+		text-align: center;
+		text-decoration: none;
+	}
+	.prev,
+	.next {
+		min-width: auto;
+		border-color: transparent;
+		text-decoration: underline;
+	}
+	.prev:hover,
+	.prev:focus,
+	.prev:active,
+	.next:hover,
+	.next:focus,
+	.next:active {
+		border-color: transparent;
+	}
+	.dots {
+		min-width: auto;
 		border: none;
-		border-radius: 0;
-		transform: translateY(-50%);
-		overflow: visible;
 	}
-
-
-
-	.nav--toggle-sub ul ul .dropdown {
-		top: 40%;
-		right: 0.2em;
-	}
-
-	.nav--toggle-sub ul ul .dropdown-symbol {
-		transform: rotate(-90deg);
-	}
-
-	.nav--toggle-sub .dropdown-toggle:hover,
-	.nav--toggle-sub .menu-item--has-toggle:hover .dropdown-toggle {
-		pointer-events: none;
-		justify-content: end;
-	}
-
-	/* Need menu-item-has-children for non-JS */
-	.nav--toggle-sub li.menu-item-has-children,
-	.nav--toggle-sub li.menu-item--has-toggle {
-		position: relative;
-		padding-right: var(--dropdown-symbol-width);
-	}
-
-	/*
-	 * If the dropdown toggle is active with JS, then
-	 * we'll take care of showing the submenu with JS.
-	 */
-	.nav--toggle-sub li:hover > ul,
-	.nav--toggle-sub li.menu-item--toggled-on > ul,
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus > ul {
-		display: block;
-	}
-
-	/*
-	 * "focus-within" is an alternative to focus class for
-	 * supporting browsers (all but IE/Edge) for no-JS context
-	 * (e.g. AMP) See https://caniuse.com/#feat=css-focus-within
-	 *
-	 * This selector needs to stay separated, otherwise submenus
-	 * will not be displayed with IE/Edge.
-	 */
-	.nav--toggle-sub li:not(.menu-item--has-toggle):focus-within > ul {
-		display: block;
+	.current {
+		border-color: var(--border-color-dark);
 	}
 }
 
@@ -318,6 +385,13 @@
 		line-height: inherit;
 	}
 
+	ul {
+		display: block;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
 	& ul ul li {
 		padding-left: 1em;
 	}
@@ -341,6 +415,12 @@
 			align-items: center;
 		}
 	}
+
+	.current-menu-item > a,
+	.current-menu-ancestor > a {
+		font-weight: 600;
+	}
+
 	li.menu-item-has-children {
 		& > a {
 			padding-right: 0;
@@ -349,18 +429,6 @@
 	.sub-menu .li.menu-item-has-children button.submenu-toggle {
 		justify-content: space-between;
 	}
-}
-
-.main-navigation .current-menu-item > a,
-.main-navigation .current-menu-ancestor > a {
-	font-weight: 600;
-}
-
-.main-navigation ul {
-	display: block;
-	list-style: none;
-	margin: 0;
-	padding: 0;
 }
 
 /*--------------------------------------------------------------
@@ -466,13 +534,17 @@
 @media (--narrow-menu-query) {
 	.primary-menu-container {
 		position: absolute;
-		height:100vh;
+		height: 100vh;
 		width: 100vw;
 		justify-content: flex-start;
 		padding: 1em;
 		z-index: -1;
 		background: var(--content-background-color);
 		opacity: 0;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+
 		&:has(nav.nav--toggled-on) {
 			z-index: 5;
 			opacity: 1;
@@ -489,6 +561,7 @@
 			width: 100%;
 			display: flex;
 			justify-content: space-between;
+			flex-shrink: 0;
 
 			.site-branding,
 			.site-branding img {
@@ -499,6 +572,8 @@
 	#site-navigation {
 		width: 100%;
 		flex-grow: 1;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 	}
 	.wp-block-navigation:not(.has-text-color) .wp-block-navigation__responsive-container.is-menu-open {
 		color: var(--global-font-color);
@@ -583,10 +658,6 @@
 	}
 }
 
-.nav-links {
-	display: flex;
-}
-
 .comment-navigation .nav-previous,
 .posts-navigation .nav-previous,
 .post-navigation .nav-previous {
@@ -606,62 +677,6 @@
 	text-decoration: none;
 	display: inline-block;
 }
-
-.site-main .pagination {
-	margin-bottom: 1.5em;
-}
-
-.pagination .nav-links {
-	justify-content: center;
-	flex-wrap: wrap;
-}
-
-.pagination .page-numbers {
-	display: inline-block;
-	margin-bottom: 0.5em;
-	margin-right: 1em;
-	border: 1px solid var(--color-link);
-	min-width: 1.75em;
-	line-height: 1.75;
-	text-align: center;
-	text-decoration: none;
-}
-
-.pagination a:visited {
-	color: var(--color-link);
-}
-
-.pagination a:hover,
-.pagination a:focus,
-.pagination a:active {
-	border-color: var(--color-link-active);
-}
-
-.pagination .prev,
-.pagination .next {
-	min-width: auto;
-	border-color: transparent;
-	text-decoration: underline;
-}
-
-.pagination .prev:hover,
-.pagination .prev:focus,
-.pagination .prev:active,
-.pagination .next:hover,
-.pagination .next:focus,
-.pagination .next:active {
-	border-color: transparent;
-}
-
-.pagination .dots {
-	min-width: auto;
-	border: none;
-}
-
-.pagination .current {
-	border-color: var(--border-color-dark);
-}
-
 
 /* Hide injected parent-link item on desktop/wide screens (>=55em) */
 @media screen and (min-width: 55em) {

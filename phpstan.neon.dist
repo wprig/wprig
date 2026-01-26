@@ -1,0 +1,18 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 0
+    paths:
+        - .
+    excludePaths:
+        - vendor/
+        - node_modules/
+        - tests/
+        - assets/
+        - docs/
+        - languages/
+        - node/
+        - optional/
+        - scripts/
+        - wp-cli/

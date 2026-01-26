@@ -192,15 +192,15 @@ function processEachSubMenu(
 	const isNavigationBlock = parentMenuItem.classList.contains(
 		'wp-block-navigation-item'
 	);
-	let dropdown = parentMenuItem.querySelector< HTMLElement >( '.dropdown' );
+	//let dropdown = parentMenuItem.querySelector< HTMLElement >( '.dropdown' );
 
-	if ( ! dropdown && ! isNavigationBlock ) {
-		dropdown = createDropdown( parentMenuItem, SUBMENUS, index );
-		parentMenuItem.insertBefore( dropdown, SUBMENUS[ index ] );
-	}
+	// if ( ! dropdown && ! isNavigationBlock ) {
+	// 	dropdown = createDropdown( parentMenuItem, SUBMENUS, index );
+	// 	parentMenuItem.insertBefore( dropdown, SUBMENUS[ index ] );
+	// }
 
 	if ( ! isNavigationBlock ) {
-		convertDropdownToToggleButton( dropdown!, dropdownButton );
+		//convertDropdownToToggleButton( dropdown!, dropdownButton );
 	} else {
 		parentMenuItem
 			.querySelector< HTMLElement >(
@@ -380,8 +380,10 @@ function toggleMenuToggleState( e: Event ) {
 		navElements.forEach( ( navElement ) => {
 			if ( newExpandedState === 'true' ) {
 				navElement.classList.add( 'nav--toggled-on' );
+				document.body.classList.add( 'mobile-menu-open' );
 			} else {
 				navElement.classList.remove( 'nav--toggled-on' );
+				document.body.classList.remove( 'mobile-menu-open' );
 			}
 		} );
 	}

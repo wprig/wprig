@@ -56,6 +56,89 @@ class Rig_Command extends WP_CLI_Command {
 	}
 
 	/**
+	 * Imports the official WordPress Theme Unit Test Data.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp rig import-test-data
+	 *
+	 * @return void
+	 */
+	public function import_test_data(): void {
+		// 1. Ensure WordPress Importer is installed and active
+		WP_CLI::log( 'Installing and activating WordPress Importer...' );
+		WP_CLI::runcommand( 'plugin install wordpress-importer --activate' );
+
+		// 2. Download the test data
+		$file = 'themeunittestdata.wordpress.xml';
+		$url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
+
+		WP_CLI::log( 'Downloading Theme Unit Test Data...' );
+		$download = WP_CLI\Utils\http_request( 'GET', $url );
+
+		if ( 200 !== $download->status_code ) {
+			WP_CLI::error( 'Failed to download test data from GitHub.' );
+		}
+
+		file_put_contents( $file, $download->body );
+
+		// 3. Import the data
+		WP_CLI::log( 'Importing data (this may take a moment)...' );
+		WP_CLI::runcommand( "import $file --authors=create" );
+
+		// 4. Cleanup
+		if ( unlink( $file ) ) {
+			WP_CLI::success( 'Theme Unit Test Data imported and temporary file cleaned up!' );
+		} else {
+			WP_CLI::warning( "Import successful, but failed to delete $file. Please remove it manually." );
+		}
+	}
+
+	/**
+	 * Sets up the Theme Unit Test environment.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp rig test-setup
+	 *
+	 * @param array $args Positional arguments.
+	 * @param array $assoc_args Associative arguments.
+	 */
+	public function test_setup( $args, $assoc_args ) {
+		WP_CLI::log( 'Starting Theme Unit Test environment setup...' );
+
+		// 1. Download the Theme Unit Test Data
+		$xml_url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
+
+		// Ensure download_url is available.
+		if ( ! function_exists( 'download_url' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+
+		$temp_xml = download_url( $xml_url );
+
+		if ( is_wp_error( $temp_xml ) ) {
+			WP_CLI::error( 'Failed to download Theme Unit Test data.' );
+		}
+
+		// 2. Install WordPress Importer if missing
+		if ( ! is_dir( WP_PLUGIN_DIR . '/wordpress-importer' ) ) {
+			WP_CLI::runcommand( 'plugin install wordpress-importer --activate' );
+		}
+
+		// 3. Import the data
+		WP_CLI::runcommand( "import $temp_xml --authors=create" );
+		unlink( $temp_xml );
+
+		// 4. Configure environment settings for testing
+		update_option( 'posts_per_page', 5 ); // Test pagination
+		update_option( 'thread_comments', 1 ); // Test nested comments
+
+		WP_CLI::success( 'Theme Unit Test data imported and environment configured!' );
+		WP_CLI::log( 'Next step: Run "npm run test:e2e" to perform automated visual and a11y checks.' );
+	}
+
+	/**
 	 * Generates a specified number of dummy menu items in a WordPress navigation menu, including optional hierarchical submenus.
 	 *
 	 *  Generate dummy menu items for WordPress theme development

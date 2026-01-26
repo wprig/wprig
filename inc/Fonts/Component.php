@@ -317,7 +317,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * font files, updates the CSS to use local URLs, and saves both the font files
 	 * and the modified CSS file into the active theme's directory.
 	 *
-	 * @param array  $fonts An array where keys are font family names and values
+	 * @param array $fonts An array where keys are font family names and values
 	 *                          are arrays of font variants to be downloaded. If no
 	 *                          valid fonts are provided, an error is returned.
 	 * @param string $font_dir The relative directory path within the theme where
@@ -328,7 +328,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string|\WP_Error The URL of the locally saved CSS file or a WP_Error
 	 *                          object if the process fails.
 	 */
-	public function download_google_fonts_to_local( $fonts = array(), $font_dir = 'assets/fonts', $css_dir = 'assets/css/src' ): WP_Error|string {
+	public function download_google_fonts_to_local( array $fonts = array(), string $font_dir = 'assets/fonts', string $css_dir = 'assets/css/src' ): WP_Error|string {
 		// Base URL for Google Fonts.
 		$google_fonts_base_url = 'https://fonts.googleapis.com/css2?';
 		$query_fonts           = array();

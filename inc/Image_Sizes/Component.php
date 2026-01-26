@@ -64,9 +64,10 @@ class Component implements Component_Interface {
 	 * @param string $html   The HTML image tag markup being filtered.
 	 * @param object $header The custom header object returned by 'get_custom_header()'.
 	 * @param array  $attr   Array of the attributes for the image tag.
+	 *
 	 * @return string The filtered header image HTML.
 	 */
-	public function filter_header_image_tag( string $html, $header, array $attr ): string {
+	public function filter_header_image_tag( string $html, object $header, array $attr ): string {
 		if ( isset( $attr['sizes'] ) ) {
 			$html = str_replace( $attr['sizes'], '100vw', $html );
 		}
@@ -79,10 +80,11 @@ class Component implements Component_Interface {
 	 *
 	 * @param array        $attr       Attributes for the image markup.
 	 * @param WP_Post      $attachment Attachment post object.
-	 * @param string|array $size       Registered image size or flat array of height and width dimensions.
+	 * @param array|string $size       Registered image size or flat array of height and width dimensions.
+	 *
 	 * @return array The filtered attributes for the image markup.
 	 */
-	public function filter_post_thumbnail_sizes_attr( array $attr, WP_Post $attachment, $size ): array {
+	public function filter_post_thumbnail_sizes_attr( array $attr, WP_Post $attachment, array|string $size ): array {
 		$attr['sizes'] = '100vw';
 
 		if ( wp_rig()->is_primary_sidebar_active() ) {

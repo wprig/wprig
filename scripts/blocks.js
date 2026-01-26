@@ -24,6 +24,15 @@ const blocksRoot = path.join(root, 'assets', 'blocks');
 const defaultNamespace =
 	themeConfig?.theme?.slug?.replace(/[^a-z0-9-]/gi, '-') || 'wprig';
 
+function checkBlocksEnabled() {
+	if (!themeConfig?.theme?.enableBlocks) {
+		console.error('\x1b[31m%s\x1b[0m', 'Error: Blocks are not enabled for this theme.');
+		console.log('To enable blocks, run: npm run theme:enable-blocks');
+		console.warn('⚠️  Warning ⚠️ : Themes with included blocks will be rejected by the WordPress.org theme repository.');
+		process.exit(1);
+	}
+}
+
 function parseName(input) {
 	// Accept "namespace/slug" or just "slug"
 	if (!input) {
@@ -516,6 +525,7 @@ program
 		'Generate separate frontend script loaded on frontend only'
 	)
 	.action((name, opts) => {
+		checkBlocksEnabled();
 		cmdNew(name, opts).catch((e) => {
 			console.error(e?.message || e);
 			process.exitCode = 1;

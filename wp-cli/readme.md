@@ -24,6 +24,23 @@ wp rig dev_setup
 wp rig dev_setup
 # Success: Development setup completed!
 ```
+### `wp rig test_setup`
+Sets up the Theme Unit Test environment by importing official WordPress.org test data and configuring settings.
+**What it does:**
+- Downloads the official WordPress.org Theme Unit Test Data
+- Installs and activates the WordPress Importer plugin if missing
+- Imports the test data into your WordPress site
+- Configures environment settings for testing (e.g., pagination and threaded comments)
+
+**Usage:**
+``` bash
+wp rig test_setup
+```
+**Example:**
+``` bash
+wp rig test_setup
+# Success: Theme Unit Test data imported and environment configured!
+```
 ### `wp rig fake_menu_items`
 Generates dummy navigation menu items for theme development and testing.
 **Options:**

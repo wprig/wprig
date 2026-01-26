@@ -86,7 +86,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	private function preload_svg_assets() {
 		// Load dropdown symbol SVG.
-		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true );
+		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true ) ?? '';
 
 		/**
 		 * Filters the dropdown icon SVG markup used in navigation menus.
@@ -135,7 +135,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ) );
 		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ) );
 		add_filter( 'render_block_core/navigation', array( $this, 'add_nav_class_to_navigation_block' ), 10, 3 );
-		add_filter( 'walker_nav_menu_start_el', array( $this, 'modify_menu_items_for_accessibility' ), 10, 4 );
+		//add_filter( 'walker_nav_menu_start_el', array( $this, 'modify_menu_items_for_accessibility' ), 10, 4 );
 		add_filter( 'wp_nav_menu_objects', array( $this, 'inject_parent_link_into_submenu' ), 10, 2 );
 	}
 
@@ -163,7 +163,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			return null;
 		} else {
 			$theme_settings_json  = wp_remote_retrieve_body( $response );
-			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, FILE_USE_INCLUDE_PATH ) );
+			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, true ) );
 		}
 		return null;
 	}
@@ -196,10 +196,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param string  $item_output The menu item's starting HTML output.
 	 * @param WP_Post $item        Menu item data object.
 	 * @param int     $depth       Depth of menu item. Used for padding.
-	 * @param object  $args        An object of wp_nav_menu() arguments.
+	 * @param object $args        An object of wp_nav_menu() arguments.
+	 *
 	 * @return string Modified nav menu HTML.
 	 */
-	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, $args ): string {
+	public function filter_primary_nav_menu_dropdown_symbol( string $item_output, WP_Post $item, int $depth, object $args ): string {
 
 		// Only for our primary menu location.
 		if ( empty( $args->theme_location ) || static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
@@ -208,7 +209,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Add the dropdown for items that have children.
 		if ( ! empty( $item->classes ) && in_array( 'menu-item-has-children', $item->classes, true ) ) {
-			return $item_output . '<span class="dropdown">' . $this->dropdown_symbol_svg . '</span>';
+			return $item_output . '<button class="dropdown-toggle" aria-expanded="false" aria-label="' . esc_html__( 'Expand child menu', 'wp-rig' ) . '">' . $this->dropdown_symbol_svg . '</button>';
 		}
 
 		return $item_output;
@@ -270,7 +271,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param mixed $instance The instance. Type could possibly be more specific.
 	 * @return string.
 	 */
-	public function add_nav_class_to_navigation_block( $block_content, $block, $instance ) {
+	public function add_nav_class_to_navigation_block( mixed $block_content, mixed $block, mixed $instance ): string {
 		// Instantiate the tag processor.
 		$content = new \WP_HTML_Tag_Processor( $block_content );
 
@@ -298,10 +299,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * - Marks injected items with a special class for styling/visibility control.
 	 *
 	 * @param WP_Post[] $items Menu items.
-	 * @param array     $args  Menu args from wp_nav_menu().
+	 * @param object    $args  Menu args from wp_nav_menu().
+	 *
 	 * @return WP_Post[] Potentially modified items array.
 	 */
-	public function inject_parent_link_into_submenu( $items, $args ) {
+	public function inject_parent_link_into_submenu( array $items, object $args ): array {
 		// Ensure we're working with the correct nav menu theme location.
 		if ( empty( $args->theme_location ) || static::PRIMARY_NAV_MENU_SLUG !== $args->theme_location ) {
 			return $items;
@@ -401,12 +403,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @param string $item_output The HTML output for the current menu item.
 	 * @param object $item WP_Post object for the current menu item.
-	 * @param int    $depth Depth of the menu item. Used for nesting levels.
-	 * @param array  $args An associative array of arguments passed to `wp_nav_menu()`.
+	 * @param int $depth Depth of the menu item. Used for nesting levels.
+	 * @param object $args An object of arguments passed to `wp_nav_menu()`.
 	 *
 	 * @return string Modified HTML output for the menu item.
 	 */
-	public function modify_menu_items_for_accessibility( $item_output, $item, $depth, $args ) {
+	public function modify_menu_items_for_accessibility( string $item_output, object $item, int $depth, object $args ): string {
 		// Ensure we're working with the correct nav menu theme location.
 		if ( empty( $args->theme_location ) || 'primary' !== $args->theme_location ) {
 			return $item_output;
@@ -417,9 +419,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			// Extract the original link content (e.g., the text inside the original <a> tag).
 			$item_label = $item->title;
 
-			// Add dropdown symbol inside the button.
-			$dropdown_symbol = '<span class="dropdown">' . $this->dropdown_symbol_svg . '</span>';
-			$has_submenu     = in_array( 'menu-item-has-children', $item->classes, true );
+			$has_submenu = in_array( 'menu-item-has-children', $item->classes, true );
 
 			// Replace `<a>` with `<button>` for accessibility and meaningful semantics.
 			return sprintf(
@@ -427,7 +427,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				$has_submenu ? 'submenu-toggle' : '',
 				esc_attr( $item->ID ),
 				esc_html( $item_label ),
-				$has_submenu ? $dropdown_symbol : ''
+				$has_submenu ? '<span class="dropdown-icon">' . $this->dropdown_symbol_svg . '</span>' : ''
 			);
 		}
 

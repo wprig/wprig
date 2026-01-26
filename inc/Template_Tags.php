@@ -187,31 +187,22 @@ class Template_Tags {
 					WP_Filesystem();
 				}
 
+				// If filesystem failed or file can't be read, return null instead of throwing an exception.
 				if ( ! $wp_filesystem ) {
-					throw new RuntimeException(
-						esc_html__( 'WordPress filesystem is not initialized properly.', 'wp-rig' )
-					);
+					return null;
 				}
 
 				$file_contents = $wp_filesystem->get_contents( $asset_path );
-				if ( false === $file_contents ) {
-					throw new RuntimeException(
-						sprintf(
-						/* translators: %s: asset file path */
-							esc_html__( 'Error reading asset file: %s', 'wp-rig' ),
-							esc_html( $asset_path )
-						)
-					);
-				}
-				return $file_contents;
+
+				// Return the contents if found, otherwise null.
+				return ( false !== $file_contents ) ? $file_contents : null;
+
 			} catch ( \Exception $e ) {
-				throw new RuntimeException(
-					sprintf(
-					/* translators: %s: error message */
-						esc_html__( 'Failed to get asset contents: %s', 'wp-rig' ),
-						esc_html( $e->getMessage() )
-					)
-				);
+				// Log the error in debug mode, but don't crash.
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					error_log( 'WP Rig Asset Error: ' . $e->getMessage() );
+				}
+				return null;
 			}
 		}
 

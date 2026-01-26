@@ -15,7 +15,7 @@ input[type="submit"] {
 	border: 1px solid;
 	border-color: var(--border-color-light) var(--border-color-light) #bbb;
 	border-radius: 3px;
-	background: #eee;
+	background: var(--sub-content-background-color);
 	color: var(--global-font-color);
 	font-size: 0.75rem;
 	line-height: 1;
@@ -23,12 +23,20 @@ input[type="submit"] {
 	cursor: pointer;
 }
 /* stylelint-enable */
+@media (prefers-color-scheme: dark) {
+	button.wp-block-search__button.wp-element-button {
+		border: 1px solid transparent;
+		 &:hover {
+			border: 1px solid var(--border-color-dark);
+		  }
+	}
+}
 
 button:hover,
 input[type="button"]:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover {
-	border-color: var(--border-color-light) #bbb #aaa;
+	border-color: var(--global-font-color) #bbb #aaa;
 }
 
 button:active,
