@@ -5,6 +5,7 @@
  * External dependencies
  */
 import path from 'path';
+import fs from 'node:fs';
 import * as process from 'node:process';
 
 /**
@@ -114,6 +115,10 @@ export const paths = {
 		src: `${ assetsDir }/fonts/**/*.{woff,woff2,eot,ttf,svg}`,
 		dest: `${ assetsDir }/fonts/`,
 	},
+	blocks: {
+		srcDir: `${ assetsDir }/blocks`,
+		dest: `${ assetsDir }/blocks/`,
+	},
 	export: {
 		src: [],
 		stringReplaceSrc: [
@@ -144,8 +149,15 @@ const filesToCopy = configValueDefined( 'export.filesToCopy' )
 for ( const filePath of filesToCopy.concat( additionalFilesToCopy ) ) {
 	// Add the files to export src - use path.posix.join to ensure forward slashes
 	// This ensures cross-platform compatibility (Windows/Mac/Linux)
-	const exportPath = `${ rootPath }/${ filePath }`.replace(/\\/g, '/');
+	const exportPath = `${ rootPath }/${ filePath }`.replace( /\\/g, '/' );
 	paths.export.src.push( exportPath );
+}
+
+// Add blocks to export if they exist.
+if ( fs.existsSync( paths.blocks.srcDir ) ) {
+	paths.export.src.push(
+		`${ paths.blocks.srcDir }/**/*`.replace( /\\/g, '/' )
+	);
 }
 
 // Override paths for production
@@ -156,6 +168,7 @@ if ( isProd ) {
 	paths.scripts.dest = `${ prodAssetsDir }/js/`;
 	paths.images.dest = `${ prodAssetsDir }/images/`;
 	paths.fonts.dest = `${ prodAssetsDir }/fonts/`;
+	paths.blocks.dest = `${ prodAssetsDir }/blocks/`;
 	paths.languages = {
 		src: `${ prodThemePath }/**/*.php`,
 		dest: `${ prodThemePath }/languages/${ config.theme.slug }.pot`,

@@ -100,6 +100,13 @@ async function buildCSS( { dev = false } = {} ) {
 	}
 }
 
+async function buildBlocks() {
+	const { stderr } = await exec( 'npm run build:blocks' );
+	if ( stderr ) {
+		console.error( stderr );
+	}
+}
+
 async function runBuild( { phpcs = false, lint = false, dev = false } = {} ) {
 	// Clean
 	await Promise.all( [
@@ -113,7 +120,11 @@ async function runBuild( { phpcs = false, lint = false, dev = false } = {} ) {
 	}
 
 	// Build assets in parallel
-	await Promise.all( [ buildCSS( { dev } ), buildJS( { dev } ) ] );
+	await Promise.all( [
+		buildCSS( { dev } ),
+		buildJS( { dev } ),
+		buildBlocks(),
+	] );
 
 	// Images and PHP in parallel
 	const postBuildTasks = [
@@ -153,6 +164,7 @@ async function runBundle( { phpcs = false, lint = false } = {} ) {
 	await Promise.all( [
 		buildCSS( { dev: false } ),
 		buildJS( { dev: false } ),
+		buildBlocks(),
 	] );
 
 	// Images, PHP, fonts in parallel

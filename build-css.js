@@ -222,9 +222,9 @@ const getAllFiles = ( dir ) => {
  * - Virtual preload import can be injected after top-level @import block (theme CSS only)
  * - Source map is emitted and linked via sourceMappingURL in dev mode
  *
- * @param {string} filePath         - Path to input CSS file
- * @param {string} outputPath       - Path to output CSS file
- * @param {boolean} injectPreload   - Whether to inject theme preload snippet (default: true)
+ * @param {string}  filePath      - Path to input CSS file
+ * @param {string}  outputPath    - Path to output CSS file
+ * @param {boolean} injectPreload - Whether to inject theme preload snippet (default: true)
  * @return {Promise<void>}
  */
 const processCSSFile = async ( filePath, outputPath, injectPreload = true ) => {
@@ -355,10 +355,7 @@ const processDirectory = async ( dir, destDir ) => {
 	);
 
 	// Block-level CSS: compile each block's style.css and editor.css into build/ (no theme preload injection)
-	const blocksDir = path.join(
-		paths.assetsDir || path.join( process.cwd(), 'assets' ),
-		'blocks'
-	);
+	const blocksDir = paths.blocks.srcDir;
 	try {
 		const slugs = readdirSync( blocksDir, {
 			withFileTypes: true,
@@ -368,7 +365,7 @@ const processDirectory = async ( dir, destDir ) => {
 
 		for ( const slug of slugs ) {
 			const blockDir = path.join( blocksDir, slug );
-			const outDir = path.join( blockDir, 'build' );
+			const outDir = path.join( paths.blocks.dest, slug, 'build' );
 			if ( ! existsSync( outDir ) ) {
 				mkdirSync( outDir, { recursive: true } );
 			}
