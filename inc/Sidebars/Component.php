@@ -2,7 +2,15 @@
 /**
  * WP_Rig\WP_Rig\Sidebars\Component class
  *
+ * Registers and manages widget areas (sidebars).
+ *
  * @package wp_rig
+ *
+ * @css-file     assets/css/src/sidebar.css  Sidebar layout and container styles
+ * @css-file     assets/css/src/widgets.css  Widget-specific styles
+ * @template-part sidebar.php                 Sidebar template
+ *
+ * @related-component Styles  Sidebar CSS loaded conditionally when sidebar is active
  */
 
 namespace WP_Rig\WP_Rig\Sidebars;

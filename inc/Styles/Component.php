@@ -2,7 +2,21 @@
 /**
  * WP_Rig\WP_Rig\Styles\Component class
  *
+ * Handles enqueueing, preloading, and conditional loading of CSS stylesheets.
+ *
  * @package wp_rig
+ *
+ * @css-file assets/css/src/global.css        Main stylesheet entry point (imports all partials)
+ * @css-file assets/css/src/content.css       Post/page content styles (conditional)
+ * @css-file assets/css/src/sidebar.css       Sidebar styles (conditional - when sidebar active)
+ * @css-file assets/css/src/comments.css      Comment section styles (conditional)
+ * @css-file assets/css/src/widgets.css       Widget styles
+ * @css-file assets/css/src/front-page.css    Front page specific styles (conditional)
+ *
+ * @config-key dev.styles                     Style processing configuration
+ * @config-key dev.styles.preload             Files to preload
+ *
+ * @see get_css_files() for conditional loading logic
  */
 
 namespace WP_Rig\WP_Rig\Styles;

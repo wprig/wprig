@@ -151,6 +151,77 @@ We have a new Documentation area that can be found on the [WP Rig website](https
 If you would like to contribute to our documentation efforts, please submit a request on
 our [contribute page](https://wprig.io/contribute/) on our website.
 
+## Architecture
+
+This section explains how WP Rig is organized to help developers (and AI coding agents) understand the codebase structure.
+
+### Directory Structure
+
+```
+wprig/
+├── assets/                 # Frontend assets (CSS, JS, images, SVG)
+│   ├── css/src/           # Source CSS files (compiled by build-css.js)
+│   │   ├── global.css     # Main entry point - imports all partials
+│   │   ├── _*.css         # Partial files (variables, header, nav, etc.)
+│   │   └── editor/        # Block editor styles
+│   ├── js/src/            # Source JS/TS files (compiled by build-js.js)
+│   └── svg/               # SVG icons
+├── config/                 # Theme configuration files
+│   ├── config.default.json # Default settings (do not edit)
+│   ├── config.json        # Custom settings (version controlled)
+│   └── config.local.json  # Local-only settings (gitignored)
+├── inc/                    # PHP components and theme logic
+│   ├── Theme.php          # Main theme class - registers all components
+│   ├── {Feature}/         # Feature components (Styles, Scripts, Nav_Menus, etc.)
+│   │   └── Component.php  # Each implements Component_Interface
+│   ├── Template_Tags.php  # Template helper functions accessed via wp_rig()
+│   └── functions.php      # Helper functions
+├── template-parts/         # Reusable template partials
+├── functions.php           # Theme bootstrap - instantiates Theme class
+└── index.php, header.php, footer.php, etc.  # Main templates
+```
+
+### Component System
+
+WP Rig uses a modular component architecture where each feature is encapsulated in its own class:
+
+1. **Bootstrap**: `functions.php` creates the `Theme` instance
+2. **Registration**: `Theme::__construct()` loads default components from `inc/*/Component.php`
+3. **Initialization**: Each component's `initialize()` method hooks into WordPress
+
+```
+functions.php → Theme.php → Component::initialize() → WordPress hooks
+```
+
+Each component implements `Component_Interface` and optionally `Templating_Component_Interface` for template tags. Components are self-contained: they register their own hooks, enqueue their own assets, and provide their own template functions.
+
+### Style Workflow
+
+Source CSS files in `assets/css/src/` are processed by PostCSS via `build-css.js`:
+
+1. **Edit** source files (e.g., `_header.css` for header styles)
+2. **Import**: `global.css` imports partials via `@import`
+3. **Build**: `build-css.js` processes with PostCSS (custom properties, nesting, autoprefixer)
+4. **Enqueue**: `Styles/Component.php` enqueues compiled CSS in WordPress
+
+**Conditional loading**: Some stylesheets (comments, sidebar, front-page) are only loaded on pages that need them. See `get_css_files()` in `Styles/Component.php`.
+
+### Script Workflow
+
+TypeScript/JavaScript in `assets/js/src/` is bundled by esbuild via `build-js.js`:
+
+1. **Edit** source files (e.g., `navigation.ts` for menu behavior)
+2. **Build**: `build-js.js` compiles TypeScript, bundles, and minifies
+3. **Enqueue**: `Scripts/Component.php` enqueues with async/defer loading
+
+### For AI Coding Agents
+
+WP Rig includes additional files for AI agent discoverability:
+
+- **`.ai-instructions.md`**: Feature-to-file mappings and common tasks
+- **`.rig-config.json`**: Machine-readable entry points and component metadata
+
+These files help coding agents quickly locate relevant files without scanning the entire codebase.
 
 ### Wiki: Recommended code editor extensions
 

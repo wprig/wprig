@@ -2,7 +2,16 @@
 /**
  * WP_Rig\WP_Rig\Scripts\Component class
  *
+ * Handles enqueueing and async/defer loading of JavaScript files.
+ *
  * @package wp_rig
+ *
+ * @js-file assets/js/src/global.ts      Global scripts loaded on all pages
+ * @js-file assets/js/src/navigation.ts  Navigation menu behavior (mobile toggle, dropdowns)
+ *
+ * @config-key dev.debug.scripts         Script debugging configuration
+ *
+ * @see get_js_files() for script registration
  */
 
 namespace WP_Rig\WP_Rig\Scripts;

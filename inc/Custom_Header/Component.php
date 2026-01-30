@@ -2,7 +2,14 @@
 /**
  * WP_Rig\WP_Rig\Custom_Header\Component class
  *
+ * Adds custom header image support and header text color options.
+ *
  * @package wp_rig
+ *
+ * @css-file      assets/css/src/_header.css  Header layout and styling
+ * @template-part header.php                   Header template (site header markup)
+ *
+ * @related-component Styles  Header CSS imported via global.css
  */
 
 namespace WP_Rig\WP_Rig\Custom_Header;

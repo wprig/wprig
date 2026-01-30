@@ -49,6 +49,8 @@
 !.eslintignore
 !.eslintrc.json
 !.gitignore
+!.ai-instructions.md
+!.rig-config.json
 !LICENSE
 !package.json
 !playwright.config.ts
