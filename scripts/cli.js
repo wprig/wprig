@@ -5,7 +5,7 @@
  used in gulpfile.js, but without using gulp itself.
 */
 
-import { exec as execCb } from 'node:child_process';
+import { exec as execCb, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -251,11 +251,62 @@ program
 				await Promise.all( [ lintCSS(), lintJS() ] );
 			}
 
+			// Helper to check if any blocks exist with a src directory
+			const hasBlocks = () => {
+				if ( ! fs.existsSync( paths.blocks.srcDir ) ) {
+					return false;
+				}
+				try {
+					const entries = fs.readdirSync( paths.blocks.srcDir, {
+						withFileTypes: true,
+					} );
+					const blockDirs = entries.filter( ( e ) => e.isDirectory() );
+					return blockDirs.some( ( d ) =>
+						fs.existsSync(
+							path.join( paths.blocks.srcDir, d.name, 'src' )
+						)
+					);
+				} catch ( _ ) {
+					return false;
+				}
+			};
+
 			// Initial dev builds
 			await Promise.all( [
 				buildCSS( { dev: true } ),
 				buildJS( { dev: true } ),
+				hasBlocks() ? buildBlocks() : Promise.resolve(),
 			] );
+
+			let blocksProcess;
+			const startBlocksWatcher = () => {
+				if ( blocksProcess && ! blocksProcess.killed ) {
+					blocksProcess.kill();
+				}
+				blocksProcess = spawn(
+					'node',
+					[ 'scripts/build-all-blocks.js', '--watch' ],
+					{ stdio: 'inherit', shell: process.platform === 'win32' }
+				);
+			};
+
+			if ( hasBlocks() ) {
+				startBlocksWatcher();
+			}
+
+			// Clean up child process on exit
+			process.on( 'SIGINT', () => {
+				if ( blocksProcess ) {
+					blocksProcess.kill();
+				}
+				process.exit();
+			} );
+			process.on( 'SIGTERM', () => {
+				if ( blocksProcess ) {
+					blocksProcess.kill();
+				}
+				process.exit();
+			} );
 
 			// Start BrowserSync server (respects theme config)
 			await runTask( serve, 'serve' );
@@ -328,6 +379,39 @@ program
 				.on( 'change', processImagesWatcher )
 				.on( 'add', processImagesWatcher )
 				.on( 'unlink', processImagesWatcher );
+
+			const blockWatcher = chokidar.watch( paths.assetsDir, {
+				ignoreInitial: true,
+				depth: 3,
+			} );
+			blockWatcher.on( 'all', ( event, dirPath ) => {
+				const absoluteBlocksDir = path.resolve( paths.blocks.srcDir );
+				const absoluteDirPath = path.resolve( dirPath );
+				const parentDir = path.dirname( absoluteDirPath );
+				const grandParentDir = path.dirname( parentDir );
+
+				const isBlocksDir = absoluteDirPath === absoluteBlocksDir;
+				const isBlockDir = parentDir === absoluteBlocksDir;
+				const isSrcDir =
+					path.basename( absoluteDirPath ) === 'src' &&
+					grandParentDir === absoluteBlocksDir;
+
+				if ( isBlocksDir || isBlockDir || isSrcDir ) {
+					if ( event === 'addDir' ) {
+						console.log(
+							`New block detected: ${ path.basename(
+								dirPath
+							) }. Restarting block watcher...`
+						);
+						startBlocksWatcher();
+					}
+					reloadOnly();
+				} else if (
+					absoluteDirPath.startsWith( absoluteBlocksDir + path.sep )
+				) {
+					reloadOnly();
+				}
+			} );
 
 			console.log(
 				'Development server running. Watching for changes...'

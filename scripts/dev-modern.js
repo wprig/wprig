@@ -293,6 +293,98 @@ if ( cssSrcDirs.length ) {
 	console.log( '🔄 Watching CSS in', cssSrcDirs.join( ', ' ) );
 }
 
+// 4.5) Watch Blocks
+const blocksDir = path.join( rootPath, 'assets', 'blocks' );
+let blocksProcess;
+function startBlocksWatcher() {
+	if ( blocksProcess && ! blocksProcess.killed ) {
+		blocksProcess.kill();
+	}
+	const proc = process.platform === 'win32' ? 'node.exe' : 'node';
+	blocksProcess = spawn(
+		proc,
+		[ path.join( rootPath, 'scripts', 'build-all-blocks.js' ), '--watch' ],
+		{
+			cwd: rootPath,
+			stdio: 'inherit',
+			env: { ...process.env },
+		}
+	);
+	blocksProcess.on( 'error', ( err ) => {
+		console.error( '[wprig] Failed to start block watcher:', err );
+	} );
+}
+
+function hasBlocks() {
+	if ( ! fs.existsSync( blocksDir ) ) {
+		return false;
+	}
+	try {
+		const entries = fs.readdirSync( blocksDir, {
+			withFileTypes: true,
+		} );
+		const blockDirs = entries.filter( ( e ) => e.isDirectory() );
+		return blockDirs.some( ( d ) =>
+			fs.existsSync( path.join( blocksDir, d.name, 'src' ) )
+		);
+	} catch ( _ ) {
+		return false;
+	}
+}
+
+if ( hasBlocks() ) {
+	startBlocksWatcher();
+}
+
+// Watch for new block directories
+chokidar
+	.watch( path.join( rootPath, 'assets' ), {
+		ignoreInitial: true,
+		depth: 3,
+	} )
+	.on( 'all', ( event, dirPath ) => {
+		const absoluteBlocksDir = path.resolve( blocksDir );
+		const absoluteDirPath = path.resolve( dirPath );
+		const parentDir = path.dirname( absoluteDirPath );
+		const grandParentDir = path.dirname( parentDir );
+
+		const isBlocksDir = absoluteDirPath === absoluteBlocksDir;
+		const isBlockDir = parentDir === absoluteBlocksDir;
+		const isSrcDir =
+			path.basename( absoluteDirPath ) === 'src' &&
+			grandParentDir === absoluteBlocksDir;
+
+		if ( isBlocksDir || isBlockDir || isSrcDir ) {
+			if ( event === 'addDir' ) {
+				console.log(
+					`[wprig] New block detected: ${ path.basename(
+						dirPath
+					) }. Restarting block watcher...`
+				);
+				startBlocksWatcher();
+			}
+			lrChanged( [ dirPath ] );
+		} else if (
+			absoluteDirPath.startsWith( absoluteBlocksDir + path.sep )
+		) {
+			lrChanged( [ dirPath ] );
+		}
+	} );
+
+// Clean up child process on exit
+process.on( 'SIGINT', () => {
+	if ( blocksProcess ) {
+		blocksProcess.kill();
+	}
+	process.exit();
+} );
+process.on( 'SIGTERM', () => {
+	if ( blocksProcess ) {
+		blocksProcess.kill();
+	}
+	process.exit();
+} );
+
 // 5) Watch PHP templates to trigger a soft reload
 const phpGlobs = paths.php?.src || [ path.join( rootPath, '**/*.php' ) ];
 chokidar.watch( phpGlobs, { ignoreInitial: true } ).on( 'change', ( p ) => {
