@@ -2,7 +2,14 @@
 /**
  * WP_Rig\WP_Rig\Accessibility\Component class
  *
+ * Provides accessibility enhancements including skip links, focus management,
+ * and screen reader utilities.
+ *
  * @package wp_rig
+ *
+ * @css-file assets/css/src/_accessibility.css  Screen reader text, skip links, focus styles
+ *
+ * @related-component Styles  Accessibility CSS imported via global.css
  */
 
 namespace WP_Rig\WP_Rig\Accessibility;

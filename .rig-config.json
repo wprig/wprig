@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "wp-rig",
+  "version": "3.0.0",
+  "description": "Configuration metadata for AI agent discoverability in WP Rig theme",
+
+  "entryPoints": {
+    "php": {
+      "bootstrap": "functions.php",
+      "theme": "inc/Theme.php",
+      "components": "inc/*/Component.php",
+      "templateTags": "inc/Template_Tags.php",
+      "functions": "inc/functions.php"
+    },
+    "css": {
+      "global": "assets/css/src/global.css",
+      "partials": "assets/css/src/_*.css",
+      "content": "assets/css/src/content.css",
+      "sidebar": "assets/css/src/sidebar.css",
+      "widgets": "assets/css/src/widgets.css",
+      "comments": "assets/css/src/comments.css",
+      "frontPage": "assets/css/src/front-page.css",
+      "editor": "assets/css/src/editor/editor-styles.css",
+      "admin": "assets/css/src/admin/*.css"
+    },
+    "js": {
+      "global": "assets/js/src/global.ts",
+      "navigation": "assets/js/src/navigation.ts",
+      "customizer": "assets/js/src/customizer.tsx",
+      "admin": "assets/js/src/admin/index.jsx"
+    },
+    "templates": {
+      "index": "index.php",
+      "header": "header.php",
+      "footer": "footer.php",
+      "sidebar": "sidebar.php",
+      "comments": "comments.php",
+      "404": "404.php",
+      "500": "500.php",
+      "offline": "offline.php",
+      "parts": "template-parts/**/*.php"
+    },
+    "config": {
+      "default": "config/config.default.json",
+      "custom": "config/config.json",
+      "local": "config/config.local.json"
+    }
+  },
+
+  "components": {
+    "localization": {
+      "file": "inc/Localization/Component.php",
+      "handles": ["text-domain", "translations"]
+    },
+    "base_support": {
+      "file": "inc/Base_Support/Component.php",
+      "handles": ["theme-support", "content-width", "embed-sizing"]
+    },
+    "editor": {
+      "file": "inc/Editor/Component.php",
+      "handles": ["editor-styles", "block-styles", "wide-alignments"],
+      "cssFiles": ["assets/css/src/editor/editor-styles.css"]
+    },
+    "accessibility": {
+      "file": "inc/Accessibility/Component.php",
+      "handles": ["skip-link", "keyboard-navigation", "focus-styles"],
+      "cssFiles": ["assets/css/src/_accessibility.css"]
+    },
+    "image_sizes": {
+      "file": "inc/Image_Sizes/Component.php",
+      "handles": ["custom-image-sizes"]
+    },
+    "pwa": {
+      "file": "inc/PWA/Component.php",
+      "handles": ["service-worker", "offline-page"],
+      "templates": ["offline.php"]
+    },
+    "comments": {
+      "file": "inc/Comments/Component.php",
+      "handles": ["comment-form", "comment-list", "threaded-comments"],
+      "cssFiles": ["assets/css/src/comments.css"],
+      "templates": ["comments.php"]
+    },
+    "nav_menus": {
+      "file": "inc/Nav_Menus/Component.php",
+      "handles": ["menu-registration", "menu-rendering", "mobile-navigation"],
+      "cssFiles": ["assets/css/src/_navigation.css"],
+      "jsFiles": ["assets/js/src/navigation.ts"]
+    },
+    "sidebars": {
+      "file": "inc/Sidebars/Component.php",
+      "handles": ["widget-areas", "sidebar-registration"],
+      "cssFiles": ["assets/css/src/sidebar.css", "assets/css/src/widgets.css"],
+      "templates": ["sidebar.php"]
+    },
+    "custom_background": {
+      "file": "inc/Custom_Background/Component.php",
+      "handles": ["custom-background"]
+    },
+    "custom_header": {
+      "file": "inc/Custom_Header/Component.php",
+      "handles": ["custom-header"],
+      "cssFiles": ["assets/css/src/_header.css"]
+    },
+    "custom_logo": {
+      "file": "inc/Custom_Logo/Component.php",
+      "handles": ["custom-logo"]
+    },
+    "post_thumbnails": {
+      "file": "inc/Post_Thumbnails/Component.php",
+      "handles": ["featured-images", "thumbnail-sizes"]
+    },
+    "ez_customizer": {
+      "file": "inc/EZ_Customizer/Component.php",
+      "handles": ["customizer-settings", "live-preview"],
+      "jsFiles": ["assets/js/src/customizer.tsx"]
+    },
+    "fonts": {
+      "file": "inc/Fonts/Component.php",
+      "handles": ["web-fonts", "font-preloading"]
+    },
+    "styles": {
+      "file": "inc/Styles/Component.php",
+      "handles": ["css-enqueuing", "preloading", "conditional-styles"],
+      "cssFiles": [
+        "assets/css/src/global.css",
+        "assets/css/src/content.css",
+        "assets/css/src/sidebar.css",
+        "assets/css/src/comments.css",
+        "assets/css/src/front-page.css"
+      ],
+      "configKeys": ["dev.styles"]
+    },
+    "scripts": {
+      "file": "inc/Scripts/Component.php",
+      "handles": ["js-enqueuing", "async-loading", "defer-loading"],
+      "jsFiles": ["assets/js/src/global.ts", "assets/js/src/navigation.ts"],
+      "configKeys": ["dev.debug.scripts"]
+    },
+    "excerpts": {
+      "file": "inc/Excerpts/Component.php",
+      "handles": ["excerpt-length", "excerpt-more"]
+    },
+    "options": {
+      "file": "inc/Options/Component.php",
+      "handles": ["theme-options", "settings-page"],
+      "cssFiles": ["assets/css/src/admin/theme-settings.css"],
+      "jsFiles": ["assets/js/src/admin/index.jsx"]
+    }
+  },
+
+  "buildSystem": {
+    "cssProcessor": {
+      "file": "build-css.js",
+      "tool": "postcss",
+      "features": ["custom-media-queries", "custom-properties", "nesting-rules", "autoprefixer"]
+    },
+    "jsProcessor": {
+      "file": "build-js.js",
+      "tool": "esbuild",
+      "features": ["typescript", "jsx", "bundling", "minification"]
+    },
+    "commands": {
+      "init": "npm run rig-init",
+      "dev": "npm run dev",
+      "build": "npm run build",
+      "bundle": "npm run bundle",
+      "lint": "npm run lint",
+      "lintCss": "npm run lint:css",
+      "lintJs": "npm run lint:js",
+      "lintPhp": "npm run lint:php"
+    }
+  },
+
+  "conventions": {
+    "cssPartialPrefix": "_",
+    "componentPattern": "inc/{Feature}/Component.php",
+    "namespaceRoot": "WP_Rig\\WP_Rig",
+    "textDomain": "wp-rig",
+    "conditionalStylesMethod": "get_css_files",
+    "templateTagsAccess": "wp_rig()->{method}()"
+  },
+
+  "fileRelationships": {
+    "header": {
+      "template": "header.php",
+      "css": "assets/css/src/_header.css",
+      "component": "inc/Custom_Header/Component.php"
+    },
+    "navigation": {
+      "css": "assets/css/src/_navigation.css",
+      "js": "assets/js/src/navigation.ts",
+      "component": "inc/Nav_Menus/Component.php"
+    },
+    "sidebar": {
+      "template": "sidebar.php",
+      "css": ["assets/css/src/sidebar.css", "assets/css/src/widgets.css"],
+      "component": "inc/Sidebars/Component.php"
+    },
+    "comments": {
+      "template": "comments.php",
+      "css": "assets/css/src/comments.css",
+      "component": "inc/Comments/Component.php"
+    },
+    "footer": {
+      "template": "footer.php",
+      "css": "assets/css/src/_footer.css"
+    }
+  }
+}

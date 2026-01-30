@@ -2,7 +2,14 @@
 /**
  * WP_Rig\WP_Rig\Comments\Component class
  *
+ * Manages the comments UI including comment list and reply functionality.
+ *
  * @package wp_rig
+ *
+ * @css-file      assets/css/src/comments.css  Comment section styles
+ * @template-part comments.php                  Comments template
+ *
+ * @related-component Styles  Comments CSS loaded conditionally on singular posts with comments
  */
 
 namespace WP_Rig\WP_Rig\Comments;

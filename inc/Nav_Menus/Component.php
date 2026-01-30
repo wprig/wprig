@@ -2,7 +2,17 @@
 /**
  * WP_Rig\WP_Rig\Nav_Menus\Component class
  *
+ * Manages navigation menu registration, rendering, and mobile menu behavior.
+ *
  * @package wp_rig
+ *
+ * @css-file assets/css/src/_navigation.css   Navigation menu styles (desktop and mobile)
+ * @js-file  assets/js/src/navigation.ts      Mobile menu toggle and dropdown behavior
+ *
+ * @related-component Scripts                 Enqueues navigation.ts
+ * @related-component Styles                  Navigation CSS imported via global.css
+ *
+ * @config-key dev.styles.features.mobile-nav-type  Mobile navigation style (modern/legacy)
  */
 
 namespace WP_Rig\WP_Rig\Nav_Menus;

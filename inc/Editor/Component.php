@@ -2,7 +2,13 @@
 /**
  * WP_Rig\WP_Rig\Editor\Component class
  *
+ * Integrates theme styles and features with the WordPress block editor.
+ *
  * @package wp_rig
+ *
+ * @css-file assets/css/src/editor/editor-styles.css  Block editor specific styles
+ *
+ * @related-component Styles  Editor styles share variables from _custom-properties.css
  */
 
 namespace WP_Rig\WP_Rig\Editor;
