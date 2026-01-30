@@ -140,6 +140,12 @@ const isWatch = process.argv.includes( '--watch' );
 console.log( `Building blocks using esbuild...` );
 
 try {
+	// Check if blocks directory exists
+	if ( ! fs.existsSync( blocksDir ) ) {
+		console.log( 'Blocks directory not found. Skipping block build.' );
+		process.exit( 0 );
+	}
+
 	// Get all directories in the blocks folder
 	const blockDirs = fs
 		.readdirSync( blocksDir, { withFileTypes: true } )
@@ -208,8 +214,8 @@ try {
 					format: 'iife',
 					globalName:
 						'WPRigBlock' +
-						block.charAt( 0 ).toUpperCase() +
-						block.slice( 1 ),
+						block.replace( /-/g, '_' ).charAt( 0 ).toUpperCase() +
+						block.replace( /-/g, '_' ).slice( 1 ),
 					sourcemap: isWatch ? 'inline' : false,
 					jsx: 'transform',
 					jsxFactory: 'wp.element.createElement',
