@@ -23,7 +23,9 @@ namespace WP_Rig\WP_Rig\Styles;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
+use WP_Rig\WP_Rig\Asset_Provider;
 use function WP_Rig\WP_Rig\wp_rig;
+use function WP_Rig\WP_Rig\wp_rig_theme;
 use function add_action;
 use function add_filter;
 use function wp_enqueue_style;
@@ -81,6 +83,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function initialize() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_styles' ) );
 		add_action( 'wp_head', array( $this, 'action_preload_styles' ) );
+		add_action( 'wp_head', array( $this, 'action_inline_critical_css' ), 1 );
 		add_action( 'after_setup_theme', array( $this, 'action_add_editor_styles' ) );
 	}
 
@@ -111,8 +114,23 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		$css_files = $this->get_css_files();
 		foreach ( $css_files as $handle => $data ) {
-			$src     = $css_uri . $data['file'];
-			$version = wp_rig()->get_asset_version( $css_dir . $data['file'] );
+			// Skip if this is an inline style.
+			if ( ! empty( $data['inline'] ) ) {
+				continue;
+			}
+
+			// Skip if condition is not met.
+			if ( ! empty( $data['condition'] ) && is_callable( $data['condition'] ) && ! call_user_func( $data['condition'] ) ) {
+				continue;
+			}
+
+			$file = $data['file'];
+			if ( ! str_contains( $file, '.min.css' ) ) {
+				$file = str_replace( '.css', '.min.css', $file );
+			}
+
+			$src     = $css_uri . $file;
+			$version = wp_rig()->get_asset_version( $css_dir . $file );
 
 			/*
 			 * Enqueue global stylesheets immediately and register the other ones for later use
@@ -154,6 +172,24 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$css_files = $this->get_css_files();
 		foreach ( $css_files as $handle => $data ) {
 
+			// Handle resource hints (preload) from manifest.
+			if ( ! empty( $data['preload'] ) ) {
+				// Verify condition if provided.
+				if ( ! empty( $data['condition'] ) && is_callable( $data['condition'] ) && ! call_user_func( $data['condition'] ) ) {
+					continue;
+				}
+
+				$file = $data['file'];
+				if ( ! str_contains( $file, '.min.css' ) ) {
+					$file = str_replace( '.css', '.min.css', $file );
+				}
+
+				$preload_uri = get_theme_file_uri( '/assets/css/' . $file );
+				echo '<link rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $preload_uri ) . '" as="style">';
+				echo "\n";
+				continue;
+			}
+
 			// Skip if stylesheet not registered.
 			if ( ! isset( $wp_styles->registered[ $handle ] ) ) {
 				continue;
@@ -173,6 +209,41 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 			echo '<link rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $preload_uri ) . '" as="style" onload="this.rel=\'stylesheet\'">';
 			echo "\n";
+		}
+	}
+
+	/**
+	 * Inlines critical CSS stylesheets directly into the head.
+	 */
+	public function action_inline_critical_css() {
+		$css_files = $this->get_css_files();
+
+		foreach ( $css_files as $handle => $data ) {
+			if ( empty( $data['inline'] ) ) {
+				continue;
+			}
+
+			// Verify the naming convention or the explicit flag.
+			if ( ! str_contains( $data['file'], '.critical' ) && empty( $data['inline'] ) ) {
+				continue;
+			}
+
+			// Verify condition if provided.
+			if ( ! empty( $data['condition'] ) && is_callable( $data['condition'] ) && ! call_user_func( $data['condition'] ) ) {
+				continue;
+			}
+
+			$file = $data['file'];
+			if ( ! str_contains( $file, '.min.css' ) ) {
+				$file = str_replace( '.css', '.min.css', $file );
+			}
+
+			$file_path = get_theme_file_path( '/assets/css/' . $file );
+
+			if ( file_exists( $file_path ) ) {
+				echo '<style id="wprig-critical-' . esc_attr( $handle ) . '-css">' . file_get_contents( $file_path ) . '</style>';
+				echo "\n";
+			}
 		}
 	}
 
@@ -287,6 +358,19 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				},
 			),
 		);
+
+		// Aggregate manifests from components implementing Asset_Provider.
+		$components = wp_rig_theme()->get_components();
+		foreach ( $components as $component ) {
+			if ( $component instanceof Asset_Provider ) {
+				$manifest = $component->get_asset_manifest();
+				if ( ! empty( $manifest['styles'] ) ) {
+					foreach ( $manifest['styles'] as $handle => $data ) {
+						$css_files[ $handle ] = $data;
+					}
+				}
+			}
+		}
 
 		/**
 		 * Filters default CSS files.

@@ -11,6 +11,11 @@
     "themeType": "classic",
     "enableBlocks": false
   },
+  "performance": {
+    "cleanup_emojis": true,
+    "cleanup_dashicons": true,
+    "cleanup_global_styles": false
+  },
   "dev": {
     "admin": {
       "user": "admin",

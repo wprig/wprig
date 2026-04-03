@@ -18,8 +18,11 @@ namespace WP_Rig\WP_Rig\Scripts;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
+use WP_Rig\WP_Rig\Asset_Provider;
 use function WP_Rig\WP_Rig\wp_rig;
+use function WP_Rig\WP_Rig\wp_rig_theme;
 use function add_action;
+use function add_filter;
 use function wp_enqueue_script;
 use function wp_register_script;
 use function wp_script_add_data;
@@ -29,6 +32,8 @@ use function _doing_it_wrong;
 use function esc_html;
 use function wp_print_scripts;
 use function apply_filters;
+use function wp_scripts;
+use function esc_attr;
 
 /**
  * Class for managing javascript files.
@@ -72,6 +77,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function initialize(): void {
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_scripts' ) );
+		add_action( 'wp_head', array( $this, 'action_print_bootloader' ), 1 );
+		add_filter( 'script_loader_tag', array( $this, 'filter_script_loader_tag' ), 10, 2 );
 	}
 
 	/**
@@ -98,8 +105,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		$js_files = $this->get_js_files();
 		foreach ( $js_files as $handle => $data ) {
-			$src     = $js_uri . $data['file'];
-			$version = wp_rig()->get_asset_version( $js_dir . $data['file'] );
+			$file = $data['file'];
+			if ( ! str_contains( $file, '.min.js' ) ) {
+				$file = str_replace( '.js', '.min.js', $file );
+			}
+
+			$src     = $js_uri . $file;
+			$version = wp_rig()->get_asset_version( $js_dir . $file );
 
 			/*
 			 * Enqueue global JavaScript files immediately and register the other ones for later use.
@@ -113,11 +125,22 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			/**
 			 * Set async and deferred attributes.
 			 */
-			if ( 'async' === $data['loading'] ) {
+			if ( 'async' === $data['loading'] || 'async' === ( $data['strategy'] ?? '' ) ) {
 				wp_script_add_data( $handle, 'async', true );
 			}
-			if ( 'defer' === $data['loading'] ) {
+			if ( 'defer' === $data['loading'] || 'defer' === ( $data['strategy'] ?? '' ) ) {
 				wp_script_add_data( $handle, 'defer', true );
+			}
+
+			if ( 'delay' === ( $data['strategy'] ?? '' ) ) {
+				wp_script_add_data( $handle, 'rig-strategy', 'delay' );
+
+				// Mark dependencies for delay if they are not already enqueued/loaded.
+				if ( ! empty( $data['deps'] ) ) {
+					foreach ( $data['deps'] as $dep ) {
+						wp_script_add_data( $dep, 'rig-strategy', 'delay' );
+					}
+				}
 			}
 
 			/**
@@ -132,6 +155,33 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	}
 
 
+
+	/**
+	 * Filters the script tag to implement the delayed loading strategy.
+	 *
+	 * @param string $tag    The script tag.
+	 * @param string $handle The script handle.
+	 * @return string Modified script tag.
+	 */
+	public function filter_script_loader_tag( string $tag, string $handle ): string {
+		$strategy = wp_scripts()->get_data( $handle, 'rig-strategy' );
+		if ( 'delay' === $strategy ) {
+			$tag = str_replace( ' src=', ' data-src=', $tag );
+			$tag = str_replace( '<script ', '<script data-rig-strategy="delay" ', $tag );
+		}
+		return $tag;
+	}
+
+	/**
+	 * Prints the bootloader snippet for the interaction-delayed loader.
+	 */
+	public function action_print_bootloader(): void {
+		?>
+		<script id="wp-rig-interaction-loader">
+		(function(){var e=["touchstart","mousemove","scroll","keydown","click"],t=function(){e.forEach(function(e){window.removeEventListener(e,t)}),document.querySelectorAll('script[data-rig-strategy="delay"]').forEach(function(e){e.src=e.getAttribute("data-src"),e.removeAttribute("data-src"),e.removeAttribute("data-rig-strategy")})};e.forEach(function(e){window.addEventListener(e,t,{passive:!0,once:!0})})})();
+		</script>
+		<?php
+	}
 
 	/**
 	 * Prints JavaScript <script> tags directly.
@@ -182,14 +232,24 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				'file'   => 'global.min.js',
 				'global' => true,
 			),
-		);
-
-		$js_files[] = array(
 			'wp-rig-authors' => array(
 				'file'   => 'authors.min.js',
 				'global' => true,
 			),
 		);
+
+		// Aggregate manifests from components implementing Asset_Provider.
+		$components = wp_rig_theme()->get_components();
+		foreach ( $components as $component ) {
+			if ( $component instanceof Asset_Provider ) {
+				$manifest = $component->get_asset_manifest();
+				if ( ! empty( $manifest['scripts'] ) ) {
+					foreach ( $manifest['scripts'] as $handle => $data ) {
+						$js_files[ $handle ] = $data;
+					}
+				}
+			}
+		}
 
 		/**
 		 * Filters default JS files.
@@ -214,11 +274,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 			$this->js_files[ $handle ] = array_merge(
 				array(
-					'global'   => false,
-					'loading'  => null,
-					'footer'   => false,
-					'deps'     => array(),
-					'localize' => null,
+					'global'    => false,
+					'strategy'  => null,
+					'loading'   => null,
+					'condition' => null,
+					'footer'    => false,
+					'deps'      => array(),
+					'localize'  => null,
 				),
 				$data
 			);

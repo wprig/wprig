@@ -15,6 +15,17 @@ namespace WP_Rig\WP_Rig;
  * @return Template_Tags Template tags instance exposing template tag methods.
  */
 function wp_rig(): Template_Tags {
+	return wp_rig_theme()->template_tags();
+}
+
+/**
+ * Provides access to the main theme instance.
+ *
+ * When called for the first time, the function will initialize the theme.
+ *
+ * @return Theme Theme instance.
+ */
+function wp_rig_theme(): Theme {
 	static $theme = null;
 
 	if ( null === $theme ) {
@@ -22,5 +33,5 @@ function wp_rig(): Template_Tags {
 		$theme->initialize();
 	}
 
-	return $theme->template_tags();
+	return $theme;
 }

@@ -103,6 +103,15 @@ class Theme {
 	}
 
 	/**
+	 * Retrieves the theme components.
+	 *
+	 * @return array List of theme components, keyed by their slug.
+	 */
+	public function get_components(): array {
+		return $this->components;
+	}
+
+	/**
 	 * Retrieves the component for a given slug.
 	 *
 	 * This should typically not be used from outside of the theme classes infrastructure.
@@ -155,6 +164,7 @@ class Theme {
 			new Fonts\Component(),
 			new Styles\Component(),
 			new Scripts\Component(),
+			new Performance\Component(),
 			new Excerpts\Component(),
 			new Options\Component(),
 		);
