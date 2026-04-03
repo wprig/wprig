@@ -18,23 +18,23 @@ class WP_Test_Setup {
 	private $wp_core_dir;
 
 	public function __construct() {
-		// Get environment variables or use defaults
+		// Get environment variables or use defaults.
 		$this->db_name    = getenv( 'WP_TESTS_DB_NAME' ) ?: 'wprig_test';
 		$this->db_user    = getenv( 'WP_TESTS_DB_USER' ) ?: 'root';
 		$this->db_pass    = getenv( 'WP_TESTS_DB_PASS' ) ?: '';
 		$this->db_host    = getenv( 'WP_TESTS_DB_HOST' ) ?: 'localhost';
 		$this->wp_version = getenv( 'WP_VERSION' ) ?: 'latest';
 
-		// Use a more reliable temp directory approach for Windows
+		// Use a more reliable temp directory approach for Windows.
 		if ( PHP_OS_FAMILY === 'Windows' ) {
-			// Use the actual system temp directory and get the real path
+			// Use the actual system temp directory and get the real path.
 			$system_temp = sys_get_temp_dir();
 			$real_temp   = realpath( $system_temp );
 
 			echo "System temp: {$system_temp}\n";
 			echo "Real temp: {$real_temp}\n";
 
-			// Create a subfolder in temp to avoid conflicts
+			// Create a subfolder in temp to avoid conflicts.
 			$this->wp_tests_dir = $real_temp . DIRECTORY_SEPARATOR . 'wprig-tests' . DIRECTORY_SEPARATOR . 'wordpress-tests-lib';
 			$this->wp_core_dir  = $real_temp . DIRECTORY_SEPARATOR . 'wprig-tests' . DIRECTORY_SEPARATOR . 'WordPress';
 		} else {
@@ -42,7 +42,7 @@ class WP_Test_Setup {
 			$this->wp_core_dir  = getenv( 'WP_CORE_DIR' ) ?: '/tmp/wordpress';
 		}
 
-		// Don't normalize paths yet - just ensure they're consistent
+		// Don't normalize paths yet - just ensure they're consistent.
 		$this->wp_tests_dir = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $this->wp_tests_dir );
 		$this->wp_core_dir  = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $this->wp_core_dir );
 	}
@@ -55,7 +55,7 @@ class WP_Test_Setup {
 		echo "Tests Dir: {$this->wp_tests_dir}\n";
 		echo "Core Dir: {$this->wp_core_dir}\n\n";
 
-		// Use real MySQL database
+		// Use real MySQL database.
 		echo "Using MySQL database for testing\n";
 
 		$this->download_wordpress();
@@ -75,7 +75,7 @@ class WP_Test_Setup {
 
 		echo "Downloading WordPress {$this->wp_version}...\n";
 
-		// Create parent directory first
+		// Create parent directory first.
 		$parent_dir = dirname( $this->wp_core_dir );
 		$this->create_directory( $parent_dir );
 
@@ -98,11 +98,11 @@ class WP_Test_Setup {
 
 		$this->create_directory( $this->wp_tests_dir );
 
-		// Download the entire test suite using SVN export if available, otherwise download manually
+		// Download the entire test suite using SVN export if available, otherwise download manually.
 		if ( $this->command_exists( 'svn' ) ) {
 			$this->download_test_suite_with_svn();
 		} else {
-			// Download manually with a more complete file list
+			// Download manually with a more complete file list.
 			$this->download_test_files_manually();
 		}
 	}
@@ -123,7 +123,7 @@ class WP_Test_Setup {
 	}
 
 	private function download_test_files_manually() {
-		// More comprehensive list of test files
+		// More comprehensive list of test files.
 		$files = array(
 			'includes/bootstrap.php',
 			'includes/functions.php',
@@ -173,7 +173,7 @@ class WP_Test_Setup {
 			}
 		}
 
-		// Also download data files that might be needed
+		// Also download data files that might be needed.
 		$data_files = array(
 			'data/plugins/wordpress-importer/wordpress-importer.php',
 			'data/plugins/hello.php',
@@ -200,9 +200,9 @@ class WP_Test_Setup {
 		$process        = proc_open(
 			"$whereIsCommand $command",
 			array(
-				0 => array( 'pipe', 'r' ), // stdin
-				1 => array( 'pipe', 'w' ), // stdout
-				2 => array( 'pipe', 'w' ), // stderr
+				0 => array( 'pipe', 'r' ), // stdin.
+				1 => array( 'pipe', 'w' ), // stdout.
+				2 => array( 'pipe', 'w' ), // stderr.
 			),
 			$pipes
 		);
@@ -234,7 +234,7 @@ class WP_Test_Setup {
 
 		echo "✅ Created wp-tests-config.php\n";
 
-		// Verify the file was created correctly
+		// Verify the file was created correctly.
 		if ( file_exists( $config_path ) ) {
 			$size = filesize( $config_path );
 			echo "Config file size: {$size} bytes\n";
@@ -242,15 +242,15 @@ class WP_Test_Setup {
 	}
 
 	private function get_wp_config_template() {
-		// Wait until WordPress core is actually downloaded
+		// Wait until WordPress core is actually downloaded.
 		if ( ! is_dir( $this->wp_core_dir ) ) {
 			throw new Exception( "WordPress core directory does not exist: {$this->wp_core_dir}" );
 		}
 
-		// Use the actual path with proper directory separators
+		// Use the actual path with proper directory separators.
 		$abspath = $this->wp_core_dir . DIRECTORY_SEPARATOR;
 
-		// For PHP strings, we need to escape backslashes on Windows
+		// For PHP strings, we need to escape backslashes on Windows.
 		$abspath_escaped = str_replace( '\\', '\\\\', $abspath );
 
 		return "<?php
@@ -277,7 +277,7 @@ define( 'WP_DEBUG', true );
 define( 'WP_TESTS_SKIP_INSTALL', false );
 
 // ** WordPress path ** //
-// Point to our downloaded WordPress core
+// Point to our downloaded WordPress core.
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', '{$abspath_escaped}' );
 }
@@ -297,7 +297,7 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 ";
 	}
 
-	// Utility methods
+	// Utility methods.
 	private function create_directory( $path ) {
 		if ( ! is_dir( $path ) ) {
 			echo "Creating directory: {$path}\n";
@@ -384,7 +384,7 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 
 		$success = false;
 
-		// Try system tar first as it's more reliable
+		// Try system tar first as it's more reliable.
 		if ( $this->command_exists( 'tar' ) ) {
 			if ( ! is_dir( $extract_to ) ) {
 				$this->create_directory( $extract_to );
@@ -398,7 +398,7 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 
 		if ( ! $success && class_exists( 'PharData' ) ) {
 			try {
-				// PharData needs the extension to be correct
+				// PharData needs the extension to be correct.
 				$renamed_tar = $tar_file . '.tar.gz';
 				if ( ! file_exists( $renamed_tar ) ) {
 					copy( $tar_file, $renamed_tar );
@@ -409,7 +409,7 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 				$success = true;
 				unlink( $renamed_tar );
 			} catch ( Exception $e ) {
-				// Only throw if system tar also failed
+				// Only throw if system tar also failed.
 				if ( ! $success ) {
 					throw new Exception( 'Failed to extract archive with PharData: ' . $e->getMessage() );
 				}
@@ -420,7 +420,7 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 			throw new Exception( 'Failed to extract archive: No suitable extraction method found' );
 		}
 
-		// If there's an expected folder (like 'WordPress'), move contents up
+		// If there's an expected folder (like 'WordPress'), move contents up.
 		if ( $expected_folder ) {
 			$extracted_path = $extract_to . DIRECTORY_SEPARATOR . $expected_folder;
 			$target_path    = $this->wp_core_dir;
@@ -428,13 +428,13 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 			echo "Moving from {$extracted_path} to {$target_path}\n";
 
 			if ( is_dir( $extracted_path ) && $extracted_path !== $target_path ) {
-				// Ensure target directory exists
+				// Ensure target directory exists.
 				$this->create_directory( $target_path );
 
-				// Move all contents
+				// Move all contents.
 				$this->move_directory_contents( $extracted_path, $target_path );
 
-				// Clean up the temporary extracted folder
+				// Clean up the temporary extracted folder.
 				$this->remove_directory( $extracted_path );
 			}
 		}
@@ -483,23 +483,23 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 	}
 }
 
-// Run the setup
+// Run the setup.
 try {
-	// Create the WP_Test_Setup instance
+	// Create the WP_Test_Setup instance.
 	$setup = new WP_Test_Setup();
 
-	// Run the setup with additional error handling
+	// Run the setup with additional error handling.
 	echo "Starting WordPress test environment setup...\n";
 	$setup->setup();
 
-	// Verify the test environment was created successfully
+	// Verify the test environment was created successfully.
 	$test_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'wprig-tests' . DIRECTORY_SEPARATOR . 'wordpress-tests-lib';
 	$test_dir = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $test_dir );
 
 	if ( file_exists( $test_dir . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'bootstrap.php' ) ) {
 		echo "✅ Test environment verified at: {$test_dir}\n";
 
-		// Create a marker file to indicate successful setup
+		// Create a marker file to indicate successful setup.
 		$marker_file = __DIR__ . DIRECTORY_SEPARATOR . '.wp-tests-setup-complete';
 		file_put_contents( $marker_file, date( 'Y-m-d H:i:s' ) );
 		echo "✅ Created setup marker file: {$marker_file}\n";

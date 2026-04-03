@@ -1,6 +1,8 @@
 <?php
 /**
- * Dynamic block render template.
+ * Block helper script.
+ *
+ * Block render template.
  *
  * WordPress includes this file when block.json contains: "render": "file:./render.php"
  * Variables provided by core at include-time:
@@ -26,10 +28,10 @@ use function WP_Rig\WP_Rig\wp_rig;
 $attributes = is_array( $attributes ?? null ) ? $attributes : array();
 $content    = is_string( $content ?? null ) ? $content : '';
 /** @var WP_Block|null $block */
-$block = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
+$render_block = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
 
 // Derive the block title via namespaced helper with smart fallbacks.
-$title     = wp_rig()->block_get_title( $block );
+$title     = wp_rig()->block_get_title( $render_block );
 $has_title = '' !== $title;
 
 // Build wrapper attributes via namespaced helper (it handles core fallback internally).
@@ -43,7 +45,7 @@ $wrapper_attrs = wp_rig()->block_wrapper_attributes( array(), $attributes );
 
 	<?php
 	// Inner blocks/content: already prepared by WordPress and safe to output as-is.
-	// See https://developer.wordpress.org/reference/functions/render_block/
+	// See https://developer.wordpress.org/reference/functions/render_block/.
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo $content;
 	?>

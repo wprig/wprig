@@ -7,6 +7,8 @@
  *
  * MANDATORY FOR AGENTS: You MUST read AGENTS.md and follow the 'Contract-First' (Feature Planning)
  * workflow in .ai/skills/ before modifying any files.
+ *
+ * @package wp_rig
  */
 
 /**

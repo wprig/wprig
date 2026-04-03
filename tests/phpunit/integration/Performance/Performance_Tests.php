@@ -49,7 +49,7 @@ class Performance_Tests extends Integration_Test_Case {
 		$theme            = wp_rig_theme();
 		$styles_component = $theme->component( 'styles' );
 
-		// Use reflection to access protected method get_css_files
+		// Use reflection to access protected method get_css_files.
 		$reflection = new \ReflectionClass( $styles_component );
 		$method     = $reflection->getMethod( 'get_css_files' );
 		$method->setAccessible( true );
@@ -69,7 +69,7 @@ class Performance_Tests extends Integration_Test_Case {
 		$theme             = wp_rig_theme();
 		$scripts_component = $theme->component( 'scripts' );
 
-		// Use reflection to access protected method get_js_files
+		// Use reflection to access protected method get_js_files.
 		$reflection = new \ReflectionClass( $scripts_component );
 		$method     = $reflection->getMethod( 'get_js_files' );
 		$method->setAccessible( true );

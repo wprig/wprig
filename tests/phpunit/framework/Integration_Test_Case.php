@@ -20,7 +20,7 @@ class Integration_Test_Case extends WP_UnitTestCase {
 	public function setUp(): void {
 		parent::setUp();
 
-		// Suppress the incorrect usage notice for title-tag theme support
+		// Suppress the incorrect usage notice for title-tag theme support.
 		add_filter(
 			'doing_it_wrong_trigger_error',
 			function ( $trigger_error, $function ) {
@@ -33,19 +33,19 @@ class Integration_Test_Case extends WP_UnitTestCase {
 			2
 		);
 
-		// Switch to our theme and force theme setup
+		// Switch to our theme and force theme setup.
 		switch_theme( TESTS_THEME_BASENAME );
 
-		// Force theme functions.php to load if it hasn't already
+		// Force theme functions.php to load if it hasn't already.
 		$functions_file = get_template_directory() . '/functions.php';
 		if ( file_exists( $functions_file ) ) {
 			require_once $functions_file;
 		}
 
-		// Fire the after_setup_theme hook to ensure theme supports are registered
+		// Fire the after_setup_theme hook to ensure theme supports are registered.
 		do_action( 'after_setup_theme' );
 
-		// Ensure theme is properly activated
+		// Ensure theme is properly activated.
 		$this->assertTrue(
 			TESTS_THEME_BASENAME === wp_get_theme()->get_stylesheet(),
 			'Theme should be activated for integration tests'

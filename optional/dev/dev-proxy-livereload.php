@@ -6,6 +6,8 @@
  * This does not rely on WP_DEBUG.
  *
  * This file should live under optional/ so it will not be included in production bundles.
+ *
+ * @package wp_rig
  */
 
 if ( ! function_exists( 'wprig_is_dev_proxy_request' ) ) {
