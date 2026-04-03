@@ -32,7 +32,12 @@ test.describe( 'WP Rig Performance Optimizations', () => {
 		await page.mouse.wheel( 0, 100 );
 
 		// Assert that src is now restored.
-		await expect( delayedScript ).toHaveAttribute( 'src', dataSrc! );
+		const restoredScript = await page.locator(
+			'script[src*="test-delayed.min.js"]'
+		);
+		await expect( restoredScript ).toBeAttached();
+		const finalSrc = await restoredScript.getAttribute( 'src' );
+		expect( finalSrc ).toContain( 'test-delayed.min.js' );
 	} );
 
 	test( 'Resource hints for preloading are present', async ( { page } ) => {

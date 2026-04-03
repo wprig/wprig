@@ -85,7 +85,7 @@ class WP_Test_Setup {
 			$download_url = "https://wordpress.org/wordpress-{$this->wp_version}.tar.gz";
 		}
 
-		$this->download_and_extract( $download_url, $parent_dir, 'WordPress' );
+		$this->download_and_extract( $download_url, $parent_dir, 'wordpress' );
 	}
 
 	private function download_test_suite() {
@@ -382,34 +382,61 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 	private function extract_tar_gz( $tar_file, $extract_to, $expected_folder = null ) {
 		echo "Extracting archive to: {$extract_to}\n";
 
-		if ( class_exists( 'PharData' ) ) {
-			try {
-				$phar = new PharData( $tar_file );
-				$phar->extractTo( $extract_to );
+		$success = false;
 
-				// If there's an expected folder (like 'WordPress'), move contents up
-				if ( $expected_folder ) {
-					$extracted_path = $extract_to . DIRECTORY_SEPARATOR . $expected_folder;
-					$target_path    = $this->wp_core_dir;
-
-					echo "Moving from {$extracted_path} to {$target_path}\n";
-
-					if ( is_dir( $extracted_path ) && $extracted_path !== $target_path ) {
-						// Ensure target directory exists
-						$this->create_directory( $target_path );
-
-						// Move all contents
-						$this->move_directory_contents( $extracted_path, $target_path );
-
-						// Clean up the temporary extracted folder
-						$this->remove_directory( $extracted_path );
-					}
-				}
-			} catch ( Exception $e ) {
-				throw new Exception( 'Failed to extract archive: ' . $e->getMessage() );
+		// Try system tar first as it's more reliable
+		if ( $this->command_exists( 'tar' ) ) {
+			if ( ! is_dir( $extract_to ) ) {
+				$this->create_directory( $extract_to );
 			}
-		} else {
-			throw new Exception( 'PharData class not available for extraction' );
+			$cmd = "tar -xzf \"{$tar_file}\" -C \"{$extract_to}\"";
+			exec( $cmd, $output, $return_code );
+			if ( 0 === $return_code ) {
+				$success = true;
+			}
+		}
+
+		if ( ! $success && class_exists( 'PharData' ) ) {
+			try {
+				// PharData needs the extension to be correct
+				$renamed_tar = $tar_file . '.tar.gz';
+				if ( ! file_exists( $renamed_tar ) ) {
+					copy( $tar_file, $renamed_tar );
+				}
+
+				$phar = new PharData( $renamed_tar );
+				$phar->extractTo( $extract_to );
+				$success = true;
+				unlink( $renamed_tar );
+			} catch ( Exception $e ) {
+				// Only throw if system tar also failed
+				if ( ! $success ) {
+					throw new Exception( 'Failed to extract archive with PharData: ' . $e->getMessage() );
+				}
+			}
+		}
+
+		if ( ! $success ) {
+			throw new Exception( 'Failed to extract archive: No suitable extraction method found' );
+		}
+
+		// If there's an expected folder (like 'WordPress'), move contents up
+		if ( $expected_folder ) {
+			$extracted_path = $extract_to . DIRECTORY_SEPARATOR . $expected_folder;
+			$target_path    = $this->wp_core_dir;
+
+			echo "Moving from {$extracted_path} to {$target_path}\n";
+
+			if ( is_dir( $extracted_path ) && $extracted_path !== $target_path ) {
+				// Ensure target directory exists
+				$this->create_directory( $target_path );
+
+				// Move all contents
+				$this->move_directory_contents( $extracted_path, $target_path );
+
+				// Clean up the temporary extracted folder
+				$this->remove_directory( $extracted_path );
+			}
 		}
 	}
 

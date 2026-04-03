@@ -165,6 +165,7 @@ class Theme {
 			new Styles\Component(),
 			new Scripts\Component(),
 			new Performance\Component(),
+			new Performance\Test_Performance(),
 			new Excerpts\Component(),
 			new Options\Component(),
 		);
