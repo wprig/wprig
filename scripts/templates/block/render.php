@@ -24,15 +24,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use function WP_Rig\WP_Rig\wp_rig;
 
-// Normalize core-provided variables with sane defaults.
-$attributes = is_array( $attributes ?? null ) ? $attributes : array();
-$content    = is_string( $content ?? null ) ? $content : '';
-/** @var WP_Block|null $block */
+/**
+ * Block render template.
+ *
+ * This template is used to render the block on the frontend.
+ *
+ * @package wp_rig
+ */
+
+$attributes   = is_array( $attributes ?? null ) ? $attributes : array();
+$content      = is_string( $content ?? null ) ? $content : '';
 $render_block = ( isset( $block ) && $block instanceof WP_Block ) ? $block : null;
 
 // Derive the block title via namespaced helper with smart fallbacks.
-$title     = wp_rig()->block_get_title( $render_block );
-$has_title = '' !== $title;
+$block_title = wp_rig()->block_get_title( $render_block );
+$has_title   = '' !== $block_title;
 
 // Build wrapper attributes via namespaced helper (it handles core fallback internally).
 $wrapper_attrs = wp_rig()->block_wrapper_attributes( array(), $attributes );
@@ -40,7 +46,7 @@ $wrapper_attrs = wp_rig()->block_wrapper_attributes( array(), $attributes );
 ?>
 <div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<?php if ( $has_title ) : ?>
-		<h3 class="wp-block-heading"><?php echo esc_html( $title ); ?></h3>
+		<h3 class="wp-block-heading"><?php echo esc_html( $block_title ); ?></h3>
 	<?php endif; ?>
 
 	<?php

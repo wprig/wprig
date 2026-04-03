@@ -166,10 +166,12 @@ class Component implements Component_Interface {
 
 		$config = array();
 		if ( file_exists( $config_path ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 			$config = json_decode( file_get_contents( $config_path ), true );
 		}
 
 		if ( file_exists( $custom_config_path ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 			$custom_config = json_decode( file_get_contents( $custom_config_path ), true );
 			if ( is_array( $custom_config ) ) {
 				$config = array_replace_recursive( $config, $custom_config );

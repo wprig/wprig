@@ -23,8 +23,8 @@ class Integration_Test_Case extends WP_UnitTestCase {
 		// Suppress the incorrect usage notice for title-tag theme support.
 		add_filter(
 			'doing_it_wrong_trigger_error',
-			function ( $trigger_error, $function ) {
-				if ( 'add_theme_support( \'title-tag\' )' === $function ) {
+			function ( $trigger_error, $function_name ) {
+				if ( 'add_theme_support( \'title-tag\' )' === $function_name ) {
 					return false;
 				}
 				return $trigger_error;

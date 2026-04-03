@@ -80,6 +80,7 @@ class Rig_Command extends WP_CLI_Command {
 			WP_CLI::error( 'Failed to download test data from GitHub.' );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
 		file_put_contents( $file, $download->body );
 
 		// 3. Import the data
@@ -87,6 +88,7 @@ class Rig_Command extends WP_CLI_Command {
 		WP_CLI::runcommand( "import $file --authors=create" );
 
 		// 4. Cleanup
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
 		if ( unlink( $file ) ) {
 			WP_CLI::success( 'Theme Unit Test Data imported and temporary file cleaned up!' );
 		} else {
@@ -128,6 +130,7 @@ class Rig_Command extends WP_CLI_Command {
 
 		// 3. Import the data
 		WP_CLI::runcommand( "import $temp_xml --authors=create" );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
 		unlink( $temp_xml );
 
 		// 4. Configure environment settings for testing.
@@ -197,7 +200,7 @@ class Rig_Command extends WP_CLI_Command {
 	 *     wp rig menu export "Main Menu" --file=main-menu.json
 	 *     wp rig menu export "Main Menu" --file=main-menu.json --pretty
 	 *
-	 * @param array $args Positional arguments.
+	 * @param array $args       Positional arguments.
 	 * @param array $assoc_args Associative arguments.
 	 */
 	public function menu_export( $args, $assoc_args ) {
@@ -263,6 +266,7 @@ class Rig_Command extends WP_CLI_Command {
 		}
 
 		if ( $filename ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
 			$result = file_put_contents( $filename, $json_output );
 			if ( false === $result ) {
 				WP_CLI::error( "Failed to write to file: {$filename}" );
@@ -295,7 +299,7 @@ class Rig_Command extends WP_CLI_Command {
 	 *     wp rig menu import main-menu.json --overwrite
 	 *     wp rig menu import main-menu.json --dry-run
 	 *
-	 * @param array $args Positional arguments.
+	 * @param array $args       Positional arguments.
 	 * @param array $assoc_args Associative arguments.
 	 */
 	public function menu_import( $args, $assoc_args ) {
@@ -307,6 +311,7 @@ class Rig_Command extends WP_CLI_Command {
 			WP_CLI::error( "File not found: {$filename}" );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$json_content = file_get_contents( $filename );
 		if ( false === $json_content ) {
 			WP_CLI::error( "Failed to read file: {$filename}" );
@@ -399,7 +404,7 @@ class Rig_Command extends WP_CLI_Command {
 	 *     wp rig menu list
 	 *     wp rig menu list --format=json
 	 *
-	 * @param array $args Positional arguments.
+	 * @param array $args       Positional arguments.
 	 * @param array $assoc_args Associative arguments.
 	 */
 	public function menu_list( $args, $assoc_args ) {
@@ -463,6 +468,8 @@ class Rig_Command extends WP_CLI_Command {
 	 *      # Create a new menu with dummy items and assign it to primary location
 	 *      $ wp rig fake_menu_items --items=6 --depth=2 --prefix="Nav Item" --assign-location=primary
 	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
 	 * @return void
 	 */
 	public function fake_menu_items( $args, $assoc_args ) {
@@ -604,7 +611,7 @@ class Rig_Command extends WP_CLI_Command {
 	private function get_or_create_menu( $menu ) {
 		if ( empty( $menu ) ) {
 			// Create a new menu.
-			$menu_name = 'Dummy Menu ' . date( 'Y-m-d H:i:s' );
+			$menu_name = 'Dummy Menu ' . gmdate( 'Y-m-d H:i:s' );
 			$menu_id   = wp_create_nav_menu( $menu_name );
 			if ( is_wp_error( $menu_id ) ) {
 				WP_CLI::error( $menu_id->get_error_message() );
@@ -653,8 +660,8 @@ class Rig_Command extends WP_CLI_Command {
 	 *     wp rig fonts_download
 	 *     wp rig fonts_download --dir=assets/fonts
 	 *
-	 * @param array $args Positional args.
-	 * @param array $assoc_args Associative args.
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
 	 */
 	public function fonts_download( $args, $assoc_args ) {
 		$font_dir = WP_CLI\Utils\get_flag_value( $assoc_args, 'font-dir', 'assets/fonts' );

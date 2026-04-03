@@ -200,6 +200,7 @@ class Template_Tags {
 			} catch ( \Exception $e ) {
 				// Log the error in debug mode, but don't crash.
 				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 					error_log( 'WP Rig Asset Error: ' . $e->getMessage() );
 				}
 				return null;

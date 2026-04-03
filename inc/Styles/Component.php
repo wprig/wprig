@@ -241,7 +241,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$file_path = get_theme_file_path( '/assets/css/' . $file );
 
 			if ( file_exists( $file_path ) ) {
-				echo '<style id="wprig-critical-' . esc_attr( $handle ) . '-css">' . file_get_contents( $file_path ) . '</style>';
+				echo '<style id="wprig-critical-' . esc_attr( $handle ) . '-css">';
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents, WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo file_get_contents( $file_path );
+				echo '</style>';
 				echo "\n";
 			}
 		}

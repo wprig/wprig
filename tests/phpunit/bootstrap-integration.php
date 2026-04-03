@@ -8,7 +8,11 @@
 // Run common tests script.
 require __DIR__ . '/bootstrap-common.php';
 
-// Auto-setup WordPress test environment if it doesn't exist.
+/**
+ * Auto-setup WordPress test environment if it doesn't exist.
+ *
+ * @throws Exception If the test environment setup fails.
+ */
 function wp_rig_ensure_test_environment() {
 	// Get the real system temp directory.
 	$system_temp = realpath( sys_get_temp_dir() );

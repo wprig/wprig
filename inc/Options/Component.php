@@ -59,15 +59,16 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Gets a theme setting by key.
 	 *
 	 * @param string $setting_key The key of the setting to retrieve.
-	 * @param mixed  $default Optional. The default value if the setting is not found. Default is an empty string.
-	 * @return mixed The setting value, or the default value if not found.
+	 * @param mixed  $default_value Optional. The default_value value if the setting is not found. Default is an empty string.
+	 *
+	 * @return mixed The setting value, or the default_value value if not found.
 	 */
-	public function get_setting( string $setting_key, $default = '' ) {
+	public function get_setting( string $setting_key, $default_value = '' ) {
 		$settings = get_option( 'wp_rig_theme_settings', array() );
 		if ( ! is_array( $settings ) ) {
-			return $default;
+			return $default_value;
 		}
-		return $settings[ $setting_key ] ?? $default;
+		return $settings[ $setting_key ] ?? $default_value;
 	}
 
 	/**
