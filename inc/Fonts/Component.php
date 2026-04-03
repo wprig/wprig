@@ -83,7 +83,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string Asset version number.
 	 */
 	public function get_asset_version( string $filepath ): string {
-		if ( WP_DEBUG ) {
+		if ( WP_DEBUG && file_exists( $filepath ) ) {
 			return (string) filemtime( $filepath );
 		}
 
@@ -227,7 +227,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		$google_fonts = array(
 			'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
-			'Montserrat'       => array( '100', '100i', '300', '500', '500i', '700', '700i' ),
+			'Open Sans'        => array( '400', '400i', '600', '600i', '700', '700i' ),
 		);
 
 		/**

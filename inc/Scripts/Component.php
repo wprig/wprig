@@ -232,10 +232,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				'file'   => 'global.min.js',
 				'global' => true,
 			),
-			'wp-rig-authors' => array(
-				'file'   => 'authors.min.js',
-				'global' => true,
-			),
 		);
 
 		// Aggregate manifests from components implementing Asset_Provider.

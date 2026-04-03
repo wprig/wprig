@@ -8,6 +8,7 @@
 namespace WP_Rig\WP_Rig\Performance;
 
 use WP_Rig\WP_Rig\Component_Interface;
+use WP_Rig\WP_Rig\Asset_Provider;
 use function add_action;
 use function add_filter;
 use function remove_action;
@@ -28,6 +29,13 @@ use function __;
 class Component implements Component_Interface {
 
 	/**
+	 * Map of critical strategies.
+	 *
+	 * @var Critical_Strategy_Interface[]
+	 */
+	protected array $strategies = array();
+
+	/**
 	 * Gets the unique identifier for the theme component.
 	 *
 	 * @return string Component slug.
@@ -41,6 +49,9 @@ class Component implements Component_Interface {
 	 */
 	public function initialize() {
 		$config = $this->get_config();
+
+		// Register default strategies.
+		$this->register_strategy( new Cookie_Strategy() );
 
 		if ( ! empty( $config['cleanup_emojis'] ) ) {
 			add_action( 'init', array( $this, 'cleanup_emojis' ) );
@@ -56,6 +67,30 @@ class Component implements Component_Interface {
 
 		// Provide a filter for 3rd party opt-outs.
 		add_action( 'wp_enqueue_scripts', array( $this, 'process_opt_outs' ), 110 );
+
+		// Initialize all registered strategies.
+		foreach ( $this->strategies as $strategy ) {
+			$strategy->initialize();
+		}
+	}
+
+	/**
+	 * Registers a critical asset loading strategy.
+	 *
+	 * @param Critical_Strategy_Interface $strategy Strategy instance.
+	 */
+	public function register_strategy( Critical_Strategy_Interface $strategy ) {
+		$this->strategies[ $strategy->get_slug() ] = $strategy;
+	}
+
+	/**
+	 * Retrieves a critical asset loading strategy by its slug.
+	 *
+	 * @param string $slug Strategy slug.
+	 * @return Critical_Strategy_Interface|null Strategy instance, or null if not found.
+	 */
+	public function get_strategy( string $slug ): ?Critical_Strategy_Interface {
+		return $this->strategies[ $slug ] ?? null;
 	}
 
 	/**

@@ -437,6 +437,30 @@ This command will:
 4. Create a test file at tests/phpunit/unit/inc/Related_Posts/ComponentTest.php
 5. Auto-register the component in Theme.php
 
+#### Critical Asset Loading (Cookie-Based Inlining)
+
+WP Rig includes a modular system for handling "Above the Fold" critical assets. This system uses a cookie-based strategy to provide the best of both worlds:
+1. **First Visit**: CSS is inlined directly into the HTML `<head>` for the fastest possible First Contentful Paint (FCP).
+2. **Subsequent Visits**: Once the assets are cached by the browser, a cookie (`wprig_critical_cached`) is set. On subsequent page loads, the theme detects this cookie and enqueues the assets as standard external files, reducing the HTML payload size.
+
+##### How to use it
+To opt-in an asset to this system, implement the `Asset_Provider` interface in your component and add the `strategy` key to your asset manifest:
+
+```php
+public function get_asset_manifest(): array {
+    return [
+        'styles' => [
+            'my-critical-section' => [
+                'file'     => 'section.critical.min.css',
+                'strategy' => 'cookie-critical',
+            ],
+        ],
+    ];
+}
+```
+
+The `cookie-critical` strategy is registered by default in the `Performance\Component`. You can also create and register your own custom strategies by implementing the `Critical_Strategy_Interface`.
+
 ### Theme-scoped Blocks (Gutenberg)
 WP Rig includes a built-in system for creating and managing theme-scoped Gutenberg blocks, powered by `@wordpress/create-block` under the hood and fully integrated with the theme’s build and dev workflows (Node and Bun).
 

@@ -153,7 +153,7 @@ class Template_Tags {
 	 * @return string Asset version number.
 	 */
 	public function get_asset_version( string $filepath ): string {
-		if ( WP_DEBUG ) {
+		if ( WP_DEBUG && file_exists( $filepath ) ) {
 			return (string) filemtime( $filepath );
 		}
 

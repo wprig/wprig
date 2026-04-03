@@ -26,6 +26,7 @@ use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
 use function WP_Rig\WP_Rig\wp_rig;
 use function WP_Rig\WP_Rig\wp_rig_theme;
+use WP_Rig\WP_Rig\Performance\Component as Performance_Component;
 use function add_action;
 use function add_filter;
 use function wp_enqueue_style;
@@ -402,9 +403,23 @@ class Component implements Component_Interface, Templating_Component_Interface {
 					'preload_callback' => null,
 					'media'            => 'all',
 					'deps'             => array(),
+					'strategy'         => null,
 				),
 				$data
 			);
+
+			// Process critical strategy if provided.
+			if ( ! empty( $this->css_files[ $handle ]['strategy'] ) ) {
+				$performance = wp_rig_theme()->component( 'performance' );
+				if ( $performance instanceof Performance_Component ) {
+					$strategy = $performance->get_strategy( $this->css_files[ $handle ]['strategy'] );
+					if ( $strategy ) {
+						$should_inline = $strategy->should_inline( $handle, $this->css_files[ $handle ] );
+						$this->css_files[ $handle ]['inline'] = $should_inline;
+						$this->css_files[ $handle ]['global'] = ! $should_inline;
+					}
+				}
+			}
 		}
 
 		return $this->css_files;

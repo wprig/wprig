@@ -55,11 +55,9 @@ class Performance_Tests extends Integration_Test_Case {
 		$method->setAccessible( true );
 		$css_files = $method->invoke( $styles_component );
 
-		// Check if test-performance component's styles are present.
-		$this->assertArrayHasKey( 'test-critical', $css_files );
-		$this->assertArrayHasKey( 'test-preload', $css_files );
-		$this->assertTrue( $css_files['test-critical']['inline'] );
-		$this->assertTrue( $css_files['test-preload']['preload'] );
+		// Check if header-navigation critical styles are present.
+		$this->assertArrayHasKey( 'wp-rig-header-navigation-critical', $css_files );
+		$this->assertEquals( 'cookie-critical', $css_files['wp-rig-header-navigation-critical']['strategy'] );
 	}
 
 	/**
@@ -75,8 +73,8 @@ class Performance_Tests extends Integration_Test_Case {
 		$method->setAccessible( true );
 		$js_files = $method->invoke( $scripts_component );
 
-		// Check if test-performance component's scripts are present.
-		$this->assertArrayHasKey( 'test-delayed', $js_files );
-		$this->assertEquals( 'delay', $js_files['test-delayed']['strategy'] );
+		// Check if navigation script is present.
+		$this->assertArrayHasKey( 'wp-rig-navigation', $js_files );
+		$this->assertEquals( 'async', $js_files['wp-rig-navigation']['strategy'] );
 	}
 }

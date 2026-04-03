@@ -108,7 +108,7 @@ test( 'custom properties processed', ( done ) => {
 		const file = files[ 0 ];
 		const fileContents = file.contents.toString( 'utf-8' );
 		expect( fileContents ).toContain( 'color:#e36d60' );
-		expect( fileContents ).toContain( 'font-family:"Crimson Text",serif' );
+		expect( fileContents ).toContain( 'font-family:"Open Sans","Helvetica Neue","Arial",sans-serif' );
 	}
 
 	pipeline(

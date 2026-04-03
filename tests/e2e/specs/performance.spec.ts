@@ -5,51 +5,45 @@ test.describe( 'WP Rig Performance Optimizations', () => {
 		await page.goto( '/' );
 	} );
 
-	test( 'Critical CSS is inlined in the head', async ( { page } ) => {
+	test( 'Critical header styles are inlined in the head on first visit', async ( {
+		page,
+	} ) => {
 		const criticalStyle = await page.locator(
-			'style#wprig-critical-test-critical-css'
+			'style#wprig-critical-wp-rig-header-navigation-critical-css'
 		);
 		await expect( criticalStyle ).toBeAttached();
 		const content = await criticalStyle.innerHTML();
-		expect( content ).toContain( '.test-critical' );
+		// Check for some header-related CSS from _header.css or _navigation.css
+		expect( content ).toContain( '.site-header' );
 	} );
 
-	test( 'Delayed scripts do not load until interaction', async ( {
+	test( 'Critical header styles are not inlined when cookie is present', async ( {
+		context,
 		page,
 	} ) => {
-		// Assert that the script has data-src and not src yet.
-		const delayedScript = await page.locator(
-			'script[data-rig-strategy="delay"]'
-		);
-		await expect( delayedScript ).toBeAttached();
-		const src = await delayedScript.getAttribute( 'src' );
-		expect( src ).toBeNull();
-		const dataSrc = await delayedScript.getAttribute( 'data-src' );
-		expect( dataSrc ).toContain( 'test-delayed.min.js' );
+		// Set the cookie
+		await context.addCookies( [
+			{
+				name: 'wprig_critical_cached',
+				value: 'true',
+				domain: 'localhost',
+				path: '/',
+			},
+		] );
 
-		// Simulate interaction.
-		await page.mouse.move( 100, 100 );
-		await page.mouse.wheel( 0, 100 );
+		await page.goto( '/' );
 
-		// Assert that src is now restored.
-		const restoredScript = await page.locator(
-			'script[src*="test-delayed.min.js"]'
+		// Check that the inline style is NOT present
+		const criticalStyle = await page.locator(
+			'style#wprig-critical-wp-rig-header-navigation-critical-css'
 		);
-		await expect( restoredScript ).toBeAttached();
-		const finalSrc = await restoredScript.getAttribute( 'src' );
-		expect( finalSrc ).toContain( 'test-delayed.min.js' );
-	} );
+		await expect( criticalStyle ).not.toBeAttached();
 
-	test( 'Resource hints for preloading are present', async ( { page } ) => {
-		const preloadLink = await page.locator(
-			'link[rel="preload"]#test-preload-preload'
+		// Check that the external stylesheet IS present
+		const externalStyle = await page.locator(
+			'link#wp-rig-header-navigation-critical-css'
 		);
-		await expect( preloadLink ).toBeAttached();
-		await expect( preloadLink ).toHaveAttribute( 'as', 'style' );
-		await expect( preloadLink ).toHaveAttribute(
-			'href',
-			/test-preload\.min\.css/
-		);
+		await expect( externalStyle ).toBeAttached();
 	} );
 
 	test( 'Emoji scripts and styles are removed', async ( { page } ) => {

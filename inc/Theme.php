@@ -147,6 +147,7 @@ class Theme {
 	 */
 	protected function get_default_components(): array {
 		$components = array(
+			new Performance\Component(),
 			new Localization\Component(),
 			new Base_Support\Component(),
 			new Editor\Component(),
@@ -164,8 +165,6 @@ class Theme {
 			new Fonts\Component(),
 			new Styles\Component(),
 			new Scripts\Component(),
-			new Performance\Component(),
-			new Performance\Test_Performance(),
 			new Excerpts\Component(),
 			new Options\Component(),
 		);

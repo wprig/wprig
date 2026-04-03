@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.4.0
+ - Introduced a modular critical asset strategy for "Best of Both Worlds" loading (Cookie-based inlining). Props @robruiz
+ - Extracted header and navigation styles to a dedicated critical CSS file for optimized above-the-fold rendering. Props @robruiz
+ - Updated Asset_Provider manifest system to support custom loading strategies. Props @robruiz
+ - Migrated navigation scripts to use the manifest-driven performance system. Props @robruiz
+ - Improved overall site performance with automated critical CSS inlining and interaction-delayed JS loading. Props @robruiz
+
 ## 3.2.0
  - Added Playwright for E2E testing, including accessibility, navigation, and smoke tests. Props @robruiz
  - Added Lighthouse CI configuration for performance, accessibility, and SEO checks. Props @robruiz
