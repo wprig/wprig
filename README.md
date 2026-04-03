@@ -461,6 +461,12 @@ public function get_asset_manifest(): array {
 
 The `cookie-critical` strategy is registered by default in the `Performance\Component`. You can also create and register your own custom strategies by implementing the `Critical_Strategy_Interface`.
 
+#### Font Performance & Flash Prevention
+WP Rig 3.4 includes built-in optimizations to eliminate Flash of Unstyled Text (FOUT).
+1. **Automatic Preloading**: When Google Fonts are localized to the `assets/fonts/` directory, the theme automatically detects and preloads them via `<link rel="preload">` to ensure they are available before the browser starts rendering.
+2. **Optimized Display**: The theme defaults to `font-display: block` for localized fonts, instructing the browser to wait for the font before rendering text, which prevents the visual "flash" when switching from a fallback font.
+3. **Asset Inlining**: Localized font CSS is automatically integrated into the `Asset_Provider` system, allowing it to be inlined for faster delivery.
+
 ### Theme-scoped Blocks (Gutenberg)
 WP Rig includes a built-in system for creating and managing theme-scoped Gutenberg blocks, powered by `@wordpress/create-block` under the hood and fully integrated with the theme’s build and dev workflows (Node and Bun).
 

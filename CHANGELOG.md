@@ -6,6 +6,8 @@
  - Updated Asset_Provider manifest system to support custom loading strategies. Props @robruiz
  - Migrated navigation scripts to use the manifest-driven performance system. Props @robruiz
  - Improved overall site performance with automated critical CSS inlining and interaction-delayed JS loading. Props @robruiz
+ - Resolved font flashing (FOUT) by switching default `font-display` to `block` and implementing automatic preloading for localized fonts. Props @robruiz
+ - Integrated Fonts component into the `Asset_Provider` architecture to allow automatic inlining of localized font CSS. Props @robruiz
 
 ## 3.2.0
  - Added Playwright for E2E testing, including accessibility, navigation, and smoke tests. Props @robruiz
