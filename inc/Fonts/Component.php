@@ -10,6 +10,7 @@ namespace WP_Rig\WP_Rig\Fonts;
 use WP_Error;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
+use WP_Rig\WP_Rig\Asset_Provider;
 
 /**
  * Class for adding basic theme support, most of which is mandatory to be implemented by all themes.
@@ -18,7 +19,7 @@ use WP_Rig\WP_Rig\Templating_Component_Interface;
  * * `wp_rig()->get_version()`
  * * `wp_rig()->get_asset_version( string $filepath )`
  */
-class Component implements Component_Interface, Templating_Component_Interface {
+class Component implements Component_Interface, Templating_Component_Interface, Asset_Provider {
 
 	/**
 	 * Associative array of Google Fonts to load, as $font_name => $font_variants pairs.
@@ -42,7 +43,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize(): void {
-		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_fonts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_fonts' ), 20 );
 		add_action( 'after_setup_theme', array( $this, 'action_add_editor_fonts' ) );
 		add_action( 'init', array( $this, 'wprig_register_fonts' ) );
 		add_filter( 'wp_resource_hints', array( $this, 'filter_resource_hints' ), 10, 2 );
@@ -57,6 +58,31 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function template_tags(): array {
 		return array();
+	}
+
+	/**
+	 * Gets the asset manifest for the theme component.
+	 *
+	 * @return array Asset manifest.
+	 */
+	public function get_asset_manifest(): array {
+		$css_dir = 'assets/css/src';
+		if ( ! str_contains( __DIR__, 'src' ) && file_exists( get_template_directory() . '/assets/css/google-fonts.min.css' ) ) {
+			$css_dir = 'assets/css';
+		}
+
+		$manifest = array(
+			'styles' => array(),
+		);
+
+		if ( file_exists( get_template_directory() . '/' . $css_dir . '/google-fonts.css' ) || file_exists( get_template_directory() . '/' . $css_dir . '/google-fonts.min.css' ) ) {
+			$manifest['styles']['wp-rig-fonts'] = array(
+				'file'   => ( 'assets/css/src' === $css_dir ) ? 'src/google-fonts.css' : 'google-fonts.min.css',
+				'inline' => true,
+			);
+		}
+
+		return $manifest;
 	}
 
 	/**
@@ -176,6 +202,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Enqueues Google Fonts for the theme.
 	 */
 	public function action_enqueue_fonts(): void {
+		// If the font CSS is already handled by the asset manifest, return early.
+		if ( wp_style_is( 'wp-rig-fonts', 'registered' ) ) {
+			wp_enqueue_style( 'wp-rig-fonts' );
+			return;
+		}
+
 		// Enqueue Google Fonts.
 		$google_fonts_url = $this->get_google_fonts_url();
 		if ( '' !== $google_fonts_url && '0' !== $google_fonts_url ) {
@@ -190,10 +222,21 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * adds the editor styles to the WordPress editor.
 	 */
 	public function action_add_editor_fonts(): void {
-		// Enqueue Google Fonts.
-		$google_fonts_url = $this->get_google_fonts_url();
-		if ( '' !== $google_fonts_url && '0' !== $google_fonts_url ) {
-			add_editor_style( $this->get_google_fonts_url() );
+		$css_dir = 'assets/css/src';
+		if ( ! str_contains( __DIR__, 'src' ) && file_exists( get_template_directory() . '/assets/css/google-fonts.min.css' ) ) {
+			$css_dir = 'assets/css';
+		}
+
+		$local_css = ( 'assets/css/src' === $css_dir ) ? 'assets/css/src/google-fonts.css' : 'assets/css/google-fonts.min.css';
+
+		if ( file_exists( get_template_directory() . '/' . $local_css ) ) {
+			add_editor_style( $local_css );
+		} else {
+			// Enqueue Google Fonts.
+			$google_fonts_url = $this->get_google_fonts_url();
+			if ( '' !== $google_fonts_url && '0' !== $google_fonts_url ) {
+				add_editor_style( $google_fonts_url );
+			}
 		}
 	}
 
@@ -210,6 +253,20 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				'href' => 'https://fonts.gstatic.com',
 				'crossorigin',
 			);
+		}
+
+		if ( 'preload' === $relation_type ) {
+			$fonts_to_preload = $this->get_font_files_to_preload();
+			$fonts_to_preload = apply_filters( 'wp_rig_preload_fonts', $fonts_to_preload );
+
+			foreach ( $fonts_to_preload as $font_url ) {
+				$urls[] = array(
+					'href'        => $font_url,
+					'as'          => 'font',
+					'type'        => 'font/' . pathinfo( (string) parse_url( $font_url, PHP_URL_PATH ), PATHINFO_EXTENSION ),
+					'crossorigin' => 'anonymous',
+				);
+			}
 		}
 
 		return $urls;
@@ -271,10 +328,47 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		$query_args = array(
 			'family'  => implode( '|', $font_families ),
-			'display' => 'swap',
+			'display' => apply_filters( 'wp_rig_google_fonts_display', 'block' ),
 		);
 
 		return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
+	}
+
+	/**
+	 * Gets local font files for preloading.
+	 *
+	 * @return array Array of font URLs.
+	 */
+	protected function get_font_files_to_preload(): array {
+		$fonts_to_preload = array();
+		$theme_dir        = get_stylesheet_directory();
+		$font_base_path   = $theme_dir . '/assets/fonts';
+
+		if ( ! is_dir( $font_base_path ) ) {
+			return $fonts_to_preload;
+		}
+
+		$theme_uri    = get_stylesheet_directory_uri();
+		$google_fonts = $this->get_google_fonts();
+
+		foreach ( array_keys( $google_fonts ) as $font_name ) {
+			$slug       = sanitize_title( $font_name );
+			$family_dir = $font_base_path . '/' . $slug;
+
+			if ( is_dir( $family_dir ) ) {
+				$files = scandir( $family_dir );
+				if ( is_array( $files ) ) {
+					foreach ( $files as $file ) {
+						if ( str_ends_with( $file, '.woff2' ) ) {
+							$fonts_to_preload[] = $theme_uri . '/assets/fonts/' . $slug . '/' . $file;
+							break; // Only preload the first variant for each family.
+						}
+					}
+				}
+			}
+		}
+
+		return $fonts_to_preload;
 	}
 
 
@@ -345,7 +439,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		// Build the full Google Fonts URL.
-		$google_fonts_url = $google_fonts_base_url . implode( '&', $query_fonts ) . '&display=swap';
+		$google_fonts_url = $google_fonts_base_url . implode( '&', $query_fonts ) . '&display=' . apply_filters( 'wp_rig_google_fonts_display', 'block' );
 
 		// Fetch the Google Fonts CSS.
 		$response = wp_remote_get(
