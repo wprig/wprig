@@ -85,7 +85,7 @@ class WP_Test_Setup {
 			$download_url = "https://wordpress.org/wordpress-{$this->wp_version}.tar.gz";
 		}
 
-		$this->download_and_extract( $download_url, $parent_dir, 'wordpress' );
+		$this->download_and_extract( $download_url, $parent_dir, 'WordPress' );
 	}
 
 	private function download_test_suite() {

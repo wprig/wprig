@@ -145,7 +145,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ) );
 		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ) );
 		add_filter( 'render_block_core/navigation', array( $this, 'add_nav_class_to_navigation_block' ), 10, 3 );
-		//add_filter( 'walker_nav_menu_start_el', array( $this, 'modify_menu_items_for_accessibility' ), 10, 4 );
+		// add_filter( 'walker_nav_menu_start_el', array( $this, 'modify_menu_items_for_accessibility' ), 10, 4 );
 		add_filter( 'wp_nav_menu_objects', array( $this, 'inject_parent_link_into_submenu' ), 10, 2 );
 	}
 
@@ -206,7 +206,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param string  $item_output The menu item's starting HTML output.
 	 * @param WP_Post $item        Menu item data object.
 	 * @param int     $depth       Depth of menu item. Used for padding.
-	 * @param object $args        An object of wp_nav_menu() arguments.
+	 * @param object  $args        An object of wp_nav_menu() arguments.
 	 *
 	 * @return string Modified nav menu HTML.
 	 */
@@ -413,7 +413,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @param string $item_output The HTML output for the current menu item.
 	 * @param object $item WP_Post object for the current menu item.
-	 * @param int $depth Depth of the menu item. Used for nesting levels.
+	 * @param int    $depth Depth of the menu item. Used for nesting levels.
 	 * @param object $args An object of arguments passed to `wp_nav_menu()`.
 	 *
 	 * @return string Modified HTML output for the menu item.

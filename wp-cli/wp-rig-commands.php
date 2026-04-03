@@ -70,7 +70,7 @@ class Rig_Command extends WP_CLI_Command {
 		WP_CLI::runcommand( 'plugin install wordpress-importer --activate' );
 
 		// 2. Download the test data
-		$file = 'themeunittestdata.wordpress.xml';
+		$file = 'themeunittestdata.WordPress.xml';
 		$url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
 
 		WP_CLI::log( 'Downloading Theme Unit Test Data...' );
@@ -108,7 +108,7 @@ class Rig_Command extends WP_CLI_Command {
 		WP_CLI::log( 'Starting Theme Unit Test environment setup...' );
 
 		// 1. Download the Theme Unit Test Data
-		$xml_url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
+		$xml_url = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
 
 		// Ensure download_url is available.
 		if ( ! function_exists( 'download_url' ) ) {

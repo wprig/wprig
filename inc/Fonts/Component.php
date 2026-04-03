@@ -317,9 +317,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * font files, updates the CSS to use local URLs, and saves both the font files
 	 * and the modified CSS file into the active theme's directory.
 	 *
-	 * @param array $fonts An array where keys are font family names and values
-	 *                          are arrays of font variants to be downloaded. If no
-	 *                          valid fonts are provided, an error is returned.
+	 * @param array  $fonts An array where keys are font family names and values
+	 *                           are arrays of font variants to be downloaded. If no
+	 *                           valid fonts are provided, an error is returned.
 	 * @param string $font_dir The relative directory path within the theme where
 	 *                         font files will be stored (default is 'assets/fonts').
 	 * @param string $css_dir The relative directory path within the theme where

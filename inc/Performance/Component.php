@@ -134,10 +134,13 @@ class Component implements Component_Interface {
 		 *     @type array $scripts List of script handles to dequeue.
 		 * }
 		 */
-		$opt_outs = apply_filters( 'wp_rig_asset_opt_out', array(
-			'styles'  => array(),
-			'scripts' => array(),
-		) );
+		$opt_outs = apply_filters(
+			'wp_rig_asset_opt_out',
+			array(
+				'styles'  => array(),
+				'scripts' => array(),
+			)
+		);
 
 		if ( ! empty( $opt_outs['styles'] ) ) {
 			foreach ( $opt_outs['styles'] as $handle ) {
@@ -158,7 +161,7 @@ class Component implements Component_Interface {
 	 * @return array Configuration settings.
 	 */
 	protected function get_config(): array {
-		$config_path = get_theme_file_path( '/config/config.default.json' );
+		$config_path        = get_theme_file_path( '/config/config.default.json' );
 		$custom_config_path = get_theme_file_path( '/config/config.json' );
 
 		$config = array();
