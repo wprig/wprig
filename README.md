@@ -9,9 +9,10 @@ title="WP Rig logo by Morten Rand-Hendriksen and Rob Ruiz">
 > WP Rig is a highly opinionated framework. To ensure your changes follow the correct architecture, coding standards, and "Contract-First" development process, you **MUST** follow this protocol:
 >
 > 1. **Discovery**: Read [**AGENTS.md**](./AGENTS.md) first.
-> 2. **Contract-First**: Author a `SPEC.md` in `.ai/plans/` before writing any code.
-> 3. **Tooling**: Use `npm run block:new` or `npm run create-rig-component`. Manual file creation is a violation.
-> 4. **Validation**: Run `npm run ai:check` before submitting.
+> 2. **AI Setup**: Run `npm run ai:setup` to configure WP Rig for your AI agent (e.g., Claude Code, Cursor, Windsurf).
+> 3. **Contract-First**: Author a `SPEC.md` in `.ai/plans/` before writing any code.
+> 4. **Tooling**: Use `npm run block:new` or `npm run create-rig-component`. Manual file creation is a violation.
+> 5. **Validation**: Run `npm run ai:check` before submitting.
 >
 > Failure to follow these steps will result in architectural regression.
 
@@ -80,6 +81,7 @@ WP Rig is built to lay a solid theme foundation, which makes it excellent for bo
 	  afterwards.
 	- `npm run childify` can be used to convert your WP Rig theme into a lightweight child theme that inherits from any parent theme.
 5. In WordPress admin, activate the WP Rig development theme.
+6. (Optional) Run `npm run ai:setup` to configure the project for your specific AI coding agent (Claude, Cursor, Windsurf, etc.).
 
 #### Recommended Git Workflow
 When working with WP Rig, it is important to understand the appropriate Git workflow depending on what you are working on.

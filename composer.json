@@ -11,7 +11,7 @@
     "brain/monkey": "^2",
     "phpcompatibility/php-compatibility": "^9",
     "yoast/phpunit-polyfills": "^1.0",
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "^9.6.33",
     "rector/rector": "^2.0",
     "friendsofphp/php-cs-fixer": "^3.67",
     "phpstan/phpstan": "^2.1",

@@ -9,6 +9,15 @@
  - Resolved font flashing (FOUT) by switching default `font-display` to `block` and implementing automatic preloading for localized fonts. Props @robruiz
  - Integrated Fonts component into the `Asset_Provider` architecture to allow automatic inlining of localized font CSS. Props @robruiz
 
+## 3.3.0
+- added skills Props @robruiz
+- added MCP for documentation access Props @robruiz
+- added ai agent script that sets up WP Rig for specific agents Props @robruiz
+- leverage screenshot capabilties for self-assessment Props @robruiz
+- minor updates to composer and node deps Props @robruiz
+- updates to config to explicitly declare theme type (agents reference this) Props @robruiz
+- initial pass on agents.md Props @JonImmsWordpressDev
+
 ## 3.2.0
  - Added Playwright for E2E testing, including accessibility, navigation, and smoke tests. Props @robruiz
  - Added Lighthouse CI configuration for performance, accessibility, and SEO checks. Props @robruiz
