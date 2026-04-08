@@ -4,7 +4,7 @@
 WP Rig 3.4+ uses a distributed component registry (OCR) to share and import performance-optimized, agent-ready features.
 
 ## Searching the Registry
-Before building a new theme feature from scratch, ALWAYS check if a verified component already exists in the registry.
+Before building a new theme feature from scratch, ALWAYS check if a similar or suitable verified component already exists in the registry.
 
 ```bash
 npm run rig:search [keyword]

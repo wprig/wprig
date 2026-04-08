@@ -14,7 +14,7 @@
 > You **MUST** author a `SPEC.md` in `.ai/plans/<date>-<feature-name>/` and get it **APPROVED** before modifying any source files. At least **3-10 clarifying questions** about the architecture, aesthetics, navigation style, and other common theme-level considerations must be asked and documented for user approval. Use the [**Feature Planning skill**](.ai/skills/feature-planning/SKILL.md).
 >
 > ### 4. TOOL-FIRST SCAFFOLDING
-> - **New Theme Feature?** Use `npm run create-rig-component`.
+> - **New Theme Feature?** Use `npm run create-rig-component` or use component registry to add pre-made components.
 > - **New type of content input?** Use `npm run block:new` (if theme config.theme.enableBlocks is set to true).
 > - **DO NOT** manually create files in `inc/` or hardcode UI in templates.
 >

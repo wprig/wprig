@@ -26,10 +26,11 @@ This guide describes the core structure and conventions used in WP Rig.
 
 ## Configuration & Identity
 
-Before making architectural changes, you **MUST** reference the `config/config.json`.
+Before making architectural changes, you **MUST** reference the `config/config.json` and check the [Component Registry skill](../component-registry/SKILL.md).
 
 *   **Theme Identity:** Use `theme.PHPNamespace` and `theme.slug` for components and translations.
 *   **Theme Type:** Check `theme.themeType` (classic vs block-based) to determine template strategy.
+*   **Component Registry:** Search the registry using `npm run rig:search [keyword]` to see if the feature already exists as a verified component. **ALWAYS** prioritize leveraging existing registry components over building from scratch.
 *   **Export Rules:** Update `export.filesToCopy` if adding new root-level folders.
 
 ## PHP Components
@@ -120,4 +121,5 @@ Source files are in `assets/js/src/` and processed by `build-js.js`.
 The Architecture skill is the bedrock of WP Rig, but it interacts directly with:
 
 - **Feature Planning:** Any structural change to the architecture (new components, changes to `Theme.php`, or new global templates) must first be defined via the [Feature Planning skill](../feature-planning/SKILL.md).
+- **Component Registry:** The [Component Registry skill](../component-registry/SKILL.md) provides a catalog of pre-built, optimized components that should be considered for any new architectural feature.
 - **Web Designer:** Architectural choices for CSS/JS enqueuing and template structure are driven by the design system and interactive requirements defined in the [Web Designer skill](../web-designer/SKILL.md).

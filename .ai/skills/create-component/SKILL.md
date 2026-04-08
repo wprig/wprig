@@ -7,6 +7,10 @@ globs: inc/**/*.php, functions.php
 
 This skill provides the recipe to scaffold and register a new theme component.
 
+## Before Creating a New Component
+
+**ALWAYS** check the [Component Registry skill](../component-registry/SKILL.md) first. Search the registry using `npm run rig:search [keyword]` to see if the feature already exists as a verified, optimized component. **LEVERAGE** existing registry components rather than building from scratch.
+
 ## Step 1: Use the Scaffolding Script
 
 WP Rig provides a dedicated script to create the component directory and initial class file.
