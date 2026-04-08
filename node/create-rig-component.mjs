@@ -74,10 +74,12 @@ async function createRigComponent() {
 			await createTestFile( componentInfo );
 		}
 
-		// Always auto-wire the component
-		await wireComponent( componentInfo );
+		// Create manifest.json, SPEC.md, and SKILL.md
+		await createManifestFile( componentDir, componentInfo );
+		await createSpecFile( componentDir, componentInfo );
+		await createSkillFile( componentDir, componentInfo );
 
-		console.log( 'Component created successfully!' );
+		console.log( 'Component created successfully! Wiring is handled automatically via dynamic loading.' );
 	} catch ( error ) {
 		console.error( 'Error creating component:', error.message );
 		process.exit( 1 );
@@ -374,136 +376,107 @@ namespace WP_Rig\\WP_Rig;
 }
 
 /**
- * Wire component in Theme.php or functions.php
+ * Create manifest.json file
+ *
+ * @param {string} componentDir Component directory
+ * @param {Object} componentInfo Component information
+ */
+async function createManifestFile( componentDir, componentInfo ) {
+	const manifestPath = path.join( componentDir, 'manifest.json' );
+	const manifest = {
+		slug: componentInfo.kebabSlug,
+		version: '1.0.0',
+		title: componentInfo.originalName,
+		description: `Functional component for ${ componentInfo.originalName }.`,
+		php_class_mapping: componentInfo.pascalName,
+		asset_mapping: {
+			styles: [
+				{
+					src: `assets/css/src/${ componentInfo.kebabSlug }.css`,
+					target: `assets/css/src/${ componentInfo.kebabSlug }.css`,
+				},
+			],
+			scripts: [
+				{
+					src: `assets/js/src/${ componentInfo.kebabSlug }.ts`,
+					target: `assets/js/src/${ componentInfo.kebabSlug }.ts`,
+				},
+			],
+		},
+		dependencies: {
+			npm: {},
+			wp_plugins: {},
+		},
+		ai_context: {
+			spec: 'SPEC.md',
+			skill: 'SKILL.md',
+		},
+	};
+
+	await fs.writeFile( manifestPath, JSON.stringify( manifest, null, '\t' ) );
+	console.log( `Created: ${ manifestPath }` );
+}
+
+/**
+ * Create SPEC.md file
+ *
+ * @param {string} componentDir Component directory
+ * @param {Object} componentInfo Component information
+ */
+async function createSpecFile( componentDir, componentInfo ) {
+	const specPath = path.join( componentDir, 'SPEC.md' );
+	const specContent = `# SPEC: ${ componentInfo.originalName }
+
+## Overview
+Brief description of what this component does.
+
+## Arguments ($args)
+Define any arguments that can be passed to the component if it uses templates.
+
+## Filters
+List any filters provided by this component.
+
+## Data Structure
+Describe the data structure returned or used by this component.
+`;
+
+	await fs.writeFile( specPath, specContent );
+	console.log( `Created: ${ specPath }` );
+}
+
+/**
+ * Create SKILL.md file
+ *
+ * @param {string} componentDir Component directory
+ * @param {Object} componentInfo Component information
+ */
+async function createSkillFile( componentDir, componentInfo ) {
+	const skillPath = path.join( componentDir, 'SKILL.md' );
+	const skillContent = `# SKILL: How to use ${ componentInfo.originalName }
+
+## Implementation Recipe
+1. How to instantiate the component (if needed).
+2. How to use it in a template.
+3. Example code snippet.
+
+\`\`\`php
+// Example usage
+wp_rig()->${ componentInfo.kebabSlug }_method();
+\`\`\`
+`;
+
+	await fs.writeFile( skillPath, skillContent );
+	console.log( `Created: ${ skillPath }` );
+}
+
+/**
+ * Wire component in Theme.php or functions.php (Legacy - Now handled by dynamic loading)
  *
  * @param {Object} componentInfo Component information
  */
 async function wireComponent( componentInfo ) {
-	try {
-		// First try to wire in Theme.php
-		const themePath = path.join( themeRoot, 'inc', 'Theme.php' );
-		const themeContent = await fs.readFile( themePath, 'utf8' );
-
-		// Look for the components array in get_default_components method
-		// Match the pattern where components are assigned to a variable
-		const componentsArrayRegex =
-			/protected function get_default_components\(\): array \{[\s\S]*?\$components = array\(([\s\S]*?)\);/;
-		const match = themeContent.match( componentsArrayRegex );
-
-		if ( match ) {
-			// Find the position to insert the new component
-			const componentsArray = match[ 1 ];
-
-			// Find all component entries in the array
-			const componentEntries = componentsArray.match(
-				/new [A-Za-z_\\]+\\Component\(\)/g
-			);
-
-			if ( componentEntries && componentEntries.length > 0 ) {
-				// Get the last component in the main array
-				const lastComponent =
-					componentEntries[ componentEntries.length - 1 ];
-				const lastComponentPos =
-					componentsArray.lastIndexOf( lastComponent );
-
-				if ( lastComponentPos !== -1 ) {
-					// Find the end of the last component line (including the comma)
-					const endOfLinePos = componentsArray.indexOf(
-						',',
-						lastComponentPos
-					);
-
-					if ( endOfLinePos !== -1 ) {
-						// Calculate the position to insert the new component
-						const insertPos =
-							match.index +
-							match[ 0 ].indexOf( componentsArray ) +
-							endOfLinePos +
-							1;
-
-						// Create the new component line with proper indentation
-						const newComponentLine = `\n\t\t\tnew ${ componentInfo.pascalName }\\Component(),`;
-
-						// Insert the new component after the last component
-						const newContent =
-							themeContent.slice( 0, insertPos ) +
-							newComponentLine +
-							themeContent.slice( insertPos );
-
-						await fs.writeFile( themePath, newContent );
-						console.log( `Component wired in: ${ themePath }` );
-						return;
-					}
-				}
-			}
-		}
-
-		// If Theme.php wiring failed, try functions.php
-		const functionsPath = path.join( themeRoot, 'inc', 'functions.php' );
-		if ( await fileExists( functionsPath ) ) {
-			const functionsContent = await fs.readFile( functionsPath, 'utf8' );
-
-			// Look for register_components or similar function call with array
-			const registerComponentsRegex =
-				/(register_components\s*\()\s*array\(([\s\S]*?)\)([\s\S]*?\));/;
-			const functionsMatch = functionsContent.match(
-				registerComponentsRegex
-			);
-
-			if ( functionsMatch ) {
-				const componentsArray = functionsMatch[ 2 ];
-				const lastComponentPos = componentsArray.lastIndexOf( 'new ' );
-
-				if ( lastComponentPos !== -1 ) {
-					// Find the end of the last component
-					const endOfLinePos = componentsArray.indexOf(
-						',',
-						lastComponentPos
-					);
-
-					if ( endOfLinePos !== -1 ) {
-						// Insert the new component
-						const newComponentLine = `\n\t\tnew ${ componentInfo.pascalName }\\Component(),`;
-						const newContent =
-							functionsContent.slice(
-								0,
-								functionsMatch.index +
-									functionsMatch[ 1 ].length +
-									endOfLinePos +
-									1
-							) +
-							newComponentLine +
-							functionsContent.slice(
-								functionsMatch.index +
-									functionsMatch[ 1 ].length +
-									endOfLinePos +
-									1
-							);
-
-						await fs.writeFile( functionsPath, newContent );
-						console.log( `Component wired in: ${ functionsPath }` );
-						return;
-					}
-				}
-			}
-		}
-
-		// If we got here, auto-wiring failed
-		console.warn(
-			`Couldn't auto-wire the component. Please add manually:`
-		);
-		console.warn( `new ${ componentInfo.pascalName }\\Component(),` );
-		console.warn(
-			`to the components array in inc/Theme.php or inc/functions.php`
-		);
-	} catch ( error ) {
-		console.warn(
-			`Warning: Failed to auto-wire component: ${ error.message }`
-		);
-		console.warn(
-			`Please add the component manually to Theme.php or functions.php`
-		);
-	}
+	// No longer needed as Theme.php uses dynamic loading.
+	return;
 }
 
 /**

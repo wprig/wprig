@@ -133,7 +133,14 @@
     "create-rig-component": "node node/create-component-wrapper.js",
     "mcp": "node bin/mcp-server/index.js",
     "get-dev-url": "node scripts/cli.js get-dev-url",
-    "ai:setup": "node scripts/ai-setup.js"
+    "ai:setup": "node scripts/ai-setup.js",
+    "rig": "node scripts/rig.js",
+    "rig:login": "node scripts/rig.js login",
+    "rig:search": "node scripts/rig.js search",
+    "rig:add": "node scripts/rig.js add",
+    "rig:update": "node scripts/rig.js update",
+    "rig:submit": "node scripts/rig.js submit",
+    "rig:test-component": "node scripts/rig.js test-component"
   },
   "dependencies": {
     "glob": "^11.1.0"

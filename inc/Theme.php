@@ -138,40 +138,51 @@ class Theme {
 	/**
 	 * Gets the default theme components.
 	 *
-	 * This method is called if no components are passed to the constructor, which is the common scenario.Theme Editor
+	 * This method is called if no components are passed to the constructor, which is the common scenario.
 	 *
-	 * Theme Editor: 'editor-styles'
-	 * Block Styles: 'wp-block-styles'
+	 * It dynamically scans the `inc/` directory for subdirectories containing a `Component.php` file
+	 * and instantiates each component class that follows the standard naming convention.
 	 *
 	 * @return array List of theme components to use by default.
 	 */
 	protected function get_default_components(): array {
-		$components = array(
-			new Performance\Component(),
-			new Localization\Component(),
-			new Base_Support\Component(),
-			new Editor\Component(),
-			new Accessibility\Component(),
-			new Image_Sizes\Component(),
-			new PWA\Component(),
-			new Comments\Component(),
-			new Nav_Menus\Component(),
-			new Sidebars\Component(),
-			new Custom_Background\Component(),
-			new Custom_Header\Component(),
-			new Custom_Logo\Component(),
-			new Post_Thumbnails\Component(),
-			new EZ_Customizer\Component(),
-			new Fonts\Component(),
-			new Styles\Component(),
-			new Scripts\Component(),
-			new Excerpts\Component(),
-			new Options\Component(),
-		);
+		$components = array();
 
-		if ( defined( 'JETPACK__VERSION' ) ) {
-			$components[] = new Jetpack\Component();
+		// Get the template directory path.
+		$inc_dir = get_template_directory() . '/inc';
+
+		// Iterate through subdirectories in the inc/ directory.
+		$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
+
+		foreach ( $directories as $directory ) {
+			$component_name = basename( $directory );
+			$component_class = __NAMESPACE__ . '\\' . $component_name . '\\Component';
+
+			// Check if the Component.php file exists in the directory.
+			if ( ! file_exists( $directory . '/Component.php' ) ) {
+				continue;
+			}
+
+			// Special handling for Jetpack - only load if Jetpack is present (optional behavior preservation).
+			if ( 'Jetpack' === $component_name && ! defined( 'JETPACK__VERSION' ) ) {
+				continue;
+			}
+
+			// Check if the component class exists and implements Component_Interface.
+			// The class name is resolved via the PSR-4 autoloader.
+			if ( class_exists( $component_class ) ) {
+				$components[] = new $component_class();
+			}
 		}
+
+		/**
+		 * Filters the default theme components.
+		 *
+		 * This filter allows adding or removing theme components at runtime.
+		 *
+		 * @param array $components List of theme component instances.
+		 */
+		$components = apply_filters( 'wprig_theme_components', $components );
 
 		return $components;
 	}

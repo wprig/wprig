@@ -33,6 +33,7 @@ For 2026-ready AI agents, specialized "skills" in the `/.ai/skills/` directory p
 ### Core Architecture & Conventions
 - [**Feature Planning (Contract-First)**](.ai/skills/feature-planning/SKILL.md): Strategy for planning and specifying new features before implementation.
 - [**Architecture & Conventions**](.ai/skills/architecture/SKILL.md): Theme structure, file mappings, and coding standards.
+- [**Component Registry (OCR)**](.ai/skills/component-registry/SKILL.md): Searching, adding, and contributing theme components.
 - [**Create a New Component**](.ai/skills/create-component/SKILL.md): Recipe for scaffolding and registering new theme features.
 - [**Advanced Templating**](.ai/skills/advanced-templating/SKILL.md): Creating and using template tags via the `wp_rig()` singleton.
 

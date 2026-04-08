@@ -8,6 +8,18 @@
  - Improved overall site performance with automated critical CSS inlining and interaction-delayed JS loading. Props @robruiz
  - Resolved font flashing (FOUT) by switching default `font-display` to `block` and implementing automatic preloading for localized fonts. Props @robruiz
  - Integrated Fonts component into the `Asset_Provider` architecture to allow automatic inlining of localized font CSS. Props @robruiz
+ - **Open Component Registry (OCR)**: Initial merge of the distributed component registry for theme features. Props @robruiz
+ - **Dynamic Component Loading**: Refactored `inc/Theme.php` to automatically discover and register components in the `inc/` directory. Props @robruiz
+ - **Component Metadata**: Updated scaffolding to include `manifest.json`, `SPEC.md`, and `SKILL.md` for registry readiness. Props @robruiz
+ - **`rig` CLI Suite**: Introduced new command suite (`npm run rig:*`) for full component lifecycle management. Props @robruiz
+ - **`create-rig-component`**: Updated to support OCR standards and removed legacy hardcoded registration logic. Props @robruiz
+ - **WP Rig Registry Plugin**: Developed the registry WordPress plugin with GitHub API integration for `wprig.io`. Props @robruiz
+ - **REST API Integration**: Updated CLI to support authenticated API calls via WordPress Application Passwords. Props @robruiz
+ - **Registry Configuration**: Added `inc/Registry_Config` component to the theme for automated registry discovery and filter-based setup. Props @robruiz
+ - **Unauthenticated API Support**: Updated the registry plugin and theme to support public GitHub repositories without requiring a Personal Access Token (PAT). Props @robruiz
+ - **Security Hardening**: Implemented multi-layer validation for component submissions, directory traversal protection in API and CLI, and added a security scanner to `rig:test-component`. Props @robruiz
+ - **Security Automation**: Added GitHub Action templates for automated OWASP Top 10 scanning of registry repositories. Props @robruiz
+ - **AI Agent Integration**: Added `component-registry` skill in `.ai/skills/` for agentic support of the OCR. Props @robruiz
 
 ## 3.3.0
 - added skills Props @robruiz

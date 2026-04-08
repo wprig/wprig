@@ -38,6 +38,17 @@ project or are seeking to get involved in contributing or maintaining, please ch
 our [discussion board on Github](https://github.com/wprig/wprig/discussions) and
 read [our contribute page](https://wprig.io/contribute/) on our website.
 
+## Component Registry (OCR)
+
+WP Rig 3.4+ features an Open Component Registry that allows you to import and share performance-optimized, AI-ready theme components.
+
+- **Discover**: `npm run rig:search [keyword]`
+- **Add**: `npm run rig:add [slug]`
+- **Test**: `npm run rig:test-component [slug]`
+- **Submit**: `npm run rig:submit`
+
+Components added via the registry are automatically registered in `inc/Theme.php` and integrated into the esbuild/LightningCSS build pipeline. For more details, see the [Component Registry Breakdown](./docs/wprig-v3-4-component-registry-feature-breakdown.md).
+
 ## Documentation
 
 We have a new Documentation area that can be found on the [WP Rig website](https://wprig.io/documentation/).
