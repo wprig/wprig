@@ -94,29 +94,52 @@ async function getAuth( options = {} ) {
 		'.wprig',
 		'auth.json'
 	);
-	if ( ! ( await fs.pathExists( authFile ) ) ) {
-		console.error( c.red( 'Please login first using: npm run rig:login' ) );
-		process.exit( 1 );
-	}
-	const authData = await fs.readJson( authFile );
 
-	// Handle legacy format
-	if ( authData.url && ! authData.registries ) {
-		return authData;
+	let authData = null;
+	if ( await fs.pathExists( authFile ) ) {
+		authData = await fs.readJson( authFile );
 	}
 
-	const registryName = options.registry || authData.current || 'default';
-	if ( authData.registries && authData.registries[ registryName ] ) {
+	// Handle legacy format migration if it exists
+	if ( authData && authData.url && ! authData.registries ) {
+		authData = {
+			current: 'default',
+			registries: {
+				default: authData,
+			},
+		};
+	}
+
+	const registryName =
+		options.registry || ( authData && authData.current ) || 'default';
+
+	if (
+		authData &&
+		authData.registries &&
+		authData.registries[ registryName ]
+	) {
 		return authData.registries[ registryName ];
 	}
 
-	console.error(
-		c.red(
-			`Registry "${ registryName }" not found. Available: ${ Object.keys(
-				authData.registries || {}
-			).join( ', ' ) }`
-		)
-	);
+	// If the registry is default and not configured, return public config
+	if ( registryName === 'default' ) {
+		return {
+			url: 'https://wprig.io',
+		};
+	}
+
+	// Registry not found and it's not default
+	if ( ! authData ) {
+		console.error( c.red( 'Please login first using: npm run rig:login' ) );
+	} else {
+		console.error(
+			c.red(
+				`Registry "${ registryName }" not found. Available: ${ Object.keys(
+					authData.registries || {}
+				).join( ', ' ) }`
+			)
+		);
+	}
 	process.exit( 1 );
 }
 
@@ -140,7 +163,9 @@ program
 		console.log( c.blue( 'Configured Registries:' ) );
 		Object.keys( registries ).forEach( ( name ) => {
 			const active = name === current ? c.green( '*' ) : ' ';
-			console.log( `${ active } ${ name } (${ registries[ name ].url })` );
+			console.log(
+				`${ active } ${ name } (${ registries[ name ].url })`
+			);
 		} );
 	} );
 
@@ -174,9 +199,9 @@ program
 		const auth = await getAuth( program.opts() );
 		console.log(
 			c.blue(
-				`Searching for components matching "${
-					keyword || ''
-				}" at ${ auth.url }...`
+				`Searching for components matching "${ keyword || '' }" at ${
+					auth.url
+				}...`
 			)
 		);
 
@@ -187,9 +212,13 @@ program
 				}`,
 				{
 					headers: {
-						Authorization: `Basic ${ Buffer.from(
-							`${ auth.username }:${ auth.token }`
-						).toString( 'base64' ) }`,
+						...( auth.username && auth.token
+							? {
+									Authorization: `Basic ${ Buffer.from(
+										`${ auth.username }:${ auth.token }`
+									).toString( 'base64' ) }`,
+							  }
+							: {} ),
 					},
 				}
 			);
@@ -229,7 +258,11 @@ program
 
 		try {
 			// Basic slug validation to prevent directory traversal
-			if ( slug.includes( '..' ) || slug.includes( '/' ) || slug.includes( '\\' ) ) {
+			if (
+				slug.includes( '..' ) ||
+				slug.includes( '/' ) ||
+				slug.includes( '\\' )
+			) {
 				throw new Error( `Invalid component slug: ${ slug }` );
 			}
 
@@ -237,9 +270,13 @@ program
 				`${ auth.url }/wp-json/wprig-registry/v1/components/${ slug }`,
 				{
 					headers: {
-						Authorization: `Basic ${ Buffer.from(
-							`${ auth.username }:${ auth.token }`
-						).toString( 'base64' ) }`,
+						...( auth.username && auth.token
+							? {
+									Authorization: `Basic ${ Buffer.from(
+										`${ auth.username }:${ auth.token }`
+									).toString( 'base64' ) }`,
+							  }
+							: {} ),
 					},
 				}
 			);
@@ -285,12 +322,21 @@ program
 					} else {
 						content = await res.text();
 					}
-					await fs.writeFile( path.join( componentDir, fileName ), content );
+					await fs.writeFile(
+						path.join( componentDir, fileName ),
+						content
+					);
 				}
 			}
 
-			console.log( c.green( `Component "${ slug }" added successfully!` ) );
-			console.log( c.yellow( 'Note: Run "npm run build" to process any new assets.' ) );
+			console.log(
+				c.green( `Component "${ slug }" added successfully!` )
+			);
+			console.log(
+				c.yellow(
+					'Note: Run "npm run build" to process any new assets.'
+				)
+			);
 		} catch ( error ) {
 			console.error( c.red( `Add failed: ${ error.message }` ) );
 		}
@@ -309,6 +355,13 @@ program
 	.description( 'Submit a component to the registry' )
 	.action( async ( slug ) => {
 		const auth = await getAuth( program.opts() );
+
+		if ( ! auth.username || ! auth.token ) {
+			console.error(
+				c.red( 'Authentication is required to submit components.' )
+			);
+			process.exit( 1 );
+		}
 		console.log(
 			c.blue( `Submitting component "${ slug }" to ${ auth.url }...` )
 		);
@@ -324,7 +377,12 @@ program
 
 		try {
 			const files = {};
-			const fileNames = [ 'Component.php', 'manifest.json', 'SPEC.md', 'SKILL.md' ];
+			const fileNames = [
+				'Component.php',
+				'manifest.json',
+				'SPEC.md',
+				'SKILL.md',
+			];
 
 			for ( const name of fileNames ) {
 				const filePath = path.join( componentDir, name );
@@ -352,10 +410,14 @@ program
 
 			if ( ! response.ok ) {
 				const error = await response.json();
-				throw new Error( error.message || `HTTP Error: ${ response.status }` );
+				throw new Error(
+					error.message || `HTTP Error: ${ response.status }`
+				);
 			}
 
-			console.log( c.green( `Component "${ slug }" submitted successfully!` ) );
+			console.log(
+				c.green( `Component "${ slug }" submitted successfully!` )
+			);
 		} catch ( error ) {
 			console.error( c.red( `Submission failed: ${ error.message }` ) );
 		}
@@ -372,7 +434,8 @@ program
 					type: 'input',
 					name: 'slug',
 					message: 'Enter the component slug (folder name in inc/):',
-					validate: ( input ) => ( input ? true : 'Slug is required' ),
+					validate: ( input ) =>
+						input ? true : 'Slug is required',
 				},
 			] );
 			componentSlug = answers.slug;
