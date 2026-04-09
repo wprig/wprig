@@ -32,34 +32,56 @@ class Component implements Component_Interface {
 		add_filter( 'wprig_registry_github_repo', [ $this, 'filter_github_repo' ] );
 		add_filter( 'wprig_registry_github_branch', [ $this, 'filter_github_branch' ] );
 
-		// If needed, we can also filter the token if it's stored in a secret location
-		// add_filter( 'wprig_registry_github_token', [ $this, 'filter_github_token' ] );
+		// Secure token handling - prefer environment variables over filters.
+		add_filter( 'wprig_registry_github_token', [ $this, 'filter_github_token' ] );
+	}
+
+	/**
+	 * Filters the GitHub token.
+	 *
+	 * Uses environment variables to avoid committing tokens to version control.
+	 *
+	 * @param string $token Default token.
+	 * @return string GitHub token.
+	 */
+	public function filter_github_token( string $token ): string {
+		if ( ! empty( $token ) ) {
+			return $token;
+		}
+		$env_token = getenv( 'WPRIG_REGISTRY_GITHUB_TOKEN' );
+		if ( false === $env_token ) {
+			return '';
+		}
+		return (string) $env_token;
 	}
 
 	/**
 	 * Filters the GitHub repository owner.
 	 *
+	 * @param string $owner Default owner.
 	 * @return string GitHub owner.
 	 */
-	public function filter_github_owner(): string {
-		return 'wprig';
+	public function filter_github_owner( string $owner ): string {
+		return ! empty( $owner ) ? $owner : 'wprig';
 	}
 
 	/**
 	 * Filters the GitHub repository name.
 	 *
+	 * @param string $repo Default repo.
 	 * @return string GitHub repository name.
 	 */
-	public function filter_github_repo(): string {
-		return 'wprig-components';
+	public function filter_github_repo( string $repo ): string {
+		return ! empty( $repo ) ? $repo : 'wprig-components';
 	}
 
 	/**
 	 * Filters the GitHub repository branch.
 	 *
+	 * @param string $branch Default branch.
 	 * @return string GitHub branch.
 	 */
-	public function filter_github_branch(): string {
-		return 'main';
+	public function filter_github_branch( string $branch ): string {
+		return ! empty( $branch ) ? $branch : 'main';
 	}
 }

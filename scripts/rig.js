@@ -8,7 +8,6 @@ import inquirer from 'inquirer';
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { spawnSync } from 'child_process';
 import c from 'ansi-colors';
 import testComponent from './tasks/testComponent.js';
 
@@ -22,7 +21,8 @@ program
 	.description( 'WP Rig Component Registry CLI' )
 	.version( '1.0.0' )
 	.option( '-r, --registry <name>', 'Registry to use', 'default' )
-	.option( '-y, --yes', 'Automatically answer "yes" to all prompts', false );
+	.option( '-y, --yes', 'Automatically answer "yes" to all prompts', false )
+	.option( '--force', 'Bypass all caches', false );
 
 program
 	.command( 'login' )
@@ -302,7 +302,8 @@ program
 	.command( 'search [keyword]' )
 	.description( 'Search for components in the registry' )
 	.action( async ( keyword ) => {
-		const auth = await getAuth( program.opts() );
+		const options = program.opts();
+		const auth = await getAuth( options );
 		console.log(
 			c.blue(
 				`Searching for components matching "${ keyword || '' }" at ${
@@ -315,7 +316,7 @@ program
 			const response = await fetch(
 				`${ auth.url }/wp-json/wprig-registry/v1/search?q=${
 					keyword || ''
-				}`,
+				}${ options.force ? '&force=1' : '' }`,
 				{
 					headers: {
 						...( auth.username && auth.token
@@ -370,7 +371,9 @@ async function downloadComponent( slug, options = {} ) {
 		: auth.url;
 
 	console.log(
-		c.blue( `${ actionText } component "${ slug }" from ${ sourceText }...` )
+		c.blue(
+			`${ actionText } component "${ slug }" from ${ sourceText }...`
+		)
 	);
 
 	try {
@@ -387,7 +390,10 @@ async function downloadComponent( slug, options = {} ) {
 
 		if ( isGitHubSource ) {
 			const branch = auth.githubBranch || 'main';
-			const rawUrl = `https://raw.githubusercontent.com/${ auth.githubOwner }/${ auth.githubRepo }/${ branch }/${ slug }/manifest.json`;
+			const cacheBust = `?t=${ Date.now() }`;
+			const rawUrl = `https://raw.githubusercontent.com/${
+				auth.githubOwner
+			}/${ auth.githubRepo }/${ branch }/${ slug }/manifest.json${ cacheBust }`;
 
 			const manifestRes = await fetch( rawUrl );
 			if ( ! manifestRes.ok ) {
@@ -400,15 +406,17 @@ async function downloadComponent( slug, options = {} ) {
 			component.slug = component.slug || slug;
 
 			// Construct source URLs for GitHub components
-			const baseUrl = `https://raw.githubusercontent.com/${ auth.githubOwner }/${ auth.githubRepo }/${ branch }/${ component.slug }`;
-			component.php_url = component.php_url || `${ baseUrl }/Component.php`;
-			component.spec_url =
-				component.spec_url || `${ baseUrl }/SPEC.md`;
-			component.skill_url =
-				component.skill_url || `${ baseUrl }/SKILL.md`;
+			const baseUrl = `https://raw.githubusercontent.com/${
+				auth.githubOwner
+			}/${ auth.githubRepo }/${ branch }/${ slug }`;
+			component.php_url = `${ baseUrl }/Component.php${ cacheBust }`;
+			component.spec_url = `${ baseUrl }/SPEC.md${ cacheBust }`;
+			component.skill_url = `${ baseUrl }/SKILL.md${ cacheBust }`;
 		} else {
 			const response = await fetch(
-				`${ auth.url }/wp-json/wprig-registry/v1/components/${ slug }`,
+				`${ auth.url }/wp-json/wprig-registry/v1/components/${ slug }${
+					options.force ? '?force=1' : ''
+				}`,
 				{
 					headers: {
 						...( auth.username && auth.token
@@ -594,6 +602,7 @@ async function downloadComponent( slug, options = {} ) {
 				continue;
 			}
 			try {
+				console.log( c.dim( `Fetching ${ fileName } from ${ url }...` ) );
 				const res = await fetch( url );
 				if ( res.ok ) {
 					let content;
@@ -607,9 +616,12 @@ async function downloadComponent( slug, options = {} ) {
 						path.join( componentDir, fileName ),
 						content
 					);
+					console.log( c.green( `✓ Saved ${ fileName }` ) );
+				} else {
+					console.warn( c.yellow( `✗ Failed to fetch ${ fileName }: ${ res.status } ${ res.statusText }` ) );
 				}
 			} catch ( error ) {
-				// Silent fail for optional files
+				console.error( c.red( `Error fetching ${ fileName }: ${ error.message }` ) );
 			}
 		}
 
