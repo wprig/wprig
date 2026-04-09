@@ -3,6 +3,27 @@ import path from 'path';
 import c from 'ansi-colors';
 
 /**
+ * Resolves the final destination path for an asset, ensuring it goes to the 'src' directory in WP Rig.
+ *
+ * @param {string} assetPath Path from manifest.json
+ * @return {string} Mapped path relative to theme root
+ */
+function getAssetPath( assetPath ) {
+	const parts = assetPath.split( '/' );
+	// If it's an asset in the assets directory, ensure it goes to the src folder
+	if (
+		parts[ 0 ] === 'assets' &&
+		parts.length >= 3 &&
+		! [ 'src', 'build', 'vendor' ].includes( parts[ 2 ] )
+	) {
+		const newParts = [ ...parts ];
+		newParts.splice( 2, 0, 'src' );
+		return newParts.join( '/' );
+	}
+	return assetPath;
+}
+
+/**
  * Validates a component for registry readiness.
  *
  * @param {string} themeRoot Root directory of the theme
@@ -53,6 +74,38 @@ export default async function testComponent( themeRoot, componentSlug ) {
 		} catch ( e ) {
 			console.error( c.red( `✗ manifest.json: invalid JSON format (${ e.message })` ) );
 			errors++;
+		}
+	}
+
+	// Check assets from manifest
+	if ( await fs.pathExists( manifestPath ) ) {
+		try {
+			const manifest = await fs.readJson( manifestPath );
+			if ( manifest.asset_mapping ) {
+				for ( const type in manifest.asset_mapping ) {
+					const asset = manifest.asset_mapping[ type ];
+					if ( asset.src ) {
+						const assetPath = path.resolve(
+							themeRoot,
+							getAssetPath( asset.src )
+						);
+						if ( await fs.pathExists( assetPath ) ) {
+							console.log(
+								c.green( `✓ Asset ${ asset.src } exists` )
+							);
+						} else {
+							console.error(
+								c.red(
+									`✗ Asset ${ asset.src } is missing from ${ assetPath }`
+								)
+							);
+							errors++;
+						}
+					}
+				}
+			}
+		} catch ( e ) {
+			// Already handled above
 		}
 	}
 

@@ -4,6 +4,7 @@
  */
 
 import { Command } from 'commander';
+import { execSync } from 'child_process';
 import inquirer from 'inquirer';
 import fs from 'fs-extra';
 import path from 'path';
@@ -13,6 +14,27 @@ import testComponent from './tasks/testComponent.js';
 
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 const themeRoot = path.resolve( __dirname, '..' );
+
+/**
+ * Resolves the final destination path for an asset, ensuring it goes to the 'src' directory in WP Rig.
+ *
+ * @param {string} assetPath Path from manifest.json
+ * @return {string} Mapped path relative to theme root
+ */
+function getAssetPath( assetPath ) {
+	const parts = assetPath.split( '/' );
+	// If it's an asset in the assets directory, ensure it goes to the src folder
+	if (
+		parts[ 0 ] === 'assets' &&
+		parts.length >= 3 &&
+		! [ 'src', 'build', 'vendor' ].includes( parts[ 2 ] )
+	) {
+		const newParts = [ ...parts ];
+		newParts.splice( 2, 0, 'src' );
+		return newParts.join( '/' );
+	}
+	return assetPath;
+}
 
 const program = new Command();
 
@@ -564,7 +586,7 @@ async function downloadComponent( slug, options = {} ) {
 							const assetContent = await assetRes.text();
 							const destPath = path.resolve(
 								themeRoot,
-								asset.src
+								getAssetPath( asset.src )
 							);
 
 							// Security check: Ensure destPath is within themeRoot
@@ -582,7 +604,13 @@ async function downloadComponent( slug, options = {} ) {
 							);
 							console.log(
 								c.green(
-									`Downloaded asset to ${ asset.src }`
+									`Downloaded asset to ${ getAssetPath( asset.src ) }`
+								)
+							);
+						} else {
+							console.warn(
+								c.yellow(
+									`✗ Failed to fetch asset ${ asset.src } from ${ assetUrl }: ${ assetRes.status } ${ assetRes.statusText }`
 								)
 							);
 						}
@@ -626,9 +654,20 @@ async function downloadComponent( slug, options = {} ) {
 		}
 
 		console.log( c.green( `Component "${ slug }" added successfully!` ) );
-		console.log(
-			c.yellow( 'Note: Run "npm run build" to process any new assets.' )
-		);
+		console.log( c.blue( 'Running "npm run build" to process assets...' ) );
+		try {
+			execSync( 'npm run build', { stdio: 'inherit', cwd: themeRoot } );
+			console.log( c.green( '✓ Build completed successfully!' ) );
+		} catch ( buildError ) {
+			console.error(
+				c.red( `Build failed: ${ buildError.message }` )
+			);
+			console.log(
+				c.yellow(
+					'Note: You may need to run "npm run build" manually.'
+				)
+			);
+		}
 	} catch ( error ) {
 		console.error( c.red( `Download failed: ${ error.message }` ) );
 	}
@@ -709,42 +748,100 @@ program
 		console.log( c.blue( `Removing component "${ normalizedSlug }"...` ) );
 
 		const componentDir = path.join( themeRoot, 'inc', normalizedSlug );
-		if ( ! ( await fs.pathExists( componentDir ) ) ) {
-			// Fallback: check if the original slug directory exists
-			const fallbackDir = path.join( themeRoot, 'inc', slug );
-			if ( ! ( await fs.pathExists( fallbackDir ) ) ) {
-				console.error( c.red( `Component folder not found in inc/ for "${ normalizedSlug }" or "${ slug }"` ) );
-				return;
-			}
-			// Use fallback
-			await fs.remove( fallbackDir );
-			console.log( c.green( `Component folder "inc/${ slug }" removed.` ) );
-		} else {
-			// Try to read manifest for asset cleanup (before removing folder)
-			const manifestPath = path.join( componentDir, 'manifest.json' );
-			if ( await fs.pathExists( manifestPath ) ) {
-				try {
-					const manifest = await fs.readJson( manifestPath );
-					if ( manifest.asset_mapping ) {
-						for ( const type in manifest.asset_mapping ) {
-							const asset = manifest.asset_mapping[ type ];
-							if ( asset.src ) {
-								const assetPath = path.join( themeRoot, asset.src );
-								if ( await fs.pathExists( assetPath ) ) {
-									await fs.remove( assetPath );
-									console.log( c.yellow( `Removed asset: ${ asset.src }` ) );
+		const fallbackDir = path.join( themeRoot, 'inc', slug );
+		let targetDir = null;
+
+		if ( await fs.pathExists( componentDir ) ) {
+			targetDir = componentDir;
+		} else if ( await fs.pathExists( fallbackDir ) ) {
+			targetDir = fallbackDir;
+		}
+
+		if ( ! targetDir ) {
+			console.error(
+				c.red(
+					`Component folder not found in inc/ for "${ normalizedSlug }" or "${ slug }"`
+				)
+			);
+			return;
+		}
+
+		// Try to read manifest for asset cleanup (before removing folder)
+		const manifestPath = path.join( targetDir, 'manifest.json' );
+		if ( await fs.pathExists( manifestPath ) ) {
+			try {
+				const manifest = await fs.readJson( manifestPath );
+				if ( manifest.asset_mapping ) {
+					for ( const type in manifest.asset_mapping ) {
+						const asset = manifest.asset_mapping[ type ];
+						if ( asset.src ) {
+							const mappedSrc = getAssetPath( asset.src );
+							const assetPath = path.resolve(
+								themeRoot,
+								mappedSrc
+							);
+							if ( await fs.pathExists( assetPath ) ) {
+								await fs.remove( assetPath );
+								console.log(
+									c.yellow( `Removed asset: ${ mappedSrc }` )
+								);
+
+								// Also remove .min files in the root folder if they exist
+								if (
+									mappedSrc.includes( '/src/' ) &&
+									( mappedSrc.endsWith( '.css' ) ||
+										mappedSrc.endsWith( '.js' ) ||
+										mappedSrc.endsWith( '.ts' ) )
+								) {
+									const minFileName =
+										path
+											.basename( mappedSrc )
+											.replace(
+												/\.(css|js|ts)$/,
+												'.min.$1'
+											)
+											.replace( '.min.ts', '.min.js' ); // TS compiles to JS
+
+									const minAssetPath = path.resolve(
+										themeRoot,
+										path.dirname(
+											path.dirname( mappedSrc )
+										),
+										minFileName
+									);
+
+									if ( await fs.pathExists( minAssetPath ) ) {
+										await fs.remove( minAssetPath );
+										console.log(
+											c.yellow(
+												`Removed minified asset: ${ path.relative(
+													themeRoot,
+													minAssetPath
+												) }`
+											)
+										);
+									}
 								}
 							}
 						}
 					}
-				} catch ( e ) {
-					console.warn( c.yellow( `Could not parse manifest.json for asset cleanup.` ) );
 				}
+			} catch ( e ) {
+				console.warn(
+					c.yellow( `Could not parse manifest.json for asset cleanup.` )
+				);
 			}
-
-			await fs.remove( componentDir );
-			console.log( c.green( `Component folder "inc/${ normalizedSlug }" removed.` ) );
 		}
+
+		await fs.remove( targetDir );
+		console.log(
+			c.green(
+				`Component folder "${ path.relative(
+					path.join( themeRoot, 'inc' ),
+					targetDir
+				) }" removed.`
+			)
+		);
 
 		// Update registry manifest
 		const registryManifestPath = path.join( themeRoot, 'inc', 'components-manifest.json' );
@@ -808,17 +905,61 @@ program
 
 		try {
 			const files = {};
-			const fileNames = [
+			const manifestPath = path.join( componentDir, 'manifest.json' );
+			if ( ! ( await fs.pathExists( manifestPath ) ) ) {
+				throw new Error( `manifest.json not found in ${ componentDir }` );
+			}
+			const manifest = await fs.readJson( manifestPath );
+
+			const coreFiles = [
 				'Component.php',
 				'manifest.json',
 				'SPEC.md',
 				'SKILL.md',
 			];
 
-			for ( const name of fileNames ) {
+			for ( const name of coreFiles ) {
 				const filePath = path.join( componentDir, name );
 				if ( await fs.pathExists( filePath ) ) {
 					files[ name ] = await fs.readFile( filePath, 'utf8' );
+				}
+			}
+
+			// Add assets from manifest
+			if ( manifest.asset_mapping ) {
+				for ( const type in manifest.asset_mapping ) {
+					const asset = manifest.asset_mapping[ type ];
+					if ( asset.src ) {
+						const assetPath = path.resolve(
+							themeRoot,
+							getAssetPath( asset.src )
+						);
+						if ( await fs.pathExists( assetPath ) ) {
+							files[ asset.src ] = await fs.readFile(
+								assetPath,
+								'utf8'
+							);
+						}
+					}
+				}
+			}
+
+			// Add any other files from manifest.files if they are local paths
+			if ( manifest.files ) {
+				for ( const [
+					fileName,
+					fileUrl,
+				] of Object.entries( manifest.files ) ) {
+					// Only include if it doesn't look like a URL (i.e. it's a local file)
+					if ( ! fileUrl.startsWith( 'http' ) ) {
+						const filePath = path.join( componentDir, fileName );
+						if ( await fs.pathExists( filePath ) ) {
+							files[ fileName ] = await fs.readFile(
+								filePath,
+								'utf8'
+							);
+						}
+					}
 				}
 			}
 
