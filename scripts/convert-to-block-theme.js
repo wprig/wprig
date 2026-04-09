@@ -597,7 +597,6 @@ async function cleanupClassicFunctionality( dryRun ) {
 	];
 
 	if ( dryRun ) {
-		const backupDir = path.resolve( THEME_ROOT, 'classic-backup' );
 		console.log( '\n--- Classic Functionality Cleanup (Dry Run) ---' );
 		for ( const rel of [ ...CLASSIC_FILES, ...CLASSIC_COMPONENTS ] ) {
 			const full = path.resolve( THEME_ROOT, rel );
@@ -980,7 +979,6 @@ async function processNavMenusComponent( dryRun ) {
 	printReport( report, false );
 }
 
-
 async function processEditorComponent( dryRun ) {
 	const REL = 'inc/Editor/Component.php';
 	const FILE = path.resolve( THEME_ROOT, REL );
@@ -1027,6 +1025,56 @@ async function processEditorComponent( dryRun ) {
 				shim +
 				source.slice( lastBraceIndex );
 		}
+	}
+
+	if (
+		! source.includes(
+			'use WP_Rig\\WP_Rig\\Templating_Component_Interface;'
+		)
+	) {
+		let insertIndex = -1;
+		const globalUseClassRegex = /^use\s+(?!function\s+)[^;]+;/gm;
+		let match;
+		while ( ( match = globalUseClassRegex.exec( source ) ) !== null ) {
+			insertIndex = match.index + match[ 0 ].length;
+		}
+
+		if ( insertIndex !== -1 ) {
+			source =
+				source.slice( 0, insertIndex ) +
+				'\nuse WP_Rig\\WP_Rig\\Templating_Component_Interface;' +
+				source.slice( insertIndex );
+		} else {
+			// If no class use, try before first use function or after namespace
+			const firstUseFunctionMatch = /^use\s+function\s+[^;]+;/m.exec(
+				source
+			);
+			if ( firstUseFunctionMatch ) {
+				source =
+					source.slice( 0, firstUseFunctionMatch.index ) +
+					'use WP_Rig\\WP_Rig\\Templating_Component_Interface;\n' +
+					source.slice( firstUseFunctionMatch.index );
+			} else {
+				const namespaceMatch = /^namespace\s+[^;]+;/m.exec( source );
+				if ( namespaceMatch ) {
+					const endOfNamespace =
+						namespaceMatch.index + namespaceMatch[ 0 ].length;
+					source =
+						source.slice( 0, endOfNamespace ) +
+						'\n\nuse WP_Rig\\WP_Rig\\Templating_Component_Interface;' +
+						source.slice( endOfNamespace );
+				}
+			}
+		}
+	}
+
+	if (
+		source.includes( 'class Component implements Component_Interface {' )
+	) {
+		source = source.replace(
+			'class Component implements Component_Interface {',
+			'class Component implements Component_Interface, Templating_Component_Interface {'
+		);
 	}
 
 	report.changed = source !== original;
