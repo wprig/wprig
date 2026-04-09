@@ -559,6 +559,7 @@ async function main() {
 	await processCustomizerComponent( dryRun );
 	await processEZCustomizerComponent( dryRun );
 	await processNavMenusComponent( dryRun );
+	await processEditorComponent( dryRun );
 
 	// Cleanup all classic theme functionality for a strictly block-based setup
 	await cleanupClassicFunctionality( dryRun );
@@ -948,6 +949,83 @@ async function processNavMenusComponent( dryRun ) {
 					body +
 					source.slice( bodyEnd );
 			}
+		}
+	}
+
+	report.changed = source !== original;
+	if ( dryRun ) {
+		printReport( report, true );
+		return;
+	}
+	if ( report.changed ) {
+		const backupPath = FILE + '.bak';
+		const backupExists = await fs
+			.access( backupPath )
+			.then( () => true )
+			.catch( () => false );
+		if ( ! backupExists ) {
+			await fs.writeFile( backupPath, original, 'utf8' );
+			report.backupCreated = true;
+		}
+		if (
+			! /class\s+Component\b/.test( source ) ||
+			source.trim().length < 100
+		) {
+			console.error( `${ REL }: Safety check failed; aborting write.` );
+			printReport( report, false );
+			return;
+		}
+		await fs.writeFile( FILE, source, 'utf8' );
+	}
+	printReport( report, false );
+}
+
+
+async function processEditorComponent( dryRun ) {
+	const REL = 'inc/Editor/Component.php';
+	const FILE = path.resolve( THEME_ROOT, REL );
+	const exists = await fs
+		.access( FILE )
+		.then( () => true )
+		.catch( () => false );
+	if ( ! exists ) {
+		return;
+	}
+	const original = await fs.readFile( FILE, 'utf8' );
+	let source = original;
+
+	const report = {
+		file: REL,
+		changed: false,
+		backupCreated: false,
+		removedHooks: [],
+		removedMethods: [],
+		removedThemeSupports: [],
+		prunedHtml5: false,
+		droppedTitleTag: false,
+	};
+
+	if ( ! source.includes( 'public function template_tags()' ) ) {
+		const shim = `
+	/**
+	 * Gets template tags to expose to the theme.
+	 *
+	 * @return array Associative array of template tags as $tag => $callback.
+	 */
+	public function template_tags(): array {
+		return array(
+			'is_primary_sidebar_active' => '__return_false',
+			'display_primary_sidebar'   => '__return_empty_string',
+		);
+	}
+`;
+		// Insert before the last closing brace of the class
+		const lastBraceIndex = source.lastIndexOf( '}' );
+		if ( lastBraceIndex !== -1 ) {
+			source =
+				source.slice( 0, lastBraceIndex ) +
+				shim +
+				source.slice( lastBraceIndex );
 		}
 	}
 
