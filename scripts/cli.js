@@ -603,6 +603,21 @@ program
 				'utf-8'
 			);
 
+			// Run universal setup if selected
+			if ( answers.themeType === 'universal' ) {
+				console.log( '' );
+				console.log( 'Setting up Universal theme features...' );
+				try {
+					await exec( 'node node/editorSupport.js', {
+						stdio: 'inherit',
+					} );
+				} catch ( err ) {
+					console.error(
+						`Failed to run editor-support script: ${ err.message }`
+					);
+				}
+			}
+
 			// Guidance output
 			console.log( '' );
 			console.log( 'WP Rig initialization complete.' );
