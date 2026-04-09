@@ -618,6 +618,25 @@ program
 				}
 			}
 
+			// Run block-based setup if selected
+			if ( answers.themeType === 'block-based' ) {
+				console.log( '' );
+				console.log( 'Setting up Block-based theme features...' );
+				try {
+					// Block-based requires editor-support (theme.json, etc.) AND conversion
+					await exec( 'node node/editorSupport.js', {
+						stdio: 'inherit',
+					} );
+					await exec( 'node scripts/convert-to-block-theme.js', {
+						stdio: 'inherit',
+					} );
+				} catch ( err ) {
+					console.error(
+						`Failed to run block-based setup scripts: ${ err.message }`
+					);
+				}
+			}
+
 			// Guidance output
 			console.log( '' );
 			console.log( 'WP Rig initialization complete.' );

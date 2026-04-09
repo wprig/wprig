@@ -16,6 +16,7 @@
  */
 
 import { promises as fs } from 'fs';
+import fsExtra from 'fs-extra';
 import path from 'path';
 import { pathToFileURL } from 'url';
 
@@ -559,8 +560,104 @@ async function main() {
 	await processEZCustomizerComponent( dryRun );
 	await processNavMenusComponent( dryRun );
 
+	// Cleanup all classic theme functionality for a strictly block-based setup
+	await cleanupClassicFunctionality( dryRun );
+
 	// Update config.json themeType
 	await updateConfigThemeType( 'block-based', dryRun );
+}
+
+async function cleanupClassicFunctionality( dryRun ) {
+	const CLASSIC_FILES = [
+		'404.php',
+		'500.php',
+		'offline.php',
+		'archive.php',
+		'comments.php',
+		'footer.php',
+		'header.php',
+		'page.php',
+		'search.php',
+		'sidebar.php',
+		'single.php',
+		'template-parts',
+		'inc/back-compat.php',
+		'inc/wordpress-shims.php',
+	];
+
+	const CLASSIC_COMPONENTS = [
+		'inc/Customizer',
+		'inc/EZ_Customizer',
+		'inc/Nav_Menus',
+		'inc/Sidebars',
+		'inc/Custom_Background',
+		'inc/Custom_Header',
+		'inc/Comments',
+	];
+
+	if ( dryRun ) {
+		const backupDir = path.resolve( THEME_ROOT, 'classic-backup' );
+		console.log( '\n--- Classic Functionality Cleanup (Dry Run) ---' );
+		for ( const rel of [ ...CLASSIC_FILES, ...CLASSIC_COMPONENTS ] ) {
+			const full = path.resolve( THEME_ROOT, rel );
+			if ( fsExtra.existsSync( full ) ) {
+				console.log( `Would move ${ rel } to classic-backup/` );
+			}
+		}
+		console.log( 'Would replace index.php with minimal FSE fallback.' );
+		return;
+	}
+
+	console.log( '\n--- Cleaning up classic theme functionality ---' );
+
+	const backupDir = path.resolve( THEME_ROOT, 'classic-backup' );
+	if ( ! fsExtra.existsSync( backupDir ) ) {
+		fsExtra.mkdirpSync( backupDir );
+	}
+
+	for ( const rel of [ ...CLASSIC_FILES, ...CLASSIC_COMPONENTS ] ) {
+		const full = path.resolve( THEME_ROOT, rel );
+		if ( fsExtra.existsSync( full ) ) {
+			const dest = path.resolve( backupDir, rel );
+			fsExtra.mkdirpSync( path.dirname( dest ) );
+			try {
+				// If destination exists, remove it first to allow overwrite/move
+				if ( fsExtra.existsSync( dest ) ) {
+					fsExtra.removeSync( dest );
+				}
+				fsExtra.moveSync( full, dest );
+				console.log( `✅ Moved ${ rel } to classic-backup/` );
+			} catch ( err ) {
+				console.error( `❌ Failed to move ${ rel }: ${ err.message }` );
+			}
+		}
+	}
+
+	// Replace index.php with minimal fallback
+	const indexPath = path.resolve( THEME_ROOT, 'index.php' );
+	if ( fsExtra.existsSync( indexPath ) ) {
+		const indexBackup = path.resolve( backupDir, 'index.php' );
+		if ( ! fsExtra.existsSync( indexBackup ) ) {
+			fsExtra.copySync( indexPath, indexBackup );
+		}
+
+		const minimalIndex = `<?php
+/**
+ * The main template file
+ *
+ * This theme is a block-based theme. This file is only used as a fallback.
+ *
+ * @package wp_rig
+ */
+
+namespace WP_Rig\\WP_Rig;
+
+// For block themes, WordPress handles everything via block templates in the templates/ directory.
+// This file is only a fallback required for theme identification.
+`;
+		fsExtra.writeFileSync( indexPath, minimalIndex, 'utf8' );
+		console.log( '✅ Replaced index.php with minimal FSE fallback.' );
+	}
 }
 
 async function updateConfigThemeType( themeType, dryRun ) {
@@ -587,7 +684,9 @@ async function updateConfigThemeType( themeType, dryRun ) {
 			JSON.stringify( config, null, 2 ) + '\n',
 			'utf8'
 		);
-		console.log( `config/config.json: updated themeType to ${ themeType }` );
+		console.log(
+			`config/config.json: updated themeType to ${ themeType }`
+		);
 	} catch ( error ) {
 		console.error(
 			`Error updating config/config.json: ${ error.message }`

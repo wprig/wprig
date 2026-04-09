@@ -30,12 +30,18 @@ define( 'WP_RIG_MINIMUM_PHP_VERSION', '8.0' );
 
 // Bail if requirements are not met.
 if ( version_compare( $GLOBALS['wp_version'], WP_RIG_MINIMUM_WP_VERSION, '<' ) || version_compare( phpversion(), WP_RIG_MINIMUM_PHP_VERSION, '<' ) ) {
-	require get_template_directory() . '/inc/back-compat.php';
+	$back_compat = get_template_directory() . '/inc/back-compat.php';
+	if ( file_exists( $back_compat ) ) {
+		require $back_compat;
+	}
 	return;
 }
 
 // Include WordPress shims.
-require get_template_directory() . '/inc/wordpress-shims.php';
+$wordpress_shims = get_template_directory() . '/inc/wordpress-shims.php';
+if ( file_exists( $wordpress_shims ) ) {
+	require $wordpress_shims;
+}
 
 // Setup autoloader (via Composer or custom).
 if ( file_exists( get_template_directory() . '/vendor/autoload.php' ) ) {
