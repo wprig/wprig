@@ -8,6 +8,10 @@
 namespace WP_Rig\WP_Rig;
 
 use InvalidArgumentException;
+use function esc_html__;
+use function esc_html;
+use function get_template_directory;
+use function apply_filters;
 
 /**
  * Main class for the theme.
@@ -46,23 +50,34 @@ class Theme {
 			$components = $this->get_default_components();
 		}
 
-		// Set the components.
-		foreach ( $components as $component ) {
+			// Set the components.
+			foreach ( $components as $component ) {
 
-			// Bail if a component is invalid.
-			if ( ! $component instanceof Component_Interface ) {
-				throw new InvalidArgumentException(
-					sprintf(
-						/* translators: 1: classname/type of the variable, 2: interface name */
-						esc_html__( 'The theme component %1$s does not implement the %2$s interface.', 'wp-rig' ),
-						esc_html( gettype( $component ) ),
-						Component_Interface::class
-					)
-				);
+				// Bail if a component is invalid.
+				if ( ! $component instanceof Component_Interface ) {
+					throw new InvalidArgumentException(
+						sprintf(
+							/* translators: 1: classname/type of the variable, 2: interface name */
+							esc_html__( 'The theme component %1$s does not implement the %2$s interface.', 'wp-rig' ),
+							esc_html( gettype( $component ) ),
+							Component_Interface::class
+						)
+					);
+				}
+
+				if ( isset( $this->components[ $component->get_slug() ] ) ) {
+					trigger_error(
+						sprintf(
+							/* translators: %s: component slug */
+							esc_html__( 'Theme component slug collision: "%s" already exists and will be overwritten.', 'wp-rig' ),
+							esc_html( $component->get_slug() )
+						),
+						E_USER_WARNING
+					);
+				}
+
+				$this->components[ $component->get_slug() ] = $component;
 			}
-
-			$this->components[ $component->get_slug() ] = $component;
-		}
 
 		// Instantiate the template tags instance for all theme templating components.
 		$this->template_tags = new Template_Tags(
@@ -149,29 +164,54 @@ class Theme {
 		$components = array();
 
 		// Get the template directory path.
-		$inc_dir = get_template_directory() . '/inc';
+		$inc_dir       = get_template_directory() . '/inc';
+		$manifest_file = $inc_dir . '/components-manifest.json';
 
-		// Iterate through subdirectories in the inc/ directory.
-		$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
+		$manifest = array();
+		if ( file_exists( $manifest_file ) ) {
+			$manifest = json_decode( file_get_contents( $manifest_file ), true );
+		}
 
-		foreach ( $directories as $directory ) {
-			$component_name = basename( $directory );
-			$component_class = __NAMESPACE__ . '\\' . $component_name . '\\Component';
+		// Use manifest-driven approach if manifest exists and is not empty.
+		if ( ! empty( $manifest ) && is_array( $manifest ) ) {
+			foreach ( $manifest as $component_name => $path ) {
+				$normalized_name = $this->normalize_component_name( $component_name );
+				$component_class = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
 
-			// Check if the Component.php file exists in the directory.
-			if ( ! file_exists( $directory . '/Component.php' ) ) {
-				continue;
+				// Check if the component class exists and implements Component_Interface.
+				// The class name is resolved via the PSR-4 autoloader.
+				if ( class_exists( $component_class ) ) {
+					// Check for optional is_active() static method to support conditional loading.
+					if ( method_exists( $component_class, 'is_active' ) && ! $component_class::is_active() ) {
+						continue;
+					}
+					$components[] = new $component_class();
+				}
 			}
+		} else {
+			// Legacy: fallback to directory scanning if no manifest exists.
+			// Iterate through subdirectories in the inc/ directory.
+			$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
 
-			// Special handling for Jetpack - only load if Jetpack is present (optional behavior preservation).
-			if ( 'Jetpack' === $component_name && ! defined( 'JETPACK__VERSION' ) ) {
-				continue;
-			}
+			foreach ( $directories as $directory ) {
+				$component_name  = basename( $directory );
+				$normalized_name = $this->normalize_component_name( $component_name );
+				$component_class = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
 
-			// Check if the component class exists and implements Component_Interface.
-			// The class name is resolved via the PSR-4 autoloader.
-			if ( class_exists( $component_class ) ) {
-				$components[] = new $component_class();
+				// Check if the Component.php file exists in the directory.
+				if ( ! file_exists( $directory . '/Component.php' ) ) {
+					continue;
+				}
+
+				// Check if the component class exists and implements Component_Interface.
+				// The class name is resolved via the PSR-4 autoloader.
+				if ( class_exists( $component_class ) ) {
+					// Check for optional is_active() static method to support conditional loading.
+					if ( method_exists( $component_class, 'is_active' ) && ! $component_class::is_active() ) {
+						continue;
+					}
+					$components[] = new $component_class();
+				}
 			}
 		}
 
@@ -185,5 +225,23 @@ class Theme {
 		$components = apply_filters( 'wprig_theme_components', $components );
 
 		return $components;
+	}
+
+	/**
+	 * Normalizes a component name to PascalCase with underscores.
+	 *
+	 * @param string $name Component name (slug or directory name).
+	 * @return string Normalized component name.
+	 */
+	protected function normalize_component_name( string $name ): string {
+		$normalized = str_replace( ' ', '_', ucwords( str_replace( array( '-', '_' ), ' ', $name ) ) );
+
+		// Ensure the name is a valid PHP identifier.
+		// If it starts with a number, prepend an underscore.
+		if ( preg_match( '/^[0-9]/', $normalized ) ) {
+			$normalized = '_' . $normalized;
+		}
+
+		return $normalized;
 	}
 }

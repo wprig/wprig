@@ -115,14 +115,20 @@ class Template_Tags {
 			}
 
 			if ( isset( $this->template_tags[ $method_name ] ) ) {
-				throw new RuntimeException(
-					sprintf(
-						/* translators: 1: template tag method name, 2: component class name */
-						esc_html__( 'The template tag method %1$s registered by theme component %2$s conflicts with an already registered template tag of the same name.', 'wp-rig' ),
-						esc_html( $method_name ),
-						esc_html( get_class( $component ) )
-					)
-				);
+				// Log a warning instead of throwing a fatal exception to prevent site crashes.
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+					trigger_error(
+						sprintf(
+							/* translators: 1: template tag method name, 2: component class name */
+							esc_html__( 'The template tag method %1$s registered by theme component %2$s conflicts with an already registered template tag of the same name. Skipping to avoid collision.', 'wp-rig' ),
+							esc_html( $method_name ),
+							esc_html( get_class( $component ) )
+						),
+						E_USER_WARNING
+					);
+				}
+				continue;
 			}
 
 			$this->template_tags[ $method_name ] = $callback;
