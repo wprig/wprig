@@ -75,7 +75,7 @@ class Component implements Component_Interface {
 		add_theme_support( 'responsive-embeds' );
 	}
 
-				/**
+	/**
 	 * Excludes any directory named 'optional' from being scanned for theme template files.
 	 *
 	 * @link https://developer.wordpress.org/reference/hooks/theme_scandir_exclusions/
@@ -89,5 +89,4 @@ class Component implements Component_Interface {
 			array( 'optional' )
 		);
 	}
-
-	}
+}

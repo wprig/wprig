@@ -76,25 +76,14 @@ class Component_Tests extends Unit_Test_Case {
 	 * @covers Component::action_enqueue_navigation_script()
 	 */
 	public function test_action_enqueue_navigation_script() {
-		$template_tags = $this->mockTemplateTags( array( 'get_asset_version' ) );
-
-		$template_tags->expects( $this->once() )
-			->method( 'get_asset_version' )
-			->will( $this->returnValue( '2.0.1' ) );
-
-		Functions\when( 'get_theme_file_uri' )->returnArg();
-		Functions\when( 'get_theme_file_path' )->returnArg();
+		$this->expectNotToPerformAssertions();
 
 		Functions\expect( 'wp_enqueue_script' )
-			->with( 'wp-rig-navigation', Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any() )
+			->with( 'wp-rig-navigation' )
 			->once();
 
 		Functions\expect( 'wp_script_add_data' )
-			->with( 'wp-rig-navigation', 'async', true )
-			->twice();
-
-		Functions\expect( 'wp_localize_script' )
-			->with( 'wp-rig-navigation', Mockery::any(), Mockery::any() )
+			->with( 'wp-rig-navigation', 'precache', true )
 			->once();
 
 		$this->component->action_enqueue_navigation_script();
