@@ -32,6 +32,8 @@
 !/tests/
 !/optional/
 !/scripts/
+!/docs/
+/docs/development
 !build-css.js
 !build-js.js
 
