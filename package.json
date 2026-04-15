@@ -17,6 +17,10 @@
   "bugs": {
     "url": "https://github.com/wprig/wprig/issues"
   },
+  "ai": {
+    "protocol": "./AGENTS.md",
+    "skills": "./.ai/skills/"
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
     "@eslint/eslintrc": "^3.3.5",

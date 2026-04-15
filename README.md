@@ -5,16 +5,7 @@ title="WP Rig logo by Morten Rand-Hendriksen and Rob Ruiz">
 # WP Rig: WordPress Theme Boilerplate
 
 > [!IMPORTANT]
-> ### 🤖 FOR AI CODING AGENTS: MANDATORY PROTOCOL
-> WP Rig is a highly opinionated framework. To ensure your changes follow the correct architecture, coding standards, and "Contract-First" development process, you **MUST** follow this protocol:
->
-> 1. **Discovery**: Read [**AGENTS.md**](./AGENTS.md) first.
-> 2. **AI Setup**: Run `npm run ai:setup` to configure WP Rig for your AI agent (e.g., Claude Code, Cursor, Windsurf).
-> 3. **Contract-First**: Author a `SPEC.md` in `.ai/plans/` before writing any code.
-> 4. **Tooling**: Use `npm run block:new` or `npm run create-rig-component`. Manual file creation is a violation.
-> 5. **Validation**: Run `npm run ai:check` before submitting.
->
-> Failure to follow these steps will result in architectural regression.
+> 🤖 **AI Agents:** You MUST follow the [Mandatory Development Protocol](./AGENTS.md) to ensure architectural integrity.
 
 [![Build Status](https://github.com/wprig/wprig/workflows/CI/badge.svg)](https://github.com/wprig/wprig/actions)
 [![License: GPL](https://img.shields.io/github/license/wprig/wprig)](/LICENSE)
