@@ -148,7 +148,7 @@ WP Rig uses a modular component architecture and a modern build system to optimi
 - [**Advanced Features**](./docs/advanced-features.md): Documentation for critical assets, font performance, and theme-scoped blocks.
 - [**Block-Based Theme Conversion**](./docs/block-based-theme.md): Guide on how to align the theme with Full Site Editing.
 
-For more information about commands and useful workflows, please visit the [WP Rig website](https://wprig.io/doc_cat/workflow/).
+For more information about commands and useful workflows, please visit the [WP Rig website](https://wprig.io/documentation/).
 
 ## License
 

@@ -49,7 +49,7 @@ WP Rig features an Open Component Registry that allows you to import and share p
 - **Discover**: `npm run rig:search [keyword]`
 - **Add**: `npm run rig:add [slug]`
 - **Test**: `npm run rig:test-component [slug]`
-- **Submit**: `npm run rig:submit`
+- **Prepare**: `npm run rig:prepare [slug]`
 
 Components added via the registry are automatically registered in `inc/Theme.php` and integrated into the build pipeline. For more details, see the [Component Registry Breakdown](development/wprig-v3-4-component-registry-feature-breakdown.md).
 

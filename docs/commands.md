@@ -20,6 +20,13 @@ Use `npm run <command>` (or `bun run <command>`):
 	- `block:promote-plugin`: Export block as plugin.
 	- `create-rig-component`: Scaffold new theme component.
 	- `childify`: Convert theme to a lightweight child theme.
+- **Component Registry**:
+	- `rig:search [keyword]`: Discover components from the community.
+	- `rig:add [slug]`: Import a component into your theme.
+	- `rig:update [slug]`: Check for and pull updates to components.
+	- `rig:remove [slug]`: Remove a component from your theme.
+	- `rig:prepare [slug]`: Package a component for registry submission.
+	- `rig:test-component [slug]`: Validate a component for registry readiness.
 - **Testing**:
 	- `test:e2e`: Run Playwright End-to-End tests.
 	- `test:e2e:screenshot`: Take screenshots for regression testing.

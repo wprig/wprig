@@ -865,20 +865,12 @@ program
 	} );
 
 program
-	.command( 'submit <slug>' )
-	.description( 'Submit a component to the registry' )
+	.command( 'prepare <slug>' )
+	.description( 'Prepare a component for submission by packaging it into a folder.' )
 	.action( async ( slug ) => {
-		const auth = await getAuth( program.opts() );
-
-		if ( ! auth.username || ! auth.token ) {
-			console.error(
-				c.red( 'Authentication is required to submit components.' )
-			);
-			process.exit( 1 );
-		}
 		const normalizedSlug = toPascalCase( slug );
 		console.log(
-			c.blue( `Submitting component "${ normalizedSlug }" to ${ auth.url }...` )
+			c.blue( `Preparing component "${ normalizedSlug }" for submission...` )
 		);
 
 		let realSlug = normalizedSlug;
@@ -888,7 +880,11 @@ program
 			// Fallback: check if the original slug directory exists
 			const fallbackDir = path.join( themeRoot, 'inc', slug );
 			if ( ! ( await fs.pathExists( fallbackDir ) ) ) {
-				console.error( c.red( `Component folder not found in inc/ for "${ normalizedSlug }" or "${ slug }"` ) );
+				console.error(
+					c.red(
+						`Component folder not found in inc/ for "${ normalizedSlug }" or "${ slug }"`
+					)
+				);
 				return;
 			}
 			realSlug = slug;
@@ -904,7 +900,11 @@ program
 		}
 
 		try {
-			const files = {};
+			const distDir = path.join( themeRoot, 'dist', 'components', realSlug );
+			await fs.ensureDir( distDir );
+			// Clear existing directory to avoid old files remaining
+			await fs.emptyDir( distDir );
+
 			const manifestPath = path.join( componentDir, 'manifest.json' );
 			if ( ! ( await fs.pathExists( manifestPath ) ) ) {
 				throw new Error( `manifest.json not found in ${ componentDir }` );
@@ -921,7 +921,7 @@ program
 			for ( const name of coreFiles ) {
 				const filePath = path.join( componentDir, name );
 				if ( await fs.pathExists( filePath ) ) {
-					files[ name ] = await fs.readFile( filePath, 'utf8' );
+					await fs.copy( filePath, path.join( distDir, name ) );
 				}
 			}
 
@@ -935,10 +935,9 @@ program
 							getAssetPath( asset.src )
 						);
 						if ( await fs.pathExists( assetPath ) ) {
-							files[ asset.src ] = await fs.readFile(
-								assetPath,
-								'utf8'
-							);
+							const destAssetPath = path.join( distDir, asset.src );
+							await fs.ensureDir( path.dirname( destAssetPath ) );
+							await fs.copy( assetPath, destAssetPath );
 						}
 					}
 				}
@@ -954,44 +953,76 @@ program
 					if ( ! fileUrl.startsWith( 'http' ) ) {
 						const filePath = path.join( componentDir, fileName );
 						if ( await fs.pathExists( filePath ) ) {
-							files[ fileName ] = await fs.readFile(
-								filePath,
-								'utf8'
-							);
+							const destPath = path.join( distDir, fileName );
+							await fs.ensureDir( path.dirname( destPath ) );
+							await fs.copy( filePath, destPath );
 						}
 					}
 				}
 			}
 
-			const response = await fetch(
-				`${ auth.url }/wp-json/wprig-registry/v1/submit`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Basic ${ Buffer.from(
-							`${ auth.username }:${ auth.token }`
-						).toString( 'base64' ) }`,
-					},
-					body: JSON.stringify( {
-						slug: realSlug,
-						files,
-					} ),
-				}
+			console.log(
+				c.green(
+					`Component "${ realSlug }" prepared successfully in ${ path.relative(
+						themeRoot,
+						distDir
+					) }`
+				)
 			);
 
-			if ( ! response.ok ) {
-				const error = await response.json();
-				throw new Error(
-					error.message || `HTTP Error: ${ response.status }`
-				);
-			}
-
+			// Manual instructions
 			console.log(
-				c.green( `Component "${ slug }" submitted successfully!` )
+				'\n' + c.blue.bold( 'NEXT STEPS TO SUBMIT TO THE REGISTRY:' )
+			);
+			console.log(
+				'1. Fork the component registry repository: ' +
+					c.cyan( 'https://github.com/wprig/wprig-components' )
+			);
+			console.log(
+				'2. Clone your fork locally and create a new branch:'
+			);
+			console.log(
+				c.gray(
+					`   git clone https://github.com/YOUR_USERNAME/wprig-components.git`
+				)
+			);
+			console.log( c.gray( `   cd wprig-components` ) );
+			console.log(
+				c.gray(
+					`   git checkout -b add-${ realSlug
+						.toLowerCase()
+						.replace( /_/g, '-' ) }`
+				)
+			);
+			console.log(
+				'3. Copy the prepared folder into the ' +
+					c.cyan( 'components/' ) +
+					' directory of the repo:'
+			);
+			console.log(
+				c.gray(
+					`   cp -r ${ distDir } ./components/`
+				)
+			);
+			console.log( '4. Commit and push your changes:' );
+			console.log( c.gray( `   git add components/${ realSlug }` ) );
+			console.log(
+				c.gray( `   git commit -m "Add ${ realSlug } component"` )
+			);
+			console.log(
+				c.gray(
+					`   git push origin add-${ realSlug
+						.toLowerCase()
+						.replace( /_/g, '-' ) }`
+				)
+			);
+			console.log(
+				'5. Submit a Pull Request to the main ' +
+					c.cyan( 'wprig-components' ) +
+					' repository.'
 			);
 		} catch ( error ) {
-			console.error( c.red( `Submission failed: ${ error.message }` ) );
+			console.error( c.red( `Preparation failed: ${ error.message }` ) );
 		}
 	} );
 
