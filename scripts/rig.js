@@ -31,7 +31,6 @@ const logger = {
 	/* eslint-enable no-console */
 };
 
-
 const program = new Command();
 
 program
@@ -64,7 +63,9 @@ async function getAuth( options = {} ) {
 				// Save the migrated data
 				await fs.ensureDir( path.dirname( authFile ) );
 				await fs.writeJson( authFile, authData, { spaces: 2 } );
-				logger.info( 'Migrated auth.json to the new multi-registry format.' );
+				logger.info(
+					'Migrated auth.json to the new multi-registry format.'
+				);
 			}
 		} catch ( e ) {
 			authData = null;
@@ -179,7 +180,7 @@ program
 
 		try {
 			const response = await fetch(
-    `${ auth.url }/wp-json/wprig/v1/registry/search?q=${
+				`${ auth.url }/wp-json/wprig/v1/registry/search?q=${
 					keyword || ''
 				}${ options.force ? '&force=1' : '' }`,
 				{
@@ -315,13 +316,19 @@ async function downloadComponent( slug, options = {} ) {
 
 		/**
 		 * Helper to write a file with a check.
+		 * @param filePath
+		 * @param content
+		 * @param fileName
 		 */
 		const writeFileWithCheck = async ( filePath, content, fileName ) => {
 			if ( await fs.pathExists( filePath ) ) {
 				if ( options.forceOverwrite ) {
 					// All-or-nothing overwrite mode
 				} else {
-					const existingContent = await fs.readFile( filePath, 'utf8' );
+					const existingContent = await fs.readFile(
+						filePath,
+						'utf8'
+					);
 					if ( existingContent !== content ) {
 						if ( options.yes ) {
 							logger.warn(
@@ -372,7 +379,9 @@ async function downloadComponent( slug, options = {} ) {
 			logger.warn(
 				`UPDATING: Component "${ slug }" already exists at inc/${ componentSlug }.`
 			);
-			logger.info( 'This will overwrite ALL files in the component folder.' );
+			logger.info(
+				'This will overwrite ALL files in the component folder.'
+			);
 			logger.info(
 				'Recommendation: To preserve your changes, consider extending this component instead of modifying it directly.'
 			);
@@ -404,9 +413,8 @@ async function downloadComponent( slug, options = {} ) {
 			);
 			if ( await fs.pathExists( localManifestPath ) ) {
 				try {
-					const localManifest = await fs.readJson(
-						localManifestPath
-					);
+					const localManifest =
+						await fs.readJson( localManifestPath );
 					if (
 						localManifest.version &&
 						component.version &&
@@ -641,7 +649,7 @@ async function downloadComponent( slug, options = {} ) {
 					if ( await fs.pathExists( destPath ) ) {
 						const isSymlink = (
 							await fs.lstat( destPath )
-						 ).isSymbolicLink();
+						).isSymbolicLink();
 						if ( isSymlink ) {
 							await fs.unlink( destPath );
 						} else {
@@ -943,7 +951,9 @@ program
 		try {
 			const success = await testComponent( themeRoot, realSlug );
 			if ( ! success ) {
-				logger.error( `Validation failed for component "${ realSlug }".` );
+				logger.error(
+					`Validation failed for component "${ realSlug }".`
+				);
 				return;
 			}
 		} catch ( e ) {
