@@ -7,7 +7,7 @@ import fse from 'fs-extra';
 
 /**
  * Expand glob patterns to a file list.
- * @param {string|string[]} patterns - Glob pattern(s). Backslashes will be normalized to forward slashes on Windows.
+ * @param {string|string[]} patterns  - Glob pattern(s). Backslashes will be normalized to forward slashes on Windows.
  * @param {Object}          [options] - fast-glob options; ignore patterns will also be normalized for Windows.
  * @return {Promise<string[]>}        - Resolved file paths matching the glob(s).
  */

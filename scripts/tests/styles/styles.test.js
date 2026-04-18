@@ -21,26 +21,27 @@ import { stylesAfterReplacementStream } from '../../lib/styles';
 
 /**
  * Helper functions to replace mississippi functionality
+ * @param array
  */
 // Create readable stream from array of objects
-const fromArray = (array) => {
-	return Readable.from(array, { objectMode: true });
+const fromArray = ( array ) => {
+	return Readable.from( array, { objectMode: true } );
 };
 
 // Create transform stream that collects objects and passes them to callback
-const concatStream = (callback) => {
+const concatStream = ( callback ) => {
 	const objects = [];
-	return new Transform({
+	return new Transform( {
 		objectMode: true,
-		transform(chunk, encoding, done) {
-			objects.push(chunk);
-			done(null, chunk);
+		transform( chunk, encoding, done ) {
+			objects.push( chunk );
+			done( null, chunk );
 		},
-		flush(done) {
-			callback(objects);
+		flush( done ) {
+			callback( objects );
 			done();
-		}
-	});
+		},
+	} );
 };
 
 function makeMockFiles() {
@@ -66,12 +67,12 @@ test( 'nesting', ( done ) => {
 	}
 
 	pipeline(
-		fromArray(mockFiles),
+		fromArray( mockFiles ),
 		stylesAfterReplacementStream(),
-		concatStream(assert)
+		concatStream( assert )
 	)
-		.then(() => done())
-		.catch(done);
+		.then( () => done() )
+		.catch( done );
 } );
 
 test( 'partials are imported', ( done ) => {
@@ -89,12 +90,12 @@ test( 'partials are imported', ( done ) => {
 	}
 
 	pipeline(
-		fromArray(mockFiles),
+		fromArray( mockFiles ),
 		stylesAfterReplacementStream(),
-		concatStream(assert)
+		concatStream( assert )
 	)
-		.then(() => done())
-		.catch(done);
+		.then( () => done() )
+		.catch( done );
 } );
 
 test( 'custom properties processed', ( done ) => {
@@ -108,16 +109,18 @@ test( 'custom properties processed', ( done ) => {
 		const file = files[ 0 ];
 		const fileContents = file.contents.toString( 'utf-8' );
 		expect( fileContents ).toContain( 'color:#e36d60' );
-		expect( fileContents ).toContain( 'font-family:"Open Sans","Helvetica Neue","Arial",sans-serif' );
+		expect( fileContents ).toContain(
+			'font-family:"Open Sans","Helvetica Neue","Arial",sans-serif'
+		);
 	}
 
 	pipeline(
-		fromArray(mockFiles),
+		fromArray( mockFiles ),
 		stylesAfterReplacementStream(),
-		concatStream(assert)
+		concatStream( assert )
 	)
-		.then(() => done())
-		.catch(done);
+		.then( () => done() )
+		.catch( done );
 } );
 
 test( 'custom media is processed', ( done ) => {
@@ -136,12 +139,12 @@ test( 'custom media is processed', ( done ) => {
 	}
 
 	pipeline(
-		fromArray(mockFiles),
+		fromArray( mockFiles ),
 		stylesAfterReplacementStream(),
-		concatStream(assert)
+		concatStream( assert )
 	)
-		.then(() => done())
-		.catch(done);
+		.then( () => done() )
+		.catch( done );
 } );
 
 test( 'minifies by default', ( done ) => {
@@ -161,12 +164,12 @@ test( 'minifies by default', ( done ) => {
 	}
 
 	pipeline(
-		fromArray(mockFiles),
+		fromArray( mockFiles ),
 		stylesAfterReplacementStream(),
-		concatStream(assert)
+		concatStream( assert )
 	)
-		.then(() => done())
-		.catch(done);
+		.then( () => done() )
+		.catch( done );
 } );
 
 test( 'debug config disables minify', ( done ) => {
@@ -183,12 +186,12 @@ test( 'debug config disables minify', ( done ) => {
 	}
 
 	pipeline(
-		fromArray(mockFiles),
+		fromArray( mockFiles ),
 		stylesAfterReplacementStream(),
-		concatStream(assert)
+		concatStream( assert )
 	)
-		.then(() => done())
-		.catch(done);
+		.then( () => done() )
+		.catch( done );
 } );
 
 test( 'IE grid prefix if configured', ( done ) => {
@@ -204,12 +207,12 @@ test( 'IE grid prefix if configured', ( done ) => {
 	}
 
 	pipeline(
-		fromArray(mockFiles),
+		fromArray( mockFiles ),
 		stylesAfterReplacementStream(),
-		concatStream(assert)
+		concatStream( assert )
 	)
-		.then(() => done())
-		.catch(done);
+		.then( () => done() )
+		.catch( done );
 } );
 
 test( 'No IE grid prefix by default', ( done ) => {
@@ -227,10 +230,10 @@ test( 'No IE grid prefix by default', ( done ) => {
 	}
 
 	pipeline(
-		fromArray(mockFiles),
+		fromArray( mockFiles ),
 		stylesAfterReplacementStream(),
-		concatStream(assert)
+		concatStream( assert )
 	)
-		.then(() => done())
-		.catch(done);
+		.then( () => done() )
+		.catch( done );
 } );

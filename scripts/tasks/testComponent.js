@@ -3,11 +3,10 @@ import path from 'path';
 import c from 'ansi-colors';
 import { getAssetPath } from '../lib/utils.js';
 
-
 /**
  * Validates a component for registry readiness.
  *
- * @param {string} themeRoot Root directory of the theme
+ * @param {string} themeRoot     Root directory of the theme
  * @param {string} componentSlug Slug of the component in inc/
  * @return {Promise<boolean>} Success or failure
  */
@@ -17,7 +16,9 @@ export default async function testComponent( themeRoot, componentSlug ) {
 	console.log( c.blue( `Testing component: ${ componentSlug }` ) );
 
 	if ( ! ( await fs.pathExists( componentDir ) ) ) {
-		console.error( c.red( `Error: Component directory not found at ${ componentDir }` ) );
+		console.error(
+			c.red( `Error: Component directory not found at ${ componentDir }` )
+		);
 		return false;
 	}
 
@@ -45,15 +46,24 @@ export default async function testComponent( themeRoot, componentSlug ) {
 	if ( await fs.pathExists( manifestPath ) ) {
 		try {
 			const manifest = await fs.readJson( manifestPath );
-			const requiredFields = [ 'slug', 'version', 'title', 'php_class_mapping' ];
+			const requiredFields = [
+				'slug',
+				'version',
+				'title',
+				'php_class_mapping',
+			];
 			for ( const field of requiredFields ) {
 				if ( ! manifest[ field ] ) {
-					console.error( c.red( `✗ manifest.json: missing field "${ field }"` ) );
+					console.error(
+						c.red( `✗ manifest.json: missing field "${ field }"` )
+					);
 					errors++;
 				}
 			}
 		} catch ( e ) {
-			console.error( c.red( `✗ manifest.json: invalid JSON format (${ e.message })` ) );
+			console.error(
+				c.red( `✗ manifest.json: invalid JSON format (${ e.message })` )
+			);
 			errors++;
 		}
 	}
@@ -99,13 +109,27 @@ export default async function testComponent( themeRoot, componentSlug ) {
 
 		if ( match ) {
 			const namespace = match[ 1 ];
-			if ( namespace === componentSlug || namespace.toLowerCase() === componentSlug.replace( /_/g, '' ).toLowerCase() ) {
-				console.log( c.green( `✓ Namespace matches (${ namespace })` ) );
+			if (
+				namespace === componentSlug ||
+				namespace.toLowerCase() ===
+					componentSlug.replace( /_/g, '' ).toLowerCase()
+			) {
+				console.log(
+					c.green( `✓ Namespace matches (${ namespace })` )
+				);
 			} else {
-				console.warn( c.yellow( `! Namespace warning: found ${ namespace }, directory is ${ componentSlug }` ) );
+				console.warn(
+					c.yellow(
+						`! Namespace warning: found ${ namespace }, directory is ${ componentSlug }`
+					)
+				);
 			}
 		} else {
-			console.error( c.red( `✗ Component.php: could not find valid WP_Rig namespace` ) );
+			console.error(
+				c.red(
+					`✗ Component.php: could not find valid WP_Rig namespace`
+				)
+			);
 			errors++;
 		}
 
@@ -132,17 +156,28 @@ export default async function testComponent( themeRoot, componentSlug ) {
 
 		for ( const pattern of dangerousPatterns ) {
 			if ( pattern.regex.test( content ) ) {
-				console.error( c.red( `✗ Component.php: Dangerous function detected: ${ pattern.name }` ) );
+				console.error(
+					c.red(
+						`✗ Component.php: Dangerous function detected: ${ pattern.name }`
+					)
+				);
 				errors++;
 			}
 		}
 	}
 
 	if ( errors === 0 ) {
-		console.log( c.green( `\nSUCCESS: Component ${ componentSlug } is registry-ready!` ) );
+		console.log(
+			c.green(
+				`\nSUCCESS: Component ${ componentSlug } is registry-ready!`
+			)
+		);
 		return true;
-	} else {
-		console.error( c.red( `\nFAILURE: Component ${ componentSlug } failed validation with ${ errors } errors.` ) );
-		return false;
 	}
+	console.error(
+		c.red(
+			`\nFAILURE: Component ${ componentSlug } failed validation with ${ errors } errors.`
+		)
+	);
+	return false;
 }
