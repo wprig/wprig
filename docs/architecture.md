@@ -46,10 +46,13 @@ Each component implements `Component_Interface` and optionally `Templating_Compo
 
 WP Rig features an Open Component Registry that allows you to import and share performance-optimized, AI-ready theme components.
 
-- **Discover**: `npm run rig:search [keyword]`
-- **Add**: `npm run rig:add [slug]`
-- **Test**: `npm run rig:test-component [slug]`
-- **Prepare**: `npm run rig:prepare [slug]`
+- **`npm run rig:list`**: List all installed components and their status. Use this to see what features are currently active in your theme.
+- **`npm run rig:search [keyword]`**: Discover performance-optimized components from the community. Use this when you're looking for existing features to add to your theme.
+- **`npm run rig:add [slug]`**: Download and install a component. It automatically registers the component and integrates its assets. Use this to quickly add new functionality.
+- **`npm run rig:update [slug]`**: Check for and pull updates to components while preserving your local customizations. Use this to keep your components bug-free and up-to-date.
+- **`npm run rig:remove [slug]`**: Completely remove a component from your theme. Use this when you no longer need a feature.
+- **`npm run rig:test-component [slug]`**: Run a "pre-flight" check on a local component to ensure it meets registry standards. Use this before sharing your component.
+- **`npm run rig:prepare [slug]`**: Package a local component and get instructions for submitting it via GitHub Pull Request. Use this when you want to share your work with the community.
 
 Components added via the registry are automatically registered in `inc/Theme.php` and integrated into the build pipeline. For more details, see the [Component Registry Breakdown](development/wprig-v3-4-component-registry-feature-breakdown.md).
 

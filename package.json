@@ -139,13 +139,14 @@
     "get-dev-url": "node scripts/cli.js get-dev-url",
     "ai:setup": "node scripts/ai-setup.js",
     "rig": "node scripts/rig.js",
-    "rig:login": "node scripts/rig.js login",
+    "rig:list": "node scripts/rig.js list",
     "rig:search": "node scripts/rig.js search",
     "rig:add": "node scripts/rig.js add",
     "rig:remove": "node scripts/rig.js remove",
     "rig:update": "node scripts/rig.js update",
     "rig:prepare": "node scripts/rig.js prepare",
-    "rig:test-component": "node scripts/rig.js test-component"
+    "rig:test-component": "node scripts/rig.js test-component",
+    "rig:check": "node scripts/rig.js check"
   },
   "dependencies": {
     "glob": "^11.1.0"

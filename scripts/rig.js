@@ -46,104 +46,6 @@ program
 	.option( '-y, --yes', 'Automatically answer "yes" to all prompts', false )
 	.option( '--force', 'Bypass all caches', false );
 
-program
-	.command( 'login' )
-	.description( 'Login to a WP Rig Component Registry' )
-	.option( '--name <name>', 'Name of the registry to save', 'default' )
-	.action( async ( options ) => {
-		const name = options.name;
-		const answers = await inquirer.prompt( [
-			{
-				type: 'input',
-				name: 'url',
-				message: `Enter the Registry URL for "${ name }" (e.g., https://wprig.io):`,
-				default: name === 'default' ? 'https://wprig.io' : '',
-			},
-			{
-				type: 'confirm',
-				name: 'isGitHub',
-				message: 'Is this a GitHub-backed registry?',
-				default: name === 'default',
-			},
-			{
-				type: 'input',
-				name: 'githubOwner',
-				message: 'Enter GitHub Owner:',
-				when: ( a ) => a.isGitHub,
-				default: name === 'default' ? 'wprig' : '',
-			},
-			{
-				type: 'input',
-				name: 'githubRepo',
-				message: 'Enter GitHub Repository:',
-				when: ( a ) => a.isGitHub,
-				default: name === 'default' ? 'wprig-components' : '',
-			},
-			{
-				type: 'input',
-				name: 'githubBranch',
-				message: 'Enter GitHub Branch (optional):',
-				when: ( a ) => a.isGitHub,
-				default: 'main',
-			},
-			{
-				type: 'input',
-				name: 'username',
-				message: 'Enter your Username:',
-			},
-			{
-				type: 'input',
-				name: 'token',
-				message: 'Enter your Application Password:',
-			},
-		] );
-
-		const authDir = path.join(
-			process.env.HOME || process.env.USERPROFILE,
-			'.wprig'
-		);
-		const authFile = path.join( authDir, 'auth.json' );
-		await fs.ensureDir( authDir );
-
-		let authData = {};
-		if ( await fs.pathExists( authFile ) ) {
-			const existing = await fs.readJson( authFile );
-			// Handle legacy format migration
-			if ( existing.url && ! existing.registries ) {
-				authData = {
-					current: 'default',
-					registries: {
-						default: existing,
-					},
-				};
-			} else {
-				authData = existing;
-			}
-		} else {
-			authData = {
-				current: 'default',
-				registries: {},
-			};
-		}
-
-		authData.registries[ name ] = {
-			url: answers.url.replace( /\/+$/, '' ),
-			username: answers.username,
-			token: answers.token,
-		};
-		if ( answers.isGitHub ) {
-			authData.registries[ name ].githubOwner = answers.githubOwner;
-			authData.registries[ name ].githubRepo = answers.githubRepo;
-			authData.registries[ name ].githubBranch = answers.githubBranch;
-		}
-		authData.current = name;
-
-		await fs.writeJson( authFile, authData, { spaces: 2 } );
-		console.log(
-			c.green( `Authentication for "${ name }" saved successfully!` )
-		);
-	} );
-
 async function getAuth( options = {} ) {
 	const authFile = path.join(
 		process.env.HOME || process.env.USERPROFILE,
@@ -153,17 +55,20 @@ async function getAuth( options = {} ) {
 
 	let authData = null;
 	if ( await fs.pathExists( authFile ) ) {
-		authData = await fs.readJson( authFile );
-	}
-
-	// Handle legacy format migration if it exists
-	if ( authData && authData.url && ! authData.registries ) {
-		authData = {
-			current: 'default',
-			registries: {
-				default: authData,
-			},
-		};
+		try {
+			authData = await fs.readJson( authFile );
+			// Handle legacy format migration if it exists
+			if ( authData && authData.url && ! authData.registries ) {
+				authData = {
+					current: 'default',
+					registries: {
+						default: authData,
+					},
+				};
+			}
+		} catch ( e ) {
+			authData = null;
+		}
 	}
 
 	const registryName =
@@ -177,29 +82,13 @@ async function getAuth( options = {} ) {
 		return authData.registries[ registryName ];
 	}
 
-	// If the registry is default and not configured, return public config
-	if ( registryName === 'default' ) {
-		return {
-			url: 'https://wprig.io',
-			githubOwner: 'wprig',
-			githubRepo: 'wprig-components',
-			githubBranch: 'main',
-		};
-	}
-
-	// Registry not found and it's not default
-	if ( ! authData ) {
-		console.error( c.red( 'Please login first using: npm run rig:login' ) );
-	} else {
-		console.error(
-			c.red(
-				`Registry "${ registryName }" not found. Available: ${ Object.keys(
-					authData.registries || {}
-				).join( ', ' ) }`
-			)
-		);
-	}
-	process.exit( 1 );
+	// Default public config
+	return {
+		url: 'https://wprig.io',
+		githubOwner: 'wprig',
+		githubRepo: 'wprig-components',
+		githubBranch: 'main',
+	};
 }
 
 /**
@@ -224,60 +113,13 @@ function toPascalCase( slug ) {
 }
 
 program
-	.command( 'registry:list' )
-	.description( 'List configured registries' )
-	.action( async () => {
-		const authFile = path.join(
-			process.env.HOME || process.env.USERPROFILE,
-			'.wprig',
-			'auth.json'
-		);
-		if ( ! ( await fs.pathExists( authFile ) ) ) {
-			console.log( c.yellow( 'No registries configured.' ) );
-			return;
-		}
-		const authData = await fs.readJson( authFile );
-		const registries = authData.registries || { default: authData };
-		const current = authData.current || 'default';
-
-		console.log( c.blue( 'Configured Registries:' ) );
-		Object.keys( registries ).forEach( ( name ) => {
-			const active = name === current ? c.green( '*' ) : ' ';
-			console.log(
-				`${ active } ${ name } (${ registries[ name ].url })`
-			);
-		} );
-	} );
-
-program
-	.command( 'registry:use <name>' )
-	.description( 'Set the active registry' )
-	.action( async ( name ) => {
-		const authFile = path.join(
-			process.env.HOME || process.env.USERPROFILE,
-			'.wprig',
-			'auth.json'
-		);
-		if ( ! ( await fs.pathExists( authFile ) ) ) {
-			console.error( c.red( 'No registries configured.' ) );
-			return;
-		}
-		const authData = await fs.readJson( authFile );
-		if ( ! authData.registries || ! authData.registries[ name ] ) {
-			console.error( c.red( `Registry "${ name }" not found.` ) );
-			return;
-		}
-		authData.current = name;
-		await fs.writeJson( authFile, authData, { spaces: 2 } );
-		console.log( c.green( `Active registry set to "${ name }".` ) );
-	} );
-
-program
 	.command( 'list' )
 	.description( 'List all installed theme components' )
 	.action( async () => {
 		const incDir = path.join( themeRoot, 'inc' );
-		const directories = ( await fs.readdir( incDir, { withFileTypes: true } ) )
+		const directories = (
+			await fs.readdir( incDir, { withFileTypes: true } )
+		)
 			.filter( ( dirent ) => dirent.isDirectory() )
 			.map( ( dirent ) => dirent.name );
 
@@ -413,9 +255,7 @@ async function downloadComponent( slug, options = {} ) {
 		if ( isGitHubSource ) {
 			const branch = auth.githubBranch || 'main';
 			const cacheBust = `?t=${ Date.now() }`;
-			const rawUrl = `https://raw.githubusercontent.com/${
-				auth.githubOwner
-			}/${ auth.githubRepo }/${ branch }/${ slug }/manifest.json${ cacheBust }`;
+			const rawUrl = `https://raw.githubusercontent.com/${ auth.githubOwner }/${ auth.githubRepo }/${ branch }/${ slug }/manifest.json${ cacheBust }`;
 
 			const manifestRes = await fetch( rawUrl );
 			if ( ! manifestRes.ok ) {
@@ -428,9 +268,7 @@ async function downloadComponent( slug, options = {} ) {
 			component.slug = component.slug || slug;
 
 			// Construct source URLs for GitHub components
-			const baseUrl = `https://raw.githubusercontent.com/${
-				auth.githubOwner
-			}/${ auth.githubRepo }/${ branch }/${ slug }`;
+			const baseUrl = `https://raw.githubusercontent.com/${ auth.githubOwner }/${ auth.githubRepo }/${ branch }/${ slug }`;
 			component.php_url = `${ baseUrl }/Component.php${ cacheBust }`;
 			component.spec_url = `${ baseUrl }/SPEC.md${ cacheBust }`;
 			component.skill_url = `${ baseUrl }/SKILL.md${ cacheBust }`;
@@ -467,7 +305,9 @@ async function downloadComponent( slug, options = {} ) {
 			rawSlug.includes( '/' ) ||
 			rawSlug.includes( '\\' )
 		) {
-			throw new Error( `Invalid component slug in manifest: ${ rawSlug }` );
+			throw new Error(
+				`Invalid component slug in manifest: ${ rawSlug }`
+			);
 		}
 
 		const componentSlug = toPascalCase( rawSlug );
@@ -558,13 +398,19 @@ async function downloadComponent( slug, options = {} ) {
 
 		// Add additional files from manifest if present
 		if ( component.files ) {
-			for ( const [ fileName, fileUrl ] of Object.entries( component.files ) ) {
+			for ( const [ fileName, fileUrl ] of Object.entries(
+				component.files
+			) ) {
 				filesToFetch[ fileName ] = fileUrl;
 			}
 		}
 
 		// Save manifest.json (already fetched)
-		await fs.writeJson( path.join( componentDir, 'manifest.json' ), component, { spaces: 2 } );
+		await fs.writeJson(
+			path.join( componentDir, 'manifest.json' ),
+			component,
+			{ spaces: 2 }
+		);
 
 		// Process assets from component metadata
 		if ( component.asset_mapping ) {
@@ -575,10 +421,7 @@ async function downloadComponent( slug, options = {} ) {
 					const assetUrl =
 						( component.asset_urls &&
 							component.asset_urls[ type ] ) ||
-						component.php_url.replace(
-							'Component.php',
-							asset.src
-						);
+						component.php_url.replace( 'Component.php', asset.src );
 
 					try {
 						const assetRes = await fetch( assetUrl );
@@ -595,16 +438,13 @@ async function downloadComponent( slug, options = {} ) {
 									`Security Alert: Malicious asset path detected: ${ asset.src }`
 								);
 							}
-							await fs.ensureDir(
-								path.dirname( destPath )
-							);
-							await fs.writeFile(
-								destPath,
-								assetContent
-							);
+							await fs.ensureDir( path.dirname( destPath ) );
+							await fs.writeFile( destPath, assetContent );
 							console.log(
 								c.green(
-									`Downloaded asset to ${ getAssetPath( asset.src ) }`
+									`Downloaded asset to ${ getAssetPath(
+										asset.src
+									) }`
 								)
 							);
 						} else {
@@ -630,7 +470,9 @@ async function downloadComponent( slug, options = {} ) {
 				continue;
 			}
 			try {
-				console.log( c.dim( `Fetching ${ fileName } from ${ url }...` ) );
+				console.log(
+					c.dim( `Fetching ${ fileName } from ${ url }...` )
+				);
 				const res = await fetch( url );
 				if ( res.ok ) {
 					let content;
@@ -646,10 +488,16 @@ async function downloadComponent( slug, options = {} ) {
 					);
 					console.log( c.green( `✓ Saved ${ fileName }` ) );
 				} else {
-					console.warn( c.yellow( `✗ Failed to fetch ${ fileName }: ${ res.status } ${ res.statusText }` ) );
+					console.warn(
+						c.yellow(
+							`✗ Failed to fetch ${ fileName }: ${ res.status } ${ res.statusText }`
+						)
+					);
 				}
 			} catch ( error ) {
-				console.error( c.red( `Error fetching ${ fileName }: ${ error.message }` ) );
+				console.error(
+					c.red( `Error fetching ${ fileName }: ${ error.message }` )
+				);
 			}
 		}
 
@@ -659,9 +507,7 @@ async function downloadComponent( slug, options = {} ) {
 			execSync( 'npm run build', { stdio: 'inherit', cwd: themeRoot } );
 			console.log( c.green( '✓ Build completed successfully!' ) );
 		} catch ( buildError ) {
-			console.error(
-				c.red( `Build failed: ${ buildError.message }` )
-			);
+			console.error( c.red( `Build failed: ${ buildError.message }` ) );
 			console.log(
 				c.yellow(
 					'Note: You may need to run "npm run build" manually.'
@@ -793,14 +639,10 @@ program
 										mappedSrc.endsWith( '.js' ) ||
 										mappedSrc.endsWith( '.ts' ) )
 								) {
-									const minFileName =
-										path
-											.basename( mappedSrc )
-											.replace(
-												/\.(css|js|ts)$/,
-												'.min.$1'
-											)
-											.replace( '.min.ts', '.min.js' ); // TS compiles to JS
+									const minFileName = path
+										.basename( mappedSrc )
+										.replace( /\.(css|js|ts)$/, '.min.$1' )
+										.replace( '.min.ts', '.min.js' ); // TS compiles to JS
 
 									const minAssetPath = path.resolve(
 										themeRoot,
@@ -828,7 +670,9 @@ program
 				}
 			} catch ( e ) {
 				console.warn(
-					c.yellow( `Could not parse manifest.json for asset cleanup.` )
+					c.yellow(
+						`Could not parse manifest.json for asset cleanup.`
+					)
 				);
 			}
 		}
@@ -844,7 +688,11 @@ program
 		);
 
 		// Update registry manifest
-		const registryManifestPath = path.join( themeRoot, 'inc', 'components-manifest.json' );
+		const registryManifestPath = path.join(
+			themeRoot,
+			'inc',
+			'components-manifest.json'
+		);
 		if ( await fs.pathExists( registryManifestPath ) ) {
 			const registryManifest = await fs.readJson( registryManifestPath );
 			let updated = false;
@@ -858,7 +706,9 @@ program
 			}
 
 			if ( updated ) {
-				await fs.writeJson( registryManifestPath, registryManifest, { spaces: 2 } );
+				await fs.writeJson( registryManifestPath, registryManifest, {
+					spaces: 2,
+				} );
 				console.log( c.green( `Updated components-manifest.json.` ) );
 			}
 		}
@@ -866,11 +716,15 @@ program
 
 program
 	.command( 'prepare <slug>' )
-	.description( 'Prepare a component for submission by packaging it into a folder.' )
+	.description(
+		'Prepare a component for submission by packaging it into a folder.'
+	)
 	.action( async ( slug ) => {
 		const normalizedSlug = toPascalCase( slug );
 		console.log(
-			c.blue( `Preparing component "${ normalizedSlug }" for submission...` )
+			c.blue(
+				`Preparing component "${ normalizedSlug }" for submission...`
+			)
 		);
 
 		let realSlug = normalizedSlug;
@@ -900,14 +754,21 @@ program
 		}
 
 		try {
-			const distDir = path.join( themeRoot, 'dist', 'components', realSlug );
+			const distDir = path.join(
+				themeRoot,
+				'dist',
+				'components',
+				realSlug
+			);
 			await fs.ensureDir( distDir );
 			// Clear existing directory to avoid old files remaining
 			await fs.emptyDir( distDir );
 
 			const manifestPath = path.join( componentDir, 'manifest.json' );
 			if ( ! ( await fs.pathExists( manifestPath ) ) ) {
-				throw new Error( `manifest.json not found in ${ componentDir }` );
+				throw new Error(
+					`manifest.json not found in ${ componentDir }`
+				);
 			}
 			const manifest = await fs.readJson( manifestPath );
 
@@ -935,7 +796,10 @@ program
 							getAssetPath( asset.src )
 						);
 						if ( await fs.pathExists( assetPath ) ) {
-							const destAssetPath = path.join( distDir, asset.src );
+							const destAssetPath = path.join(
+								distDir,
+								asset.src
+							);
 							await fs.ensureDir( path.dirname( destAssetPath ) );
 							await fs.copy( assetPath, destAssetPath );
 						}
@@ -945,10 +809,9 @@ program
 
 			// Add any other files from manifest.files if they are local paths
 			if ( manifest.files ) {
-				for ( const [
-					fileName,
-					fileUrl,
-				] of Object.entries( manifest.files ) ) {
+				for ( const [ fileName, fileUrl ] of Object.entries(
+					manifest.files
+				) ) {
 					// Only include if it doesn't look like a URL (i.e. it's a local file)
 					if ( ! fileUrl.startsWith( 'http' ) ) {
 						const filePath = path.join( componentDir, fileName );
@@ -999,11 +862,7 @@ program
 					c.cyan( 'components/' ) +
 					' directory of the repo:'
 			);
-			console.log(
-				c.gray(
-					`   cp -r ${ distDir } ./components/`
-				)
-			);
+			console.log( c.gray( `   cp -r ${ distDir } ./components/` ) );
 			console.log( '4. Commit and push your changes:' );
 			console.log( c.gray( `   git add components/${ realSlug }` ) );
 			console.log(
@@ -1045,7 +904,9 @@ program
 		}
 
 		const normalizedSlug = toPascalCase( componentSlug );
-		if ( await fs.pathExists( path.join( themeRoot, 'inc', normalizedSlug ) ) ) {
+		if (
+			await fs.pathExists( path.join( themeRoot, 'inc', normalizedSlug ) )
+		) {
 			await testComponent( themeRoot, normalizedSlug );
 		} else {
 			await testComponent( themeRoot, componentSlug );
@@ -1066,23 +927,29 @@ program
 			} else if ( await fs.pathExists( path.join( incDir, slug ) ) ) {
 				directories.push( slug );
 			} else {
-				console.error( c.red( `Component "${ slug }" not found in inc/` ) );
+				console.error(
+					c.red( `Component "${ slug }" not found in inc/` )
+				);
 				return;
 			}
 		} else {
-			directories = ( await fs.readdir( incDir, { withFileTypes: true } ) )
+			directories = (
+				await fs.readdir( incDir, { withFileTypes: true } )
+			)
 				.filter( ( dirent ) => dirent.isDirectory() )
 				.map( ( dirent ) => dirent.name );
 		}
 
-		console.log( c.blue( `Checking ${ directories.length } component(s)...` ) );
+		console.log(
+			c.blue( `Checking ${ directories.length } component(s)...` )
+		);
 
 		for ( const dir of directories ) {
 			const componentDir = path.join( incDir, dir );
 			const manifestPath = path.join( componentDir, 'manifest.json' );
 			const phpPath = path.join( componentDir, 'Component.php' );
-			let errors = [];
-			let warnings = [];
+			const errors = [];
+			const warnings = [];
 
 			console.log( c.cyan( `\n--- [ ${ dir } ] ---` ) );
 
@@ -1091,19 +958,27 @@ program
 				errors.push( 'Missing Component.php' );
 			} else {
 				const phpContent = await fs.readFile( phpPath, 'utf8' );
-				const namespaceMatch = phpContent.match( /namespace\s+WP_Rig\\WP_Rig\\([^;]+);/ );
+				const namespaceMatch = phpContent.match(
+					/namespace\s+WP_Rig\\WP_Rig\\([^;]+);/
+				);
 				if ( namespaceMatch ) {
 					const ns = namespaceMatch[ 1 ].trim();
 					const expectedNs = toPascalCase( dir );
 					if ( ns !== expectedNs ) {
-						warnings.push( `Namespace mismatch: expected "WP_Rig\\WP_Rig\\${ expectedNs }", found "WP_Rig\\WP_Rig\\${ ns }"` );
+						warnings.push(
+							`Namespace mismatch: expected "WP_Rig\\WP_Rig\\${ expectedNs }", found "WP_Rig\\WP_Rig\\${ ns }"`
+						);
 					}
 				} else {
 					errors.push( 'Could not find namespace in Component.php' );
 				}
 
-				if ( ! phpContent.includes( 'implements Component_Interface' ) ) {
-					errors.push( 'Component class does not implement Component_Interface' );
+				if (
+					! phpContent.includes( 'implements Component_Interface' )
+				) {
+					errors.push(
+						'Component class does not implement Component_Interface'
+					);
 				}
 			}
 
@@ -1123,9 +998,14 @@ program
 						for ( const type in manifest.asset_mapping ) {
 							const asset = manifest.asset_mapping[ type ];
 							if ( asset.src ) {
-								const assetPath = path.join( themeRoot, asset.src );
+								const assetPath = path.join(
+									themeRoot,
+									asset.src
+								);
 								if ( ! ( await fs.pathExists( assetPath ) ) ) {
-									warnings.push( `Asset not found: ${ asset.src }` );
+									warnings.push(
+										`Asset not found: ${ asset.src }`
+									);
 								}
 							}
 						}
@@ -1138,8 +1018,12 @@ program
 			if ( errors.length === 0 && warnings.length === 0 ) {
 				console.log( c.green( '✓ All checks passed' ) );
 			} else {
-				errors.forEach( ( e ) => console.log( c.red( `  [ERROR] ${ e }` ) ) );
-				warnings.forEach( ( w ) => console.log( c.yellow( `  [WARN ] ${ w }` ) ) );
+				errors.forEach( ( e ) =>
+					console.log( c.red( `  [ERROR] ${ e }` ) )
+				);
+				warnings.forEach( ( w ) =>
+					console.log( c.yellow( `  [WARN ] ${ w }` ) )
+				);
 			}
 		}
 	} );

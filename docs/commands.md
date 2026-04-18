@@ -21,12 +21,14 @@ Use `npm run <command>` (or `bun run <command>`):
 	- `create-rig-component`: Scaffold new theme component.
 	- `childify`: Convert theme to a lightweight child theme.
 - **Component Registry**:
-	- `rig:search [keyword]`: Discover components from the community.
-	- `rig:add [slug]`: Import a component into your theme.
-	- `rig:update [slug]`: Check for and pull updates to components.
-	- `rig:remove [slug]`: Remove a component from your theme.
-	- `rig:prepare [slug]`: Package a component for registry submission.
-	- `rig:test-component [slug]`: Validate a component for registry readiness.
+	- `rig:list`: List all currently installed theme components, showing their version and whether they are bundled core components or registry imports. Use this for a quick overview of your theme's active modules.
+	- `rig:search [keyword]`: Discover performance-optimized components from the WP Rig community. Use this when you're looking for existing features to add to your theme.
+	- `rig:add [slug]`: Download and install a component into your `inc/` directory. It automatically registers the component in `Theme.php` and integrates its assets into the build system. Use this to quickly add new functionality without manual wiring.
+	- `rig:update [slug]`: Check for framework-level updates to a registry component while preserving your local customizations. Use this to keep your components bug-free and up-to-date with the latest WP Rig standards.
+	- `rig:remove [slug]`: Completely remove a component from your theme, including its files and registration in `Theme.php`. Use this when you no longer need a feature or want to replace it.
+	- `rig:test-component [slug]`: Run a comprehensive "pre-flight" check on a local component to ensure it meets registry standards (manifest integrity, required files, security scans). Use this before attempting to share your component.
+	- `rig:check [slug]`: A lightweight version of the component audit. If no slug is provided, it scans all components in the `inc/` directory for structure and manifest validity. Use this for quick health checks.
+	- `rig:prepare [slug]`: Package a local component into the `dist/components/` folder and provide step-by-step instructions for submitting it to the official registry via a GitHub Pull Request. Use this when you've built something great and want to share it with the community.
 - **Testing**:
 	- `test:e2e`: Run Playwright End-to-End tests.
 	- `test:e2e:screenshot`: Take screenshots for regression testing.
