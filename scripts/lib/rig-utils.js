@@ -30,7 +30,7 @@ export const logger = {
  */
 export function toPascalCase( slug ) {
 	let normalized = slug
-		.split( /[-_ ]/ )
+		.split( /[-_ ]+/ )
 		.map( ( word ) => word.charAt( 0 ).toUpperCase() + word.slice( 1 ) )
 		.join( '_' );
 
