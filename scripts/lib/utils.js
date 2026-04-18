@@ -20,6 +20,27 @@ import {
 
 import config from '../../config/themeConfig.js';
 
+/**
+ * Resolves the final destination path for an asset, ensuring it goes to the 'src' directory in WP Rig.
+ *
+ * @param {string} assetPath Path from manifest.json
+ * @return {string} Mapped path relative to theme root
+ */
+export function getAssetPath( assetPath ) {
+	const parts = assetPath.split( '/' );
+	// If it's an asset in the assets directory, ensure it goes to the src folder
+	if (
+		parts[ 0 ] === 'assets' &&
+		parts.length >= 3 &&
+		! [ 'src', 'build', 'vendor' ].includes( parts[ 2 ] )
+	) {
+		const newParts = [ ...parts ];
+		newParts.splice( 2, 0, 'src' );
+		return newParts.join( '/' );
+	}
+	return assetPath;
+}
+
 export const getDefaultConfig = () =>
 	import( `${ rootPath }/config/config.default.json` );
 

@@ -41,7 +41,7 @@ To share your own component with the community:
 1. Ensure your component is in its own directory in `inc/`.
 2. Ensure it contains `manifest.json`, `SPEC.md`, and `SKILL.md`.
 3. Run local tests: `npm run rig:test-component`.
-4. Submit: `npm run rig:submit`.
+4. Submit: `npm run rig:prepare`.
 
 ## Agent Protocol
 - **Discovery**: Prioritize verified registry components for new features.

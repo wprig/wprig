@@ -1,27 +1,8 @@
 import fs from 'fs-extra';
 import path from 'path';
 import c from 'ansi-colors';
+import { getAssetPath } from '../lib/utils.js';
 
-/**
- * Resolves the final destination path for an asset, ensuring it goes to the 'src' directory in WP Rig.
- *
- * @param {string} assetPath Path from manifest.json
- * @return {string} Mapped path relative to theme root
- */
-function getAssetPath( assetPath ) {
-	const parts = assetPath.split( '/' );
-	// If it's an asset in the assets directory, ensure it goes to the src folder
-	if (
-		parts[ 0 ] === 'assets' &&
-		parts.length >= 3 &&
-		! [ 'src', 'build', 'vendor' ].includes( parts[ 2 ] )
-	) {
-		const newParts = [ ...parts ];
-		newParts.splice( 2, 0, 'src' );
-		return newParts.join( '/' );
-	}
-	return assetPath;
-}
 
 /**
  * Validates a component for registry readiness.
@@ -125,6 +106,15 @@ export default async function testComponent( themeRoot, componentSlug ) {
 			}
 		} else {
 			console.error( c.red( `✗ Component.php: could not find valid WP_Rig namespace` ) );
+			errors++;
+		}
+
+		if ( ! content.includes( 'implements Component_Interface' ) ) {
+			console.error(
+				c.red(
+					'✗ Component.php: class does not implement Component_Interface'
+				)
+			);
 			errors++;
 		}
 

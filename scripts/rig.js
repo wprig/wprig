@@ -10,6 +10,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import c from 'ansi-colors';
+import { getAssetPath } from './lib/utils.js';
 import testComponent from './tasks/testComponent.js';
 
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
@@ -30,26 +31,6 @@ const logger = {
 	/* eslint-enable no-console */
 };
 
-/**
- * Resolves the final destination path for an asset, ensuring it goes to the 'src' directory in WP Rig.
- *
- * @param {string} assetPath Path from manifest.json
- * @return {string} Mapped path relative to theme root
- */
-function getAssetPath( assetPath ) {
-	const parts = assetPath.split( '/' );
-	// If it's an asset in the assets directory, ensure it goes to the src folder
-	if (
-		parts[ 0 ] === 'assets' &&
-		parts.length >= 3 &&
-		! [ 'src', 'build', 'vendor' ].includes( parts[ 2 ] )
-	) {
-		const newParts = [ ...parts ];
-		newParts.splice( 2, 0, 'src' );
-		return newParts.join( '/' );
-	}
-	return assetPath;
-}
 
 const program = new Command();
 
@@ -80,6 +61,10 @@ async function getAuth( options = {} ) {
 						default: authData,
 					},
 				};
+				// Save the migrated data
+				await fs.ensureDir( path.dirname( authFile ) );
+				await fs.writeJson( authFile, authData, { spaces: 2 } );
+				logger.info( 'Migrated auth.json to the new multi-registry format.' );
 			}
 		} catch ( e ) {
 			authData = null;
@@ -191,7 +176,7 @@ program
 
 		try {
 			const response = await fetch(
-				`${ auth.url }/wp-json/wprig-registry/v1/search?q=${
+    `${ auth.url }/wp-json/wprig/v1/registry/search?q=${
 					keyword || ''
 				}${ options.force ? '&force=1' : '' }`,
 				{
@@ -285,7 +270,7 @@ async function downloadComponent( slug, options = {} ) {
 			component.skill_url = `${ baseUrl }/SKILL.md${ cacheBust }`;
 		} else {
 			const response = await fetch(
-				`${ auth.url }/wp-json/wprig-registry/v1/components/${ slug }${
+				`${ auth.url }/wp-json/wprig/v1/registry/components/${ slug }${
 					options.force ? '?force=1' : ''
 				}`,
 				{
@@ -308,7 +293,57 @@ async function downloadComponent( slug, options = {} ) {
 			component = await response.json();
 		}
 
+		// Recursive dependency resolution
+		if (
+			component.dependencies &&
+			Array.isArray( component.dependencies )
+		) {
+			logger.info(
+				`Component "${ slug }" requires: ${ component.dependencies.join(
+					', '
+				) }`
+			);
+			for ( const dep of component.dependencies ) {
+				await downloadComponent( dep, { ...options, processedSlugs } );
+			}
+		}
+
 		const rawSlug = component.slug || slug;
+
+		/**
+		 * Helper to write a file with a diff check.
+		 */
+		const writeFileWithCheck = async ( filePath, content, fileName ) => {
+			if ( await fs.pathExists( filePath ) ) {
+				const existingContent = await fs.readFile( filePath, 'utf8' );
+				if ( existingContent !== content ) {
+					if ( options.yes ) {
+						logger.warn(
+							`Overwriting ${ fileName } (changes detected, --yes used)`
+						);
+					} else {
+						const { confirm } = await inquirer.prompt( [
+							{
+								type: 'confirm',
+								name: 'confirm',
+								message: `File ${ fileName } has local changes. Overwrite with registry version?`,
+								default: false,
+							},
+						] );
+						if ( ! confirm ) {
+							logger.info( `Kept local version of ${ fileName }.` );
+							return false;
+						}
+					}
+				} else {
+					// No changes, no need to write
+					return false;
+				}
+			}
+			await fs.ensureDir( path.dirname( filePath ) );
+			await fs.writeFile( filePath, content );
+			return true;
+		};
 
 		// Re-validate component slug from registry
 		if (
@@ -443,13 +478,19 @@ async function downloadComponent( slug, options = {} ) {
 									`Security Alert: Malicious asset path detected: ${ asset.src }`
 								);
 							}
-							await fs.ensureDir( path.dirname( destPath ) );
-							await fs.writeFile( destPath, assetContent );
-							logger.success(
-								`Downloaded asset to ${ getAssetPath(
-									asset.src
-								) }`
+
+							const saved = await writeFileWithCheck(
+								destPath,
+								assetContent,
+								asset.src
 							);
+							if ( saved ) {
+								logger.success(
+									`Downloaded asset to ${ getAssetPath(
+										asset.src
+									) }`
+								);
+							}
 						} else {
 							logger.warn(
 								`✗ Failed to fetch asset ${ asset.src } from ${ assetUrl }: ${ assetRes.status } ${ assetRes.statusText }`
@@ -479,11 +520,16 @@ async function downloadComponent( slug, options = {} ) {
 					} else {
 						content = await res.text();
 					}
-					await fs.writeFile(
-						path.join( componentDir, fileName ),
-						content
+
+					const filePath = path.join( componentDir, fileName );
+					const saved = await writeFileWithCheck(
+						filePath,
+						content,
+						fileName
 					);
-					logger.success( `✓ Saved ${ fileName }` );
+					if ( saved ) {
+						logger.success( `✓ Saved ${ fileName }` );
+					}
 				} else {
 					logger.warn(
 						`✗ Failed to fetch ${ fileName }: ${ res.status } ${ res.statusText }`
@@ -492,6 +538,111 @@ async function downloadComponent( slug, options = {} ) {
 			} catch ( error ) {
 				logger.error(
 					`Error fetching ${ fileName }: ${ error.message }`
+				);
+			}
+		}
+
+		// External Dependencies Handling
+		if ( component.npm_dependencies ) {
+			const deps = Array.isArray( component.npm_dependencies )
+				? component.npm_dependencies
+				: Object.keys( component.npm_dependencies );
+			if ( deps.length > 0 ) {
+				logger.info(
+					`Installing npm dependencies: ${ deps.join( ', ' ) }`
+				);
+				try {
+					execSync( `npm install ${ deps.join( ' ' ) } --save-dev`, {
+						stdio: 'inherit',
+						cwd: themeRoot,
+					} );
+				} catch ( e ) {
+					logger.error(
+						`Failed to install npm dependencies: ${ e.message }`
+					);
+				}
+			}
+		}
+
+		if ( component.composer_dependencies ) {
+			const deps = Array.isArray( component.composer_dependencies )
+				? component.composer_dependencies
+				: Object.keys( component.composer_dependencies );
+			if ( deps.length > 0 ) {
+				logger.info(
+					`Installing composer dependencies: ${ deps.join( ', ' ) }`
+				);
+				try {
+					execSync( `composer require ${ deps.join( ' ' ) }`, {
+						stdio: 'inherit',
+						cwd: themeRoot,
+					} );
+				} catch ( e ) {
+					logger.error(
+						`Failed to install composer dependencies: ${ e.message }`
+					);
+				}
+			}
+		}
+
+		// AI Protocol Symlinking
+		const aiSkillsDir = path.join( themeRoot, '.ai', 'skills', rawSlug );
+		await fs.ensureDir( aiSkillsDir );
+		for ( const file of [ 'SPEC.md', 'SKILL.md' ] ) {
+			const srcPath = path.join( componentDir, file );
+			const destPath = path.join( aiSkillsDir, file );
+			if ( await fs.pathExists( srcPath ) ) {
+				try {
+					// Use relative symlink if possible
+					const relativeSrc = path.relative(
+						path.dirname( destPath ),
+						srcPath
+					);
+					if ( await fs.pathExists( destPath ) ) {
+						const isSymlink = (
+							await fs.lstat( destPath )
+						 ).isSymbolicLink();
+						if ( isSymlink ) {
+							await fs.unlink( destPath );
+						} else {
+							await fs.remove( destPath );
+						}
+					}
+					await fs.symlink( relativeSrc, destPath );
+					logger.success(
+						`Symlinked ${ file } to .ai/skills/${ rawSlug }/`
+					);
+				} catch ( e ) {
+					// Fallback to copy if symlink fails
+					await fs.copy( srcPath, destPath );
+					logger.warn(
+						`Copied ${ file } to .ai/skills/${ rawSlug }/ (symlink failed)`
+					);
+				}
+			}
+		}
+
+		// Registry Manifest Synchronization
+		const registryManifestPath = path.join(
+			themeRoot,
+			'inc',
+			'components-manifest.json'
+		);
+		if ( await fs.pathExists( registryManifestPath ) ) {
+			try {
+				const registryManifest = await fs.readJson(
+					registryManifestPath
+				);
+				registryManifest[
+					componentSlug
+				] = `inc/${ componentSlug }/Component.php`;
+				await fs.writeJson( registryManifestPath, registryManifest, {
+					spaces: 2,
+				} );
+				logger.success( 'Updated inc/components-manifest.json' );
+			} catch ( e ) {
+				logger.error(
+					`Failed to update components-manifest.json: ${ e.message }`
 				);
 			}
 		}
@@ -668,6 +819,14 @@ program
 			) }" removed.`
 		);
 
+		logger.info( 'Running "npm run build" to clean up assets...' );
+		try {
+			execSync( 'npm run build', { stdio: 'inherit', cwd: themeRoot } );
+			logger.success( '✓ Build completed successfully!' );
+		} catch ( buildError ) {
+			logger.error( `Build failed: ${ buildError.message }` );
+		}
+
 		// Update registry manifest
 		const registryManifestPath = path.join(
 			themeRoot,
@@ -724,9 +883,13 @@ program
 
 		// Pre-flight check
 		try {
-			await testComponent( themeRoot, realSlug );
+			const success = await testComponent( themeRoot, realSlug );
+			if ( ! success ) {
+				logger.error( `Validation failed for component "${ realSlug }".` );
+				return;
+			}
 		} catch ( e ) {
-			logger.error( `Validation failed: ${ e.message }` );
+			logger.error( `Validation error: ${ e.message }` );
 			return;
 		}
 
@@ -913,87 +1076,20 @@ program
 
 		logger.info( `Checking ${ directories.length } component(s)...` );
 
+		let totalErrors = 0;
 		for ( const dir of directories ) {
-			const componentDir = path.join( incDir, dir );
-			const manifestPath = path.join( componentDir, 'manifest.json' );
-			const phpPath = path.join( componentDir, 'Component.php' );
-			const errors = [];
-			const warnings = [];
-
-			logger.log( c.cyan( `\n--- [ ${ dir } ] ---` ) );
-
-			// Check Component.php
-			if ( ! ( await fs.pathExists( phpPath ) ) ) {
-				errors.push( 'Missing Component.php' );
-			} else {
-				const phpContent = await fs.readFile( phpPath, 'utf8' );
-				const namespaceMatch = phpContent.match(
-					/namespace\s+WP_Rig\\WP_Rig\\([^;]+);/
-				);
-				if ( namespaceMatch ) {
-					const ns = namespaceMatch[ 1 ].trim();
-					const expectedNs = toPascalCase( dir );
-					if ( ns !== expectedNs ) {
-						warnings.push(
-							`Namespace mismatch: expected "WP_Rig\\WP_Rig\\${ expectedNs }", found "WP_Rig\\WP_Rig\\${ ns }"`
-						);
-					}
-				} else {
-					errors.push( 'Could not find namespace in Component.php' );
-				}
-
-				if (
-					! phpContent.includes( 'implements Component_Interface' )
-				) {
-					errors.push(
-						'Component class does not implement Component_Interface'
-					);
-				}
+			const success = await testComponent( themeRoot, dir );
+			if ( ! success ) {
+				totalErrors++;
 			}
+		}
 
-			// Check manifest.json
-			if ( ! ( await fs.pathExists( manifestPath ) ) ) {
-				warnings.push( 'Missing manifest.json' );
-			} else {
-				try {
-					const manifest = await fs.readJson( manifestPath );
-					if ( ! manifest.slug ) {
-						warnings.push( 'Manifest is missing "slug" field' );
-					}
-					if ( ! manifest.version ) {
-						warnings.push( 'Manifest is missing "version" field' );
-					}
-					if ( manifest.asset_mapping ) {
-						for ( const type in manifest.asset_mapping ) {
-							const asset = manifest.asset_mapping[ type ];
-							if ( asset.src ) {
-								const assetPath = path.join(
-									themeRoot,
-									asset.src
-								);
-								if ( ! ( await fs.pathExists( assetPath ) ) ) {
-									warnings.push(
-										`Asset not found: ${ asset.src }`
-									);
-								}
-							}
-						}
-					}
-				} catch ( e ) {
-					errors.push( `Invalid manifest.json: ${ e.message }` );
-				}
-			}
-
-			if ( errors.length === 0 && warnings.length === 0 ) {
-				logger.success( '✓ All checks passed' );
-			} else {
-				errors.forEach( ( e ) =>
-					logger.log( c.red( `  [ERROR] ${ e }` ) )
-				);
-				warnings.forEach( ( w ) =>
-					logger.log( c.yellow( `  [WARN ] ${ w }` ) )
-				);
-			}
+		if ( totalErrors === 0 ) {
+			logger.success( '\n✓ All components passed validation.' );
+		} else {
+			logger.error(
+				`\n✗ ${ totalErrors } component(s) failed validation.`
+			);
 		}
 	} );
 
