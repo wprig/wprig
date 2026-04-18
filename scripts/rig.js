@@ -16,6 +16,21 @@ const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 const themeRoot = path.resolve( __dirname, '..' );
 
 /**
+ * Logger utility to provide messaging while avoiding ESLint no-console warnings.
+ */
+const logger = {
+	/* eslint-disable no-console */
+	info: ( msg ) => console.log( c.blue( msg ) ),
+	success: ( msg ) => console.log( c.green( msg ) ),
+	warn: ( msg ) => console.warn( c.yellow( msg ) ),
+	error: ( msg ) => console.error( c.red( msg ) ),
+	debug: ( msg ) => console.log( c.dim( msg ) ),
+	log: ( ...args ) => console.log( ...args ),
+	table: ( ...args ) => console.table( ...args ),
+	/* eslint-enable no-console */
+};
+
+/**
  * Resolves the final destination path for an asset, ensuring it goes to the 'src' directory in WP Rig.
  *
  * @param {string} assetPath Path from manifest.json
@@ -152,12 +167,12 @@ program
 		}
 
 		if ( componentList.length === 0 ) {
-			console.log( c.yellow( 'No components found in inc/ directory.' ) );
+			logger.warn( 'No components found in inc/ directory.' );
 			return;
 		}
 
-		console.log( c.blue( 'Installed Theme Components:' ) );
-		console.table(
+		logger.info( 'Installed Theme Components:' );
+		logger.table(
 			componentList.sort( ( a, b ) => a.slug.localeCompare( b.slug ) )
 		);
 	} );
@@ -168,12 +183,10 @@ program
 	.action( async ( keyword ) => {
 		const options = program.opts();
 		const auth = await getAuth( options );
-		console.log(
-			c.blue(
-				`Searching for components matching "${ keyword || '' }" at ${
-					auth.url
-				}...`
-			)
+		logger.info(
+			`Searching for components matching "${ keyword || '' }" at ${
+				auth.url
+			}...`
 		);
 
 		try {
@@ -200,11 +213,11 @@ program
 
 			const results = await response.json();
 			if ( results.length === 0 ) {
-				console.log( c.yellow( 'No components found.' ) );
+				logger.warn( 'No components found.' );
 				return;
 			}
 
-			console.table(
+			logger.table(
 				results.map( ( r ) => ( {
 					slug: r.slug,
 					name: r.name,
@@ -214,7 +227,7 @@ program
 				} ) )
 			);
 		} catch ( error ) {
-			console.error( c.red( `Search failed: ${ error.message }` ) );
+			logger.error( `Search failed: ${ error.message }` );
 		}
 	} );
 
@@ -234,10 +247,8 @@ async function downloadComponent( slug, options = {} ) {
 		? `GitHub (${ auth.githubOwner }/${ auth.githubRepo })`
 		: auth.url;
 
-	console.log(
-		c.blue(
-			`${ actionText } component "${ slug }" from ${ sourceText }...`
-		)
+	logger.info(
+		`${ actionText } component "${ slug }" from ${ sourceText }...`
 	);
 
 	try {
@@ -325,10 +336,8 @@ async function downloadComponent( slug, options = {} ) {
 					component.version &&
 					localManifest.version === component.version
 				) {
-					console.log(
-						c.yellow(
-							`Component "${ componentSlug }" is already at version ${ component.version }.`
-						)
+					logger.warn(
+						`Component "${ componentSlug }" is already at version ${ component.version }.`
 					);
 					const { force } = await inquirer.prompt( [
 						{
@@ -345,10 +354,8 @@ async function downloadComponent( slug, options = {} ) {
 					component.version &&
 					localManifest.version > component.version
 				) {
-					console.warn(
-						c.red(
-							`Local version (${ localManifest.version }) of "${ componentSlug }" is newer than registry version (${ component.version }).`
-						)
+					logger.warn(
+						`Local version (${ localManifest.version }) of "${ componentSlug }" is newer than registry version (${ component.version }).`
 					);
 					const { force } = await inquirer.prompt( [
 						{
@@ -367,10 +374,8 @@ async function downloadComponent( slug, options = {} ) {
 
 		if ( ! isUpdate && ( await fs.pathExists( componentDir ) ) ) {
 			if ( options.yes ) {
-				console.log(
-					c.yellow(
-						`Component "${ componentSlug }" already exists. Overwriting (--yes)...`
-					)
+				logger.warn(
+					`Component "${ componentSlug }" already exists. Overwriting (--yes)...`
 				);
 			} else {
 				const { confirm } = await inquirer.prompt( [
@@ -440,25 +445,19 @@ async function downloadComponent( slug, options = {} ) {
 							}
 							await fs.ensureDir( path.dirname( destPath ) );
 							await fs.writeFile( destPath, assetContent );
-							console.log(
-								c.green(
-									`Downloaded asset to ${ getAssetPath(
-										asset.src
-									) }`
-								)
+							logger.success(
+								`Downloaded asset to ${ getAssetPath(
+									asset.src
+								) }`
 							);
 						} else {
-							console.warn(
-								c.yellow(
-									`✗ Failed to fetch asset ${ asset.src } from ${ assetUrl }: ${ assetRes.status } ${ assetRes.statusText }`
-								)
+							logger.warn(
+								`✗ Failed to fetch asset ${ asset.src } from ${ assetUrl }: ${ assetRes.status } ${ assetRes.statusText }`
 							);
 						}
 					} catch ( assetError ) {
-						console.warn(
-							c.yellow(
-								`Error fetching asset ${ asset.src }: ${ assetError.message }`
-							)
+						logger.warn(
+							`Error fetching asset ${ asset.src }: ${ assetError.message }`
 						);
 					}
 				}
@@ -470,9 +469,7 @@ async function downloadComponent( slug, options = {} ) {
 				continue;
 			}
 			try {
-				console.log(
-					c.dim( `Fetching ${ fileName } from ${ url }...` )
-				);
+				logger.debug( `Fetching ${ fileName } from ${ url }...` );
 				const res = await fetch( url );
 				if ( res.ok ) {
 					let content;
@@ -486,36 +483,32 @@ async function downloadComponent( slug, options = {} ) {
 						path.join( componentDir, fileName ),
 						content
 					);
-					console.log( c.green( `✓ Saved ${ fileName }` ) );
+					logger.success( `✓ Saved ${ fileName }` );
 				} else {
-					console.warn(
-						c.yellow(
-							`✗ Failed to fetch ${ fileName }: ${ res.status } ${ res.statusText }`
-						)
+					logger.warn(
+						`✗ Failed to fetch ${ fileName }: ${ res.status } ${ res.statusText }`
 					);
 				}
 			} catch ( error ) {
-				console.error(
-					c.red( `Error fetching ${ fileName }: ${ error.message }` )
+				logger.error(
+					`Error fetching ${ fileName }: ${ error.message }`
 				);
 			}
 		}
 
-		console.log( c.green( `Component "${ slug }" added successfully!` ) );
-		console.log( c.blue( 'Running "npm run build" to process assets...' ) );
+		logger.success( `Component "${ slug }" added successfully!` );
+		logger.info( 'Running "npm run build" to process assets...' );
 		try {
 			execSync( 'npm run build', { stdio: 'inherit', cwd: themeRoot } );
-			console.log( c.green( '✓ Build completed successfully!' ) );
+			logger.success( '✓ Build completed successfully!' );
 		} catch ( buildError ) {
-			console.error( c.red( `Build failed: ${ buildError.message }` ) );
-			console.log(
-				c.yellow(
-					'Note: You may need to run "npm run build" manually.'
-				)
+			logger.error( `Build failed: ${ buildError.message }` );
+			logger.warn(
+				'Note: You may need to run "npm run build" manually.'
 			);
 		}
 	} catch ( error ) {
-		console.error( c.red( `Download failed: ${ error.message }` ) );
+		logger.error( `Download failed: ${ error.message }` );
 	}
 }
 
@@ -581,17 +574,15 @@ program
 			dependentsMap[ normalizedSlug ] || dependentsMap[ slug ] || [];
 
 		if ( dependents.length > 0 ) {
-			console.error(
-				c.red(
-					`Cannot remove component "${ normalizedSlug }". It is a dependency for: ${ dependents.join(
-						', '
-					) }`
-				)
+			logger.error(
+				`Cannot remove component "${ normalizedSlug }". It is a dependency for: ${ dependents.join(
+					', '
+				) }`
 			);
 			return;
 		}
 
-		console.log( c.blue( `Removing component "${ normalizedSlug }"...` ) );
+		logger.info( `Removing component "${ normalizedSlug }"...` );
 
 		const componentDir = path.join( themeRoot, 'inc', normalizedSlug );
 		const fallbackDir = path.join( themeRoot, 'inc', slug );
@@ -604,10 +595,8 @@ program
 		}
 
 		if ( ! targetDir ) {
-			console.error(
-				c.red(
-					`Component folder not found in inc/ for "${ normalizedSlug }" or "${ slug }"`
-				)
+			logger.error(
+				`Component folder not found in inc/ for "${ normalizedSlug }" or "${ slug }"`
 			);
 			return;
 		}
@@ -628,9 +617,7 @@ program
 							);
 							if ( await fs.pathExists( assetPath ) ) {
 								await fs.remove( assetPath );
-								console.log(
-									c.yellow( `Removed asset: ${ mappedSrc }` )
-								);
+								logger.warn( `Removed asset: ${ mappedSrc }` );
 
 								// Also remove .min files in the root folder if they exist
 								if (
@@ -654,13 +641,11 @@ program
 
 									if ( await fs.pathExists( minAssetPath ) ) {
 										await fs.remove( minAssetPath );
-										console.log(
-											c.yellow(
-												`Removed minified asset: ${ path.relative(
-													themeRoot,
-													minAssetPath
-												) }`
-											)
+										logger.warn(
+											`Removed minified asset: ${ path.relative(
+												themeRoot,
+												minAssetPath
+											) }`
 										);
 									}
 								}
@@ -669,22 +654,18 @@ program
 					}
 				}
 			} catch ( e ) {
-				console.warn(
-					c.yellow(
-						`Could not parse manifest.json for asset cleanup.`
-					)
+				logger.warn(
+					'Could not parse manifest.json for asset cleanup.'
 				);
 			}
 		}
 
 		await fs.remove( targetDir );
-		console.log(
-			c.green(
-				`Component folder "${ path.relative(
-					path.join( themeRoot, 'inc' ),
-					targetDir
-				) }" removed.`
-			)
+		logger.success(
+			`Component folder "${ path.relative(
+				path.join( themeRoot, 'inc' ),
+				targetDir
+			) }" removed.`
 		);
 
 		// Update registry manifest
@@ -709,7 +690,7 @@ program
 				await fs.writeJson( registryManifestPath, registryManifest, {
 					spaces: 2,
 				} );
-				console.log( c.green( `Updated components-manifest.json.` ) );
+				logger.success( 'Updated components-manifest.json.' );
 			}
 		}
 	} );
@@ -721,10 +702,8 @@ program
 	)
 	.action( async ( slug ) => {
 		const normalizedSlug = toPascalCase( slug );
-		console.log(
-			c.blue(
-				`Preparing component "${ normalizedSlug }" for submission...`
-			)
+		logger.info(
+			`Preparing component "${ normalizedSlug }" for submission...`
 		);
 
 		let realSlug = normalizedSlug;
@@ -734,10 +713,8 @@ program
 			// Fallback: check if the original slug directory exists
 			const fallbackDir = path.join( themeRoot, 'inc', slug );
 			if ( ! ( await fs.pathExists( fallbackDir ) ) ) {
-				console.error(
-					c.red(
-						`Component folder not found in inc/ for "${ normalizedSlug }" or "${ slug }"`
-					)
+				logger.error(
+					`Component folder not found in inc/ for "${ normalizedSlug }" or "${ slug }"`
 				);
 				return;
 			}
@@ -749,7 +726,7 @@ program
 		try {
 			await testComponent( themeRoot, realSlug );
 		} catch ( e ) {
-			console.error( c.red( `Validation failed: ${ e.message }` ) );
+			logger.error( `Validation failed: ${ e.message }` );
 			return;
 		}
 
@@ -824,64 +801,60 @@ program
 				}
 			}
 
-			console.log(
-				c.green(
-					`Component "${ realSlug }" prepared successfully in ${ path.relative(
-						themeRoot,
-						distDir
-					) }`
-				)
+			logger.success(
+				`Component "${ realSlug }" prepared successfully in ${ path.relative(
+					themeRoot,
+					distDir
+				) }`
 			);
 
 			// Manual instructions
-			console.log(
+			logger.log(
 				'\n' + c.blue.bold( 'NEXT STEPS TO SUBMIT TO THE REGISTRY:' )
 			);
-			console.log(
+			logger.log(
 				'1. Fork the component registry repository: ' +
 					c.cyan( 'https://github.com/wprig/wprig-components' )
 			);
-			console.log(
-				'2. Clone your fork locally and create a new branch:'
-			);
-			console.log(
+			logger.log( '2. Clone your fork locally and create a new branch:' );
+			logger.log(
 				c.gray(
 					`   git clone https://github.com/YOUR_USERNAME/wprig-components.git`
 				)
 			);
-			console.log( c.gray( `   cd wprig-components` ) );
-			console.log(
+			logger.log( c.gray( `   cd wprig-components` ) );
+			logger.log(
 				c.gray(
 					`   git checkout -b add-${ realSlug
 						.toLowerCase()
 						.replace( /_/g, '-' ) }`
 				)
 			);
-			console.log(
+			logger.log(
 				'3. Copy the prepared folder into the ' +
 					c.cyan( 'components/' ) +
 					' directory of the repo:'
 			);
-			console.log( c.gray( `   cp -r ${ distDir } ./components/` ) );
-			console.log( '4. Commit and push your changes:' );
-			console.log( c.gray( `   git add components/${ realSlug }` ) );
-			console.log(
+			logger.log( c.gray( `   cp -r ${ distDir } ./components/` ) );
+			logger.log( '4. Commit and push your changes:' );
+			logger.log( c.gray( `   git add components/${ realSlug }` ) );
+			logger.log(
 				c.gray( `   git commit -m "Add ${ realSlug } component"` )
 			);
-			console.log(
+			logger.log(
 				c.gray(
 					`   git push origin add-${ realSlug
 						.toLowerCase()
 						.replace( /_/g, '-' ) }`
 				)
 			);
-			console.log(
+			logger.log(
 				'5. Submit a Pull Request to the main ' +
 					c.cyan( 'wprig-components' ) +
 					' repository.'
 			);
 		} catch ( error ) {
-			console.error( c.red( `Preparation failed: ${ error.message }` ) );
+			logger.error( `Preparation failed: ${ error.message }` );
 		}
 	} );
 
@@ -927,9 +900,7 @@ program
 			} else if ( await fs.pathExists( path.join( incDir, slug ) ) ) {
 				directories.push( slug );
 			} else {
-				console.error(
-					c.red( `Component "${ slug }" not found in inc/` )
-				);
+				logger.error( `Component "${ slug }" not found in inc/` );
 				return;
 			}
 		} else {
@@ -940,9 +911,7 @@ program
 				.map( ( dirent ) => dirent.name );
 		}
 
-		console.log(
-			c.blue( `Checking ${ directories.length } component(s)...` )
-		);
+		logger.info( `Checking ${ directories.length } component(s)...` );
 
 		for ( const dir of directories ) {
 			const componentDir = path.join( incDir, dir );
@@ -951,7 +920,7 @@ program
 			const errors = [];
 			const warnings = [];
 
-			console.log( c.cyan( `\n--- [ ${ dir } ] ---` ) );
+			logger.log( c.cyan( `\n--- [ ${ dir } ] ---` ) );
 
 			// Check Component.php
 			if ( ! ( await fs.pathExists( phpPath ) ) ) {
@@ -1016,13 +985,13 @@ program
 			}
 
 			if ( errors.length === 0 && warnings.length === 0 ) {
-				console.log( c.green( '✓ All checks passed' ) );
+				logger.success( '✓ All checks passed' );
 			} else {
 				errors.forEach( ( e ) =>
-					console.log( c.red( `  [ERROR] ${ e }` ) )
+					logger.log( c.red( `  [ERROR] ${ e }` ) )
 				);
 				warnings.forEach( ( w ) =>
-					console.log( c.yellow( `  [WARN ] ${ w }` ) )
+					logger.log( c.yellow( `  [WARN ] ${ w }` ) )
 				);
 			}
 		}
