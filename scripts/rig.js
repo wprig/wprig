@@ -129,12 +129,14 @@ program
 			let version = 'unknown';
 			let origin = 'Core/Bundled';
 			let slug = dir;
+			let title = '';
 
 			if ( await fs.pathExists( manifestPath ) ) {
 				try {
 					const manifest = await fs.readJson( manifestPath );
 					version = manifest.version || version;
 					slug = manifest.slug || slug;
+					title = manifest.title || '';
 					if ( manifest.php_url ) {
 						origin = 'Registry';
 					}
@@ -145,6 +147,7 @@ program
 
 			componentList.push( {
 				slug,
+				title,
 				version,
 				origin,
 				folder: `inc/${ dir }`,
@@ -311,33 +314,39 @@ async function downloadComponent( slug, options = {} ) {
 		const rawSlug = component.slug || slug;
 
 		/**
-		 * Helper to write a file with a diff check.
+		 * Helper to write a file with a check.
 		 */
 		const writeFileWithCheck = async ( filePath, content, fileName ) => {
 			if ( await fs.pathExists( filePath ) ) {
-				const existingContent = await fs.readFile( filePath, 'utf8' );
-				if ( existingContent !== content ) {
-					if ( options.yes ) {
-						logger.warn(
-							`Overwriting ${ fileName } (changes detected, --yes used)`
-						);
-					} else {
-						const { confirm } = await inquirer.prompt( [
-							{
-								type: 'confirm',
-								name: 'confirm',
-								message: `File ${ fileName } has local changes. Overwrite with registry version?`,
-								default: false,
-							},
-						] );
-						if ( ! confirm ) {
-							logger.info( `Kept local version of ${ fileName }.` );
-							return false;
-						}
-					}
+				if ( options.forceOverwrite ) {
+					// All-or-nothing overwrite mode
 				} else {
-					// No changes, no need to write
-					return false;
+					const existingContent = await fs.readFile( filePath, 'utf8' );
+					if ( existingContent !== content ) {
+						if ( options.yes ) {
+							logger.warn(
+								`Overwriting ${ fileName } (changes detected, --yes used)`
+							);
+						} else {
+							const { confirm } = await inquirer.prompt( [
+								{
+									type: 'confirm',
+									name: 'confirm',
+									message: `File ${ fileName } has local changes. Overwrite with registry version?`,
+									default: false,
+								},
+							] );
+							if ( ! confirm ) {
+								logger.info(
+									`Kept local version of ${ fileName }.`
+								);
+								return false;
+							}
+						}
+					} else {
+						// No changes, no need to write
+						return false;
+					}
 				}
 			}
 			await fs.ensureDir( path.dirname( filePath ) );
@@ -360,49 +369,62 @@ async function downloadComponent( slug, options = {} ) {
 		const componentDir = path.join( themeRoot, 'inc', componentSlug );
 
 		if ( isUpdate && ( await fs.pathExists( componentDir ) ) ) {
+			logger.warn(
+				`UPDATING: Component "${ slug }" already exists at inc/${ componentSlug }.`
+			);
+			logger.info( 'This will overwrite ALL files in the component folder.' );
+			logger.info(
+				'Recommendation: To preserve your changes, consider extending this component instead of modifying it directly.'
+			);
+			logger.info(
+				'You can create a new component that lists this one as a dependency.'
+			);
+
+			if ( ! options.yes ) {
+				const { confirm } = await inquirer.prompt( [
+					{
+						type: 'confirm',
+						name: 'confirm',
+						message: `Overwrite all files for "${ componentSlug }"?`,
+						default: false,
+					},
+				] );
+				if ( ! confirm ) {
+					logger.info( `Update cancelled for "${ componentSlug }".` );
+					return;
+				}
+			}
+			// Enable all-or-nothing overwrite
+			options.forceOverwrite = true;
+
+			// Check versions for informational purposes
 			const localManifestPath = path.join(
 				componentDir,
 				'manifest.json'
 			);
 			if ( await fs.pathExists( localManifestPath ) ) {
-				const localManifest = await fs.readJson( localManifestPath );
-				if (
-					localManifest.version &&
-					component.version &&
-					localManifest.version === component.version
-				) {
-					logger.warn(
-						`Component "${ componentSlug }" is already at version ${ component.version }.`
+				try {
+					const localManifest = await fs.readJson(
+						localManifestPath
 					);
-					const { force } = await inquirer.prompt( [
-						{
-							type: 'confirm',
-							name: 'force',
-							message: 'Re-download anyway?',
-							default: false,
-						},
-					] );
-					if ( ! options.yes && ! force ) {
-						return;
+					if (
+						localManifest.version &&
+						component.version &&
+						localManifest.version === component.version
+					) {
+						logger.info(
+							`Component is already at version ${ component.version }.`
+						);
+					} else if (
+						component.version &&
+						localManifest.version > component.version
+					) {
+						logger.warn(
+							`Note: Local version (${ localManifest.version }) is newer than registry version (${ component.version }). Downgrading.`
+						);
 					}
-				} else if (
-					component.version &&
-					localManifest.version > component.version
-				) {
-					logger.warn(
-						`Local version (${ localManifest.version }) of "${ componentSlug }" is newer than registry version (${ component.version }).`
-					);
-					const { force } = await inquirer.prompt( [
-						{
-							type: 'confirm',
-							name: 'force',
-							message: 'Downgrade?',
-							default: false,
-						},
-					] );
-					if ( ! options.yes && ! force ) {
-						return;
-					}
+				} catch ( e ) {
+					// Silent fail
 				}
 			}
 		}
@@ -585,6 +607,24 @@ async function downloadComponent( slug, options = {} ) {
 			}
 		}
 
+		// WordPress Plugin Dependencies Warning
+		const wpPlugins =
+			component.wp_plugins ||
+			( component.dependencies && component.dependencies.wp_plugins );
+		if ( wpPlugins ) {
+			const plugins = Array.isArray( wpPlugins )
+				? wpPlugins
+				: Object.keys( wpPlugins );
+			if ( plugins.length > 0 ) {
+				logger.warn(
+					`Attention: This component requires the following WordPress plugins: ${ plugins.join(
+						', '
+					) }`
+				);
+				logger.info( 'Please ensure they are installed and active.' );
+			}
+		}
+
 		// AI Protocol Symlinking
 		const aiSkillsDir = path.join( themeRoot, '.ai', 'skills', rawSlug );
 		await fs.ensureDir( aiSkillsDir );
@@ -628,23 +668,31 @@ async function downloadComponent( slug, options = {} ) {
 			'inc',
 			'components-manifest.json'
 		);
+		let registryManifest = {};
 		if ( await fs.pathExists( registryManifestPath ) ) {
 			try {
-				const registryManifest = await fs.readJson(
-					registryManifestPath
-				);
-				registryManifest[
-					componentSlug
-				] = `inc/${ componentSlug }/Component.php`;
-				await fs.writeJson( registryManifestPath, registryManifest, {
-					spaces: 2,
-				} );
-				logger.success( 'Updated inc/components-manifest.json' );
+				registryManifest = await fs.readJson( registryManifestPath );
 			} catch ( e ) {
-				logger.error(
-					`Failed to update components-manifest.json: ${ e.message }`
+				logger.warn(
+					'Could not parse existing components-manifest.json, starting fresh.'
 				);
 			}
+		}
+
+		registryManifest[
+			componentSlug
+		] = `inc/${ componentSlug }/Component.php`;
+
+		try {
+			await fs.ensureDir( path.dirname( registryManifestPath ) );
+			await fs.writeJson( registryManifestPath, registryManifest, {
+				spaces: 2,
+			} );
+			logger.success( 'Updated inc/components-manifest.json' );
+		} catch ( e ) {
+			logger.error(
+				`Failed to update components-manifest.json: ${ e.message }`
+			);
 		}
 
 		logger.success( `Component "${ slug }" added successfully!` );
@@ -752,11 +800,13 @@ program
 			return;
 		}
 
-		// Try to read manifest for asset cleanup (before removing folder)
+		// Try to read manifest for asset and AI cleanup (before removing folder)
 		const manifestPath = path.join( targetDir, 'manifest.json' );
+		let rawSlug = slug;
 		if ( await fs.pathExists( manifestPath ) ) {
 			try {
 				const manifest = await fs.readJson( manifestPath );
+				rawSlug = manifest.slug || rawSlug;
 				if ( manifest.asset_mapping ) {
 					for ( const type in manifest.asset_mapping ) {
 						const asset = manifest.asset_mapping[ type ];
@@ -812,6 +862,14 @@ program
 		}
 
 		await fs.remove( targetDir );
+
+		// Clean up AI skills
+		const aiSkillsDir = path.join( themeRoot, '.ai', 'skills', rawSlug );
+		if ( await fs.pathExists( aiSkillsDir ) ) {
+			await fs.remove( aiSkillsDir );
+			logger.warn( `Removed AI skills: .ai/skills/${ rawSlug }` );
+		}
+
 		logger.success(
 			`Component folder "${ path.relative(
 				path.join( themeRoot, 'inc' ),
