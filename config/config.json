@@ -1,0 +1,13 @@
+{
+  "theme": {
+    "themeType": "universal"
+  },
+  "dev": {
+    "browserSync": {
+      "proxyURL": "wprig-demo.local",
+      "bypassPort": "8181",
+      "live": true,
+      "https": false
+    }
+  }
+}
