@@ -7,6 +7,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import inquirer from 'inquirer';
 import { getAuth } from '../lib/auth.js';
+import { fetchRegistry } from '../lib/registry.js';
 import {
 	logger,
 	toPascalCase,
@@ -147,13 +148,22 @@ async function fetchComponentData( slug, auth, options ) {
 	if ( isGitHubSource ) {
 		const branch = auth.githubBranch || 'main';
 		const cacheBust = `?t=${ Date.now() }`;
-		const baseUrl = `https://raw.githubusercontent.com/${ auth.githubOwner }/${ auth.githubRepo }/${ branch }/${ slug }`;
+
+		// Try to resolve the slug to a path using the registry
+		let componentPath = slug;
+		const registry = await fetchRegistry( auth );
+		const registryItem = registry.find( ( r ) => r.slug === slug );
+		if ( registryItem && registryItem.path ) {
+			componentPath = registryItem.path;
+		}
+
+		const baseUrl = `https://raw.githubusercontent.com/${ auth.githubOwner }/${ auth.githubRepo }/${ branch }/${ componentPath }`;
 		const rawUrl = `${ baseUrl }/manifest.json${ cacheBust }`;
 
 		const manifestRes = await fetch( rawUrl );
 		if ( ! manifestRes.ok ) {
 			throw new Error(
-				`Component "${ slug }" manifest not found on GitHub.`
+				`Component "${ slug }" manifest not found on GitHub at ${ componentPath }.`
 			);
 		}
 
