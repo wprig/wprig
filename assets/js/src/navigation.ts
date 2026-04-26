@@ -200,7 +200,7 @@ function processEachSubMenu(
 	// }
 
 	if ( ! isNavigationBlock ) {
-		//convertDropdownToToggleButton( dropdown!, dropdownButton );
+		// Nothing to do for standard menus.
 	} else {
 		parentMenuItem
 			.querySelector< HTMLElement >(
@@ -281,55 +281,6 @@ function processEachSubMenu(
 
 	handleToggleSubMenuEvents( parentMenuItem );
 	parentMenuItem.classList.add( 'menu-item--has-toggle' );
-}
-
-/**
- * Creates a dropdown element and inserts it before a specified submenu item.
- *
- * @param {ParentNode}              parentMenuItem - The parent menu item where the dropdown will be added.
- * @param {NodeListOf<HTMLElement>} SUBMENUS       - A list of submenu elements under the parent menu item.
- * @param {number}                  index          - The index in the list of submenus where the dropdown will be inserted.
- * @return {HTMLElement} The created dropdown element.
- */
-function createDropdown(
-	parentMenuItem: ParentNode,
-	SUBMENUS: NodeListOf< HTMLElement >,
-	index: number
-): HTMLElement {
-	const dropdown = document.createElement( 'span' );
-	dropdown.classList.add( 'dropdown' );
-	const dropdownSymbol = document.createElement( 'i' );
-	dropdownSymbol.classList.add( 'dropdown-symbol' );
-	dropdown.appendChild( dropdownSymbol );
-	parentMenuItem.insertBefore( dropdown, SUBMENUS[ index ] );
-	return dropdown;
-}
-
-/**
- * Converts a dropdown menu into a toggle button.
- * The converted toggle button will display the dropdown's original inner HTML
- * and will be equipped with an event listener to toggle a sub-menu on click.
- *
- * @param {HTMLElement} dropdown       - The dropdown menu element to be converted.
- * @param {HTMLElement} dropdownButton - The template button element to replace the dropdown with.
- * @return {void}
- */
-function convertDropdownToToggleButton(
-	dropdown: HTMLElement,
-	dropdownButton: HTMLElement
-): void {
-	const thisDropdownButton = dropdownButton.cloneNode( true ) as HTMLElement;
-	thisDropdownButton.innerHTML = dropdown.innerHTML;
-	dropdown.parentNode!.replaceChild( thisDropdownButton, dropdown );
-	thisDropdownButton.addEventListener( 'click', ( e ) => {
-		// Ensure we pass the parent <li>
-		const parentLi = ( e.currentTarget as HTMLElement ).closest(
-			'li'
-		) as HTMLElement | null;
-		if ( parentLi ) {
-			toggleSubMenu( parentLi );
-		}
-	} );
 }
 
 /**

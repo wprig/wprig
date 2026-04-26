@@ -25,26 +25,23 @@ class WP_Test_Setup {
 		$this->db_host    = getenv( 'WP_TESTS_DB_HOST' ) ?: 'localhost';
 		$this->wp_version = getenv( 'WP_VERSION' ) ?: 'latest';
 
-		// Use a more reliable temp directory approach for Windows.
+		// Use a more reliable temp directory approach.
+		$system_temp = realpath( sys_get_temp_dir() ) ?: sys_get_temp_dir();
+
+		$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ?: $system_temp . DIRECTORY_SEPARATOR . 'wprig-tests' . DIRECTORY_SEPARATOR . 'wordpress-tests-lib';
+		$this->wp_core_dir  = getenv( 'WP_CORE_DIR' ) ?: $system_temp . DIRECTORY_SEPARATOR . 'wprig-tests' . DIRECTORY_SEPARATOR . 'WordPress';
+
 		if ( PHP_OS_FAMILY === 'Windows' ) {
-			// Use the actual system temp directory and get the real path.
-			$system_temp = sys_get_temp_dir();
-			$real_temp   = realpath( $system_temp );
-
 			echo "System temp: {$system_temp}\n";
-			echo "Real temp: {$real_temp}\n";
-
-			// Create a subfolder in temp to avoid conflicts.
-			$this->wp_tests_dir = $real_temp . DIRECTORY_SEPARATOR . 'wprig-tests' . DIRECTORY_SEPARATOR . 'wordpress-tests-lib';
-			$this->wp_core_dir  = $real_temp . DIRECTORY_SEPARATOR . 'wprig-tests' . DIRECTORY_SEPARATOR . 'WordPress';
-		} else {
-			$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ?: '/tmp/wordpress-tests-lib';
-			$this->wp_core_dir  = getenv( 'WP_CORE_DIR' ) ?: '/tmp/wordpress';
 		}
 
 		// Don't normalize paths yet - just ensure they're consistent.
 		$this->wp_tests_dir = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $this->wp_tests_dir );
 		$this->wp_core_dir  = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $this->wp_core_dir );
+	}
+
+	public function get_wp_tests_dir() {
+		return $this->wp_tests_dir;
 	}
 
 	public function setup() {
@@ -493,8 +490,7 @@ try {
 	$setup->setup();
 
 	// Verify the test environment was created successfully.
-	$test_dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'wprig-tests' . DIRECTORY_SEPARATOR . 'wordpress-tests-lib';
-	$test_dir = str_replace( array( '/', '\\' ), DIRECTORY_SEPARATOR, $test_dir );
+	$test_dir = $setup->get_wp_tests_dir();
 
 	if ( file_exists( $test_dir . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'bootstrap.php' ) ) {
 		echo "✅ Test environment verified at: {$test_dir}\n";

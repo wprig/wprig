@@ -28,12 +28,12 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		add_filter( 'wprig_registry_github_owner', [ $this, 'filter_github_owner' ] );
-		add_filter( 'wprig_registry_github_repo', [ $this, 'filter_github_repo' ] );
-		add_filter( 'wprig_registry_github_branch', [ $this, 'filter_github_branch' ] );
+		add_filter( 'wprig_registry_github_owner', array( $this, 'filter_github_owner' ) );
+		add_filter( 'wprig_registry_github_repo', array( $this, 'filter_github_repo' ) );
+		add_filter( 'wprig_registry_github_branch', array( $this, 'filter_github_branch' ) );
 
 		// Secure token handling - prefer environment variables over filters.
-		add_filter( 'wprig_registry_github_token', [ $this, 'filter_github_token' ] );
+		add_filter( 'wprig_registry_github_token', array( $this, 'filter_github_token' ) );
 	}
 
 	/**

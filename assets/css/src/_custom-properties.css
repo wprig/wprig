@@ -33,22 +33,17 @@
 	--color-theme-primary: #e36d60;
 	--color-theme-secondary: #41848f;
 	/* End of generated tokens */
---content-width: 45rem;
+
 	--dropdown-symbol-width: 0.7em;
 
 	/* Typography */
-	--global-font-family: "Open Sans", "Helvetica Neue", "Arial", sans-serif;
-	--highlight-font-family: "Roboto Condensed", "Helvetica Neue", "Arial Narrow", sans-serif;
 	--global-font-size: 20;
-	--global-font-line-height: 1.4;
 
 	/* Custom editor font sizes */
 	--font-size-regular: calc(var(--global-font-size) / 16 * 1rem);
 	--font-size-larger: calc(48 / var(--global-font-size) * 1rem);
 
 	/* Colors */
-	--global-font-color: #333;
-	--background-color: #fff; /* Page background color */
 	--content-background-color: #fff; /* Content-specific background */
 	--sub-content-background-color: #f6f6f6; /* Content-specific background */
 	--header-background-color: #f6f6f6;
@@ -62,8 +57,6 @@
 	--color-quote-citation: #6c7781;
 
 	/* Custom editor colors */
-	--color-theme-primary: #e36d60;
-	--color-theme-secondary: #41848f;
 	--color-theme-red: #c0392b;
 	--color-theme-green: #27ae60;
 	--color-theme-blue: #2980b9;

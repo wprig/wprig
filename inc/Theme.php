@@ -181,7 +181,7 @@ class Theme {
 		// Use manifest-driven approach if manifest exists and is not empty.
 		if ( ! empty( $manifest ) && is_array( $manifest ) ) {
 			foreach ( $manifest as $component_name => $path ) {
-				$normalized_name = $this->normalize_component_name( $component_name );
+				$normalized_name                       = $this->normalize_component_name( $component_name );
 				$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
 			}
 		}

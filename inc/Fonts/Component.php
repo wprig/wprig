@@ -263,7 +263,7 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 				$urls[] = array(
 					'href'        => $font_url,
 					'as'          => 'font',
-					'type'        => 'font/' . pathinfo( (string) parse_url( $font_url, PHP_URL_PATH ), PATHINFO_EXTENSION ),
+					'type'        => 'font/' . pathinfo( (string) wp_parse_url( $font_url, PHP_URL_PATH ), PATHINFO_EXTENSION ),
 					'crossorigin' => 'anonymous',
 				);
 			}
