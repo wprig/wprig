@@ -178,3 +178,34 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 		grid-template-columns: repeat(9, 1fr);
 	}
 }
+
+/*--------------------------------------------------------------
+# Custom Block Styles
+--------------------------------------------------------------*/
+
+/**
+ * Optimus Glass style for core/group block.
+ */
+.is-style-optimus-glass {
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 12px;
+	padding: 2rem;
+}
+
+/**
+ * Display Text style for core/heading block.
+ */
+.is-style-text-display {
+	font-size: clamp(3rem, 10vw, 6rem);
+	line-height: 1.1;
+	font-weight: 800;
+}
+
+/**
+ * Hero Shell style for core/cover block.
+ */
+.is-style-optimus-hero-shell {
+	min-height: 80vh;
+}

@@ -96,7 +96,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	private function preload_svg_assets() {
 		// Load dropdown symbol SVG.
-		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true ) ?? '';
+		$dropdown_svg = wp_rig()->wprig_icon( 'dropdown-symbol' );
 
 		/**
 		 * Filters the dropdown icon SVG markup used in navigation menus.
@@ -108,14 +108,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$this->dropdown_symbol_svg = apply_filters( 'wp_rig_dropdown_icon_svg', $dropdown_svg );
 
 		// Load menu toggle icons.
-		$menu_icon_path  = get_theme_file_uri() . '/assets/svg/menu-icon.svg';
-		$close_icon_path = get_theme_file_uri() . '/assets/svg/close-icon.svg';
-
-		$menu_response  = wp_remote_get( $menu_icon_path );
-		$close_response = wp_remote_get( $close_icon_path );
-
-		$menu_icon_svg  = is_wp_error( $menu_response ) ? '' : wp_remote_retrieve_body( $menu_response );
-		$close_icon_svg = is_wp_error( $close_response ) ? '' : wp_remote_retrieve_body( $close_response );
+		$menu_icon_svg  = wp_rig()->wprig_icon( 'menu-icon' );
+		$close_icon_svg = wp_rig()->wprig_icon( 'close-icon' );
 
 		/**
 		 * Filters the mobile menu toggle (hamburger) icon SVG markup.

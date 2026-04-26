@@ -17,6 +17,9 @@ import downloadComponent from './tasks/downloadComponent.js';
 import removeComponent from './tasks/removeComponent.js';
 import prepareComponent from './tasks/prepareComponent.js';
 import testComponent from './tasks/testComponent.js';
+import scaffoldPattern from './tasks/scaffoldPattern.js';
+import localizeAssets from './tasks/localizeAssets.js';
+import screenshotCompare from './tasks/screenshotCompare.js';
 
 // Setup paths
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
@@ -129,6 +132,77 @@ program
 		} else {
 			await testComponent( themeRoot, componentSlug );
 		}
+	} );
+
+/**
+ * Command: pattern
+ */
+program
+	.command( 'pattern' )
+	.description( 'Scaffold a new Block Pattern' )
+	.option( '--title <title>', 'Pattern title' )
+	.option( '--slug <slug>', 'Pattern slug (raw, without theme prefix)' )
+	.option(
+		'--categories <categories>',
+		'Comma-separated categories',
+		'featured'
+	)
+	.option( '--description <description>', 'Pattern description' )
+	.option( '--keywords <keywords>', 'Comma-separated keywords' )
+	.action( async ( opts ) => {
+		let patternOpts = opts;
+		if ( ! patternOpts.title ) {
+			const answers = await inquirer.prompt( [
+				{
+					type: 'input',
+					name: 'title',
+					message: 'Enter the pattern title:',
+					validate: ( input ) =>
+						input ? true : 'Title is required',
+				},
+				{
+					type: 'input',
+					name: 'categories',
+					message: 'Enter pattern categories (comma-separated):',
+					default: 'featured',
+				},
+			] );
+			patternOpts = { ...patternOpts, ...answers };
+		}
+		await scaffoldPattern( themeRoot, patternOpts );
+	} );
+
+/**
+ * Command: localize
+ */
+program
+	.command( 'localize' )
+	.description(
+		'Scan the theme for external image URLs and localize them to assets/images/.'
+	)
+	.action( async () => {
+		await localizeAssets( themeRoot );
+	} );
+
+/**
+ * Command: compare
+ */
+program
+	.command( 'compare' )
+	.description(
+		'Compare the live site against a mockup image for visual fidelity.'
+	)
+	.option( '--url <url>', 'URL of the live site', 'http://wprig.test:8888' )
+	.option( '--mockup <path>', 'Path to the mockup image' )
+	.option( '--output <path>', 'Path to save comparison results' )
+	.option( '--no-full-page', 'Do not take a full page screenshot' )
+	.action( async ( opts ) => {
+		await screenshotCompare( themeRoot, {
+			url: opts.url,
+			mockupPath: opts.mockup,
+			outputPath: opts.output,
+			fullPage: opts.fullPage,
+		} );
 	} );
 
 /**
