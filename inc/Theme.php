@@ -50,34 +50,34 @@ class Theme {
 			$components = $this->get_default_components();
 		}
 
-			// Set the components.
-			foreach ( $components as $component ) {
+		// Set the components.
+		foreach ( $components as $component ) {
 
-				// Bail if a component is invalid.
-				if ( ! $component instanceof Component_Interface ) {
-					throw new InvalidArgumentException(
-						sprintf(
-							/* translators: 1: classname/type of the variable, 2: interface name */
-							esc_html__( 'The theme component %1$s does not implement the %2$s interface.', 'wp-rig' ),
-							esc_html( gettype( $component ) ),
-							Component_Interface::class
-						)
-					);
-				}
-
-				if ( isset( $this->components[ $component->get_slug() ] ) ) {
-					trigger_error(
-						sprintf(
-							/* translators: %s: component slug */
-							esc_html__( 'Theme component slug collision: "%s" already exists and will be overwritten.', 'wp-rig' ),
-							esc_html( $component->get_slug() )
-						),
-						E_USER_WARNING
-					);
-				}
-
-				$this->components[ $component->get_slug() ] = $component;
+			// Bail if a component is invalid.
+			if ( ! $component instanceof Component_Interface ) {
+				throw new InvalidArgumentException(
+					sprintf(
+						/* translators: 1: classname/type of the variable, 2: interface name */
+						esc_html__( 'The theme component %1$s does not implement the %2$s interface.', 'wp-rig' ),
+						esc_html( gettype( $component ) ),
+						Component_Interface::class
+					)
+				);
 			}
+
+			if ( isset( $this->components[ $component->get_slug() ] ) ) {
+				trigger_error(
+					sprintf(
+						/* translators: %s: component slug */
+						esc_html__( 'Theme component slug collision: "%s" already exists and will be overwritten.', 'wp-rig' ),
+						esc_html( $component->get_slug() )
+					),
+					E_USER_WARNING
+				);
+			}
+
+			$this->components[ $component->get_slug() ] = $component;
+		}
 
 		// Instantiate the template tags instance for all theme templating components.
 		$this->template_tags = new Template_Tags(
@@ -161,8 +161,12 @@ class Theme {
 	 * @return array List of theme components to use by default.
 	 */
 	protected function get_default_components(): array {
-		$components = array();
+		static $cached_components = null;
 
+		if ( null !== $cached_components ) {
+			return $cached_components;
+		}
+		$components = array();
 		// Get the template directory path.
 		$inc_dir       = get_template_directory() . '/inc';
 		$manifest_file = $inc_dir . '/components-manifest.json';
@@ -172,46 +176,40 @@ class Theme {
 			$manifest = json_decode( file_get_contents( $manifest_file ), true );
 		}
 
+		$component_classes = array();
+
 		// Use manifest-driven approach if manifest exists and is not empty.
 		if ( ! empty( $manifest ) && is_array( $manifest ) ) {
 			foreach ( $manifest as $component_name => $path ) {
 				$normalized_name = $this->normalize_component_name( $component_name );
-				$component_class = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
-
-				// Check if the component class exists and implements Component_Interface.
-				// The class name is resolved via the PSR-4 autoloader.
-				if ( class_exists( $component_class ) ) {
-					// Check for optional is_active() static method to support conditional loading.
-					if ( method_exists( $component_class, 'is_active' ) && ! $component_class::is_active() ) {
-						continue;
-					}
-					$components[] = new $component_class();
-				}
+				$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
 			}
-		} else {
-			// Legacy: fallback to directory scanning if no manifest exists.
-			// Iterate through subdirectories in the inc/ directory.
-			$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
+		}
 
-			foreach ( $directories as $directory ) {
-				$component_name  = basename( $directory );
-				$normalized_name = $this->normalize_component_name( $component_name );
-				$component_class = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
+		// Merge with directory scanning for bundled components.
+		// Iterate through subdirectories in the inc/ directory.
+		$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
 
-				// Check if the Component.php file exists in the directory.
-				if ( ! file_exists( $directory . '/Component.php' ) ) {
+		foreach ( $directories as $directory ) {
+			$component_name  = basename( $directory );
+			$normalized_name = $this->normalize_component_name( $component_name );
+
+			// Only add if not already in manifest, and if Component.php exists.
+			if ( ! isset( $component_classes[ $normalized_name ] ) && file_exists( $directory . '/Component.php' ) ) {
+				$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
+			}
+		}
+
+		// Instantiate all identified components.
+		foreach ( $component_classes as $component_class ) {
+			// Check if the component class exists and implements Component_Interface.
+			// The class name is resolved via the PSR-4 autoloader.
+			if ( class_exists( $component_class ) ) {
+				// Check for optional is_active() static method to support conditional loading.
+				if ( method_exists( $component_class, 'is_active' ) && ! $component_class::is_active() ) {
 					continue;
 				}
-
-				// Check if the component class exists and implements Component_Interface.
-				// The class name is resolved via the PSR-4 autoloader.
-				if ( class_exists( $component_class ) ) {
-					// Check for optional is_active() static method to support conditional loading.
-					if ( method_exists( $component_class, 'is_active' ) && ! $component_class::is_active() ) {
-						continue;
-					}
-					$components[] = new $component_class();
-				}
+				$components[] = new $component_class();
 			}
 		}
 
@@ -223,6 +221,8 @@ class Theme {
 		 * @param array $components List of theme component instances.
 		 */
 		$components = apply_filters( 'wprig_theme_components', $components );
+
+		$cached_components = $components;
 
 		return $components;
 	}
