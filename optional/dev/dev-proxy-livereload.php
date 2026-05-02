@@ -36,7 +36,7 @@ add_action(
 	'wp_head',
 	function () {
 		if ( wprig_is_dev_proxy_request() ) {
-			wp_enqueue_script( 'wprig-livereload', '//localhost:35729/livereload.js?snipver=1', array(), null, false );
+			wp_enqueue_script( 'wprig-livereload', '//localhost:35729/livereload.js?snipver=1', array(), wp_get_theme()->get( 'Version' ), false );
 		}
 	}
 );
@@ -44,7 +44,7 @@ add_action(
 	'admin_enqueue_scripts',
 	function () {
 		if ( wprig_is_dev_proxy_request() ) {
-			wp_enqueue_script( 'wprig-admin-livereload', 'http://localhost:35729/livereload.js?snipver=1', array(), null, false );
+			wp_enqueue_script( 'wprig-admin-livereload', 'http://localhost:35729/livereload.js?snipver=1', array(), wp_get_theme()->get( 'Version' ), false );
 		}
 	}
 );

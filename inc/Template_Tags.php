@@ -148,19 +148,30 @@ class Template_Tags {
 	 * @throws RuntimeException If the asset file cannot be read.
 	 */
 	public function get_theme_asset( string $filename, string $type = 'images', bool $content = false ): ?string {
+		static $asset_cache = array();
+		$cache_key          = md5( $filename . $type . ( $content ? 'content' : 'uri' ) );
+
+		if ( isset( $asset_cache[ $cache_key ] ) ) {
+			return $asset_cache[ $cache_key ];
+		}
+
 		$asset_path = get_template_directory() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
 		$asset_uri  = get_template_directory_uri() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
 
 		if ( ! file_exists( $asset_path ) ) {
+			$asset_cache[ $cache_key ] = null;
 			return null;
 		}
 
 		if ( $content ) {
 			$file_contents = get_asset_content( $asset_path );
 
-			return ( false !== $file_contents ) ? $file_contents : null;
+			$result = ( false !== $file_contents ) ? $file_contents : null;
+		} else {
+			$result = $asset_uri;
 		}
 
-		return $asset_uri;
+		$asset_cache[ $cache_key ] = $result;
+		return $result;
 	}
 }

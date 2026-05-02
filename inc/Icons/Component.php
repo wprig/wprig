@@ -22,6 +22,13 @@ use function esc_attr;
 class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
+	 * Processed icons cache.
+	 *
+	 * @var array
+	 */
+	protected array $processed_icons = array();
+
+	/**
 	 * Gets the unique identifier for the theme component.
 	 *
 	 * @return string Component slug.
@@ -55,6 +62,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @return string SVG markup, or empty string if not found.
 	 */
 	public function wprig_icon( string $name, array $args = array() ): string {
+		$cache_key = md5( $name . wp_json_encode( $args ) );
+		if ( isset( $this->processed_icons[ $cache_key ] ) ) {
+			return $this->processed_icons[ $cache_key ];
+		}
+
 		$args = array_merge(
 			array(
 				'class'       => '',
@@ -99,6 +111,10 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		 * @param string $name         The icon name.
 		 * @param array  $args         The arguments passed to the icon.
 		 */
-		return apply_filters( 'wp_rig_icon', $icon_content, $name, $args );
+		$icon_content = apply_filters( 'wp_rig_icon', $icon_content, $name, $args );
+
+		$this->processed_icons[ $cache_key ] = $icon_content;
+
+		return $icon_content;
 	}
 }

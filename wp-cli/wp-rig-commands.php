@@ -80,7 +80,7 @@ class Rig_Command extends WP_CLI_Command {
 			WP_CLI::error( 'Failed to download test data from GitHub.' );
 		}
 
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		file_put_contents( $file, $download->body );
 
 		// 3. Import the data
@@ -266,7 +266,7 @@ class Rig_Command extends WP_CLI_Command {
 		}
 
 		if ( $filename ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 			$result = file_put_contents( $filename, $json_output );
 			if ( false === $result ) {
 				WP_CLI::error( "Failed to write to file: {$filename}" );

@@ -64,6 +64,20 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	protected $js_files;
 
 	/**
+	 * Base URI for JS files.
+	 *
+	 * @var string
+	 */
+	protected string $js_uri;
+
+	/**
+	 * Base directory for JS files.
+	 *
+	 * @var string
+	 */
+	protected string $js_dir;
+
+	/**
 	 * Gets the unique identifier for the theme component.
 	 *
 	 * @return string Component slug.
@@ -76,6 +90,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize(): void {
+		$this->js_uri = get_theme_file_uri( '/assets/js/' );
+		$this->js_dir = get_theme_file_path( '/assets/js/' );
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_scripts' ) );
 		add_action( 'wp_head', array( $this, 'action_print_bootloader' ), 1 );
 		add_filter( 'script_loader_tag', array( $this, 'filter_script_loader_tag' ), 10, 2 );
@@ -100,26 +117,22 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * JavaScript files that are global are enqueued. All other JavaScript files are only registered, to be enqueued later.
 	 */
 	public function action_enqueue_scripts(): void {
-		$js_uri = get_theme_file_uri( '/assets/js/' );
-		$js_dir = get_theme_file_path( '/assets/js/' );
-
 		$js_files = $this->get_js_files();
 		foreach ( $js_files as $handle => $data ) {
-			$file = $data['file'];
-			if ( ! str_contains( $file, '.min.js' ) ) {
-				$file = str_replace( '.js', '.min.js', $file );
-			}
-
-			$src     = $js_uri . $file;
-			$version = wp_rig()->get_asset_version( $js_dir . $file );
 
 			/*
 			 * Enqueue global JavaScript files immediately and register the other ones for later use.
 			 */
+			foreach ( $data['deps'] as $dep ) {
+				if ( ! wp_script_is( $dep, 'registered' ) ) {
+					wp_register_script( $dep, false );
+				}
+			}
+
 			if ( $data['global'] ) {
-				wp_enqueue_script( $handle, $src, $data['deps'], $version, $data['footer'] );
+				wp_enqueue_script( $handle, $data['src'], $data['deps'], $data['version'], $data['footer'] );
 			} else {
-				wp_register_script( $handle, $src, $data['deps'], $version, $data['footer'] );
+				wp_register_script( $handle, $data['src'], $data['deps'], $data['version'], $data['footer'] );
 			}
 
 			/**
@@ -270,6 +283,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				),
 				$data
 			);
+
+			$file = wp_rig()->get_asset_file( $this->js_files[ $handle ]['file'], 'script' );
+
+			$this->js_files[ $handle ]['file']    = $file;
+			$this->js_files[ $handle ]['src']     = $this->js_uri . $file;
+			$this->js_files[ $handle ]['path']    = $this->js_dir . $file;
+			$this->js_files[ $handle ]['version'] = wp_rig()->get_asset_version( $this->js_dir . $file );
 		}
 
 		return $this->js_files;

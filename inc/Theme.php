@@ -35,6 +35,13 @@ class Theme {
 	protected \WP_Rig\WP_Rig\Template_Tags $template_tags;
 
 	/**
+	 * Theme configuration.
+	 *
+	 * @var array
+	 */
+	protected array $config = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * Sets the theme components.
@@ -66,13 +73,14 @@ class Theme {
 			}
 
 			if ( isset( $this->components[ $component->get_slug() ] ) ) {
-				trigger_error(
+				_doing_it_wrong(
+					__METHOD__,
 					sprintf(
 						/* translators: %s: component slug */
 						esc_html__( 'Theme component slug collision: "%s" already exists and will be overwritten.', 'wp-rig' ),
 						esc_html( $component->get_slug() )
 					),
-					E_USER_WARNING
+					'WP Rig 2.0.0'
 				);
 			}
 
@@ -115,6 +123,40 @@ class Theme {
 	 */
 	public function template_tags(): Template_Tags {
 		return $this->template_tags;
+	}
+
+	/**
+	 * Retrieves the theme configuration, merged with defaults.
+	 *
+	 * @param string $filename Optional. The configuration filename. Default 'config.json'.
+	 * @return array Merged configuration array.
+	 */
+	public function get_config( string $filename = 'config.json' ): array {
+		if ( isset( $this->config[ $filename ] ) ) {
+			return $this->config[ $filename ];
+		}
+
+		$config = array();
+
+		// Handle config.json specifically with its default.json counterpart.
+		if ( 'config.json' === $filename ) {
+			$config = get_config_content( 'config.default.json' ) ?? array();
+		}
+
+		$custom_config = get_config_content( $filename );
+		if ( is_array( $custom_config ) ) {
+			$config = array_replace_recursive( $config, $custom_config );
+		}
+
+		/**
+		 * Filters the theme configuration.
+		 *
+		 * @param array  $config   The merged configuration.
+		 * @param string $filename The configuration filename.
+		 */
+		$this->config[ $filename ] = apply_filters( 'wprig_theme_config', $config, $filename );
+
+		return $this->config[ $filename ];
 	}
 
 	/**

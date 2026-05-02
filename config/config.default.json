@@ -14,7 +14,8 @@
   "performance": {
     "cleanup_emojis": true,
     "cleanup_dashicons": true,
-    "cleanup_global_styles": false
+    "cleanup_global_styles": false,
+    "cleanup_meta_tags": true
   },
   "dev": {
     "admin": {
