@@ -44,7 +44,7 @@ function wp_rig_theme(): Theme {
  * @return string|false Asset content or false on failure.
  */
 function get_asset_content( string $url_or_path, int $expiry = HOUR_IN_SECONDS ) {
-	if ( empty( $url_or_path ) ) {
+	if ( '' === $url_or_path || '0' === $url_or_path ) {
 		return false;
 	}
 

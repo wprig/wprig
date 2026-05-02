@@ -426,7 +426,7 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 		);
 
 		// Check for request errors.
-		if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return new \WP_Error( 'font_download_failed', 'Could not fetch Google Fonts CSS.' );
 		}
 
@@ -443,7 +443,7 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 		// Initialize an empty array to store fonts and their respective URLs.
 		$fonts_with_urls = array();
 
-		if ( empty( $matches ) ) {
+		if ( array() === $matches ) {
 			return new \WP_Error( 'font_parse_failed', 'No font files found in CSS.' );
 		}
 
@@ -489,7 +489,7 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 						)
 					);
 
-					if ( is_wp_error( $font_response ) || wp_remote_retrieve_response_code( $font_response ) !== 200 ) {
+					if ( is_wp_error( $font_response ) || 200 !== wp_remote_retrieve_response_code( $font_response ) ) {
 						continue; // Skip if the font file couldn't be downloaded.
 					}
 

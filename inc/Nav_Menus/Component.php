@@ -368,13 +368,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				},
 				$children
 			);
-			$min_order       = empty( $children_orders ) ? 0 : min( $children_orders );
+			$min_order       = array() === $children_orders ? 0 : min( $children_orders );
 			$new->menu_order = $min_order - 1;
 
 			$injected[] = $new;
 		}
 
-		if ( empty( $injected ) ) {
+		if ( array() === $injected ) {
 			return $items;
 		}
 

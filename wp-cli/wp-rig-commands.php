@@ -61,8 +61,6 @@ class Rig_Command extends WP_CLI_Command {
 	 * ## EXAMPLES
 	 *
 	 *     wp rig import-test-data
-	 *
-	 * @return void
 	 */
 	public function import_test_data(): void {
 		// 1. Ensure WordPress Importer is installed and active

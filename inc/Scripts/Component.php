@@ -19,6 +19,7 @@ namespace WP_Rig\WP_Rig\Scripts;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
+use WP_Rig\WP_Rig\Versioning_Trait;
 use function WP_Rig\WP_Rig\wp_rig;
 use function WP_Rig\WP_Rig\wp_rig_theme;
 use function add_action;
@@ -42,6 +43,8 @@ use function esc_attr;
  * * `wp_rig()->print_scripts()`
  */
 class Component implements Component_Interface, Templating_Component_Interface {
+
+	use Versioning_Trait;
 
 	/**
 	 * Associative array of JavaScript files, as $handle => $data pairs.
@@ -119,13 +122,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	public function action_enqueue_scripts(): void {
 		$js_files = $this->get_js_files();
 		foreach ( $js_files as $handle => $data ) {
-
 			/*
 			 * Enqueue global JavaScript files immediately and register the other ones for later use.
 			 */
 			foreach ( $data['deps'] as $dep ) {
 				if ( ! wp_script_is( $dep, 'registered' ) ) {
-					wp_register_script( $dep, false );
+					wp_register_script( $dep, false, array(), $this->get_version(), true );
 				}
 			}
 

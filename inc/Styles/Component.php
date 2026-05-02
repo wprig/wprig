@@ -24,6 +24,7 @@ namespace WP_Rig\WP_Rig\Styles;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
+use WP_Rig\WP_Rig\Versioning_Trait;
 use WP_Rig\WP_Rig\Performance\Component as Performance_Component;
 use function WP_Rig\WP_Rig\get_asset_content;
 use function WP_Rig\WP_Rig\wp_rig;
@@ -57,6 +58,8 @@ use function add_query_arg;
  * * `wp_rig()->print_styles()`
  */
 class Component implements Component_Interface, Templating_Component_Interface {
+
+	use Versioning_Trait;
 
 	/**
 	 * Associative array of CSS files, as $handle => $data pairs.
@@ -149,7 +152,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			// Ensure dependencies are registered.
 			foreach ( $data['deps'] as $dep ) {
 				if ( ! wp_style_is( $dep, 'registered' ) ) {
-					wp_register_style( $dep, false );
+					wp_register_style( $dep, false, array(), $this->get_version() );
 				}
 			}
 
@@ -244,6 +247,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 
 			if ( isset( self::$processed_critical_css[ $handle ] ) ) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo self::$processed_critical_css[ $handle ];
 				continue;
 			}
@@ -257,6 +261,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				$output .= "\n";
 
 				self::$processed_critical_css[ $handle ] = $output;
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo $output;
 			}
 		}
@@ -421,7 +426,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				$performance = wp_rig_theme()->component( 'performance' );
 				if ( $performance instanceof Performance_Component ) {
 					$strategy = $performance->get_strategy( $this->css_files[ $handle ]['strategy'] );
-					if ( $strategy ) {
+					if ( $strategy instanceof \WP_Rig\WP_Rig\Performance\Critical_Strategy_Interface ) {
 						$should_inline                        = $strategy->should_inline( $handle, $this->css_files[ $handle ] );
 						$this->css_files[ $handle ]['inline'] = $should_inline;
 						$this->css_files[ $handle ]['global'] = ! $should_inline;

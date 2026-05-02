@@ -45,7 +45,7 @@ class Component implements Component_Interface {
 	 * @return string GitHub token.
 	 */
 	public function filter_github_token( string $token ): string {
-		if ( ! empty( $token ) ) {
+		if ( '' !== $token && '0' !== $token ) {
 			return $token;
 		}
 		$env_token = getenv( 'WPRIG_REGISTRY_GITHUB_TOKEN' );
@@ -62,7 +62,7 @@ class Component implements Component_Interface {
 	 * @return string GitHub owner.
 	 */
 	public function filter_github_owner( string $owner ): string {
-		return ! empty( $owner ) ? $owner : 'wprig';
+		return '' === $owner || '0' === $owner ? 'wprig' : $owner;
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Component implements Component_Interface {
 	 * @return string GitHub repository name.
 	 */
 	public function filter_github_repo( string $repo ): string {
-		return ! empty( $repo ) ? $repo : 'wprig-components';
+		return '' === $repo || '0' === $repo ? 'wprig-components' : $repo;
 	}
 
 	/**
@@ -82,6 +82,6 @@ class Component implements Component_Interface {
 	 * @return string GitHub branch.
 	 */
 	public function filter_github_branch( string $branch ): string {
-		return ! empty( $branch ) ? $branch : 'main';
+		return '' === $branch || '0' === $branch ? 'main' : $branch;
 	}
 }

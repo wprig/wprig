@@ -246,7 +246,7 @@ class Theme {
 
 		// Use manifest-driven approach if manifest exists and is not empty.
 		if ( ! empty( $manifest ) && is_array( $manifest ) ) {
-			foreach ( $manifest as $component_name => $path ) {
+			foreach ( array_keys( $manifest ) as $component_name ) {
 				$normalized_name                       = $this->normalize_component_name( $component_name );
 				$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
 			}
@@ -304,7 +304,7 @@ class Theme {
 
 		// Ensure the name is a valid PHP identifier.
 		// If it starts with a number, prepend an underscore.
-		if ( preg_match( '/^[0-9]/', $normalized ) ) {
+		if ( preg_match( '/^\d/', $normalized ) ) {
 			$normalized = '_' . $normalized;
 		}
 
