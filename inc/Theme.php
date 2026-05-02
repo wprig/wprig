@@ -173,7 +173,8 @@ class Theme {
 
 		$manifest = array();
 		if ( file_exists( $manifest_file ) ) {
-			$manifest = json_decode( file_get_contents( $manifest_file ), true );
+			$manifest_json = get_asset_content( $manifest_file );
+			$manifest      = $manifest_json ? json_decode( $manifest_json, true ) : array();
 		}
 
 		$component_classes = array();
@@ -184,19 +185,19 @@ class Theme {
 				$normalized_name                       = $this->normalize_component_name( $component_name );
 				$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
 			}
-		}
+		} else {
+			// Fallback to directory scanning if no manifest is found.
+			// Iterate through subdirectories in the inc/ directory.
+			$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
 
-		// Merge with directory scanning for bundled components.
-		// Iterate through subdirectories in the inc/ directory.
-		$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
+			foreach ( $directories as $directory ) {
+				$component_name  = basename( $directory );
+				$normalized_name = $this->normalize_component_name( $component_name );
 
-		foreach ( $directories as $directory ) {
-			$component_name  = basename( $directory );
-			$normalized_name = $this->normalize_component_name( $component_name );
-
-			// Only add if not already in manifest, and if Component.php exists.
-			if ( ! isset( $component_classes[ $normalized_name ] ) && file_exists( $directory . '/Component.php' ) ) {
-				$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
+				// Only add if Component.php exists.
+				if ( file_exists( $directory . '/Component.php' ) ) {
+					$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
+				}
 			}
 		}
 

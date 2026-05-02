@@ -14,8 +14,6 @@
 /**
  * WP Rig functions and definitions
  *
- * This file must be parseable by PHP 5.2.
- *
  * @link https://developer.wordpress.org/themes/basics/theme-functions/
  *
  * @package wp_rig
@@ -26,7 +24,7 @@
  */
 
 define( 'WP_RIG_MINIMUM_WP_VERSION', '5.4' );
-define( 'WP_RIG_MINIMUM_PHP_VERSION', '8.0' );
+define( 'WP_RIG_MINIMUM_PHP_VERSION', '8.1' );
 
 // Bail if requirements are not met.
 if ( version_compare( $GLOBALS['wp_version'], WP_RIG_MINIMUM_WP_VERSION, '<' ) || version_compare( phpversion(), WP_RIG_MINIMUM_PHP_VERSION, '<' ) ) {

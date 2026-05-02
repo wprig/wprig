@@ -127,7 +127,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function register_settings_endpoint(): void {
 		register_rest_route(
-			'my-theme/v1',
+			'wp-rig/v1',
 			'/settings',
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,

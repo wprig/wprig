@@ -9,6 +9,7 @@ namespace WP_Rig\WP_Rig\Performance;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
+use function WP_Rig\WP_Rig\get_asset_content;
 use function add_action;
 use function add_filter;
 use function remove_action;
@@ -200,14 +201,15 @@ class Component implements Component_Interface {
 		$custom_config_path = get_theme_file_path( '/config/config.json' );
 
 		$config = array();
-		if ( file_exists( $config_path ) ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-			$config = json_decode( file_get_contents( $config_path ), true );
+
+		$config_json = get_asset_content( $config_path );
+		if ( $config_json ) {
+			$config = json_decode( $config_json, true );
 		}
 
-		if ( file_exists( $custom_config_path ) ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-			$custom_config = json_decode( file_get_contents( $custom_config_path ), true );
+		$custom_config_json = get_asset_content( $custom_config_path );
+		if ( $custom_config_json ) {
+			$custom_config = json_decode( $custom_config_json, true );
 			if ( is_array( $custom_config ) ) {
 				$config = array_replace_recursive( $config, $custom_config );
 			}

@@ -8,6 +8,7 @@
 namespace WP_Rig\WP_Rig\Performance;
 
 use function add_action;
+use function apply_filters;
 use function wp_add_inline_script;
 
 /**
@@ -37,7 +38,21 @@ class Cookie_Strategy implements Critical_Strategy_Interface {
 	 * @return bool True to inline, false to enqueue.
 	 */
 	public function should_inline( string $handle, array $data ): bool {
-		return ! isset( $_COOKIE[ self::COOKIE_NAME ] );
+		// If page caching is enabled, we should avoid cookie-based logic to prevent cache fragmentation.
+		if ( defined( 'WP_CACHE' ) && WP_CACHE ) {
+			return true;
+		}
+
+		$should_inline = ! isset( $_COOKIE[ self::COOKIE_NAME ] );
+
+		/**
+		 * Filters whether the asset should be inlined.
+		 *
+		 * @param bool   $should_inline Whether to inline.
+		 * @param string $handle        Asset handle.
+		 * @param string $strategy      Strategy slug.
+		 */
+		return (bool) apply_filters( 'wp_rig_performance_should_inline', $should_inline, $handle, $this->get_slug() );
 	}
 
 	/**

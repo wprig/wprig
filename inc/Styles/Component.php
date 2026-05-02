@@ -25,6 +25,7 @@ use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
 use WP_Rig\WP_Rig\Performance\Component as Performance_Component;
+use function WP_Rig\WP_Rig\get_asset_content;
 use function WP_Rig\WP_Rig\wp_rig;
 use function WP_Rig\WP_Rig\wp_rig_theme;
 use function add_action;
@@ -241,10 +242,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 			$file_path = get_theme_file_path( '/assets/css/' . $file );
 
-			if ( file_exists( $file_path ) ) {
+			$css_content = get_asset_content( $file_path );
+			if ( $css_content ) {
 				echo '<style id="wprig-critical-' . esc_attr( $handle ) . '-css">';
-				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents, WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo file_get_contents( $file_path );
+				// Preclude closing the style tag to prevent XSS.
+				echo str_replace( '</style>', '', $css_content );
 				echo '</style>';
 				echo "\n";
 			}

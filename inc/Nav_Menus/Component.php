@@ -22,6 +22,7 @@ use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 
 use function WP_Rig\WP_Rig\wp_rig;
+use function WP_Rig\WP_Rig\get_asset_content;
 use function add_action;
 use function add_filter;
 use function register_nav_menus;
@@ -160,14 +161,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
 	 */
 	private function get_theme_settings_config() {
-		$url      = get_theme_file_uri() . '/inc/EZ_Customizer/themeCustomizeSettings.json';
-		$response = wp_remote_get( $url );
-		if ( is_wp_error( $response ) ) {
+		$file_path = get_theme_file_path( '/inc/EZ_Customizer/themeCustomizeSettings.json' );
+		$theme_settings_json = get_asset_content( $file_path );
+		if ( ! $theme_settings_json ) {
 			return null;
-		} else {
-			$theme_settings_json  = wp_remote_retrieve_body( $response );
-			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, true ) );
 		}
+		$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, true ) );
 		return null;
 	}
 
