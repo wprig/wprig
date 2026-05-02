@@ -12,7 +12,7 @@ use WP_Customize_control;
 use WP_Customize_Date_Time_Control;
 use WP_Customize_Media_Control;
 use WP_Rig\WP_Rig\Component_Interface;
-use function WP_Rig\WP_Rig\get_asset_content;
+use function WP_Rig\WP_Rig\get_config_content;
 use function add_action;
 use function get_theme_file_uri;
 
@@ -84,12 +84,11 @@ class Component implements Component_Interface {
 	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
 	 */
 	private function get_theme_settings_config() {
-		$file_path = get_theme_file_path( '/inc/EZ_Customizer/themeCustomizeSettings.json' );
-		$theme_settings_json = get_asset_content( $file_path );
-		if ( ! $theme_settings_json ) {
+		$theme_settings = get_config_content( 'themeCustomizeSettings.json' );
+		if ( ! $theme_settings ) {
 			return;
 		}
-		$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, true ) );
+		$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', $theme_settings );
 	}
 
 	/**

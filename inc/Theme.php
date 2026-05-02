@@ -127,6 +127,29 @@ class Theme {
 	}
 
 	/**
+	 * Gets the asset manifests from all components.
+	 *
+	 * @param string $type Asset type ('styles' or 'scripts').
+	 * @return array Aggregated asset manifests.
+	 */
+	public function get_asset_manifests( string $type ): array {
+		$manifests = array();
+
+		foreach ( $this->components as $component ) {
+			if ( $component instanceof Asset_Provider ) {
+				$manifest = $component->get_asset_manifest();
+				if ( ! empty( $manifest[ $type ] ) ) {
+					foreach ( $manifest[ $type ] as $handle => $data ) {
+						$manifests[ $handle ] = $data;
+					}
+				}
+			}
+		}
+
+		return $manifests;
+	}
+
+	/**
 	 * Retrieves the component for a given slug.
 	 *
 	 * This should typically not be used from outside of the theme classes infrastructure.

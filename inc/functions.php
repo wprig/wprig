@@ -48,8 +48,30 @@ function get_asset_content( string $url_or_path, int $expiry = HOUR_IN_SECONDS )
 		return false;
 	}
 
-	// Use a unique cache key based on the input.
-	$cache_key = 'wprig_asset_' . substr( md5( $url_or_path ), 0, 20 );
+	$version = '';
+	// During development, include the file modification time in the cache key.
+	// This ensures that updates to local files (like config.json) are reflected immediately
+	// while still avoiding redundant file reads if the file hasn't changed.
+	if ( strpos( $url_or_path, 'http' ) !== 0 && file_exists( $url_or_path ) ) {
+		$env_type = function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : ( defined( 'WP_ENVIRONMENT_TYPE' ) ? WP_ENVIRONMENT_TYPE : 'production' );
+		$is_local = 'local' === $env_type;
+		$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+
+		if ( $is_local || $is_debug ) {
+			$version = (string) filemtime( $url_or_path );
+		} else {
+			// Optimal performance for production: use theme version.
+			// This covers the case where dev/prod sites are updated via deployments.
+			static $theme_version = null;
+			if ( null === $theme_version ) {
+				$theme_version = wp_get_theme( get_template() )->get( 'Version' );
+			}
+			$version = $theme_version;
+		}
+	}
+
+	// Use a unique cache key based on the input and version.
+	$cache_key = 'wprig_asset_' . substr( md5( $url_or_path . $version ), 0, 20 );
 	$content   = get_transient( $cache_key );
 
 	if ( false !== $content ) {
@@ -87,4 +109,20 @@ function get_asset_content( string $url_or_path, int $expiry = HOUR_IN_SECONDS )
 	}
 
 	return $content;
+}
+
+/**
+ * Retrieves the content of a configuration file from the config directory.
+ *
+ * @param string $filename The filename (e.g., 'themeCustomizeSettings.json').
+ * @return array|null The decoded JSON content as an associative array, or null on failure.
+ */
+function get_config_content( string $filename ): ?array {
+	$file_path = get_theme_file_path( '/config/' . $filename );
+	$content   = get_asset_content( $file_path );
+	if ( ! $content ) {
+		return null;
+	}
+
+	return json_decode( $content, true );
 }

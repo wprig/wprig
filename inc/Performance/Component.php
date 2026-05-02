@@ -9,7 +9,7 @@ namespace WP_Rig\WP_Rig\Performance;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
-use function WP_Rig\WP_Rig\get_asset_content;
+use function WP_Rig\WP_Rig\get_config_content;
 use function add_action;
 use function add_filter;
 use function remove_action;
@@ -152,9 +152,22 @@ class Component implements Component_Interface {
 	 * Removes Global Block Library styles (wp-block-library).
 	 */
 	public function cleanup_global_styles() {
-		wp_dequeue_style( 'wp-block-library' );
-		wp_dequeue_style( 'wp-block-library-theme' );
-		wp_dequeue_style( 'wc-block-style' ); // WooCommerce block styles if present.
+		$styles_to_cleanup = apply_filters(
+			'wp_rig_cleanup_global_styles',
+			array(
+				'wp-block-library',
+				'wp-block-library-theme',
+				'wc-block-style',
+			)
+		);
+
+		if ( ! is_array( $styles_to_cleanup ) ) {
+			return;
+		}
+
+		foreach ( $styles_to_cleanup as $handle ) {
+			wp_dequeue_style( $handle );
+		}
 	}
 
 	/**
@@ -197,22 +210,11 @@ class Component implements Component_Interface {
 	 * @return array Configuration settings.
 	 */
 	protected function get_config(): array {
-		$config_path        = get_theme_file_path( '/config/config.default.json' );
-		$custom_config_path = get_theme_file_path( '/config/config.json' );
+		$config = get_config_content( 'config.default.json' ) ?? array();
 
-		$config = array();
-
-		$config_json = get_asset_content( $config_path );
-		if ( $config_json ) {
-			$config = json_decode( $config_json, true );
-		}
-
-		$custom_config_json = get_asset_content( $custom_config_path );
-		if ( $custom_config_json ) {
-			$custom_config = json_decode( $custom_config_json, true );
-			if ( is_array( $custom_config ) ) {
-				$config = array_replace_recursive( $config, $custom_config );
-			}
+		$custom_config = get_config_content( 'config.json' );
+		if ( is_array( $custom_config ) ) {
+			$config = array_replace_recursive( $config, $custom_config );
 		}
 
 		return $config['performance'] ?? array(

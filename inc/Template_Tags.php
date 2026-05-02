@@ -21,6 +21,8 @@ use RuntimeException;
  */
 class Template_Tags {
 
+	use Versioning_Trait;
+
 	/**
 	 * Associative array of all available template tags.
 	 *
@@ -134,36 +136,6 @@ class Template_Tags {
 		}
 	}
 
-	/**
-	 * Gets the theme version.
-	 *
-	 * @return string Theme version number.
-	 */
-	public function get_version(): string {
-		static $theme_version = null;
-
-		if ( null === $theme_version ) {
-			$theme_version = wp_get_theme( get_template() )->get( 'Version' );
-		}
-
-		return $theme_version;
-	}
-
-	/**
-	 * Gets the version for a given asset.
-	 *
-	 * Returns filemtime when WP_DEBUG is true, otherwise the theme version.
-	 *
-	 * @param string $filepath Asset file path.
-	 * @return string Asset version number.
-	 */
-	public function get_asset_version( string $filepath ): string {
-		if ( WP_DEBUG && file_exists( $filepath ) ) {
-			return (string) filemtime( $filepath );
-		}
-
-		return $this->get_version();
-	}
 
 	/**
 	 * Gets a theme asset from the assets directory.
@@ -184,32 +156,9 @@ class Template_Tags {
 		}
 
 		if ( $content ) {
-			try {
-				// Initialize WordPress Filesystem.
-				global $wp_filesystem;
-				if ( empty( $wp_filesystem ) ) {
-					require_once ABSPATH . '/wp-admin/includes/file.php';
-					WP_Filesystem();
-				}
+			$file_contents = get_asset_content( $asset_path );
 
-				// If filesystem failed or file can't be read, return null instead of throwing an exception.
-				if ( ! $wp_filesystem ) {
-					return null;
-				}
-
-				$file_contents = $wp_filesystem->get_contents( $asset_path );
-
-				// Return the contents if found, otherwise null.
-				return ( false !== $file_contents ) ? $file_contents : null;
-
-			} catch ( \Exception $e ) {
-				// Log the error in debug mode, but don't crash.
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-					error_log( 'WP Rig Asset Error: ' . $e->getMessage() );
-				}
-				return null;
-			}
+			return ( false !== $file_contents ) ? $file_contents : null;
 		}
 
 		return $asset_uri;

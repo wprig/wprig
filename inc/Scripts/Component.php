@@ -235,17 +235,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		);
 
 		// Aggregate manifests from components implementing Asset_Provider.
-		$components = wp_rig_theme()->get_components();
-		foreach ( $components as $component ) {
-			if ( $component instanceof Asset_Provider ) {
-				$manifest = $component->get_asset_manifest();
-				if ( ! empty( $manifest['scripts'] ) ) {
-					foreach ( $manifest['scripts'] as $handle => $data ) {
-						$js_files[ $handle ] = $data;
-					}
-				}
-			}
-		}
+		$js_files = array_merge( $js_files, wp_rig_theme()->get_asset_manifests( 'scripts' ) );
 
 		/**
 		 * Filters default JS files.
