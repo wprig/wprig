@@ -11,6 +11,7 @@ use WP_Error;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
+use WP_Rig\WP_Rig\Versioning_Trait;
 
 /**
  * Class for adding basic theme support, most of which is mandatory to be implemented by all themes.
@@ -20,6 +21,8 @@ use WP_Rig\WP_Rig\Asset_Provider;
  * * `wp_rig()->get_asset_version( string $filepath )`
  */
 class Component implements Component_Interface, Templating_Component_Interface, Asset_Provider {
+
+	use Versioning_Trait;
 
 	/**
 	 * Associative array of Google Fonts to load, as $font_name => $font_variants pairs.
@@ -85,36 +88,6 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 		return $manifest;
 	}
 
-	/**
-	 * Gets the theme version.
-	 *
-	 * @return string Theme version number.
-	 */
-	public function get_version(): string {
-		static $theme_version = null;
-
-		if ( null === $theme_version ) {
-			$theme_version = wp_get_theme( get_template() )->get( 'Version' );
-		}
-
-		return $theme_version;
-	}
-
-	/**
-	 * Gets the version for a given asset.
-	 *
-	 * Returns filemtime when WP_DEBUG is true, otherwise the theme version.
-	 *
-	 * @param string $filepath Asset file path.
-	 * @return string Asset version number.
-	 */
-	public function get_asset_version( string $filepath ): string {
-		if ( WP_DEBUG && file_exists( $filepath ) ) {
-			return (string) filemtime( $filepath );
-		}
-
-		return $this->get_version();
-	}
 
 	/**
 	 * Registers font collections with WordPress if the wp_register_font_collection function exists.
@@ -263,7 +236,7 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 				$urls[] = array(
 					'href'        => $font_url,
 					'as'          => 'font',
-					'type'        => 'font/' . pathinfo( (string) parse_url( $font_url, PHP_URL_PATH ), PATHINFO_EXTENSION ),
+					'type'        => 'font/' . pathinfo( (string) wp_parse_url( $font_url, PHP_URL_PATH ), PATHINFO_EXTENSION ),
 					'crossorigin' => 'anonymous',
 				);
 			}
@@ -453,7 +426,7 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 		);
 
 		// Check for request errors.
-		if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return new \WP_Error( 'font_download_failed', 'Could not fetch Google Fonts CSS.' );
 		}
 
@@ -470,7 +443,7 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 		// Initialize an empty array to store fonts and their respective URLs.
 		$fonts_with_urls = array();
 
-		if ( empty( $matches ) ) {
+		if ( array() === $matches ) {
 			return new \WP_Error( 'font_parse_failed', 'No font files found in CSS.' );
 		}
 
@@ -516,7 +489,7 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 						)
 					);
 
-					if ( is_wp_error( $font_response ) || wp_remote_retrieve_response_code( $font_response ) !== 200 ) {
+					if ( is_wp_error( $font_response ) || 200 !== wp_remote_retrieve_response_code( $font_response ) ) {
 						continue; // Skip if the font file couldn't be downloaded.
 					}
 

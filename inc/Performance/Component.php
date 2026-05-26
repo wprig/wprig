@@ -9,6 +9,7 @@ namespace WP_Rig\WP_Rig\Performance;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
+use function WP_Rig\WP_Rig\get_config;
 use function add_action;
 use function add_filter;
 use function remove_action;
@@ -57,16 +58,11 @@ class Component implements Component_Interface {
 			add_action( 'init', array( $this, 'cleanup_emojis' ) );
 		}
 
-		if ( ! empty( $config['cleanup_dashicons'] ) ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'cleanup_dashicons' ), 100 );
+		if ( ! empty( $config['cleanup_meta_tags'] ) ) {
+			add_action( 'init', array( $this, 'cleanup_meta_tags' ) );
 		}
 
-		if ( ! empty( $config['cleanup_global_styles'] ) ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'cleanup_global_styles' ), 100 );
-		}
-
-		// Provide a filter for 3rd party opt-outs.
-		add_action( 'wp_enqueue_scripts', array( $this, 'process_opt_outs' ), 110 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'action_cleanup_assets' ), 100 );
 
 		// Initialize all registered strategies.
 		foreach ( $this->strategies as $strategy ) {
@@ -111,6 +107,20 @@ class Component implements Component_Interface {
 	}
 
 	/**
+	 * Removes common wp_head meta tags.
+	 */
+	public function cleanup_meta_tags() {
+		remove_action( 'wp_head', 'rsd_link' );
+		remove_action( 'wp_head', 'wlwmanifest_link' );
+		remove_action( 'wp_head', 'wp_generator' );
+		remove_action( 'wp_head', 'wp_shortlink_wp_head', 10 );
+		remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
+		remove_action( 'template_redirect', 'rest_output_link_header', 11 );
+		remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+		remove_action( 'wp_head', 'wp_oembed_add_host_js' );
+	}
+
+	/**
 	 * Removes the emoji plugin from TinyMCE.
 	 *
 	 * @param array $plugins Array of TinyMCE plugins.
@@ -132,43 +142,46 @@ class Component implements Component_Interface {
 	 */
 	public function remove_emoji_resource_hints( $urls, $relation_type ) {
 		if ( 'dns-prefetch' === $relation_type ) {
-			$emoji_svg_url = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/14.0.0/svg/' );
-			$urls          = array_diff( $urls, array( $emoji_svg_url ) );
+			$urls = array_filter(
+				$urls,
+				function ( $url ) {
+					return ! str_contains( $url, 's.w.org/images/core/emoji' );
+				}
+			);
 		}
 		return $urls;
 	}
 
 	/**
-	 * Removes Dashicons for logged-out users.
+	 * Consolidates asset cleanup tasks.
 	 */
-	public function cleanup_dashicons() {
-		if ( ! is_user_logged_in() ) {
+	public function action_cleanup_assets() {
+		$config = $this->get_config();
+
+		// Cleanup Dashicons for logged-out users.
+		if ( ! empty( $config['cleanup_dashicons'] ) && ! is_user_logged_in() ) {
 			wp_dequeue_style( 'dashicons' );
 		}
-	}
 
-	/**
-	 * Removes Global Block Library styles (wp-block-library).
-	 */
-	public function cleanup_global_styles() {
-		wp_dequeue_style( 'wp-block-library' );
-		wp_dequeue_style( 'wp-block-library-theme' );
-		wp_dequeue_style( 'wc-block-style' ); // WooCommerce block styles if present.
-	}
+		// Cleanup Global Block Library styles.
+		if ( ! empty( $config['cleanup_global_styles'] ) ) {
+			$styles_to_cleanup = apply_filters(
+				'wp_rig_cleanup_global_styles',
+				array(
+					'wp-block-library',
+					'wp-block-library-theme',
+					'wc-block-style',
+				)
+			);
 
-	/**
-	 * Processes 3rd party asset opt-outs via the `wp_rig_asset_opt_out` filter.
-	 */
-	public function process_opt_outs() {
-		/**
-		 * Filters the list of asset handles to be dequeued or delayed.
-		 *
-		 * @param array $opt_outs {
-		 *     List of opt-outs.
-		 *     @type array $styles  List of style handles to dequeue.
-		 *     @type array $scripts List of script handles to dequeue.
-		 * }
-		 */
+			if ( is_array( $styles_to_cleanup ) ) {
+				foreach ( $styles_to_cleanup as $handle ) {
+					wp_dequeue_style( $handle );
+				}
+			}
+		}
+
+		// Process 3rd party asset opt-outs.
 		$opt_outs = apply_filters(
 			'wp_rig_asset_opt_out',
 			array(
@@ -196,27 +209,12 @@ class Component implements Component_Interface {
 	 * @return array Configuration settings.
 	 */
 	protected function get_config(): array {
-		$config_path        = get_theme_file_path( '/config/config.default.json' );
-		$custom_config_path = get_theme_file_path( '/config/config.json' );
-
-		$config = array();
-		if ( file_exists( $config_path ) ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-			$config = json_decode( file_get_contents( $config_path ), true );
-		}
-
-		if ( file_exists( $custom_config_path ) ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-			$custom_config = json_decode( file_get_contents( $custom_config_path ), true );
-			if ( is_array( $custom_config ) ) {
-				$config = array_replace_recursive( $config, $custom_config );
-			}
-		}
-
+		$config = get_config( 'config.json' );
 		return $config['performance'] ?? array(
 			'cleanup_emojis'        => true,
 			'cleanup_dashicons'     => true,
 			'cleanup_global_styles' => false,
+			'cleanup_meta_tags'     => true,
 		);
 	}
 }

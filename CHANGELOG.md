@@ -1,6 +1,14 @@
 # Changelog
 
 ## 3.4.0
+- Enhanced configuration retrieval and asset loading logic with transient-based caching. Props @robruiz
+- Improved component loading and caching in `Theme.php` for better performance and fallback handling. Props @robruiz
+- Conducted codebase clean-up and refactoring across components, tests, and styles for improved maintainability. Props @robruiz
+- Improved test coverage for internal scripts. Props @robruiz
+- Replaced the automated `rig:submit` command with a manual `rig:prepare` workflow to simplify open-source contributions. Props @robruiz
+- Fixed public registry data fetching and improved recursive dependency resolution. Props @robruiz
+- Fixed and improved the block-based theme conversion script and setup during `rig-init`. Props @robruiz
+- Added a new logger utility to `rig.js` for better debugging and terminal feedback. Props @robruiz
 - Implemented robust path traversal protection in `rig` CLI by sanitizing all incoming manifest data (slugs, filenames, asset paths). Props @robruiz
 - Refactored `npm install` logic in CLI to use `spawnSync` with argument arrays, preventing shell-based injection vulnerabilities. Props @robruiz
 - Added a global `--yes` flag to all `rig` commands to facilitate automated CI/CD and agent-based workflows. Props @robruiz

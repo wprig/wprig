@@ -35,6 +35,13 @@ class Theme {
 	protected \WP_Rig\WP_Rig\Template_Tags $template_tags;
 
 	/**
+	 * Theme configuration.
+	 *
+	 * @var array
+	 */
+	protected array $config = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * Sets the theme components.
@@ -66,13 +73,14 @@ class Theme {
 			}
 
 			if ( isset( $this->components[ $component->get_slug() ] ) ) {
-				trigger_error(
+				_doing_it_wrong(
+					__METHOD__,
 					sprintf(
 						/* translators: %s: component slug */
 						esc_html__( 'Theme component slug collision: "%s" already exists and will be overwritten.', 'wp-rig' ),
 						esc_html( $component->get_slug() )
 					),
-					E_USER_WARNING
+					'WP Rig 2.0.0'
 				);
 			}
 
@@ -118,12 +126,69 @@ class Theme {
 	}
 
 	/**
+	 * Retrieves the theme configuration, merged with defaults.
+	 *
+	 * @param string $filename Optional. The configuration filename. Default 'config.json'.
+	 * @return array Merged configuration array.
+	 */
+	public function get_config( string $filename = 'config.json' ): array {
+		if ( isset( $this->config[ $filename ] ) ) {
+			return $this->config[ $filename ];
+		}
+
+		$config = array();
+
+		// Handle config.json specifically with its default.json counterpart.
+		if ( 'config.json' === $filename ) {
+			$config = get_config_content( 'config.default.json' ) ?? array();
+		}
+
+		$custom_config = get_config_content( $filename );
+		if ( is_array( $custom_config ) ) {
+			$config = array_replace_recursive( $config, $custom_config );
+		}
+
+		/**
+		 * Filters the theme configuration.
+		 *
+		 * @param array  $config   The merged configuration.
+		 * @param string $filename The configuration filename.
+		 */
+		$this->config[ $filename ] = apply_filters( 'wprig_theme_config', $config, $filename );
+
+		return $this->config[ $filename ];
+	}
+
+	/**
 	 * Retrieves the theme components.
 	 *
 	 * @return array List of theme components, keyed by their slug.
 	 */
 	public function get_components(): array {
 		return $this->components;
+	}
+
+	/**
+	 * Gets the asset manifests from all components.
+	 *
+	 * @param string $type Asset type ('styles' or 'scripts').
+	 * @return array Aggregated asset manifests.
+	 */
+	public function get_asset_manifests( string $type ): array {
+		$manifests = array();
+
+		foreach ( $this->components as $component ) {
+			if ( $component instanceof Asset_Provider ) {
+				$manifest = $component->get_asset_manifest();
+				if ( ! empty( $manifest[ $type ] ) ) {
+					foreach ( $manifest[ $type ] as $handle => $data ) {
+						$manifests[ $handle ] = $data;
+					}
+				}
+			}
+		}
+
+		return $manifests;
 	}
 
 	/**
@@ -173,30 +238,31 @@ class Theme {
 
 		$manifest = array();
 		if ( file_exists( $manifest_file ) ) {
-			$manifest = json_decode( file_get_contents( $manifest_file ), true );
+			$manifest_json = get_asset_content( $manifest_file );
+			$manifest      = $manifest_json ? json_decode( $manifest_json, true ) : array();
 		}
 
 		$component_classes = array();
 
 		// Use manifest-driven approach if manifest exists and is not empty.
 		if ( ! empty( $manifest ) && is_array( $manifest ) ) {
-			foreach ( $manifest as $component_name => $path ) {
-				$normalized_name = $this->normalize_component_name( $component_name );
+			foreach ( array_keys( $manifest ) as $component_name ) {
+				$normalized_name                       = $this->normalize_component_name( $component_name );
 				$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
 			}
-		}
+		} else {
+			// Fallback to directory scanning if no manifest is found.
+			// Iterate through subdirectories in the inc/ directory.
+			$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
 
-		// Merge with directory scanning for bundled components.
-		// Iterate through subdirectories in the inc/ directory.
-		$directories = glob( $inc_dir . '/*', GLOB_ONLYDIR );
+			foreach ( $directories as $directory ) {
+				$component_name  = basename( $directory );
+				$normalized_name = $this->normalize_component_name( $component_name );
 
-		foreach ( $directories as $directory ) {
-			$component_name  = basename( $directory );
-			$normalized_name = $this->normalize_component_name( $component_name );
-
-			// Only add if not already in manifest, and if Component.php exists.
-			if ( ! isset( $component_classes[ $normalized_name ] ) && file_exists( $directory . '/Component.php' ) ) {
-				$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
+				// Only add if Component.php exists.
+				if ( file_exists( $directory . '/Component.php' ) ) {
+					$component_classes[ $normalized_name ] = __NAMESPACE__ . '\\' . $normalized_name . '\\Component';
+				}
 			}
 		}
 
@@ -238,7 +304,7 @@ class Theme {
 
 		// Ensure the name is a valid PHP identifier.
 		// If it starts with a number, prepend an underscore.
-		if ( preg_match( '/^[0-9]/', $normalized ) ) {
+		if ( preg_match( '/^\d/', $normalized ) ) {
 			$normalized = '_' . $normalized;
 		}
 

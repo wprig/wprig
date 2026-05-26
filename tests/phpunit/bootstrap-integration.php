@@ -23,6 +23,7 @@ function wp_rig_ensure_test_environment() {
 		$setup_script = TESTS_THEME_DIR . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'phpunit' . DIRECTORY_SEPARATOR . 'setup-wp-env.php';
 
 		if ( file_exists( $setup_script ) ) {
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
 			exec( "php \"{$setup_script}\"", $output, $return_code );
 			if ( 0 !== $return_code ) {
 				throw new Exception( 'Failed to set up WordPress test environment.' );

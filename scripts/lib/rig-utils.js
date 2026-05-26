@@ -86,6 +86,35 @@ export async function getDependentsMap( themeRoot ) {
 }
 
 /**
+ * Scans the inc directory for components to rebuild a manifest.
+ *
+ * @param {string} themeRoot Path to the theme root
+ * @return {Promise<Object>} Rebuilt manifest
+ */
+export async function rebuildManifestFromDisk( themeRoot ) {
+	const incDir = path.join( themeRoot, 'inc' );
+	const manifest = {};
+
+	if ( ! ( await fs.pathExists( incDir ) ) ) {
+		return manifest;
+	}
+
+	const files = await fs.readdir( incDir, { withFileTypes: true } );
+	for ( const file of files ) {
+		if ( file.isDirectory() ) {
+			const componentDir = path.join( incDir, file.name );
+			const componentFile = path.join( componentDir, 'Component.php' );
+			if ( await fs.pathExists( componentFile ) ) {
+				const componentSlug = toPascalCase( file.name );
+				manifest[ componentSlug ] = `inc/${ file.name }/Component.php`;
+			}
+		}
+	}
+
+	return manifest;
+}
+
+/**
  * Updates the components manifest file.
  *
  * @param {string}  themeRoot     Path to the theme root
@@ -111,9 +140,12 @@ export async function updateRegistryManifest(
 			registryManifest = await fs.readJson( registryManifestPath );
 		} catch ( e ) {
 			logger.warn(
-				'Could not parse existing components-manifest.json, starting fresh.'
+				'Could not parse existing components-manifest.json, merging from disk.'
 			);
+			registryManifest = await rebuildManifestFromDisk( themeRoot );
 		}
+	} else {
+		registryManifest = await rebuildManifestFromDisk( themeRoot );
 	}
 
 	if ( isRemoving ) {

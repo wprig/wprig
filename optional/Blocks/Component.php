@@ -35,8 +35,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 	/**
 	 * Initializes the block registration process by hooking into the WordPress initialization action.
-	 *
-	 * @return void
 	 */
 	public function initialize(): void {
 		add_action( 'init', array( $this, 'register_blocks' ) );
@@ -71,7 +69,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			return;
 		}
 		$dirs = glob( $blocks_dir . '/*', GLOB_ONLYDIR );
-		if ( empty( $dirs ) ) {
+		if ( array() === $dirs || false === $dirs ) {
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				// Log when no block directories are found.
 				do_action( 'wp_rig_log', '[WP Rig Blocks] no block directories found' );
@@ -165,7 +163,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	public function block_get_type( mixed $block ): ?\WP_Block_Type {
 		if ( $block instanceof \WP_Block ) {
-			if ( isset( $block->block_type ) && $block->block_type instanceof \WP_Block_Type ) {
+			if ( null !== $block->block_type && $block->block_type instanceof \WP_Block_Type ) {
 				return $block->block_type;
 			}
 			if ( ! empty( $block->name ) && is_string( $block->name ) ) {
@@ -203,7 +201,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$pos = strpos( $block->name, '/' );
 			if ( false !== $pos ) {
 				$slug = substr( $block->name, $pos + 1 );
-				return ucwords( str_replace( '-', ' ', (string) $slug ) );
+				return ucwords( str_replace( '-', ' ', $slug ) );
 			}
 		}
 

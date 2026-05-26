@@ -18,8 +18,6 @@ if ( ! function_exists( 'wprig_is_dev_proxy_request' ) ) {
 	 * - X-WPRIG-DEV header (set by dev proxy)
 	 * - X-Forwarded-Host containing localhost or 127.0.0.1 (any port)
 	 * - Cookie wprig_dev=1
-	 *
-	 * @return bool
 	 */
 	function wprig_is_dev_proxy_request(): bool {
 		$has_custom_header = ! empty( $_SERVER['HTTP_X_WPRIG_DEV'] );
@@ -36,7 +34,7 @@ add_action(
 	'wp_head',
 	function () {
 		if ( wprig_is_dev_proxy_request() ) {
-			wp_enqueue_script( 'wprig-livereload', '//localhost:35729/livereload.js?snipver=1', array(), null, false );
+			wp_enqueue_script( 'wprig-livereload', '//localhost:35729/livereload.js?snipver=1', array(), wp_get_theme()->get( 'Version' ), false );
 		}
 	}
 );
@@ -44,7 +42,7 @@ add_action(
 	'admin_enqueue_scripts',
 	function () {
 		if ( wprig_is_dev_proxy_request() ) {
-			wp_enqueue_script( 'wprig-admin-livereload', 'http://localhost:35729/livereload.js?snipver=1', array(), null, false );
+			wp_enqueue_script( 'wprig-admin-livereload', 'http://localhost:35729/livereload.js?snipver=1', array(), wp_get_theme()->get( 'Version' ), false );
 		}
 	}
 );

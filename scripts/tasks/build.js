@@ -1,6 +1,7 @@
 import { cleanCSS, cleanJS } from './clean.js';
 import { images, convertToWebP } from './images.js';
 import phpTask from './php.js';
+import { propagateTokens } from './tokens.js';
 import {
 	runTask,
 	lintCSS,
@@ -23,6 +24,9 @@ export default async function runBuild( {
 	lint = false,
 	dev = false,
 } = {} ) {
+	// Propagate Tokens
+	await runTask( propagateTokens, 'propagateTokens' );
+
 	// Clean
 	await Promise.all( [
 		runTask( cleanCSS, 'cleanCSS' ),

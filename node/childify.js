@@ -215,6 +215,7 @@ function updateConfig( parentSlug ) {
 		'assets/css/vendor/**/*.css',
 		'assets/js/vendor/**/*.js',
 		'assets/svg/*.svg',
+		'assets/icons/*.svg',
 		'style.css',
 	];
 

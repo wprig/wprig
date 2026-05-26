@@ -51,11 +51,7 @@ class Component implements Component_Interface {
 			$sizes = '100vw';
 		}
 
-		if ( wp_rig()->is_primary_sidebar_active() ) {
-			$sizes = '(min-width: 960px) 75vw, 100vw';
-		}
-
-		return $sizes;
+		return $this->get_responsive_sizes_attr( $sizes );
 	}
 
 	/**
@@ -85,12 +81,22 @@ class Component implements Component_Interface {
 	 * @return array The filtered attributes for the image markup.
 	 */
 	public function filter_post_thumbnail_sizes_attr( array $attr, WP_Post $attachment, array|string $size ): array {
-		$attr['sizes'] = '100vw';
-
-		if ( wp_rig()->is_primary_sidebar_active() ) {
-			$attr['sizes'] = '(min-width: 960px) 75vw, 100vw';
-		}
+		$attr['sizes'] = $this->get_responsive_sizes_attr( '100vw' );
 
 		return $attr;
+	}
+
+	/**
+	 * Gets the responsive sizes attribute based on sidebar state.
+	 *
+	 * @param string $default_sizes Default sizes value.
+	 * @return string Responsive sizes value.
+	 */
+	private function get_responsive_sizes_attr( string $default_sizes ): string {
+		if ( wp_rig()->is_primary_sidebar_active() ) {
+			return '(min-width: 960px) 75vw, 100vw';
+		}
+
+		return $default_sizes;
 	}
 }
