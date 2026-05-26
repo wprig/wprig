@@ -138,16 +138,15 @@ function createIndexHtmlWithStarterContent( templatesFolderPath ) {
 
 		// Define Gutenberg-ready starter content.
 		const starterContent = `
-<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+<!-- wp:header {"style":{"spacing":{"margin":{"bottom":"40px"}}}} /-->
 
-<!-- wp:group {"layout":{"type":"constrained"}, "tagName":"main"} -->
-<main class="wp-block-group">
-    <!-- wp:post-title {"level":1} /-->
+<!-- wp:group {"layout":{"type":"constrained"}} -->
+<div class="wp-block-group">
     <!-- wp:post-content /-->
-</main>
+</div>
 <!-- /wp:group -->
 
-<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->
+<!-- wp:footer {"style":{"spacing":{"margin":{"top":"40px"}}}} /-->
         `;
 
 		// Write starter content to index.html.
