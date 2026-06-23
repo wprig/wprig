@@ -64,6 +64,7 @@ For 2026-ready AI agents, specialized "skills" in the `/.ai/skills/` directory p
 - [**E2E Testing (Playwright)**](.ai/skills/e2e-testing/SKILL.md): Running Playwright tests, accessibility audits, and regression screenshots.
 - [**Code Quality Standards**](.ai/skills/code-quality-standards/SKILL.md): Adhering to PHPStan, PHPCS, Rector, and Prettier.
 - [**PHPUnit Testing**](.ai/skills/phpunit-testing/SKILL.md): Writing unit and integration tests for PHP components.
+- [**Pull Request Authoring**](.ai/skills/pull-request-authoring/SKILL.md): Creating PRs that follow the repository template and release merge requirements.
 
 ## Discovery Rules
 
