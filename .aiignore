@@ -22,6 +22,12 @@ assets/images/
 assets/fonts/
 screenshot.png
 
+# Minified assets (Build Artifacts)
+*.min.css
+*.min.css.map
+*.min.js
+*.min.js.map
+
 # WP Rig / WordPress Specific
 config/local.json
 wp-cli/config.yml

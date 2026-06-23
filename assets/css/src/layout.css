@@ -1,0 +1,37 @@
+@import "_custom-properties.css";
+
+/**
+ * Bento Grid style for core/group block.
+ */
+.is-style-bento-grid,
+.is-style-optimus-bento-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 1.5rem;
+}
+
+/**
+ * Floating Nav Shell style for core/group block.
+ */
+.is-style-floating-nav-shell {
+	position: sticky;
+	top: 1rem;
+	z-index: 1000;
+	margin-left: auto;
+	margin-right: auto;
+	width: fit-content;
+	max-width: 90%;
+	background: rgba(255, 255, 255, 0.8);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 50px;
+	padding: 0.5rem 2rem;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/**
+ * Optimus Layout style for core/columns block.
+ */
+.is-style-optimus-layout {
+	gap: 2rem;
+}

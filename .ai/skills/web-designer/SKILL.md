@@ -30,6 +30,7 @@ Before styling, you must understand the theme's type and what needs to be styled
     - **Classic:** Focus on CSS partials in `assets/css/src/`.
     - **Universal/Block-based:** Leverage `theme.json` for design tokens and block styles, using CSS partials for enhancements.
 - **Theme Blocks:** Run `npm run block:list` to see all theme-scoped Gutenberg blocks.
+- **Component Registry:** Run `npm run rig:search [keyword]` to find pre-built, styled components or blocks that can be imported to the theme via the [Component Registry skill](../component-registry/SKILL.md).
 - **Registered Blocks:** If WP-CLI is available, run `wp block-type list` to see a complete list of all registered blocks (including core blocks) in the development environment.
 - **Navigation:** Use `wp rig menu list` to understand existing navigation structures.
 
@@ -72,3 +73,4 @@ The Web Designer skill is the aesthetic and interactive heart of the theme, and 
 
 - **Architecture:** The design tokens and styles must be implemented within the theme's structural conventions (e.g., `_custom-properties.css`, `_blocks.css`). See [Architecture skill](../architecture/SKILL.md).
 - **Feature Planning:** Any major visual or interactive feature (like a new style guide or a complex block layout) must be planned and agreed upon using the "Contract-First" approach in the [Feature Planning skill](../feature-planning/SKILL.md). The `STYLE-GUIDE.md` informs plans, and plans update the `STYLE-GUIDE.md`.
+- **Component Registry:** The [Component Registry skill](../component-registry/SKILL.md) provides a library of pre-built, performance-optimized, and styled components that should be considered before starting a design from scratch.

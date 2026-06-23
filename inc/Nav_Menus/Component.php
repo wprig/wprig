@@ -22,6 +22,7 @@ use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 
 use function WP_Rig\WP_Rig\wp_rig;
+use function WP_Rig\WP_Rig\get_config_content;
 use function add_action;
 use function add_filter;
 use function register_nav_menus;
@@ -96,7 +97,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 */
 	private function preload_svg_assets() {
 		// Load dropdown symbol SVG.
-		$dropdown_svg = wp_rig()->get_theme_asset( 'dropdown-symbol.svg', 'svg', true ) ?? '';
+		$dropdown_svg = wp_rig()->wprig_icon( 'dropdown-symbol' );
 
 		/**
 		 * Filters the dropdown icon SVG markup used in navigation menus.
@@ -108,14 +109,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$this->dropdown_symbol_svg = apply_filters( 'wp_rig_dropdown_icon_svg', $dropdown_svg );
 
 		// Load menu toggle icons.
-		$menu_icon_path  = get_theme_file_uri() . '/assets/svg/menu-icon.svg';
-		$close_icon_path = get_theme_file_uri() . '/assets/svg/close-icon.svg';
-
-		$menu_response  = wp_remote_get( $menu_icon_path );
-		$close_response = wp_remote_get( $close_icon_path );
-
-		$menu_icon_svg  = is_wp_error( $menu_response ) ? '' : wp_remote_retrieve_body( $menu_response );
-		$close_icon_svg = is_wp_error( $close_response ) ? '' : wp_remote_retrieve_body( $close_response );
+		$menu_icon_svg  = wp_rig()->wprig_icon( 'menu-icon' );
+		$close_icon_svg = wp_rig()->wprig_icon( 'close-icon' );
 
 		/**
 		 * Filters the mobile menu toggle (hamburger) icon SVG markup.
@@ -145,7 +140,6 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		add_filter( 'wp_rig_menu_toggle_button', array( $this, 'customize_mobile_menu_toggle' ) );
 		add_filter( 'wp_rig_site_navigation_classes', array( $this, 'customize_mobile_menu_nav_classes' ) );
 		add_filter( 'render_block_core/navigation', array( $this, 'add_nav_class_to_navigation_block' ), 10, 3 );
-		//add_filter( 'walker_nav_menu_start_el', array( $this, 'modify_menu_items_for_accessibility' ), 10, 4 );
 		add_filter( 'wp_nav_menu_objects', array( $this, 'inject_parent_link_into_submenu' ), 10, 2 );
 	}
 
@@ -167,14 +161,11 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Retrieves the theme settings from the JSON file and stores them in class-level variable.
 	 */
 	private function get_theme_settings_config() {
-		$url      = get_theme_file_uri() . '/inc/EZ_Customizer/themeCustomizeSettings.json';
-		$response = wp_remote_get( $url );
-		if ( is_wp_error( $response ) ) {
+		$theme_settings = get_config_content( 'themeCustomizeSettings.json' );
+		if ( ! $theme_settings ) {
 			return null;
-		} else {
-			$theme_settings_json  = wp_remote_retrieve_body( $response );
-			$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', json_decode( $theme_settings_json, true ) );
 		}
+		$this->theme_settings = apply_filters( 'wp_rig_customizer_settings', $theme_settings );
 		return null;
 	}
 
@@ -206,7 +197,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @param string  $item_output The menu item's starting HTML output.
 	 * @param WP_Post $item        Menu item data object.
 	 * @param int     $depth       Depth of menu item. Used for padding.
-	 * @param object $args        An object of wp_nav_menu() arguments.
+	 * @param object  $args        An object of wp_nav_menu() arguments.
 	 *
 	 * @return string Modified nav menu HTML.
 	 */
@@ -377,13 +368,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 				},
 				$children
 			);
-			$min_order       = empty( $children_orders ) ? 0 : min( $children_orders );
+			$min_order       = array() === $children_orders ? 0 : min( $children_orders );
 			$new->menu_order = $min_order - 1;
 
 			$injected[] = $new;
 		}
 
-		if ( empty( $injected ) ) {
+		if ( array() === $injected ) {
 			return $items;
 		}
 
@@ -413,7 +404,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 *
 	 * @param string $item_output The HTML output for the current menu item.
 	 * @param object $item WP_Post object for the current menu item.
-	 * @param int $depth Depth of the menu item. Used for nesting levels.
+	 * @param int    $depth Depth of the menu item. Used for nesting levels.
 	 * @param object $args An object of arguments passed to `wp_nav_menu()`.
 	 *
 	 * @return string Modified HTML output for the menu item.

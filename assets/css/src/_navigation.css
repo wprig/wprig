@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 /* Do not show the outline on the skip link target. */
 #primary[tabindex="-1"]:focus {
 	outline: 0;
@@ -629,6 +630,7 @@ body.mobile-menu-open {
 		}
 	}
 }
+
 
 
 /*--------------------------------------------------------------

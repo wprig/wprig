@@ -26,6 +26,9 @@
 	<!-- Check up to 8 files simultanously. -->
 	<arg name="parallel" value="8"/>
 
+	<!-- Ignore warnings on exit. -->
+	<config name="ignore_warnings_on_exit" value="1"/>
+
 	<!-- Only check the PHP, CSS and SCSS files. JS files are checked separately with ESLint. -->
 	<arg name="extensions" value="php,css,scss/css"/>
 
@@ -36,6 +39,9 @@
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*.min.css*</exclude-pattern>
 	<exclude-pattern>*/gulp/tests/prod-build/*</exclude-pattern>
+	<exclude-pattern>*/scripts/tests/prod-build/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/tests/phpunit/setup-wp-env.php</exclude-pattern>
 
 	<!--
 	#############################################################################
@@ -59,7 +65,9 @@
 		 Multiple valid text domains can be provided as a comma-delimited list. -->
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="wp-rig"/>
+			<property name="text_domain" type="array">
+				<element value="wp-rig"/>
+			</property>
 		</properties>
 	</rule>
 

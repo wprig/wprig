@@ -61,8 +61,6 @@ class Rig_Command extends WP_CLI_Command {
 	 * ## EXAMPLES
 	 *
 	 *     wp rig import-test-data
-	 *
-	 * @return void
 	 */
 	public function import_test_data(): void {
 		// 1. Ensure WordPress Importer is installed and active
@@ -70,7 +68,7 @@ class Rig_Command extends WP_CLI_Command {
 		WP_CLI::runcommand( 'plugin install wordpress-importer --activate' );
 
 		// 2. Download the test data
-		$file = 'themeunittestdata.wordpress.xml';
+		$file = 'themeunittestdata.WordPress.xml';
 		$url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
 
 		WP_CLI::log( 'Downloading Theme Unit Test Data...' );
@@ -80,6 +78,7 @@ class Rig_Command extends WP_CLI_Command {
 			WP_CLI::error( 'Failed to download test data from GitHub.' );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		file_put_contents( $file, $download->body );
 
 		// 3. Import the data
@@ -87,6 +86,7 @@ class Rig_Command extends WP_CLI_Command {
 		WP_CLI::runcommand( "import $file --authors=create" );
 
 		// 4. Cleanup
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
 		if ( unlink( $file ) ) {
 			WP_CLI::success( 'Theme Unit Test Data imported and temporary file cleaned up!' );
 		} else {
@@ -108,7 +108,7 @@ class Rig_Command extends WP_CLI_Command {
 		WP_CLI::log( 'Starting Theme Unit Test environment setup...' );
 
 		// 1. Download the Theme Unit Test Data
-		$xml_url  = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
+		$xml_url = 'https://raw.githubusercontent.com/WordPress/theme-test-data/master/themeunittestdata.wordpress.xml';
 
 		// Ensure download_url is available.
 		if ( ! function_exists( 'download_url' ) ) {
@@ -128,11 +128,12 @@ class Rig_Command extends WP_CLI_Command {
 
 		// 3. Import the data
 		WP_CLI::runcommand( "import $temp_xml --authors=create" );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
 		unlink( $temp_xml );
 
-		// 4. Configure environment settings for testing
-		update_option( 'posts_per_page', 5 ); // Test pagination
-		update_option( 'thread_comments', 1 ); // Test nested comments
+		// 4. Configure environment settings for testing.
+		update_option( 'posts_per_page', 5 ); // Test pagination.
+		update_option( 'thread_comments', 1 ); // Test nested comments.
 
 		WP_CLI::success( 'Theme Unit Test data imported and environment configured!' );
 		WP_CLI::log( 'Next step: Run "npm run test:e2e" to perform automated visual and a11y checks.' );
@@ -197,8 +198,8 @@ class Rig_Command extends WP_CLI_Command {
 	 *     wp rig menu export "Main Menu" --file=main-menu.json
 	 *     wp rig menu export "Main Menu" --file=main-menu.json --pretty
 	 *
-	 * @param array $args Positional arguments
-	 * @param array $assoc_args Associative arguments
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
 	 */
 	public function menu_export( $args, $assoc_args ) {
 		$menu_name = $args[0];
@@ -207,14 +208,14 @@ class Rig_Command extends WP_CLI_Command {
 
 		WP_CLI::log( "Exporting menu: {$menu_name}" );
 
-		// Get menu by name
+		// Get menu by name.
 		$menu = wp_get_nav_menu_object( $menu_name );
 
 		if ( ! $menu ) {
 			WP_CLI::error( "Menu '{$menu_name}' not found." );
 		}
 
-		// Get all menu items
+		// Get all menu items.
 		$menu_items = wp_get_nav_menu_items( $menu->term_id, array( 'order' => 'ASC' ) );
 
 		if ( ! $menu_items ) {
@@ -230,7 +231,7 @@ class Rig_Command extends WP_CLI_Command {
 			'export_version'   => '1.0.0',
 		);
 
-		// Process menu items
+		// Process menu items.
 		foreach ( $menu_items as $item ) {
 			$menu_item_data = array(
 				'ID'               => $item->ID,
@@ -263,6 +264,7 @@ class Rig_Command extends WP_CLI_Command {
 		}
 
 		if ( $filename ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 			$result = file_put_contents( $filename, $json_output );
 			if ( false === $result ) {
 				WP_CLI::error( "Failed to write to file: {$filename}" );
@@ -295,8 +297,8 @@ class Rig_Command extends WP_CLI_Command {
 	 *     wp rig menu import main-menu.json --overwrite
 	 *     wp rig menu import main-menu.json --dry-run
 	 *
-	 * @param array $args Positional arguments
-	 * @param array $assoc_args Associative arguments
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
 	 */
 	public function menu_import( $args, $assoc_args ) {
 		$filename  = $args[0];
@@ -307,6 +309,7 @@ class Rig_Command extends WP_CLI_Command {
 			WP_CLI::error( "File not found: {$filename}" );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$json_content = file_get_contents( $filename );
 		if ( false === $json_content ) {
 			WP_CLI::error( "Failed to read file: {$filename}" );
@@ -334,7 +337,7 @@ class Rig_Command extends WP_CLI_Command {
 
 		WP_CLI::log( "Importing menu: {$menu_name}" );
 
-		// Handle existing menu
+		// Handle existing menu.
 		$existing_menu = wp_get_nav_menu_object( $menu_name );
 		if ( $existing_menu ) {
 			if ( ! $overwrite ) {
@@ -343,14 +346,14 @@ class Rig_Command extends WP_CLI_Command {
 			wp_delete_nav_menu( $existing_menu->term_id );
 		}
 
-		// Create new menu
+		// Create new menu.
 		$menu_id = wp_create_nav_menu( $menu_name );
 
 		if ( is_wp_error( $menu_id ) ) {
 			WP_CLI::error( 'Failed to create menu: ' . $menu_id->get_error_message() );
 		}
 
-		// Import menu items
+		// Import menu items.
 		$items_imported = 0;
 		foreach ( $menu_data['menu_items'] as $item_data ) {
 			$menu_item_args = array(
@@ -399,8 +402,8 @@ class Rig_Command extends WP_CLI_Command {
 	 *     wp rig menu list
 	 *     wp rig menu list --format=json
 	 *
-	 * @param array $args Positional arguments
-	 * @param array $assoc_args Associative arguments
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
 	 */
 	public function menu_list( $args, $assoc_args ) {
 		$menus = wp_get_nav_menus();
@@ -463,10 +466,12 @@ class Rig_Command extends WP_CLI_Command {
 	 *      # Create a new menu with dummy items and assign it to primary location
 	 *      $ wp rig fake_menu_items --items=6 --depth=2 --prefix="Nav Item" --assign-location=primary
 	 *
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
 	 * @return void
 	 */
 	public function fake_menu_items( $args, $assoc_args ) {
-		// Parse parameters with defaults
+		// Parse parameters with defaults.
 		$menu           = WP_CLI\Utils\get_flag_value( $assoc_args, 'menu', '' );
 		$items_count    = (int) WP_CLI\Utils\get_flag_value( $assoc_args, 'items', 5 );
 		$max_depth      = (int) WP_CLI\Utils\get_flag_value( $assoc_args, 'depth', 2 );
@@ -475,7 +480,7 @@ class Rig_Command extends WP_CLI_Command {
 		$location       = WP_CLI\Utils\get_flag_value( $assoc_args, 'assign-location', '' );
 
 		// Validate parameters.
-		$max_depth = min( max( $max_depth, 1 ), 3 ); // Limit depth between 1-3
+		$max_depth = min( max( $max_depth, 1 ), 3 ); // Limit depth between 1-3.
 
 		// Either get existing menu or create a new one.
 		$menu_id = $this->get_or_create_menu( $menu );
@@ -507,7 +512,7 @@ class Rig_Command extends WP_CLI_Command {
 			if ( $parent_id && ! is_wp_error( $parent_id ) ) {
 				++$created_count;
 
-				// Create submenu items if depth > 1
+				// Create submenu items if depth > 1.
 				if ( 1 < $max_depth ) {
 					$this->create_submenu_items( $menu_id, $parent_id, $prefix . ' ' . $i, $subitems_count, $max_depth, 2 );
 				}
@@ -563,14 +568,14 @@ class Rig_Command extends WP_CLI_Command {
 	}
 
 	/**
-	 * Recursively create submenu items
+	 * Recursively create submenu items.
 	 *
-	 * @param int    $menu_id
-	 * @param int    $parent_id
-	 * @param string $parent_prefix
-	 * @param int    $count
-	 * @param int    $max_depth
-	 * @param int    $current_depth
+	 * @param int    $menu_id Menu ID.
+	 * @param int    $parent_id Parent ID.
+	 * @param string $parent_prefix Parent prefix.
+	 * @param int    $count Count.
+	 * @param int    $max_depth Max depth.
+	 * @param int    $current_depth Current depth.
 	 */
 	private function create_submenu_items( $menu_id, $parent_id, $parent_prefix, $count, $max_depth, $current_depth ) {
 		for ( $j = 1; $j <= $count; $j++ ) {
@@ -588,7 +593,7 @@ class Rig_Command extends WP_CLI_Command {
 
 			// Add deeper levels if needed and if we haven't reached max depth.
 			if ( $item_id && ! is_wp_error( $item_id ) && $current_depth < $max_depth ) {
-				// Create fewer items at deeper levels
+				// Create fewer items at deeper levels.
 				$next_level_count = max( 2, intval( $count / 2 ) );
 				$this->create_submenu_items( $menu_id, $item_id, $title, $next_level_count, $max_depth, $current_depth + 1 );
 			}
@@ -596,15 +601,15 @@ class Rig_Command extends WP_CLI_Command {
 	}
 
 	/**
-	 * Get existing menu or create a new one
+	 * Get existing menu or create a new one.
 	 *
-	 * @param string|int $menu Menu name or ID
-	 * @return int|false Menu ID or false on failure
+	 * @param string|int $menu Menu name or ID.
+	 * @return int|false Menu ID or false on failure.
 	 */
 	private function get_or_create_menu( $menu ) {
 		if ( empty( $menu ) ) {
-			// Create a new menu
-			$menu_name = 'Dummy Menu ' . date( 'Y-m-d H:i:s' );
+			// Create a new menu.
+			$menu_name = 'Dummy Menu ' . gmdate( 'Y-m-d H:i:s' );
 			$menu_id   = wp_create_nav_menu( $menu_name );
 			if ( is_wp_error( $menu_id ) ) {
 				WP_CLI::error( $menu_id->get_error_message() );
@@ -653,8 +658,8 @@ class Rig_Command extends WP_CLI_Command {
 	 *     wp rig fonts_download
 	 *     wp rig fonts_download --dir=assets/fonts
 	 *
-	 * @param array $args Positional args.
-	 * @param array $assoc_args Associative args.
+	 * @param array $args       Positional arguments.
+	 * @param array $assoc_args Associative arguments.
 	 */
 	public function fonts_download( $args, $assoc_args ) {
 		$font_dir = WP_CLI\Utils\get_flag_value( $assoc_args, 'font-dir', 'assets/fonts' );

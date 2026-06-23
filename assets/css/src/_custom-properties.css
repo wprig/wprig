@@ -6,24 +6,44 @@
  **/
 
 :root {
+	/* Generated from tokens.json */
+	--spacing-content-width: 45rem;
+	--spacing-base: 1rem;
 	--content-width: 45rem;
+	--global-font-family: "Open Sans", "Helvetica Neue", "Arial", sans-serif;
+	--highlight-font-family: "Roboto Condensed", "Helvetica Neue", "Arial Narrow", sans-serif;
+	--global-font-line-height: 1.4;
+	--font-size-small: clamp(0.6rem, 0.533rem + 0.333vw, 0.8rem);
+	--font-size-base: clamp(0.75rem, 0.667rem + 0.417vw, 1rem);
+	--font-size-large: clamp(1.35rem, 1.2rem + 0.75vw, 1.8rem);
+	--font-size-xlarge: clamp(1.8rem, 1.6rem + 1vw, 2.4rem);
+	--color-primary: #e36d60;
+	--color-secondary: #41848f;
+	--color-red: #c0392b;
+	--color-green: #27ae60;
+	--color-blue: #2980b9;
+	--color-yellow: #f1c40f;
+	--color-black: #1c2833;
+	--color-grey: #95a5a6;
+	--color-white: #ecf0f1;
+	--color-text: #333;
+	--color-background: #fff;
+	--global-font-color: #333;
+	--background-color: #fff;
+	--color-theme-primary: #e36d60;
+	--color-theme-secondary: #41848f;
+	/* End of generated tokens */
+
 	--dropdown-symbol-width: 0.7em;
 
 	/* Typography */
-	--global-font-family: "Crimson Text", serif;
-	--highlight-font-family: "Roboto Condensed", "Helvetica Neue", "Arial Narrow", sans-serif;
 	--global-font-size: 20;
-	--global-font-line-height: 1.4;
 
 	/* Custom editor font sizes */
-	--font-size-small: calc(16 / var(--global-font-size) * 1rem);
 	--font-size-regular: calc(var(--global-font-size) / 16 * 1rem);
-	--font-size-large: calc(36 / var(--global-font-size) * 1rem);
 	--font-size-larger: calc(48 / var(--global-font-size) * 1rem);
 
 	/* Colors */
-	--global-font-color: #333;
-	--background-color: #fff; /* Page background color */
 	--content-background-color: #fff; /* Content-specific background */
 	--sub-content-background-color: #f6f6f6; /* Content-specific background */
 	--header-background-color: #f6f6f6;
@@ -37,8 +57,6 @@
 	--color-quote-citation: #6c7781;
 
 	/* Custom editor colors */
-	--color-theme-primary: #e36d60;
-	--color-theme-secondary: #41848f;
 	--color-theme-red: #c0392b;
 	--color-theme-green: #27ae60;
 	--color-theme-blue: #2980b9;

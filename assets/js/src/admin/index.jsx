@@ -1,7 +1,14 @@
 // Use WordPress globals to avoid bundling @wordpress/* modules
-/* global wp */
 const { createRoot, useState, useCallback, useRef } = wp.element;
-const { PanelRow, TabPanel, TextControl, SnackbarList, BaseControl, SelectControl, FormToggle } = wp.components;
+const {
+	PanelRow,
+	TabPanel,
+	TextControl,
+	SnackbarList,
+	BaseControl,
+	SelectControl,
+	FormToggle,
+} = wp.components;
 import { updateSettings } from './api.js';
 import formFieldsData from './settingsFields.json';
 

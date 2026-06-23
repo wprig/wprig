@@ -42,6 +42,17 @@ For visual changes, use Playwright to ensure regressions are avoided:
 3.  **Verify**: Run `npm run test:e2e:screenshot -- SCREENSHOT_NAME="after-change.png"` and compare the results in `tests/e2e/specs/screenshot.spec.ts-snapshots/`.
 4.  **Component Focus**: Use `SCREENSHOT_SELECTOR` to capture only the element you're styling (e.g., `.site-header`).
 
+## Methodical Implementation Workflow
+
+To manage the cognitive overhead of WP Rig's distributed CSS architecture, follow this step-by-step approach:
+
+1.  **Drafting**: Create a single new CSS file in `assets/css/src/` (e.g., `assets/css/src/_temp-feature.css`).
+2.  **Inclusion**: Temporarily `@import` this file at the end of `global.css` (or the relevant main entry point).
+3.  **Iteration**: Implement all styles for the feature in this one file.
+4.  **Verification**: Use the **Visual Verification** process above to confirm the styles work as expected.
+5.  **Refactoring**: Once final, distribute the styles from the temporary file into the appropriate existing partials (e.g., `_header.css`, `_navigation.css`, etc.) or create a permanent new partial if justified.
+6.  **Cleanup**: Delete the temporary file and remove its `@import` statement.
+
 ## Conventions
 
 - **CSS partials**: Source files in `assets/css/src/` should be prefixed with an underscore (e.g., `_header.css`) unless they are intended to be enqueued as standalone files (like `content.css`).
@@ -55,3 +66,4 @@ For visual changes, use Playwright to ensure regressions are avoided:
 - **CSS linting**: Use a CSS linter to catch common mistakes and enforce best practices. Configure the linter to match the project's style guide and run it as part of the build process. WP Rig comes with stylelint configured.
 - **CSS animations**: Use CSS animations to enhance user experience and create smooth transitions. Keep animations short and avoid using them on elements that are frequently interacted with. Override animations with @prefers-reduced-motion media query to disable animations for users who prefer reduced motion.
 - **CSS performance**: Keep header, navigation, global styles and other styles likely to be needed above the fold separate from other styles to improve page load performance. 100% of the CSS should be loaded asynchronously.
+- **Source-Only Edits**: **NEVER** edit `.min.css` or `.map` files directly. These are managed by the build pipeline. Only edit files in `assets/css/src/`. Editing minified files will cause your changes to be overwritten by the next build and can break theme functionality.

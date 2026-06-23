@@ -4,26 +4,34 @@
 > ## 🛑 MANDATORY AI PROTOCOL: READ BEFORE ACTING
 > WP Rig is NOT a standard WordPress theme. It is a highly opinionated and extremely modern theme development framework and starter theme with a specialized build system and architecture. Deviating from these protocols will result in broken builds and unmaintainable code. You are strictly discouraged from assuming developing in this theme is historically standard or normal. You are encouraged to uphold the highest of coding standards, DRY principles, and best practices.
 >
-> ### 1. THE CONFIGURATION FIRST PROTOCOL
+> ### 1. AI SETUP & DISCOVERY
+> You **MUST** run `npm run ai:setup` to configure WP Rig for your specific AI agent (e.g., Claude Code, Cursor, Windsurf, etc.). This ensures appropriate skill discovery and build system integration.
+>
+> ### 2. THE CONFIGURATION FIRST PROTOCOL
 > You **MUST** reference `config/config.json` before making any architectural or build-related changes. This ensures consistency with theme identity, block support, and environment-specific settings.
 >
-> ### 2. THE CLARIFICATION LOOP
+> ### 3. THE CLARIFICATION LOOP
 > You are **FORBIDDEN** from writing implementation code until a SPEC.md file exists and a critical assessment of its context completeness score and implementation confidence score is above 95%. If there is room for improvement, you **MUST** seek clarification from the author and document said clarification before proceeding.
 >
-> ### 3. CONTRACT-FIRST DEVELOPMENT
+> ### 4. CONTRACT-FIRST DEVELOPMENT
 > You **MUST** author a `SPEC.md` in `.ai/plans/<date>-<feature-name>/` and get it **APPROVED** before modifying any source files. At least **3-10 clarifying questions** about the architecture, aesthetics, navigation style, and other common theme-level considerations must be asked and documented for user approval. Use the [**Feature Planning skill**](.ai/skills/feature-planning/SKILL.md).
 >
-> ### 4. TOOL-FIRST SCAFFOLDING
-> - **New Theme Feature?** Use `npm run create-rig-component`.
+> ### 5. TOOL-FIRST SCAFFOLDING
+> - **New Theme Feature?** Use `npm run create-rig-component` or use component registry to add pre-made components.
 > - **New type of content input?** Use `npm run block:new` (if theme config.theme.enableBlocks is set to true).
 > - **DO NOT** manually create files in `inc/` or hardcode UI in templates.
 >
-> ### 5. PAGE CONTENT PRIORITY
+> ### 6. PAGE CONTENT PRIORITY
 > ALWAYS prioritize page/post content authored in the WordPress editor over custom markup in PHP templates unless explicitly stated otherwise.
 >
-> ### 6. PRE-FLIGHT VALIDATION
+> ### 7. PRE-FLIGHT VALIDATION
 > Before submitting, you **MUST** run `npm run ai:check` to ensure compliance with WP Rig standards.
-
+>
+> ### 8. BUILD PIPELINE AWARENESS
+> You are **STRICTLY PROHIBITED** from editing build artifacts (`.min.css`, `.min.js`, etc.). You **MUST** only edit source files located in `src/` directories (e.g., `assets/css/src/`).
+>
+> ### 9. METHODICAL CSS IMPLEMENTATION
+> To reduce cognitive overhead, you **MUST** begin all CSS work by implementing styles in a single **NEW** CSS file (e.g., `assets/css/src/_temp-feature.css`). Once visual assessment confirms the CSS is final and working as expected, you **MUST** refactor and organize the code into the appropriate WP Rig CSS partials.
 ---
 
 ## AI Agent Skills
@@ -33,6 +41,7 @@ For 2026-ready AI agents, specialized "skills" in the `/.ai/skills/` directory p
 ### Core Architecture & Conventions
 - [**Feature Planning (Contract-First)**](.ai/skills/feature-planning/SKILL.md): Strategy for planning and specifying new features before implementation.
 - [**Architecture & Conventions**](.ai/skills/architecture/SKILL.md): Theme structure, file mappings, and coding standards.
+- [**Component Registry (OCR)**](.ai/skills/component-registry/SKILL.md): Searching, adding, and contributing theme components.
 - [**Create a New Component**](.ai/skills/create-component/SKILL.md): Recipe for scaffolding and registering new theme features.
 - [**Advanced Templating**](.ai/skills/advanced-templating/SKILL.md): Creating and using template tags via the `wp_rig()` singleton.
 
@@ -55,6 +64,7 @@ For 2026-ready AI agents, specialized "skills" in the `/.ai/skills/` directory p
 - [**E2E Testing (Playwright)**](.ai/skills/e2e-testing/SKILL.md): Running Playwright tests, accessibility audits, and regression screenshots.
 - [**Code Quality Standards**](.ai/skills/code-quality-standards/SKILL.md): Adhering to PHPStan, PHPCS, Rector, and Prettier.
 - [**PHPUnit Testing**](.ai/skills/phpunit-testing/SKILL.md): Writing unit and integration tests for PHP components.
+- [**Pull Request Authoring**](.ai/skills/pull-request-authoring/SKILL.md): Creating PRs that follow the repository template and release merge requirements.
 
 ## Discovery Rules
 

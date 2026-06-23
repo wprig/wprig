@@ -1,5 +1,40 @@
 # Changelog
 
+## 3.4.0
+- Enhanced configuration retrieval and asset loading logic with transient-based caching. Props @robruiz
+- Improved component loading and caching in `Theme.php` for better performance and fallback handling. Props @robruiz
+- Conducted codebase clean-up and refactoring across components, tests, and styles for improved maintainability. Props @robruiz
+- Improved test coverage for internal scripts. Props @robruiz
+- Replaced the automated `rig:submit` command with a manual `rig:prepare` workflow to simplify open-source contributions. Props @robruiz
+- Fixed public registry data fetching and improved recursive dependency resolution. Props @robruiz
+- Fixed and improved the block-based theme conversion script and setup during `rig-init`. Props @robruiz
+- Added a new logger utility to `rig.js` for better debugging and terminal feedback. Props @robruiz
+- Implemented robust path traversal protection in `rig` CLI by sanitizing all incoming manifest data (slugs, filenames, asset paths). Props @robruiz
+- Refactored `npm install` logic in CLI to use `spawnSync` with argument arrays, preventing shell-based injection vulnerabilities. Props @robruiz
+- Added a global `--yes` flag to all `rig` commands to facilitate automated CI/CD and agent-based workflows. Props @robruiz
+- Introduced a new diagnostic command to validate local component structure, namespaces, and manifest integrity. Props @robruiz
+- Updated `Theme.php` and CLI to ensure normalized component names always form valid PHP identifiers (e.g., prepending underscores to numeric starts). Props @robruiz
+- Enhanced the registry CLI to provide clearer feedback during recursive dependency resolution and version conflicts. Props @robruiz
+- Introduced a modular critical asset strategy for "Best of Both Worlds" loading (Cookie-based inlining). Props @robruiz
+- Extracted header and navigation styles to a dedicated critical CSS file for optimized above-the-fold rendering. Props @robruiz
+- Updated Asset_Provider manifest system to support custom loading strategies. Props @robruiz
+- Migrated navigation scripts to use the manifest-driven performance system. Props @robruiz
+- Improved overall site performance with automated critical CSS inlining and interaction-delayed JS loading. Props @robruiz
+- Resolved font flashing (FOUT) by switching default `font-display` to `block` and implementing automatic preloading for localized fonts. Props @robruiz
+- Integrated Fonts component into the `Asset_Provider` architecture to allow automatic inlining of localized font CSS. Props @robruiz
+- Initial merge of the distributed component registry for theme features. Props @robruiz
+- Refactored `inc/Theme.php` to automatically discover and register components in the `inc/` directory. Props @robruiz
+- Updated scaffolding to include `manifest.json`, `SPEC.md`, and `SKILL.md` for registry readiness. Props @robruiz
+- Introduced new command suite (`npm run rig:*`) for full component lifecycle management. Props @robruiz
+- Updated to support OCR standards and removed legacy hardcoded registration logic. Props @robruiz
+- Developed the registry WordPress plugin with GitHub API integration for `wprig.io`. Props @robruiz
+- Updated CLI to support authenticated API calls via WordPress Application Passwords. Props @robruiz
+- Added `inc/Registry_Config` component to the theme for automated registry discovery and filter-based setup. Props @robruiz
+- Updated the registry plugin and theme to support public GitHub repositories without requiring a Personal Access Token (PAT). Props @robruiz
+- Implemented multi-layer validation for component submissions, directory traversal protection in API and CLI, and added a security scanner to `rig:test-component`. Props @robruiz
+- Added GitHub Action templates for automated OWASP Top 10 scanning of registry repositories. Props @robruiz
+- Added `component-registry` skill in `.ai/skills/` for agentic support of the OCR. Props @robruiz
+
 ## 3.3.0
 - added skills Props @robruiz
 - added MCP for documentation access Props @robruiz

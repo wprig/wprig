@@ -15,7 +15,9 @@
 namespace WP_Rig\WP_Rig\Custom_Header;
 
 use WP_Rig\WP_Rig\Component_Interface;
+use WP_Rig\WP_Rig\Asset_Provider;
 use function add_action;
+use function wp_enqueue_style;
 use function add_theme_support;
 use function apply_filters;
 use function get_header_textcolor;
@@ -28,7 +30,7 @@ use function esc_attr;
  *
  * @link https://developer.wordpress.org/themes/functionality/custom-headers/
  */
-class Component implements Component_Interface {
+class Component implements Component_Interface, Asset_Provider {
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -44,6 +46,30 @@ class Component implements Component_Interface {
 	 */
 	public function initialize() {
 		add_action( 'after_setup_theme', array( $this, 'action_add_custom_header_support' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_critical_styles' ) );
+	}
+
+	/**
+	 * Enqueues the critical header and navigation styles.
+	 */
+	public function action_enqueue_critical_styles() {
+		wp_enqueue_style( 'wp-rig-header-navigation-critical' );
+	}
+
+	/**
+	 * Gets the asset manifest for the theme component.
+	 *
+	 * @return array Asset manifest.
+	 */
+	public function get_asset_manifest(): array {
+		return array(
+			'styles' => array(
+				'wp-rig-header-navigation-critical' => array(
+					'file'     => 'header-navigation.critical.min.css',
+					'strategy' => 'cookie-critical',
+				),
+			),
+		);
 	}
 
 	/**

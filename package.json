@@ -1,6 +1,6 @@
 {
   "name": "wprig",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "A progressive theme development rig for WordPress.",
   "author": "The WP Rig Contributors",
   "license": "GPL-3.0-or-later",
@@ -16,6 +16,10 @@
   },
   "bugs": {
     "url": "https://github.com/wprig/wprig/issues"
+  },
+  "ai": {
+    "protocol": "./AGENTS.md",
+    "skills": "./.ai/skills/"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
@@ -62,6 +66,8 @@
     "lightningcss": "^1.32.0",
     "mkdirp": "^3.0.1",
     "npm-run-all": "^4.1.5",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rimraf": "^6.1.3",
@@ -113,6 +119,7 @@
     "bundle:check-all": "cross-env NODE_ENV=production node scripts/cli.js bundle --phpcs",
     "theme:enable-blocks": "node scripts/enable-blocks.js",
     "test:e2e": "playwright test",
+    "test:scripts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest scripts/tests/*.test.js",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:codegen": "playwright codegen http://localhost:8888",
@@ -133,7 +140,20 @@
     "create-rig-component": "node node/create-component-wrapper.js",
     "mcp": "node bin/mcp-server/index.js",
     "get-dev-url": "node scripts/cli.js get-dev-url",
-    "ai:setup": "node scripts/ai-setup.js"
+    "ai:setup": "node scripts/ai-setup.js",
+    "rig": "node scripts/rig.js",
+    "rig:list": "node scripts/rig.js list",
+    "rig:search": "node scripts/rig.js search",
+    "rig:add": "node scripts/rig.js add",
+    "rig:remove": "node scripts/rig.js remove",
+    "rig:update": "node scripts/rig.js update",
+    "rig:prepare": "node scripts/rig.js prepare",
+    "rig:test-component": "node scripts/rig.js test-component",
+    "rig:check": "node scripts/rig.js check",
+    "rig:pattern": "node scripts/rig.js pattern",
+    "rig:localize": "node scripts/rig.js localize",
+    "rig:compare": "node scripts/rig.js compare",
+    "rig:tokens": "node scripts/propagate-tokens.js"
   },
   "dependencies": {
     "glob": "^11.1.0"

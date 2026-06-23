@@ -16,7 +16,8 @@ This skill guides the agent through a "Contract-First" feature planning process 
     - **Architecture:** How does it fit into the PHP/JS structure? (Refer to [Architecture skill](../architecture/SKILL.md))
     - **Web Design:** What are the aesthetic, interactive, and accessibility requirements? Does it adhere to the `.ai/STYLE-GUIDE.md`? (Refer to [Web Designer skill](../web-designer/SKILL.md))
     - **Feature Planning:** How do we define and verify the "Contract"? (Current skill)
-4.  **Context Engineering:** Use existing skills (`architecture`, `web-designer`, `php-filters`, `create-component`, etc.) to inform the plan.
+5.  **Leverage Registry:** Before planning a new feature, search the [Component Registry](../component-registry/SKILL.md). If a verified component fits the requirements, it **MUST** be used instead of creating a new one to ensure alignment with WP Rig's performance and architectural standards.
+6.  **Context Engineering:** Use existing skills (`architecture`, `web-designer`, `php-filters`, `create-component`, `component-registry`, etc.) to inform the plan.
 
 ## The Process
 
@@ -41,6 +42,7 @@ Once the 95% threshold is reached:
 #### Key Areas to Explore
 - **Business Value:** What is the core problem being solved? Who is the end-user?
 - **WP Rig Integration:**
+    - Does this feature exist in the [Component Registry](../component-registry/SKILL.md)? (ALWAYS check `npm run rig:search` first).
     - Does this require a new component? (Refer to [Create Component skill](../create-component/SKILL.md))
     - Will it use existing asset filters? (Refer to [PHP Filters skill](../php-filters/SKILL.md))
     - Does it need new styles, JS, or a design system update? (Refer to [Web Designer skill](../web-designer/SKILL.md), [Styles skill](../styles/SKILL.md), and [npm Scripts skill](../npm-scripts/SKILL.md))
@@ -62,7 +64,7 @@ The `SPEC.md` must include:
 4.  **User Stories:** Simple "As a user, I want..." statements.
 5.  **Success Metrics:** How will we verify this? (e.g., "Passes Lighthouse accessibility scan", "No visual regressions in E2E tests").
 6.  **Technical Plan (The "Contract"):**
-    - **Scaffolding:** Commands like `npm run create-rig-component`.
+    - **Scaffolding:** Commands like `npm run create-rig-component` or `npm run rig:add [slug]` if using a registry component.
     - **Implementation Steps:** Logical order of file creation/modification.
     - **Verification:** Tools and commands to test the result (Refer to [Testing skill](../testing/SKILL.md)).
 

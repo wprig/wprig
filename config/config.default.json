@@ -11,6 +11,12 @@
     "themeType": "classic",
     "enableBlocks": false
   },
+  "performance": {
+    "cleanup_emojis": true,
+    "cleanup_dashicons": true,
+    "cleanup_global_styles": false,
+    "cleanup_meta_tags": true
+  },
   "dev": {
     "admin": {
       "user": "admin",
@@ -58,6 +64,7 @@
       "assets/css/vendor/**/*.css",
       "assets/js/vendor/**/*.js",
       "assets/svg/*.svg",
+      "assets/icons/*.svg",
       "inc/EZ_Customizer/themeCustomizeSettings.json"
     ]
   }

@@ -9,7 +9,8 @@
  * @param {string} content - The content to process.
  * @return {string} - The cleaned content without the dev-only blocks.
  */
-export default function removeDevOnlyBlocks(content) {
-  const devOnlyBlockRegex = /\/\/\s*@dev-only:start[\s\S]*?\/\/\s*@dev-only:end\s*/g;
-  return content.replace(devOnlyBlockRegex, '');
+export default function removeDevOnlyBlocks( content ) {
+	const devOnlyBlockRegex =
+		/\/\/\s*@dev-only:start[\s\S]*?\/\/\s*@dev-only:end\s*/g;
+	return content.replace( devOnlyBlockRegex, '' );
 }

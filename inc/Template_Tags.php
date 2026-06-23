@@ -21,6 +21,8 @@ use RuntimeException;
  */
 class Template_Tags {
 
+	use Versioning_Trait;
+
 	/**
 	 * Associative array of all available template tags.
 	 *
@@ -93,7 +95,6 @@ class Template_Tags {
 	 * @param Templating_Component_Interface $component Theme templating component.
 	 *
 	 * @throws InvalidArgumentException Thrown when one of the template tags is invalid.
-	 * @throws RuntimeException         Thrown when one of the template tags conflicts with an existing one.
 	 */
 	protected function set_template_tags( Templating_Component_Interface $component ) {
 		$tags = $component->template_tags();
@@ -115,50 +116,26 @@ class Template_Tags {
 			}
 
 			if ( isset( $this->template_tags[ $method_name ] ) ) {
-				throw new RuntimeException(
-					sprintf(
-						/* translators: 1: template tag method name, 2: component class name */
-						esc_html__( 'The template tag method %1$s registered by theme component %2$s conflicts with an already registered template tag of the same name.', 'wp-rig' ),
-						esc_html( $method_name ),
-						esc_html( get_class( $component ) )
-					)
-				);
+				// Log a warning instead of throwing a fatal exception to prevent site crashes.
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+					trigger_error(
+						sprintf(
+							/* translators: 1: template tag method name, 2: component class name */
+							esc_html__( 'The template tag method %1$s registered by theme component %2$s conflicts with an already registered template tag of the same name. Skipping to avoid collision.', 'wp-rig' ),
+							esc_html( $method_name ),
+							esc_html( get_class( $component ) )
+						),
+						E_USER_WARNING
+					);
+				}
+				continue;
 			}
 
 			$this->template_tags[ $method_name ] = $callback;
 		}
 	}
 
-	/**
-	 * Gets the theme version.
-	 *
-	 * @return string Theme version number.
-	 */
-	public function get_version(): string {
-		static $theme_version = null;
-
-		if ( null === $theme_version ) {
-			$theme_version = wp_get_theme( get_template() )->get( 'Version' );
-		}
-
-		return $theme_version;
-	}
-
-	/**
-	 * Gets the version for a given asset.
-	 *
-	 * Returns filemtime when WP_DEBUG is true, otherwise the theme version.
-	 *
-	 * @param string $filepath Asset file path.
-	 * @return string Asset version number.
-	 */
-	public function get_asset_version( string $filepath ): string {
-		if ( WP_DEBUG ) {
-			return (string) filemtime( $filepath );
-		}
-
-		return $this->get_version();
-	}
 
 	/**
 	 * Gets a theme asset from the assets directory.
@@ -171,41 +148,30 @@ class Template_Tags {
 	 * @throws RuntimeException If the asset file cannot be read.
 	 */
 	public function get_theme_asset( string $filename, string $type = 'images', bool $content = false ): ?string {
+		static $asset_cache = array();
+		$cache_key          = md5( $filename . $type . ( $content ? 'content' : 'uri' ) );
+
+		if ( isset( $asset_cache[ $cache_key ] ) ) {
+			return $asset_cache[ $cache_key ];
+		}
+
 		$asset_path = get_template_directory() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
 		$asset_uri  = get_template_directory_uri() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
 
 		if ( ! file_exists( $asset_path ) ) {
+			$asset_cache[ $cache_key ] = null;
 			return null;
 		}
 
 		if ( $content ) {
-			try {
-				// Initialize WordPress Filesystem.
-				global $wp_filesystem;
-				if ( empty( $wp_filesystem ) ) {
-					require_once ABSPATH . '/wp-admin/includes/file.php';
-					WP_Filesystem();
-				}
+			$file_contents = get_asset_content( $asset_path );
 
-				// If filesystem failed or file can't be read, return null instead of throwing an exception.
-				if ( ! $wp_filesystem ) {
-					return null;
-				}
-
-				$file_contents = $wp_filesystem->get_contents( $asset_path );
-
-				// Return the contents if found, otherwise null.
-				return ( false !== $file_contents ) ? $file_contents : null;
-
-			} catch ( \Exception $e ) {
-				// Log the error in debug mode, but don't crash.
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( 'WP Rig Asset Error: ' . $e->getMessage() );
-				}
-				return null;
-			}
+			$result = ( false !== $file_contents ) ? $file_contents : null;
+		} else {
+			$result = $asset_uri;
 		}
 
-		return $asset_uri;
+		$asset_cache[ $cache_key ] = $result;
+		return $result;
 	}
 }

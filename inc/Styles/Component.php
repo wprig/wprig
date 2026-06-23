@@ -23,7 +23,12 @@ namespace WP_Rig\WP_Rig\Styles;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
+use WP_Rig\WP_Rig\Asset_Provider;
+use WP_Rig\WP_Rig\Versioning_Trait;
+use WP_Rig\WP_Rig\Performance\Component as Performance_Component;
+use function WP_Rig\WP_Rig\get_asset_content;
 use function WP_Rig\WP_Rig\wp_rig;
+use function WP_Rig\WP_Rig\wp_rig_theme;
 use function add_action;
 use function add_filter;
 use function wp_enqueue_style;
@@ -54,6 +59,8 @@ use function add_query_arg;
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
+	use Versioning_Trait;
+
 	/**
 	 * Associative array of CSS files, as $handle => $data pairs.
 	 * $data must be an array with keys 'file' (file path relative to 'assets/css' directory), and optionally 'global'
@@ -65,6 +72,27 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * @var array
 	 */
 	protected $css_files;
+
+	/**
+	 * Base URI for CSS files.
+	 *
+	 * @var string
+	 */
+	protected string $css_uri;
+
+	/**
+	 * Base directory for CSS files.
+	 *
+	 * @var string
+	 */
+	protected string $css_dir;
+
+	/**
+	 * Static cache for processed critical CSS.
+	 *
+	 * @var array
+	 */
+	protected static array $processed_critical_css = array();
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -79,8 +107,12 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
+		$this->css_uri = get_theme_file_uri( '/assets/css/' );
+		$this->css_dir = get_theme_file_path( '/assets/css/' );
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_styles' ) );
 		add_action( 'wp_head', array( $this, 'action_preload_styles' ) );
+		add_action( 'wp_head', array( $this, 'action_inline_critical_css' ), 1 );
 		add_action( 'after_setup_theme', array( $this, 'action_add_editor_styles' ) );
 	}
 
@@ -103,16 +135,26 @@ class Component implements Component_Interface, Templating_Component_Interface {
 	 * Stylesheets that are global are enqueued. All other stylesheets are only registered, to be enqueued later.
 	 */
 	public function action_enqueue_styles() {
-
-		$css_uri = get_theme_file_uri( '/assets/css/' );
-		$css_dir = get_theme_file_path( '/assets/css/' );
-
 		$preloading_styles_enabled = $this->preloading_styles_enabled();
 
 		$css_files = $this->get_css_files();
 		foreach ( $css_files as $handle => $data ) {
-			$src     = $css_uri . $data['file'];
-			$version = wp_rig()->get_asset_version( $css_dir . $data['file'] );
+			// Skip if this is an inline style.
+			if ( ! empty( $data['inline'] ) ) {
+				continue;
+			}
+
+			// Skip if condition is not met.
+			if ( ! empty( $data['condition'] ) && is_callable( $data['condition'] ) && ! call_user_func( $data['condition'] ) ) {
+				continue;
+			}
+
+			// Ensure dependencies are registered.
+			foreach ( $data['deps'] as $dep ) {
+				if ( ! wp_style_is( $dep, 'registered' ) ) {
+					wp_register_style( $dep, false, array(), $this->get_version() );
+				}
+			}
 
 			/*
 			 * Enqueue global stylesheets immediately and register the other ones for later use
@@ -123,9 +165,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			$preloading_available = is_callable( $data['preload_callback'] ) && call_user_func( $data['preload_callback'] );
 
 			if ( $global_style || ( ! $preloading_styles_enabled && $preloading_available ) ) {
-				wp_enqueue_style( $handle, $src, $data['deps'], $version, $data['media'] );
+				wp_enqueue_style( $handle, $data['src'], $data['deps'], $data['version'], $data['media'] );
 			} else {
-				wp_register_style( $handle, $src, $data['deps'], $version, $data['media'] );
+				wp_register_style( $handle, $data['src'], $data['deps'], $data['version'], $data['media'] );
 			}
 
 			wp_style_add_data( $handle, 'precache', true );
@@ -154,6 +196,18 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		$css_files = $this->get_css_files();
 		foreach ( $css_files as $handle => $data ) {
 
+			// Handle resource hints (preload) from manifest.
+			if ( ! empty( $data['preload'] ) ) {
+				// Verify condition if provided.
+				if ( ! empty( $data['condition'] ) && is_callable( $data['condition'] ) && ! call_user_func( $data['condition'] ) ) {
+					continue;
+				}
+
+				echo '<link rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $data['src'] ) . '" as="style">';
+				echo "\n";
+				continue;
+			}
+
 			// Skip if stylesheet not registered.
 			if ( ! isset( $wp_styles->registered[ $handle ] ) ) {
 				continue;
@@ -173,6 +227,43 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 			echo '<link rel="preload" id="' . esc_attr( $handle ) . '-preload" href="' . esc_url( $preload_uri ) . '" as="style" onload="this.rel=\'stylesheet\'">';
 			echo "\n";
+		}
+	}
+
+	/**
+	 * Inlines critical CSS stylesheets directly into the head.
+	 */
+	public function action_inline_critical_css() {
+		$css_files = $this->get_css_files();
+
+		foreach ( $css_files as $handle => $data ) {
+			if ( empty( $data['inline'] ) ) {
+				continue;
+			}
+
+			// Verify condition if provided.
+			if ( ! empty( $data['condition'] ) && is_callable( $data['condition'] ) && ! call_user_func( $data['condition'] ) ) {
+				continue;
+			}
+
+			if ( isset( self::$processed_critical_css[ $handle ] ) ) {
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo self::$processed_critical_css[ $handle ];
+				continue;
+			}
+
+			$css_content = get_asset_content( $data['path'] );
+			if ( $css_content ) {
+				$output = '<style id="wprig-critical-' . esc_attr( $handle ) . '-css">';
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				$output .= str_replace( '</style>', '', $css_content );
+				$output .= '</style>';
+				$output .= "\n";
+
+				self::$processed_critical_css[ $handle ] = $output;
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo $output;
+			}
 		}
 	}
 
@@ -288,6 +379,9 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			),
 		);
 
+		// Aggregate manifests from components implementing Asset_Provider.
+		$css_files = array_merge( $css_files, wp_rig_theme()->get_asset_manifests( 'styles' ) );
+
 		/**
 		 * Filters default CSS files.
 		 *
@@ -315,9 +409,30 @@ class Component implements Component_Interface, Templating_Component_Interface {
 					'preload_callback' => null,
 					'media'            => 'all',
 					'deps'             => array(),
+					'strategy'         => null,
 				),
 				$data
 			);
+
+			$file = wp_rig()->get_asset_file( $this->css_files[ $handle ]['file'], 'style' );
+
+			$this->css_files[ $handle ]['file']    = $file;
+			$this->css_files[ $handle ]['src']     = $this->css_uri . $file;
+			$this->css_files[ $handle ]['path']    = $this->css_dir . $file;
+			$this->css_files[ $handle ]['version'] = wp_rig()->get_asset_version( $this->css_dir . $file );
+
+			// Process critical strategy if provided.
+			if ( ! empty( $this->css_files[ $handle ]['strategy'] ) ) {
+				$performance = wp_rig_theme()->component( 'performance' );
+				if ( $performance instanceof Performance_Component ) {
+					$strategy = $performance->get_strategy( $this->css_files[ $handle ]['strategy'] );
+					if ( $strategy instanceof \WP_Rig\WP_Rig\Performance\Critical_Strategy_Interface ) {
+						$should_inline                        = $strategy->should_inline( $handle, $this->css_files[ $handle ] );
+						$this->css_files[ $handle ]['inline'] = $should_inline;
+						$this->css_files[ $handle ]['global'] = ! $should_inline;
+					}
+				}
+			}
 		}
 
 		return $this->css_files;

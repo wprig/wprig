@@ -15,6 +15,7 @@
 namespace WP_Rig\WP_Rig\Accessibility;
 
 use WP_Rig\WP_Rig\Component_Interface;
+use WP_Rig\WP_Rig\Asset_Provider;
 use WP_Post;
 
 use function WP_Rig\WP_Rig\wp_rig;
@@ -25,11 +26,12 @@ use function get_theme_file_uri;
 use function get_theme_file_path;
 use function wp_script_add_data;
 use function wp_localize_script;
+use function __;
 
 /**
  * Class for improving accessibility among various core features.
  */
-class Component implements Component_Interface {
+class Component implements Component_Interface, Asset_Provider {
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -51,28 +53,34 @@ class Component implements Component_Interface {
 	}
 
 	/**
+	 * Gets the asset manifest for the theme component.
+	 *
+	 * @return array Asset manifest.
+	 */
+	public function get_asset_manifest(): array {
+		return array(
+			'scripts' => array(
+				'wp-rig-navigation' => array(
+					'file'     => 'navigation.min.js',
+					'global'   => true,
+					'strategy' => 'async',
+					'localize' => array(
+						'wpRigScreenReaderText' => array(
+							'expand'   => __( 'Expand child menu', 'wp-rig' ),
+							'collapse' => __( 'Collapse child menu', 'wp-rig' ),
+						),
+					),
+				),
+			),
+		);
+	}
+
+	/**
 	 * Enqueues a script that improves navigation menu accessibility.
 	 */
 	public function action_enqueue_navigation_script() {
-
-		// Enqueue the navigation script.
-		wp_enqueue_script(
-			'wp-rig-navigation',
-			get_theme_file_uri( '/assets/js/navigation.min.js' ),
-			array(),
-			wp_rig()->get_asset_version( get_theme_file_path( '/assets/js/navigation.min.js' ) ),
-			false
-		);
-		wp_script_add_data( 'wp-rig-navigation', 'async', true );
+		wp_enqueue_script( 'wp-rig-navigation' );
 		wp_script_add_data( 'wp-rig-navigation', 'precache', true );
-		wp_localize_script(
-			'wp-rig-navigation',
-			'wpRigScreenReaderText',
-			array(
-				'expand'   => __( 'Expand child menu', 'wp-rig' ),
-				'collapse' => __( 'Collapse child menu', 'wp-rig' ),
-			)
-		);
 	}
 
 	/**

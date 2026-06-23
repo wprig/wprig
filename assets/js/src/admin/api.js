@@ -1,4 +1,4 @@
-const apiRoot = `${ window.location.origin }/wp-json/my-theme/v1/settings`;
+const apiRoot = `${ window.location.origin }/wp-json/wp-rig/v1/settings`;
 
 export const updateSettings = ( settings ) => {
 	return fetch( apiRoot, {
