@@ -4,7 +4,7 @@
 
 import fs from 'fs-extra';
 import path from 'path';
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import inquirer from 'inquirer';
 import { getAuth } from '../lib/auth.js';
 import { fetchRegistry } from '../lib/registry.js';
@@ -377,6 +377,8 @@ async function processAssets( component, themeRoot, componentDir, options ) {
 		return;
 	}
 
+	const resolvedThemeRoot = path.resolve( themeRoot );
+
 	for ( const type in component.asset_mapping ) {
 		const asset = component.asset_mapping[ type ];
 		if ( ! asset.src ) {
@@ -402,8 +404,15 @@ async function processAssets( component, themeRoot, componentDir, options ) {
 				getAssetPath( asset.src )
 			);
 
-			// Security check: Ensure destPath is within themeRoot
-			if ( ! destPath.startsWith( themeRoot ) ) {
+			// Security check: Ensure destPath is within themeRoot.
+			const relativeDestPath = path.relative(
+				resolvedThemeRoot,
+				destPath
+			);
+			if (
+				relativeDestPath.startsWith( '..' ) ||
+				path.isAbsolute( relativeDestPath )
+			) {
 				throw new Error(
 					`Security Alert: Malicious asset path detected: ${ asset.src }`
 				);
@@ -488,14 +497,16 @@ async function installDependencies( component, themeRoot ) {
 			: Object.keys( component.npm_dependencies );
 
 		if ( deps.length > 0 ) {
+			const safeDeps = sanitizeDependencyList( deps, 'npm' );
 			logger.info(
-				`Installing npm dependencies: ${ deps.join( ', ' ) }`
+				`Installing npm dependencies: ${ safeDeps.join( ', ' ) }`
 			);
 			try {
-				execSync( `npm install ${ deps.join( ' ' ) } --save-dev`, {
-					stdio: 'inherit',
-					cwd: themeRoot,
-				} );
+				runSafeCommand(
+					'npm',
+					[ 'install', ...safeDeps, '--save-dev' ],
+					themeRoot
+				);
 			} catch ( e ) {
 				logger.error(
 					`Failed to install npm dependencies: ${ e.message }`
@@ -511,14 +522,16 @@ async function installDependencies( component, themeRoot ) {
 			: Object.keys( component.composer_dependencies );
 
 		if ( deps.length > 0 ) {
+			const safeDeps = sanitizeDependencyList( deps, 'composer' );
 			logger.info(
-				`Installing composer dependencies: ${ deps.join( ', ' ) }`
+				`Installing composer dependencies: ${ safeDeps.join( ', ' ) }`
 			);
 			try {
-				execSync( `composer require ${ deps.join( ' ' ) }`, {
-					stdio: 'inherit',
-					cwd: themeRoot,
-				} );
+				runSafeCommand(
+					'composer',
+					[ 'require', ...safeDeps ],
+					themeRoot
+				);
 			} catch ( e ) {
 				logger.error(
 					`Failed to install composer dependencies: ${ e.message }`
@@ -545,6 +558,61 @@ async function installDependencies( component, themeRoot ) {
 			);
 			logger.info( 'Please ensure they are installed and active.' );
 		}
+	}
+}
+
+/**
+ * Validates and normalizes dependency names before passing them to child processes.
+ *
+ * @param {Array<string>} dependencies Raw dependency list from manifest.
+ * @param {string}        source       Source package manager name for error context.
+ * @return {Array<string>} Sanitized dependency list.
+ */
+function sanitizeDependencyList( dependencies, source ) {
+	const pattern = /^[A-Za-z0-9@/._:+\-~^*]+$/;
+
+	return dependencies.map( ( dependency ) => {
+		if ( 'string' !== typeof dependency ) {
+			throw new Error(
+				`Invalid ${ source } dependency value: expected string, got ${ typeof dependency }`
+			);
+		}
+
+		const normalizedDependency = dependency.trim();
+
+		if (
+			'' === normalizedDependency ||
+			! pattern.test( normalizedDependency )
+		) {
+			throw new Error(
+				`Invalid ${ source } dependency value: ${ dependency }`
+			);
+		}
+
+		return normalizedDependency;
+	} );
+}
+
+/**
+ * Runs a command safely without invoking a shell.
+ *
+ * @param {string}        command Command binary name.
+ * @param {Array<string>} args    Command arguments.
+ * @param {string}        cwd     Working directory.
+ */
+function runSafeCommand( command, args, cwd ) {
+	const result = spawnSync( command, args, {
+		cwd,
+		stdio: 'inherit',
+		shell: false,
+	} );
+
+	if ( result.error ) {
+		throw result.error;
+	}
+
+	if ( 0 !== result.status ) {
+		throw new Error( `${ command } exited with status ${ result.status }` );
 	}
 }
 
@@ -603,7 +671,7 @@ async function setupAiSkills( rawSlug, componentDir, themeRoot ) {
 async function runBuild( themeRoot ) {
 	logger.info( 'Running "npm run build" to process assets...' );
 	try {
-		execSync( 'npm run build', { stdio: 'inherit', cwd: themeRoot } );
+		runSafeCommand( 'npm', [ 'run', 'build' ], themeRoot );
 		logger.success( '✓ Build completed successfully!' );
 	} catch ( buildError ) {
 		logger.error( `Build failed: ${ buildError.message }` );
