@@ -26,15 +26,14 @@
 	--color-black: #1c2833;
 	--color-grey: #95a5a6;
 	--color-white: #ecf0f1;
-	--color-text: #333;
-	--color-background: #fff;
-	--global-font-color: #333;
-	--background-color: #fff;
+	--color-text: #333333;
+	--color-background: #ffffff;
+	--global-font-color: #333333;
+	--background-color: #ffffff;
 	--color-theme-primary: #e36d60;
 	--color-theme-secondary: #41848f;
 	/* End of generated tokens */
-
-	--dropdown-symbol-width: 0.7em;
+--dropdown-symbol-width: 0.7em;
 
 	/* Typography */
 	--global-font-size: 20;

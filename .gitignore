@@ -83,3 +83,31 @@ blob-report/
 # Agents
 !.ai/
 !bin/
+
+# Exclude generated local AI agent files from git tracking
+/CLAUDE.md
+/GEMINI.md
+/JUNIE.md
+/MASTRA.md
+/OPENCODE.md
+/OPENAI.md
+/.cursorrules
+/.cursorignore
+/.clinerules
+/.clineignore
+/.windsurfrules
+/.windsurfignore
+/.aider.instructions.md
+/.aiderignore
+/.pearrules
+/.pearignore
+/.openhands_instructions
+/.openhands_ignore
+/.stackblitz_instructions.md
+/.stackblitzignore
+/.claudeignore
+/.junieignore
+/.copilotignore
+/.mastraignore
+/.openaiignore
+/.opencodeignore
