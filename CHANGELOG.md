@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.4.1
+- Fixed pathing resolution error in the `npm run ai:setup` command (`scripts/tasks/aiSetup.js`) to load template files from the theme root folder instead of a non-existent `.templates/ai/` directory. Props @robruiz
+- Added explicit `.gitignore` exclusions for all 12 generated local agent-specific configurations to keep the git staging index and developer pull requests clean. Props @robruiz
+- Re-synchronized and updated all local agent-specific instructions in the root (like `GEMINI.md`, `CLAUDE.md`, `.cursorrules`, etc.) to match the streamlined 3.2KB compressed master guidelines file, reducing background token consumption by over 55%. Props @robruiz
+- Marked onboarding as completed and updated the agent state log in `.ai/agent-state.md`. Props @robruiz
+
 ## 3.4.0
 - Enhanced configuration retrieval and asset loading logic with transient-based caching. Props @robruiz
 - Improved component loading and caching in `Theme.php` for better performance and fallback handling. Props @robruiz

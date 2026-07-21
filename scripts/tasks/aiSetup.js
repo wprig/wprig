@@ -141,7 +141,7 @@ export default async function setupAgents( options = {} ) {
 		colors.blue( `Optimizing for: ${ selectedAgents.join( ', ' ) }...` )
 	);
 
-	const templateDir = path.resolve( rootDir, '.templates', 'ai' );
+	const templateDir = rootDir;
 
 	for ( const agentValue of selectedAgents ) {
 		const agent = AGENTS.find( ( a ) => a.value === agentValue );
