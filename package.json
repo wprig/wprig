@@ -103,6 +103,7 @@
     "build:css": "node build-css.js",
     "dev:css": "node build-css.js --dev",
     "lint:css": "node lint-css.js",
+    "lint:blocks": "node scripts/cli.js lint:blocks",
     "watch:js": "node build-js.js",
     "watch:css": "npm run build:css && chokidar 'src/styles/**/*.css' -c 'npm run build:css'",
     "dev": "node scripts/cli.js dev",

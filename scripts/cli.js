@@ -124,4 +124,19 @@ program
 		}
 	} );
 
+program
+	.command( 'lint:blocks' )
+	.description( 'Validate all theme FSE block templates against Gutenberg schema definitions' )
+	.action( async () => {
+		try {
+			const success = await runBlockValidation();
+			if ( ! success ) {
+				process.exitCode = 1;
+			}
+		} catch ( e ) {
+			console.error( e?.message || e );
+			process.exitCode = 1;
+		}
+	} );
+
 program.parse( process.argv );
