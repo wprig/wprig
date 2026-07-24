@@ -256,8 +256,9 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 		}
 
 		$google_fonts = array(
-			'Roboto Condensed' => array( '400', '400i', '700', '700i' ),
-			'Open Sans'        => array( '400', '400i', '600', '600i', '700', '700i' ),
+			'Google Sans Flex' => 'opsz,wght@6..144,1..1000',
+			'Inter'            => 'wght@100..900',
+			'Open Sans'        => 'ital,wght@0,300..800;1,300..800',
 		);
 
 		/**
@@ -287,24 +288,50 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 		$font_families = array();
 
 		foreach ( $google_fonts as $font_name => $font_variants ) {
-			if ( ! empty( $font_variants ) ) {
-				if ( ! is_array( $font_variants ) ) {
-					$font_variants = explode( ',', str_replace( ' ', '', $font_variants ) );
-				}
-
-				$font_families[] = $font_name . ':' . implode( ',', $font_variants );
+			// If variants are already a formatted string (variable fonts), use it directly.
+			if ( is_string( $font_variants ) && str_contains( $font_variants, '@' ) ) {
+				$font_families[] = 'family=' . str_replace( ' ', '+', $font_name ) . ':' . $font_variants;
 				continue;
 			}
 
-			$font_families[] = $font_name;
+			if ( ! is_array( $font_variants ) ) {
+				$font_variants = explode( ',', str_replace( ' ', '', $font_variants ) );
+			}
+
+			$has_italics = false;
+			$weights     = array();
+			foreach ( $font_variants as $variant ) {
+				if ( str_contains( (string) $variant, 'i' ) ) {
+					$has_italics = true;
+				}
+				$weights[] = (int) $variant;
+			}
+			$weights = array_unique( $weights );
+			sort( $weights );
+
+			$family_string = 'family=' . str_replace( ' ', '+', $font_name ) . ':';
+			if ( $has_italics ) {
+				$family_string .= 'ital,wght@';
+				foreach ( $weights as $weight ) {
+					$family_string .= '0,' . $weight . ';';
+				}
+				foreach ( $weights as $weight ) {
+					$family_string .= '1,' . $weight . ';';
+				}
+				$family_string = rtrim( $family_string, ';' );
+			} else {
+				$family_string .= 'wght@' . implode( ';', $weights );
+			}
+
+			$font_families[] = $family_string;
 		}
 
 		$query_args = array(
-			'family'  => implode( '|', $font_families ),
 			'display' => apply_filters( 'wp_rig_google_fonts_display', 'block' ),
 		);
 
-		return add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
+		$url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css2' );
+		return $url . ( str_contains( $url, '?' ) ? '&' : '?' ) . implode( '&', $font_families );
 	}
 
 	/**
@@ -365,8 +392,8 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 				continue;
 			}
 
-			// Add font with all variants (just include full range for simplicity).
-			$fonts_to_download[ $font_name ] = array( 'ital,wght@0,100..900' );
+			// Add font with registered variants.
+			$fonts_to_download[ $font_name ] = $google_fonts[ $font_name ];
 		}
 
 		// Download and save all fonts locally in one go.
@@ -400,10 +427,14 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 		$google_fonts_base_url = 'https://fonts.googleapis.com/css2?';
 		$query_fonts           = array();
 
-		// Loop through each font to build the query with a fixed variant range.
+		// Loop through each font to build the query.
 		foreach ( $fonts as $font_family => $font_variants ) {
-			// Simply include the full range of italic and weight variants for each font family.
-			$query_fonts[] = 'family=' . str_replace( ' ', '+', $font_family ) . ':ital,wght@0,100..900';
+			if ( is_string( $font_variants ) && str_contains( $font_variants, '@' ) ) {
+				$query_fonts[] = 'family=' . str_replace( ' ', '+', $font_family ) . ':' . $font_variants;
+			} else {
+				// Simply include the full range of italic and weight variants for each font family.
+				$query_fonts[] = 'family=' . str_replace( ' ', '+', $font_family ) . ':ital,wght@0,100..900';
+			}
 		}
 
 		// If no fonts were added, return an error.
@@ -507,8 +538,8 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 
 				// Build the relative path to the font file.
 				$relative_font_path = trailingslashit( $css_to_font_relative_path ) .
-					trailingslashit( $font_name_clean ) .
-					$font_file_name;
+				                      trailingslashit( $font_name_clean ) .
+				                      $font_file_name;
 
 				// Update the CSS content to point to the relative font path.
 				$css_content = str_replace( $font_url, $relative_font_path, $css_content );
