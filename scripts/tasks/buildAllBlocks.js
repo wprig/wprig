@@ -115,6 +115,24 @@ export default async function buildAllBlocks( watch = false ) {
 
 	for ( const block of blocks ) {
 		const blockPath = path.join( blocksDir, block );
+		const blockJsonPath = path.join( blockPath, 'block.json' );
+
+		if ( fs.existsSync( blockJsonPath ) ) {
+			try {
+				const blockJson = JSON.parse(
+					fs.readFileSync( blockJsonPath, 'utf8' )
+				);
+				if ( blockJson?.supports?.autoRegister === true ) {
+					console.log(
+						`Block "${ block }" is a PHP-only block (autoRegister enabled). Skipping build step.`
+					);
+					continue;
+				}
+			} catch {
+				// Fallback if parsing fails
+			}
+		}
+
 		const entryPoint = path.join( blockPath, 'src', 'index.js' );
 		const entryPointTs = path.join( blockPath, 'src', 'index.tsx' );
 

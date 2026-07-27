@@ -44,8 +44,20 @@ program
 		'--view',
 		'Generate separate frontend script loaded on frontend only'
 	)
+	.option(
+		'--architecture <architecture>',
+		'Block architecture ("react" or "php")',
+		'react'
+	)
+	.option(
+		'--php',
+		'Create a PHP-only block (equivalent to --architecture=php)'
+	)
 	.action( ( name, opts ) => {
 		checkBlocksEnabled();
+		if ( opts.php ) {
+			opts.architecture = 'php';
+		}
 		cmdNew( name, opts ).catch( ( e ) => {
 			console.error( e?.message || e );
 			process.exitCode = 1;

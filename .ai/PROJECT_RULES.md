@@ -37,6 +37,7 @@ Agent: Document the custom architectural habits and patterns you and the develop
 - **Custom PHP Patterns:**
 - **CSS Class Naming:**
 - **JavaScript/React State Habits:**
+- **Block Development Guideline:** When a developer or user requests a custom block, the agent **MUST** explicitly ask which block architecture they prefer: React-based (Traditional Gutenberg) or PHP-only (WordPress 7.0), unless specified.
 
 ---
 
@@ -45,9 +46,9 @@ Agent: Document the custom architectural habits and patterns you and the develop
 Agent: Keep a chronological log of major design decisions, local gotchas, or unique implementations here. This prevents future agents (or yourself after a context clear) from repeating mistakes or refactoring working custom structures.
 -->
 
-### 📅 [YYYY-MM-DD] - [Decision/Feature Title]
-- **Context:** *(What was the task or problem?)*
-- **Decision:** *(How did we solve it?)*
-- **Key Learning:** *(What should future agents know about this area of the code?)*
+### 📅 2026-07-27 - Added WordPress 7.0 PHP-Only Block Support
+- **Context:** The developer wanted to introduce support for the new WordPress 7.0 PHP-only block development architecture alongside the traditional React-based block scaffolding.
+- **Decision:** Updated the `block:new` CLI task in WP Rig to support a `--architecture <react|php>` option and `--php` shorthand flag. Added a specialized scaffolding branch that directly writes a schema-compliant `block.json` with `"supports": { "autoRegister": true }` and a standard `render.php` without invoking `@wordpress/create-block` or producing JS files. Updated the block building task (`buildAllBlocks`) to gracefully skip PHP-only blocks with a clean notice. Documented both architectures in `.ai/skills/gutenberg-blocks/SKILL.md` and mandated that agents ask which architecture the user wants.
+- **Key Learning:** PHP-only blocks provide a rapid, zero-build alternative for custom blocks, but they are still restricted to "plugin territory" for theme-directory submissions. They can be promoted to separate plugins using `npm run block:promote-plugin`.
 
 ---
