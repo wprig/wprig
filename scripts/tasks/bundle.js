@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import { paths } from '../lib/constants.js';
 import { cleanCSS, cleanJS } from './clean.js';
 import { images, convertToWebP } from './images.js';
 import phpTask from './php.js';
@@ -25,6 +27,11 @@ export default async function runBundle( {
 	phpcs = false,
 	lint = false,
 } = {} ) {
+	// Build blocks first if they exist, so the freshly compiled blocks can be copied
+	if ( fs.existsSync( paths.blocks.srcDir ) ) {
+		await buildBlocks();
+	}
+
 	// Prepare production
 	await runTask( prodPrep, 'prodPrep' );
 
@@ -43,7 +50,6 @@ export default async function runBundle( {
 	await Promise.all( [
 		buildCSS( { dev: false } ),
 		buildJS( { dev: false } ),
-		buildBlocks(),
 	] );
 
 	// Images, PHP, fonts in parallel
