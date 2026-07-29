@@ -538,8 +538,8 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 
 				// Build the relative path to the font file.
 				$relative_font_path = trailingslashit( $css_to_font_relative_path ) .
-				                      trailingslashit( $font_name_clean ) .
-				                      $font_file_name;
+										trailingslashit( $font_name_clean ) .
+										$font_file_name;
 
 				// Update the CSS content to point to the relative font path.
 				$css_content = str_replace( $font_url, $relative_font_path, $css_content );

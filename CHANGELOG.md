@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.4.2
+- Aligned Prettier configuration with ESLint and EditorConfig to ensure consistent formatting across all editors. Props @robruiz
+- Updated all npm dependencies to their latest versions, including WordPress packages, ESLint, and Playwright. Props @robruiz
+- Fixed various linting issues surfacing from dependency updates. Props @robruiz
+- Added automated version promotion CLI command. Props @robruiz
+
 ## 3.4.1
 - Fixed pathing resolution error in the `npm run ai:setup` command (`scripts/tasks/aiSetup.js`) to load template files from the theme root folder instead of a non-existent `.templates/ai/` directory. Props @robruiz
 - Added explicit `.gitignore` exclusions for all 12 generated local agent-specific configurations to keep the git staging index and developer pull requests clean. Props @robruiz

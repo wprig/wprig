@@ -29,6 +29,7 @@ These skills define the core development workflow in WP Rig.
 - [**Theme Settings & Customizer**](skills/ez-customizer/SKILL.md): Managing options via the Customizer.
 - [**Theme Settings (Legacy)**](skills/theme-settings/SKILL.md): Traditional settings management.
 - [**Theme Bundling**](skills/theme-bundling/SKILL.md): Preparing the theme for distribution.
+- [**Version Management**](skills/version-management/SKILL.md): Automating theme version promotion.
 
 ## 🧪 Workflow, Testing & Quality
 - [**Modern Dev Workflow**](skills/modern-dev-workflow/SKILL.md): Advanced Git and development patterns.

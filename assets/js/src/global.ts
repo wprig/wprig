@@ -21,9 +21,9 @@ window.mobileBreakpoint = 55;
 window.isWidthMobile = (): boolean => {
 	const fontSizeStr = getComputedStyle(
 		document.documentElement
-	).fontSize.slice( 0, -2 );
-	const fontSize = parseFloat( fontSizeStr );
+	).fontSize.slice(0, -2);
+	const fontSize = parseFloat(fontSizeStr);
 	const emValue = window.innerWidth / fontSize;
-	window.wpRig = document.querySelector( '.wp-rig' );
+	window.wpRig = document.querySelector('.wp-rig');
 	return emValue <= window.mobileBreakpoint;
 };
