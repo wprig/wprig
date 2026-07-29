@@ -26,14 +26,20 @@
 	--color-black: #1c2833;
 	--color-grey: #95a5a6;
 	--color-white: #ecf0f1;
-	--color-text: #333333;
-	--color-background: #ffffff;
-	--global-font-color: #333333;
-	--background-color: #ffffff;
+	--color-text: #333;
+	--color-background: #fff;
+	--global-font-color: #333;
+	--background-color: #fff;
 	--color-theme-primary: #e36d60;
 	--color-theme-secondary: #41848f;
 	/* End of generated tokens */
 --dropdown-symbol-width: 0.7em;
+
+	/* Responsive Breakpoints
+	 * NOTE: This is the single source of truth for the touch/mobile menu interaction breakpoint.
+	 * Any changes here will automatically propagate to JS. Must use the 'em' unit.
+	 */
+	--mobile-breakpoint: 55em;
 
 	/* Typography */
 	--global-font-size: 20;

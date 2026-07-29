@@ -1,6 +1,8 @@
 # Changelog
 
 ## 3.4.2
+- Resolved magic numbers in navigation logic (issue #925) by establishing `--mobile-breakpoint` as a runtime CSS custom property single source of truth (SSOT) dynamically parsed by both `global.ts` and `navigation.ts`. Props @robruiz
+- Aligned other hardcoded layout breakpoints in CSS stylesheets (`_blocks.css` and `_media.css`) to use proper custom media queries (`--content-query` and `--medium-query`). Props @robruiz
 - Fixed child theme bug and added child theme compatibility tests, refactor asset and translation handling, and document version management. Props @robruiz
 - Aligned Prettier configuration with ESLint and EditorConfig to ensure consistent formatting across all editors. Props @robruiz
 - Updated all npm and Composer dependencies to their latest versions, including WordPress packages, ESLint, Playwright, and several Composer packages. Props @robruiz

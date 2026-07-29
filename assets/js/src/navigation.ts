@@ -139,6 +139,27 @@ function initNavToggleSmall(): void {
 }
 
 /**
+ * Helper to retrieve the mobile breakpoint dynamically from global settings,
+ * CSS custom properties, or fall back to 55.
+ */
+function getMobileBreakpoint(): number {
+	if (typeof window !== 'undefined' && window.mobileBreakpoint) {
+		return window.mobileBreakpoint;
+	}
+	const rootStyles = getComputedStyle(document.documentElement);
+	const breakpointStr = rootStyles
+		.getPropertyValue('--mobile-breakpoint')
+		.trim();
+	if (breakpointStr) {
+		const value = parseFloat(breakpointStr);
+		if (!isNaN(value)) {
+			return value;
+		}
+	}
+	return 55; // Fallback
+}
+
+/**
  * Monitors the window for resize events and performs actions based on the window size.
  * Specifically, if the window width exceeds a specified breakpoint in em units, it triggers
  * the closure of all sub-menus.
@@ -148,7 +169,7 @@ function initNavToggleSmall(): void {
 function watchForWindowSizeChanges(): void {
 	window.addEventListener('resize', () => {
 		const width = window.innerWidth;
-		const mobileBreakPoint = 55;
+		const mobileBreakPoint = getMobileBreakpoint();
 		const emValue =
 			width /
 			parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -163,7 +184,7 @@ function watchForWindowSizeChanges(): void {
  */
 function isMobileWidth(): boolean {
 	const width = window.innerWidth;
-	const mobileBreakPoint = 55;
+	const mobileBreakPoint = getMobileBreakpoint();
 	const emValue =
 		width / parseFloat(getComputedStyle(document.documentElement).fontSize);
 	return emValue <= mobileBreakPoint;
