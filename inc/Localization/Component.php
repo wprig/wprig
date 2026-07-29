@@ -11,6 +11,8 @@ use WP_Rig\WP_Rig\Component_Interface;
 use function add_action;
 use function load_theme_textdomain;
 use function get_template_directory;
+use function get_stylesheet_directory;
+use function is_child_theme;
 
 /**
  * Class for managing localization.
@@ -29,7 +31,7 @@ class Component implements Component_Interface {
 	 */
 	public function __construct() {
 		// Define the translation directory.
-		$this->translation_directory = get_template_directory() . '/languages';
+		$this->translation_directory = ( is_child_theme() && is_dir( get_stylesheet_directory() . '/languages' ) ) ? get_stylesheet_directory() . '/languages' : get_template_directory() . '/languages';
 	}
 
 	/**

@@ -155,8 +155,16 @@ class Template_Tags {
 			return $asset_cache[ $cache_key ];
 		}
 
-		$asset_path = get_template_directory() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
-		$asset_uri  = get_template_directory_uri() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
+		$child_asset_path = get_stylesheet_directory() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
+		$child_asset_uri  = get_stylesheet_directory_uri() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
+
+		if ( file_exists( $child_asset_path ) ) {
+			$asset_path = $child_asset_path;
+			$asset_uri  = $child_asset_uri;
+		} else {
+			$asset_path = get_template_directory() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
+			$asset_uri  = get_template_directory_uri() . '/assets/' . trim( $type, '/' ) . '/' . $filename;
+		}
 
 		if ( ! file_exists( $asset_path ) ) {
 			$asset_cache[ $cache_key ] = null;

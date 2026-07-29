@@ -1,8 +1,14 @@
 # Changelog
 
 ## 3.4.2
+- Fixed child theme bug and added child theme compatibility tests, refactor asset and translation handling, and document version management. Props @robruiz
 - Aligned Prettier configuration with ESLint and EditorConfig to ensure consistent formatting across all editors. Props @robruiz
-- Updated all npm dependencies to their latest versions, including WordPress packages, ESLint, and Playwright. Props @robruiz
+- Updated all npm and Composer dependencies to their latest versions, including WordPress packages, ESLint, Playwright, and several Composer packages. Props @robruiz
+- Added `ergebnis/agent-detector` to improve AI agent environment detection. Props @robruiz
+- Refactored font handling to support variable fonts and improved Google Fonts query generation. Props @robruiz
+- Added Gutenberg block schema validator and automated validation workflows. Props @robruiz
+- Introduced PHP-only block scaffolding support for WordPress 7.0. Props @robruiz
+- Enhanced block build workflow with name/class safeguarding and prioritized processing. Props @robruiz
 - Fixed various linting issues surfacing from dependency updates. Props @robruiz
 - Added automated version promotion CLI command. Props @robruiz
 
@@ -10,7 +16,7 @@
 - Fixed pathing resolution error in the `npm run ai:setup` command (`scripts/tasks/aiSetup.js`) to load template files from the theme root folder instead of a non-existent `.templates/ai/` directory. Props @robruiz
 - Added explicit `.gitignore` exclusions for all 12 generated local agent-specific configurations to keep the git staging index and developer pull requests clean. Props @robruiz
 - Re-synchronized and updated all local agent-specific instructions in the root (like `GEMINI.md`, `CLAUDE.md`, `.cursorrules`, etc.) to match the streamlined 3.2KB compressed master guidelines file, reducing background token consumption by over 55%. Props @robruiz
-- Marked onboarding as completed and updated the agent state log in `.ai/agent-state.md`. Props @robruiz
+- Marked onboarding as completed and updated the agent state log in `.ai/agent-state.md`. Props @robruizLook
 
 ## 3.4.0
 - Enhanced configuration retrieval and asset loading logic with transient-based caching. Props @robruiz
