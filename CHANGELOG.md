@@ -13,6 +13,7 @@
 - Enhanced block build workflow with name/class safeguarding and prioritized processing. Props @robruiz
 - Fixed various linting issues surfacing from dependency updates. Props @robruiz
 - Added automated version promotion CLI command. Props @robruiz
+- Leveraged pre-compiled block manifests (Issue #936) for high-performance batch block registration using modern WordPress 6.7 and 6.8 APIs, completely eliminating filesystem directory scanning and individual JSON parsing at runtime while maintaining 100% backward compatibility. Props @robruiz
 
 ## 3.4.1
 - Fixed pathing resolution error in the `npm run ai:setup` command (`scripts/tasks/aiSetup.js`) to load template files from the theme root folder instead of a non-existent `.templates/ai/` directory. Props @robruiz

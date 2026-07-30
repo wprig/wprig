@@ -42,6 +42,7 @@
 	<exclude-pattern>*/scripts/tests/prod-build/*</exclude-pattern>
 	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/tests/phpunit/setup-wp-env.php</exclude-pattern>
+	<exclude-pattern>*/assets/blocks/blocks-manifest.php</exclude-pattern>
 
 	<!--
 	#############################################################################
