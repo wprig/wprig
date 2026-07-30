@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * WP_Rig\WP_Rig\Asset_Provider interface
  *
  * @package wp_rig
  */
-
 namespace WP_Rig\WP_Rig;
 
 /**

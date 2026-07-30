@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Template part for displaying a pagination
  *
  * @package wp_rig
  */
-
 namespace WP_Rig\WP_Rig;
 
 the_posts_pagination(

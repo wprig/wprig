@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * WP_Rig\WP_Rig\Post_Thumbnails\Component class
  *
  * @package wp_rig
  */
-
 namespace WP_Rig\WP_Rig\Post_Thumbnails;
 
 use WP_Rig\WP_Rig\Component_Interface;
