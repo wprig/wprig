@@ -282,6 +282,7 @@ class Component implements Component_Interface, Templating_Component_Interface {
 
 		// Add a custom class.
 		$content->add_class( 'nav--toggle-sub' );
+		$content->add_class( 'nav--toggle-small' );
 
 		// Save the updated block content.
 		$block_content = (string) $content;
