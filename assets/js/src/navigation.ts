@@ -14,6 +14,7 @@ function initNavigation(): void {
 	initNavToggleSubmenus();
 	initNavToggleSmall();
 	watchForWindowSizeChanges();
+	initSubmenuCollisionObserver();
 }
 
 /**
@@ -484,4 +485,71 @@ function isLastFocusableElement(
 		focusableElements.length > 0 &&
 		element === focusableElements[focusableElements.length - 1]
 	);
+}
+
+/**
+ * Detects if the browser supports CSS Anchor Positioning.
+ *
+ * @return {boolean} True if the browser supports CSS Anchor Positioning, otherwise false.
+ */
+function supportsAnchorPositioning(): boolean {
+	return (
+		typeof CSS !== 'undefined' &&
+		'supports' in CSS &&
+		CSS.supports('position-anchor', '--foo')
+	);
+}
+
+/**
+ * Initializes an IntersectionObserver to detect when submenus overflow the viewport.
+ * This acts as the JS fallback for browsers that do not support native CSS Anchor Positioning.
+ *
+ * @return {void}
+ */
+function initSubmenuCollisionObserver(): void {
+	// Skip JS initialization if native browser support is present
+	if (supportsAnchorPositioning()) {
+		return;
+	}
+
+	const submenus = document.querySelectorAll<HTMLElement>(
+		'ul.sub-menu, ul.wp-block-navigation__submenu-container'
+	);
+
+	if (!submenus.length || !('IntersectionObserver' in window)) {
+		return;
+	}
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				const submenu = entry.target as HTMLElement;
+				// Submenu is visible if its bounding width is non-zero
+				const isVisible = entry.boundingClientRect.width > 0;
+
+				if (isVisible) {
+					const viewportWidth = document.documentElement.clientWidth;
+					const overflowsRight =
+						entry.boundingClientRect.right > viewportWidth;
+					const overflowsLeft = entry.boundingClientRect.left < 0;
+
+					if (overflowsRight) {
+						submenu.classList.add('open-left');
+					} else if (overflowsLeft) {
+						// Keep it aligned left if it overflows left
+						submenu.classList.remove('open-left');
+					}
+				} else {
+					// Clean up the class when the menu is closed
+					submenu.classList.remove('open-left');
+				}
+			});
+		},
+		{
+			root: null, // Relative to viewport
+			threshold: [0.99, 1.0], // Trigger when fully displayed / slightly clipped
+		}
+	);
+
+	submenus.forEach((submenu) => observer.observe(submenu));
 }

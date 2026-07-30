@@ -530,6 +530,53 @@ body.mobile-menu-open {
 			display: flex;
 		}
 	}
+
+	/* Submenu Collision Prevention with CSS Anchor Positioning & Fallbacks */
+
+	/* 1. Register Anchor Names on Parent Menu Items */
+	.nav--toggle-sub li.menu-item-has-children,
+	.nav--toggle-sub li.menu-item--has-toggle,
+	.wp-block-navigation-item.has-child {
+		anchor-name: --menu-item-anchor;
+		position: relative;
+	}
+
+	/* 2. Style Submenus to use Anchor Positioning with Fallbacks where supported */
+	@supports (position-anchor: --menu-item-anchor) {
+		.nav--toggle-sub ul ul,
+		.wp-block-navigation__submenu-container {
+			position: absolute;
+			position-anchor: --menu-item-anchor;
+			top: anchor(bottom);
+			left: anchor(left);
+			position-try-options: flip-block, flip-inline;
+		}
+
+		/* 3rd-level submenus (nested) */
+		.nav--toggle-sub ul ul ul,
+		.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container {
+			position-anchor: --menu-item-anchor;
+			top: anchor(top);
+			left: anchor(right);
+			position-try-options: flip-inline;
+		}
+	}
+
+	/* 3. Fallback Helper Classes (Toggled by TS Observer on unsupported browsers) */
+
+	/* Fallback: Align standard and block submenus to the right of their parent, so they expand leftward */
+	.nav--toggle-sub ul ul.open-left,
+	.wp-block-navigation__submenu-container.open-left {
+		left: auto;
+		right: 0;
+	}
+
+	/* Fallback: Align 3rd-level submenus to the left of their parent */
+	.nav--toggle-sub ul ul ul.open-left,
+	.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container.open-left {
+		left: auto;
+		right: 100%;
+	}
 }
 
 @media (--narrow-menu-query) {
