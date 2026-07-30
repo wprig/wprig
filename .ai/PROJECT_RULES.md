@@ -46,6 +46,11 @@ Agent: Document the custom architectural habits and patterns you and the develop
 Agent: Keep a chronological log of major design decisions, local gotchas, or unique implementations here. This prevents future agents (or yourself after a context clear) from repeating mistakes or refactoring working custom structures.
 -->
 
+### 📅 2026-07-30 - Upgraded `sharp` to 0.35.3
+- **Context:** `sharp` versions prior to 0.35.0 were vulnerable to security issues in `libvips`.
+- **Decision:** Upgraded `sharp` from `^0.33.5` to `^0.35.3`. Verified that current usage in `scripts/tasks/images.js` and `scripts/tasks/screenshotCompare.js` is compatible.
+- **Key Learning:** Dependency upgrades should be verified with targeted scripts when the full build or E2E suite is too heavy for the environment.
+
 ### 📅 2026-07-27 - Added WordPress 7.0 PHP-Only Block Support
 - **Context:** The developer wanted to introduce support for the new WordPress 7.0 PHP-only block development architecture alongside the traditional React-based block scaffolding.
 - **Decision:** Updated the `block:new` CLI task in WP Rig to support a `--architecture <react|php>` option and `--php` shorthand flag. Added a specialized scaffolding branch that directly writes a schema-compliant `block.json` with `"supports": { "autoRegister": true }` and a standard `render.php` without invoking `@wordpress/create-block` or producing JS files. Updated the block building task (`buildAllBlocks`) to gracefully skip PHP-only blocks with a clean notice. Documented both architectures in `.ai/skills/gutenberg-blocks/SKILL.md` and mandated that agents ask which architecture the user wants.
