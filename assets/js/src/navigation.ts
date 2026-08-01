@@ -1,13 +1,8 @@
 declare const wpRigScreenReaderText: { [key: string]: string };
 
-declare global {
-	interface Window {
-		mobileBreakpoint?: number;
-	}
+interface Window {
+	mobileBreakpoint?: number;
 }
-
-// This export makes the file a module and allows declare global to work
-export {};
 
 // Module-level variable to store navigation elements
 let navElements: NodeListOf<HTMLElement>;
@@ -26,6 +21,87 @@ function initNavigation(): void {
 	watchForWindowSizeChanges();
 	initSubmenuCollisionObserver();
 	initMenuLockObserver();
+	initFseMobileSubmenuDelegation();
+	initFseMobileCloseListener();
+}
+
+/**
+ * Initializes delegated mobile submenu toggling for FSE / Gutenberg blocks in the capture phase.
+ */
+function initFseMobileSubmenuDelegation(): void {
+	document.addEventListener(
+		'click',
+		(e) => {
+			if (!isMobileWidth()) {
+				return;
+			}
+
+			const target = e.target as HTMLElement;
+			const clickTarget = target.closest(
+				'li > a, li > span, li > button, li > .wp-block-navigation-item__content'
+			) as HTMLElement | null;
+
+			if (clickTarget) {
+				const parentLi = clickTarget.closest(
+					'li'
+				) as HTMLElement | null;
+				if (parentLi && parentLi.querySelector(':scope > ul')) {
+					e.preventDefault();
+					e.stopPropagation();
+					toggleSubMenu(parentLi);
+				}
+			}
+		},
+		true
+	); // Crucial: Run in the capture phase to run before other scripts!
+}
+
+/**
+ * Initializes a delegated click listener for the mobile close button.
+ * If the mobile menu is locked for debugging (via Alt + click on the toggle),
+ * clicking the close button must release the lock and allow the menu to close.
+ */
+function initFseMobileCloseListener(): void {
+	document.addEventListener(
+		'click',
+		(e) => {
+			const target = e.target as HTMLElement;
+			const closeBtn = target.closest(
+				'.wp-block-navigation__responsive-container-close'
+			);
+
+			if (closeBtn) {
+				isMenuLocked = false;
+				document.body.classList.remove('mobile-menu-locked');
+
+				// Sync menu states to closed
+				const menuToggles = document.querySelectorAll<HTMLElement>(
+					'.menu-toggle, .wp-block-navigation__responsive-container-open'
+				);
+				menuToggles.forEach((menuToggle) => {
+					menuToggle.setAttribute('aria-expanded', 'false');
+				});
+
+				if (navElements && navElements.length) {
+					navElements.forEach((navElement) => {
+						navElement.classList.remove('nav--toggled-on');
+						// Support Core Navigation Block responsive container
+						if (
+							navElement.classList.contains('wp-block-navigation')
+						) {
+							navElement
+								.querySelector(
+									'.wp-block-navigation__responsive-container'
+								)
+								?.classList.remove('is-menu-open');
+						}
+					});
+				}
+				document.body.classList.remove('mobile-menu-open');
+			}
+		},
+		true
+	); // Run in capture phase to unlock BEFORE the MutationObserver or other scripts block the change.
 }
 
 /**
@@ -36,8 +112,9 @@ function initNavigation(): void {
  * @return {void} This function does not return a value.
  */
 function initNavToggleSubmenus(): void {
-	const navTOGGLE: NodeListOf<HTMLElement> =
-		document.querySelectorAll('.nav--toggle-sub');
+	const navTOGGLE: NodeListOf<HTMLElement> = document.querySelectorAll(
+		'.nav--toggle-sub, .wp-block-navigation'
+	);
 
 	if (!navTOGGLE.length) {
 		return;
@@ -53,6 +130,11 @@ function initNavToggleSubmenus(): void {
  * @return {void} This function does not return a value.
  */
 function initEachNavToggleSubmenu(nav: HTMLElement): void {
+	if (nav.dataset.navSubmenuInitialized === 'true') {
+		return;
+	}
+	nav.dataset.navSubmenuInitialized = 'true';
+
 	const SUBMENUS: NodeListOf<HTMLElement> = nav.querySelectorAll(
 		'ul.sub-menu, ul.wp-block-navigation__submenu-container'
 	);
@@ -157,8 +239,8 @@ function initNavToggleSmall(): void {
  * CSS custom properties, or fall back to 55.
  */
 function getMobileBreakpoint(): number {
-	if (typeof window !== 'undefined' && window.mobileBreakpoint) {
-		return window.mobileBreakpoint;
+	if (typeof window !== 'undefined' && (window as Window).mobileBreakpoint) {
+		return (window as Window).mobileBreakpoint as number;
 	}
 	const rootStyles = getComputedStyle(document.documentElement);
 	const breakpointStr = rootStyles
@@ -232,17 +314,34 @@ function processEachSubMenu(
 	if (!isNavigationBlock) {
 		// Nothing to do for standard menus.
 	} else {
-		parentMenuItem
-			.querySelector<HTMLElement>('.wp-block-navigation-submenu__toggle')
-			?.addEventListener('click', (e) => {
-				// Ensure we pass the parent <li>
-				const parentLi = (e.currentTarget as HTMLElement).closest(
-					'li'
-				) as HTMLElement | null;
-				if (parentLi) {
-					toggleSubMenu(parentLi);
-				}
-			});
+		let toggleBtn = parentMenuItem.querySelector<HTMLElement>(
+			'.wp-block-navigation-submenu__toggle'
+		);
+
+		if (!toggleBtn) {
+			// If there is no toggle button, dynamically create one with a caret SVG!
+			toggleBtn = document.createElement('button');
+			toggleBtn.classList.add(
+				'wp-block-navigation-submenu__toggle',
+				'dropdown-toggle'
+			);
+			toggleBtn.setAttribute('aria-expanded', 'false');
+			toggleBtn.setAttribute('aria-label', wpRigScreenReaderText.expand);
+			toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="wp-block-navigation-submenu__toggle-and-navigation-item__arrow-icon"><path d="M7 10l5 5 5-5z"/></svg>`;
+
+			// Insert the toggle button right before the submenu ul inside parentMenuItem
+			parentMenuItem.insertBefore(toggleBtn, SUBMENUS[index]);
+		}
+
+		toggleBtn.addEventListener('click', (e) => {
+			// Ensure we pass the parent <li>
+			const parentLi = (e.currentTarget as HTMLElement).closest(
+				'li'
+			) as HTMLElement | null;
+			if (parentLi) {
+				toggleSubMenu(parentLi);
+			}
+		});
 	}
 
 	const subMenuParentLink =
@@ -413,35 +512,41 @@ function toggleSubMenu(
 	parentMenuItem: HTMLElement,
 	limitOpenSubmenus = false
 ): void {
-	const toggleButton = parentMenuItem.querySelector<HTMLElement>(
-		'.dropdown-toggle, .wp-block-navigation-submenu__toggle'
-	);
-
-	// Fix: Add null check for toggleButton before assigning subMenu
-	if (!toggleButton) {
+	const subMenu = parentMenuItem.querySelector<HTMLElement>('ul');
+	if (!subMenu) {
 		return;
 	}
 
-	// Assign subMenu only after null check
-	const subMenu = parentMenuItem.querySelector<HTMLElement>('ul');
+	const toggleButton = parentMenuItem.querySelector<HTMLElement>(
+		'.dropdown-toggle, .wp-block-navigation-submenu__toggle'
+	);
 
 	const parentMenuItemToggled = parentMenuItem.classList.contains(
 		'menu-item--toggled-on'
 	);
 
-	if (
-		!toggleButton.classList.contains('wp-block-navigation-submenu__toggle')
-	) {
-		toggleButton.setAttribute(
-			'aria-expanded',
-			(!parentMenuItemToggled).toString()
-		);
+	if (toggleButton) {
+		if (
+			!toggleButton.classList.contains(
+				'wp-block-navigation-submenu__toggle'
+			)
+		) {
+			toggleButton.setAttribute(
+				'aria-expanded',
+				(!parentMenuItemToggled).toString()
+			);
+		}
 	}
 
 	if (parentMenuItemToggled) {
 		parentMenuItem.classList.remove('menu-item--toggled-on');
-		subMenu!.classList.remove('toggle-show');
-		toggleButton.setAttribute('aria-label', wpRigScreenReaderText.collapse);
+		subMenu.classList.remove('toggle-show');
+		if (toggleButton) {
+			toggleButton.setAttribute(
+				'aria-label',
+				wpRigScreenReaderText.collapse
+			);
+		}
 
 		if (limitOpenSubmenus) {
 			const subMenuItemsToggled =
@@ -462,8 +567,13 @@ function toggleSubMenu(
 		}
 
 		parentMenuItem.classList.add('menu-item--toggled-on');
-		subMenu!.classList.add('toggle-show');
-		toggleButton.setAttribute('aria-label', wpRigScreenReaderText.expand);
+		subMenu.classList.add('toggle-show');
+		if (toggleButton) {
+			toggleButton.setAttribute(
+				'aria-label',
+				wpRigScreenReaderText.expand
+			);
+		}
 	}
 }
 
