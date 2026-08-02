@@ -256,10 +256,6 @@ export function createProdDir() {
  * @param {string} file.cwd  - The current working directory from which the relative path is calculated.
  * @return {string} The relative production file path based on the file's base and current working directory.
  */
-export function gulpRelativeDest( file ) {
-	return file.base.replace( file.cwd, prodThemePath );
-}
-
 /**
  * Converts backslashes in the given path or array of paths to forward slashes.
  *

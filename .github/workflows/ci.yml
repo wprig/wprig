@@ -41,6 +41,8 @@ jobs:
         run: npm run lint:js
       - name: Run Node Tests
         run: npm run test:scripts
+      - name: Run Prod Build Tests
+        run: npm run test:prod-build
 
   theme-review:
     runs-on: ubuntu-latest

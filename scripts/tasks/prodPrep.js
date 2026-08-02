@@ -23,7 +23,6 @@ import {
 } from '../lib/constants.js';
 import {
 	createProdDir,
-	// gulpRelativeDest is not needed for manual copy
 	getThemeConfig,
 } from '../lib/utils.js';
 
