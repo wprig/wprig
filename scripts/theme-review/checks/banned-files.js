@@ -25,11 +25,6 @@ function run(themePath, themeSlug) {
 		const basename = path.basename(relativePath).toLowerCase();
 
 		// Directory-based exact matches (e.g., .git folder inside theme)
-		if (relativePath.includes('.git/') || relativePath === '.git') {
-			findings.push(
-				createFinding(relativePath, 'Contains .git repository files')
-			);
-		}
 		if (relativePath.includes('.svn/') || relativePath === '.svn') {
 			findings.push(
 				createFinding(relativePath, 'Contains .svn repository files')

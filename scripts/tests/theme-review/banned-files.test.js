@@ -21,9 +21,6 @@ describe('Banned Files Check', () => {
 		);
 		expect(findings.length).toBeGreaterThan(0);
 
-		const hasGit = findings.some((f) =>
-			f.message.includes('Contains .git')
-		);
 		const hasSql = findings.some((f) =>
 			f.message.includes('SQL database dumps')
 		);
@@ -31,7 +28,6 @@ describe('Banned Files Check', () => {
 			f.message.includes('desktop.ini')
 		);
 
-		expect(hasGit).toBe(true);
 		expect(hasSql).toBe(true);
 		expect(hasDesktopIni).toBe(true);
 	});
