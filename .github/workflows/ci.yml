@@ -23,7 +23,7 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-progress --no-interaction
       - name: Run PHPCS linting
-        run: composer test:unit  # Uses WP Rig's script for WordPress standards
+        run: composer run-phpcs
 
   build:
     runs-on: ubuntu-latest
@@ -34,9 +34,27 @@ jobs:
         with:
           node-version: '20'
       - name: Install npm dependencies
-        run: npm install
+        run: npm ci
       - name: Build assets
         run: npm run build
-      - name: Lint JS (if script exists)
-        run: npm run lint:js || echo "No JS lint script; skipping"
-        continue-on-error: true
+      - name: Lint JS
+        run: npm run lint:js
+      - name: Run Node Tests
+        run: npm run test:scripts
+
+  theme-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Audit Theme (Banned Files & Security)
+        # We only run specific checks in CI for the rig itself because WP Rig is a starter framework, 
+        # not a final directory submission (it fails plugin-territory intentionally due to blocks).
+        run: |
+          npm run audit:banned-files -- --fail-on=required
+          npm run audit:security-patterns -- --fail-on=required

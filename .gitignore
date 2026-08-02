@@ -34,6 +34,8 @@
 !/tests/
 !/optional/
 !/scripts/
+!/artifacts/
+/artifacts/theme-review/report.*
 !/docs/
 /docs/development
 !build-css.js

@@ -35,7 +35,9 @@ Agent: Document the custom architectural habits and patterns you and the develop
 -->
 
 - **Custom PHP Patterns:**
-- **CSS Class Naming:**
+- **CSS Class Naming:** Use BEM (Block Element Modifier) convention. Do NOT use deep nesting (keep under 3 levels).
+- **CSS Architecture:** WP Rig uses PostCSS, not Sass. You **MUST** use CSS Custom Properties (`var(--color-primary)`) and Custom Media Queries (`@media (--medium-query)`).
+- **Mandatory Skill Loading:** If a user asks you to write, fix, or modify CSS, you **MUST** use the skill tool to load the `styles` skill (`.ai/skills/styles/SKILL.md`) before writing any code. This ensures you know the exact breakpoint names and formatting rules.
 - **JavaScript/React State Habits:**
 - **Block Development Guideline:** When a developer or user requests a custom block, the agent **MUST** explicitly ask which block architecture they prefer: React-based (Traditional Gutenberg) or PHP-only (WordPress 7.0), unless specified.
 

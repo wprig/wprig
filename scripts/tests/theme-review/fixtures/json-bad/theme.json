@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "settings": {
+    "color": {
+      "palette": []
+    }
+  }, // trailing comma is bad json
+}

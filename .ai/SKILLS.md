@@ -32,12 +32,13 @@ These skills define the core development workflow in WP Rig.
 - [**Version Management**](skills/version-management/SKILL.md): Automating theme version promotion.
 
 ## 🧪 Workflow, Testing & Quality
+- [**Agent Self-Code Review**](skills/agent-code-review/SKILL.md): Mandatory self-review protocol for AI agents to follow before concluding tasks.
 - [**Modern Dev Workflow**](skills/modern-dev-workflow/SKILL.md): Advanced Git and development patterns.
 - [**PHPUnit Testing**](skills/phpunit-testing/SKILL.md): Integration and unit testing.
 - [**E2E Testing**](skills/e2e-testing/SKILL.md): Playwright-based end-to-end regression validation.
 - [**Pull Request Authoring**](skills/pull-request-authoring/SKILL.md): Standards for PR descriptions and documentation.
 - [**PHPCS Cleanup**](skills/phpcs-cleanup/SKILL.md): Automated fixing of coding standard issues.
-- [**Theme Review Guidelines**](skills/theme-review/SKILL.md): Standard WordPress.org theme review checklist, WPThemeReview ruleset, and QA environment setup.
+- [**Theme Review (WP.org)**](skills/theme-review/SKILL.md): Run and interpret WordPress.org theme review checks for WP Rig themes.
 
 ## 📦 Specialized
 - [**Child Theme Development**](skills/child-theme-development/SKILL.md): Creating and managing WP Rig child themes.

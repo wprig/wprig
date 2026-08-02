@@ -97,7 +97,7 @@ export default [
 
 	// Overides rules for gulp folder. Replaces the former gulp/.eslintrc.json.
 	{
-		files: [ 'gulp/**/*.js', 'gulpfile.js' ],
+		files: [ 'gulp/**/*.js', 'gulpfile.js', 'scripts/**/*.js' ],
 		languageOptions: {
 			ecmaVersion: 'latest',
 			sourceType: 'module',
@@ -123,4 +123,16 @@ export default [
 			],
 		},
 	},
+
+
+	// Tests folder
+	{
+		files: [ 'scripts/tests/**/*.js' ],
+		languageOptions: {
+			globals: {
+				...globals.jest,
+			},
+		},
+	},
+
 ];
