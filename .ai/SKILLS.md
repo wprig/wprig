@@ -37,6 +37,7 @@ These skills define the core development workflow in WP Rig.
 - [**E2E Testing**](skills/e2e-testing/SKILL.md): Playwright-based end-to-end regression validation.
 - [**Pull Request Authoring**](skills/pull-request-authoring/SKILL.md): Standards for PR descriptions and documentation.
 - [**PHPCS Cleanup**](skills/phpcs-cleanup/SKILL.md): Automated fixing of coding standard issues.
+- [**Theme Review Guidelines**](skills/theme-review/SKILL.md): Standard WordPress.org theme review checklist, WPThemeReview ruleset, and QA environment setup.
 
 ## 📦 Specialized
 - [**Child Theme Development**](skills/child-theme-development/SKILL.md): Creating and managing WP Rig child themes.
