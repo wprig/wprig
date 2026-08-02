@@ -40,6 +40,7 @@
 	<exclude-pattern>*.min.css*</exclude-pattern>
 	<exclude-pattern>*/gulp/tests/prod-build/*</exclude-pattern>
 	<exclude-pattern>*/scripts/tests/prod-build/*</exclude-pattern>
+	<exclude-pattern>*/scripts/tests/theme-review/*</exclude-pattern>
 	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/tests/phpunit/setup-wp-env.php</exclude-pattern>
 	<exclude-pattern>*/assets/blocks/blocks-manifest.php</exclude-pattern>
@@ -55,6 +56,14 @@
 	<rule ref="WordPress-Core" />
 	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-Extra" />
+
+	<!-- Disable strict file-level docblock ordering enforced by PSR12 because it clashes with standard WordPress/WP Rig practices -->
+	<rule ref="PSR12.Files.FileHeader.IncorrectOrder">
+		<severity>0</severity>
+	</rule>
+	<rule ref="Squiz.Commenting.FileComment.Missing">
+		<severity>0</severity>
+	</rule>
 
 	<!--
 	#############################################################################
