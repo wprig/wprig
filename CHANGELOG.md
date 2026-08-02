@@ -1,6 +1,7 @@
 # Changelog
 
 ## 3.4.2
+- Added a comprehensive `theme-review` agent skill and operational playbook for mimicking official WordPress.org Theme Review guidelines. Outlines distinct evaluation branches for Classic/Hybrid and Modern Block Themes (Full Site Editing / `theme.json` schemas) along with universal, strict "Accessibility-Ready" WCAG criteria. Includes detailed workflows for transitioning PHPCS to the `WPThemeReview` ruleset, setting up the `Theme Sniffer` and `Theme Check` plugins in local environments, configuring runtime diagnostics (Query Monitor, Log Deprecated Notices), and importing/testing with the official WordPress Theme Unit Test data. Props @robruiz
 - Added QOL feature to navigation JS. If you hold the alt/option key while toggling mobile menu in block-based theme dev, mobile menu locks and does not close when clicking on dev tools. Props @robruiz
 - Prevented submenu and sub-submenu items from overflowing the viewport (Issue #845) using an ultra-modern hybrid system combining CSS Anchor Positioning (zero-JS, zero-flicker native auto-alignment) and a highly optimized TypeScript Intersection Observer fallback for non-supporting browsers. Props @robruiz
 - Resolved magic numbers in navigation logic (issue #925) by establishing `--mobile-breakpoint` as a runtime CSS custom property single source of truth (SSOT) dynamically parsed by both `global.ts` and `navigation.ts`. Props @robruiz
