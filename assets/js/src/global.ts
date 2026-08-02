@@ -17,13 +17,13 @@ declare global {
 export {};
 
 const getMobileBreakpoint = (): number => {
-	const rootStyles = getComputedStyle(document.documentElement);
+	const rootStyles = getComputedStyle( document.documentElement );
 	const breakpointStr = rootStyles
-		.getPropertyValue('--mobile-breakpoint')
+		.getPropertyValue( '--mobile-breakpoint' )
 		.trim();
-	if (breakpointStr) {
-		const value = parseFloat(breakpointStr);
-		if (!isNaN(value)) {
+	if ( breakpointStr ) {
+		const value = parseFloat( breakpointStr );
+		if ( ! isNaN( value ) ) {
 			return value;
 		}
 	}
@@ -35,9 +35,9 @@ window.mobileBreakpoint = getMobileBreakpoint();
 window.isWidthMobile = (): boolean => {
 	const fontSizeStr = getComputedStyle(
 		document.documentElement
-	).fontSize.slice(0, -2);
-	const fontSize = parseFloat(fontSizeStr);
+	).fontSize.slice( 0, -2 );
+	const fontSize = parseFloat( fontSizeStr );
 	const emValue = window.innerWidth / fontSize;
-	window.wpRig = document.querySelector('.wp-rig');
+	window.wpRig = document.querySelector( '.wp-rig' );
 	return emValue <= window.mobileBreakpoint;
 };
