@@ -29,34 +29,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '20'
-      - name: Install npm dependencies
-        run: npm install
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install
       - name: Build assets
-        run: npm run build
+        run: bun run build
       - name: Lint JS
-        run: npm run lint:js
+        run: bun run lint:js
       - name: Run Node Tests
-        run: npm run test:scripts
+        run: bun run test:scripts
       - name: Run Prod Build Tests
-        run: npm run test:prod-build
+        run: bun run test:prod-build
 
   theme-review:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '20'
-      - name: Install npm dependencies
-        run: npm install
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install
       - name: Audit Theme (Banned Files & Security)
         # We only run specific checks in CI for the rig itself because WP Rig is a starter framework, 
         # not a final directory submission (it fails plugin-territory intentionally due to blocks).
         run: |
-          npm run audit:banned-files -- --fail-on=required
-          npm run audit:security-patterns -- --fail-on=required
+          bun run audit:banned-files -- --fail-on=required
+          bun run audit:security-patterns -- --fail-on=required
