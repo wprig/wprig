@@ -4,6 +4,7 @@ import phpTask from './php.js';
 import fonts from './fonts.js';
 import prodPrep from './prodPrep.js';
 import prodStringReplace from './prodStringReplace.js';
+import prodCopyWporgSrc from './prodCopyWporgSrc.js';
 import prodCompress from './prodCompress.js';
 import {
 	runTask,
@@ -20,10 +21,12 @@ import {
  * @param {Object}  options       Bundle options
  * @param {boolean} options.phpcs Run PHPCS
  * @param {boolean} options.lint  Run linters
+ * @param {boolean} options.wporg Run wporg copy logic
  */
 export default async function runBundle( {
 	phpcs = false,
 	lint = false,
+	wporg = false,
 } = {} ) {
 	// Prepare production
 	await runTask( prodPrep, 'prodPrep' );
@@ -67,5 +70,10 @@ export default async function runBundle( {
 
 	// String replace and compress
 	await runTask( prodStringReplace, 'prodStringReplace' );
+
+	if ( wporg ) {
+		await runTask( prodCopyWporgSrc, 'prodCopyWporgSrc' );
+	}
+
 	await runTask( prodCompress, 'prodCompress' );
 }
