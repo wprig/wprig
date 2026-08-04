@@ -138,6 +138,14 @@ If your local environment uses a specific port number, for example, `8888`, add 
 3. A new, production-ready theme will be generated in `wp-content/themes`.
 4. The production theme can be activated or uploaded to a production environment.
 
+## AI-Assisted Development
+
+WP Rig is natively designed for AI coding assistants (like Cursor, Windsurf, Copilot, or CLI agents). We employ a robust AI agent strategy to ensure the code generated adheres to WP Rig's strict Object-Oriented standards.
+
+- **Agent Workflows:** AI tools are guided by our `.ai/` directory, which maintains strict architectural context, project rules (`.ai/PROJECT_RULES.md`), and an agent state tracker (`.ai/agent-state.md`).
+- **Initial Setup:** Run `npm run ai:setup` to configure the workspace for your specific AI coding assistant. This script sets up the `.ai/ONBOARDING.md` flow so your AI learns the local theme conventions.
+- **Mandatory Protocol:** All automated coding agents must refer to [AGENTS.md](./AGENTS.md) before executing tasks.
+
 ## Architecture & Development
 
 WP Rig uses a modular component architecture and a modern build system to optimize your development workflow.

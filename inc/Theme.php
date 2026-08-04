@@ -269,7 +269,7 @@ class Theme {
 		// Instantiate all identified components.
 		foreach ( $component_classes as $component_class ) {
 			// Check if the component class exists and implements Component_Interface.
-			// The class name is resolved via the PSR-4 autoloader.
+			// The class name is resolved by the registered theme autoloader, either Composer PSR-4 or WP Rig's fallback autoloader.
 			if ( class_exists( $component_class ) ) {
 				// Check for optional is_active() static method to support conditional loading.
 				if ( method_exists( $component_class, 'is_active' ) && ! $component_class::is_active() ) {

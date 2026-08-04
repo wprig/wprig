@@ -1,15 +1,5 @@
 # Changelog
 
-## Unreleased
-- Added optional block theme validators to the `theme-review` audit (`audit:theme-json` and `audit:html-templates`) to check `theme.json` schema syntax and ensure block HTML templates don't contain raw scripts, stylesheets, or hardcoded development URLs.
-- Implemented full WordPress.org Theme Review static analysis framework (banned files, plugin-territory blocks, security patterns, remote CDNs, i18n domains, and license resource declarations).
-- Added `npm run audit:theme-review` and `npm run audit:theme-check` to run localized directory audits and parse official plugin findings.
-- Expanded Playwright E2E and Accessibility test coverage for WP Theme Unit Test data validation.
-- Added `npm run bundle:wporg` command to build and strictly audit the production theme zip for WordPress.org submission.
-- Fixed the PHPCS GitHub Actions CI step and integrated theme review audits into the pipeline.
-- Restructured `theme-review` skill to act as an executable agent runbook, defined strict tier severity, and documented WP Rig-specific theme submission footguns (Phase 1 of Theme Review Automation).
-- Fixed outdated commands in `code-quality-standards` skill.
-
 ## 3.4.2
 - Added a comprehensive `theme-review` agent skill and operational playbook for mimicking official WordPress.org Theme Review guidelines. Outlines distinct evaluation branches for Classic/Hybrid and Modern Block Themes (Full Site Editing / `theme.json` schemas) along with universal, strict "Accessibility-Ready" WCAG criteria. Includes detailed workflows for transitioning PHPCS to the `WPThemeReview` ruleset, setting up the `Theme Sniffer` and `Theme Check` plugins in local environments, configuring runtime diagnostics (Query Monitor, Log Deprecated Notices), and importing/testing with the official WordPress Theme Unit Test data. Props @robruiz
 - Added QOL feature to navigation JS. If you hold the alt/option key while toggling mobile menu in block-based theme dev, mobile menu locks and does not close when clicking on dev tools. Props @robruiz
