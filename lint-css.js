@@ -1,12 +1,15 @@
 import { execSync } from "child_process";
 
-// Retrieve the target file or directory
-// Check if an environment variable (FILE) is passed, or use the CLI argument, otherwise default to 'assets/css/src'
-const target = process.env.FILE || process.argv[2] || "assets/css/src";
+// Retrieve arguments
+const args = process.argv.slice(2);
+const hasFixFlag = args.includes('--fix');
+const targetArg = args.find(arg => !arg.startsWith('--'));
+const target = process.env.FILE || targetArg || "assets/css/src/**/*.css";
 
 try {
 	// Run the Stylelint command on the resolved target
-	execSync(`npx stylelint "${target}"`, { stdio: "inherit" });
+	const cmd = `npx stylelint "${target}"${hasFixFlag ? ' --fix' : ''}`;
+	execSync(cmd, { stdio: "inherit" });
 } catch (error) {
 	console.error("Stylelint failed. Check the error above."); // Log any errors
 	process.exit(1); // Ensure the script exits with a failure code

@@ -20,6 +20,7 @@ import testComponent from './tasks/testComponent.js';
 import scaffoldPattern from './tasks/scaffoldPattern.js';
 import localizeAssets from './tasks/localizeAssets.js';
 import screenshotCompare from './tasks/screenshotCompare.js';
+import promoteVersion from './tasks/promoteVersion.js';
 
 // Setup paths
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
@@ -249,6 +250,22 @@ program
 			logger.error(
 				`\n✗ ${ totalErrors } component(s) failed validation.`
 			);
+		}
+	} );
+
+/**
+ * Command: version
+ */
+program
+	.command( 'version <newVersion>' )
+	.description( 'Promote the theme version across all relevant files' )
+	.option( '-d, --description <description>', 'Changelog description' )
+	.action( async ( newVersion, opts ) => {
+		try {
+			await promoteVersion( themeRoot, newVersion, opts );
+		} catch ( e ) {
+			logger.error( e.message );
+			process.exit( 1 );
 		}
 	} );
 

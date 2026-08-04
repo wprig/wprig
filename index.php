@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * The main template file
  *
@@ -6,7 +9,6 @@
  *
  * @package wp_rig
  */
-
 namespace WP_Rig\WP_Rig;
 
 // For block themes, WordPress handles everything via block templates in the templates/ directory.

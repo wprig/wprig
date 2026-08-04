@@ -21,7 +21,6 @@
 !/assets/fonts/*
 !/assets/images/src/
 !/languages/
-!gulp/
 !node/
 !style.css
 !/*.php
@@ -34,6 +33,8 @@
 !/tests/
 !/optional/
 !/scripts/
+!/artifacts/
+/artifacts/theme-review/report.*
 !/docs/
 /docs/development
 !build-css.js
@@ -43,7 +44,6 @@
 !.stylelintrcrc
 !.eslintrc
 !eslint.config.js
-!gulpfile.js
 !lint-css.js
 !composer.json
 !composer.lock

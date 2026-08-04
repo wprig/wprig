@@ -8,6 +8,8 @@ const __dirname = path.dirname( __filename );
 const configPath = path.resolve( __dirname, '../../config/config.json' );
 const sourceDir = path.resolve( __dirname, '../../optional/Blocks' );
 const destDir = path.resolve( __dirname, '../../inc/Blocks' );
+const testSourceDir = path.resolve( __dirname, '../../optional/tests/phpunit/unit/Blocks' );
+const testDestDir = path.resolve( __dirname, '../../tests/phpunit/unit/Blocks' );
 
 /**
  * Enables blocks in the theme.
@@ -40,6 +42,15 @@ export default function enableBlocks() {
 			'Optional Blocks component not found in optional/Blocks.'
 		);
 		process.exit( 1 );
+	}
+
+	// Move the component tests
+	if ( fs.existsSync( testSourceDir ) ) {
+		if ( ! fs.existsSync( testDestDir ) ) {
+			fs.mkdirSync( testDestDir, { recursive: true } );
+		}
+		fs.cpSync( testSourceDir, testDestDir, { recursive: true } );
+		console.log( 'Blocks component tests moved to tests/phpunit/unit/Blocks.' );
 	}
 
 	// Update Config

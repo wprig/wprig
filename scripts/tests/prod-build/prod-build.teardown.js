@@ -5,13 +5,13 @@
  * External dependencies
  */
 import fs from 'fs';
-import rimraf from 'rimraf';
+import { rimrafSync } from 'rimraf';
 
 /**
  * Internal dependencies
  */
-import { filesToMock } from './prod-build.utils';
-import { prodThemePath, paths } from '../../lib/constants';
+import { filesToMock } from './prod-build.utils.js';
+import { prodThemePath, paths } from '../../lib/constants.js';
 
 // Delete the mock files after testing.
 filesToMock.forEach( ( file ) => {
@@ -30,11 +30,11 @@ filesToMock.forEach( ( file ) => {
 } );
 
 // Delete the dev .pot file
-if ( fs.existsSync( paths.languages.potSrc ) ) {
-	fs.unlinkSync( paths.languages.potSrc );
+if ( paths.languages.dest && fs.existsSync( paths.languages.dest ) ) {
+	fs.unlinkSync( paths.languages.dest );
 }
 
 // Delete the prod theme directory after testing.
 if ( fs.existsSync( prodThemePath ) ) {
-	rimraf.sync( prodThemePath );
+	rimrafSync( prodThemePath );
 }

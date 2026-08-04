@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * WP_Rig\WP_Rig\Editor\Component class
  *
@@ -10,7 +13,6 @@
  *
  * @related-component Styles  Editor styles share variables from _custom-properties.css
  */
-
 namespace WP_Rig\WP_Rig\Editor;
 
 use WP_Rig\WP_Rig\Component_Interface;

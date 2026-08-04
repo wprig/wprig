@@ -9,6 +9,7 @@ import generateCert from './tasks/generateCert.js';
 import testComponent from './tasks/testComponent.js';
 import runBuild from './tasks/build.js';
 import runBundle from './tasks/bundle.js';
+import runBundleWporg from './tasks/bundleWporg.js';
 import runDev from './tasks/dev.js';
 import runInit from './tasks/init.js';
 import { runTask } from './lib/cli-utils.js';
@@ -52,6 +53,22 @@ program
 				lint: !! opts.lint,
 			} );
 			console.log( 'Bundle completed.' );
+		} catch ( e ) {
+			console.error( e?.message || e );
+			process.exitCode = 1;
+		}
+	} );
+
+program
+	.command( 'bundle:wporg' )
+	.description( 'Build, audit, and zip the theme for WordPress.org directory submission' )
+	.option( '--skip-audit', 'Skip the strict theme-review static audit (Not recommended)' )
+	.action( async ( opts ) => {
+		try {
+			await runBundleWporg( {
+				skipAudit: !! opts.skipAudit,
+			} );
+			console.log( 'WordPress.org Bundle completed.' );
 		} catch ( e ) {
 			console.error( e?.message || e );
 			process.exitCode = 1;

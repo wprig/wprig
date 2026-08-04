@@ -1,0 +1,70 @@
+{
+  "theme": {
+    "PHPNamespace": "WP_Rig\\WP_Rig",
+    "slug": "wp-rig",
+    "name": "WP Rig",
+    "theme_uri": "https://github.com/wprig/wprig/",
+    "author": "The WP Rig Contributors",
+    "author_uri": "https://wprig.io/",
+    "description": "A progressive theme development rig for WordPress.",
+    "version": "1.0.0",
+    "themeType": "classic",
+    "enableBlocks": true
+  },
+  "performance": {
+    "cleanup_emojis": true,
+    "cleanup_dashicons": true,
+    "cleanup_global_styles": false,
+    "cleanup_meta_tags": true
+  },
+  "dev": {
+    "admin": {
+      "user": "admin",
+      "password": "password"
+    },
+    "browserSync": {
+      "live": true,
+      "proxyURL": "wprig.test:8888",
+      "bypassPort": "8181",
+      "https": false,
+      "keyPath": "",
+      "certPath": "",
+      "devPort": 3000
+    },
+    "styles": {
+      "stage": 3,
+      "autoprefixer": {
+        "grid": false
+      },
+      "preload": [
+        "_custom-media.css"
+      ],
+      "features": {
+        "mobile-nav-type": "modern"
+      }
+    },
+    "debug": {
+      "styles": false,
+      "scripts": false,
+      "phpcs": true
+    }
+  },
+  "child": {
+    "enabled": false,
+    "parentSlug": ""
+  },
+  "export": {
+    "compress": true,
+    "generatePotFile": true,
+    "includeWpCli": false,
+    "filesToCopy": [
+      "LICENSE",
+      "readme.txt",
+      "screenshot.png",
+      "assets/css/vendor/**/*.css",
+      "assets/js/vendor/**/*.js",
+      "assets/svg/*.svg",
+      "assets/icons/*.svg"
+    ]
+  }
+}

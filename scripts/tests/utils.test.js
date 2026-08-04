@@ -9,6 +9,7 @@ import {
 	escapeRegExp,
 	backslashToForwardSlash,
 	appendBaseToFilePathArray,
+	getReplacements,
 } from '../lib/utils.js';
 
 test( 'getAssetPath maps assets to src directory', () => {
@@ -61,4 +62,34 @@ test( 'appendBaseToFilePathArray appends base path', () => {
 	expect( appendBaseToFilePathArray( [ 'f1.js', 'f2.js' ], 'base' ) ).toEqual(
 		[ 'base/f1.js', 'base/f2.js' ]
 	);
+} );
+
+test( 'getReplacements protects block namespaces and block classes', () => {
+	const replacements = getReplacements( false );
+	const slugReplacement = replacements.find( ( r ) =>
+		r.searchValue.source.includes( '(?<!wp-block-)' )
+	);
+	expect( slugReplacement ).toBeDefined();
+
+	// Test slug replacement on various string formats
+	const testTextDomain = "textdomain: 'wp-rig'";
+	const testFunction = 'function wp-rig-some-func()';
+	const testBlockClass = "class: 'wp-block-wp-rig-myblock'";
+	const testBlockName = "registerBlockType('wp-rig/myblock')";
+
+	// Perform replacements using the slug's searchValue & replaceValue
+	const { searchValue, replaceValue } = slugReplacement;
+
+	expect( testTextDomain.replace( searchValue, replaceValue ) ).toBe(
+		`textdomain: '${ replaceValue }'`
+	);
+	expect( testFunction.replace( searchValue, replaceValue ) ).toBe(
+		`function ${ replaceValue }-some-func()`
+	);
+	expect( testBlockClass.replace( searchValue, replaceValue ) ).toBe(
+		testBlockClass
+	); // Should remain unchanged!
+	expect( testBlockName.replace( searchValue, replaceValue ) ).toBe(
+		testBlockName
+	); // Should remain unchanged!
 } );

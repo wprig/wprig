@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.0', '8.1', '8.2', '8.3']
+        php-version: ['8.1', '8.2', '8.3', '8.4']
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -23,20 +23,40 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-progress --no-interaction
       - name: Run PHPCS linting
-        run: composer test:unit  # Uses WP Rig's script for WordPress standards
+        run: composer run-phpcs
 
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '20'
-      - name: Install npm dependencies
-        run: npm install
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install
       - name: Build assets
-        run: npm run build
-      - name: Lint JS (if script exists)
-        run: npm run lint:js || echo "No JS lint script; skipping"
-        continue-on-error: true
+        run: bun run build
+      - name: Lint JS
+        run: bun run lint:js
+      - name: Run Node Tests
+        run: bun run test:scripts
+      - name: Run Prod Build Tests
+        run: bun run test:prod-build
+
+  theme-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install
+      - name: Audit Theme (Banned Files & Security)
+        # We only run specific checks in CI for the rig itself because WP Rig is a starter framework, 
+        # not a final directory submission (it fails plugin-territory intentionally due to blocks).
+        run: |
+          bun run audit:banned-files -- --fail-on=required
+          bun run audit:security-patterns -- --fail-on=required

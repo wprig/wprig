@@ -2,58 +2,85 @@
 Contributors: mor10, bamadesigner, ataylorme, felixarntz, et.al
 Tags:
 Requires at least: 4.8
-Tested up to: 4.9.8
+Tested up to: 6.9
 Requires PHP: 8.1
-Stable tag: 3.4.1
+Stable tag: 3.4.2
 License: GNU General Public License v3.0 (or later)
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 A progressive theme development rig for WordPress, WP Rig is built to promote the latest best practices for progressive web content and optimization.
 
 == Description ==
-Building a theme from WP Rig means adopting this approach and the core principles it is built on:
+
+A progressive theme development rig for WordPress, WP Rig is built to promote the latest best practices for progressive web content and optimization. Creating a theme from WP Rig means adopting this approach and the core principles it is built on:
+
 * Accessibility
-* [Lazy-loading of images ](https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/)
 * Mobile-first
 * Progressive enhancement
 * [Resilient Web Design](https://resilientwebdesign.com/)
 * Progressive Web App enabled
 
+We are trying to be the starter theme for design-focused devs. If you have any ideas, questions, or suggestions for this project or are seeking to get involved in contributing or maintaining, please check out our [discussion board on Github](https://github.com/wprig/wprig/discussions) and read [our contribute page](https://wprig.io/contribute/) on our website.
+
+🤖 **AI Agents:** You MUST follow the [Mandatory Development Protocol](./AGENTS.md) to ensure architectural integrity.
+
+== Documentation ==
+
+We have a new Documentation area that can be found on the [WP Rig website](https://wprig.io/documentation/). If you would like to contribute to our documentation efforts, please submit a request on our [contribute page](https://wprig.io/contribute/) on our website.
+
 == Installation ==
+
 WP Rig has been tested on Linux, Mac, and Windows.
 
 === Requirements ===
+
 WP Rig requires the following dependencies. Full installation instructions are provided at their respective websites.
 
-* [PHP](http://php.net/) 7.0
-* [npm](https://www.npmjs.com/)
+* [PHP](http://php.net/) 8.1 or higher (PHP 8.3 recommended)
+* [npm](https://www.npmjs.com/) or [bun](https://bun.com/)
 * [Composer](https://getcomposer.org/) (installed globally)
 
+=== WP Rig and child themes ===
+
+WP Rig is built to lay a solid theme foundation, which makes it excellent for both parent themes and child themes. WP Rig now includes a dedicated childify script that optimizes the theme for use as a child theme while maintaining all the development benefits of the WP Rig workflow. This allows you to create lightweight child themes that inherit functionality from any parent theme while still leveraging WP Rig's build system.
+
 === How to install WP Rig: ===
+
 1. Clone or download this repository to the themes folder of a WordPress site on your development environment.
+	* DO NOT give the WP Rig theme directory the same name as your eventual production theme. Suggested directory names are `wprig` or `wprig-themeslug`. For instance, if your theme will eventually be named "Excalibur" your development directory could be named `wprig-excalibur`. The `excalibur` directory will be automatically created during the production process and should not exist beforehand.
 2. Configure theme settings, including the theme slug and name.
-  * View `./config/config.default.json` for the default settings.
-  * Place custom theme settings in `./config/config.json` to override default settings.
-    * You do not have to include all settings from config.default.json. Just the settings you want to override.
-  * Place local-only theme settings in `./config/config.local.json`, e.g. potentially sensitive info like the path to your BrowserSync certificate.
-    * Again, only include the settings you want to override.
-3. In command line, run `npm install` to install necessary node and Composer dependencies.
-4. In command line, run `npm run build` to generate the theme.
-5. In WordPress admin, activate the theme.
+	* View `./config/config.default.json` for the default settings.
+	* Place custom theme settings in `./config/config.json` to override default settings.
+		* You do not have to include all settings from config.default.json. Just the settings you want to override.
+	* Place local-only theme settings in `./config/config.local.json`, e.g. potentially sensitive info like the path to your BrowserSync certificate.
+		* Again, only include the settings you want to override.
+3. In the command line, run `npm run rig-init` to install necessary node and Composer dependencies.
+4. In the command line, run `npm run dev` to process source files, build the development theme, and watch files for subsequent changes.
+	* `npm run build` can be used to process the source files and build the development theme without watching files afterwards.
+	* `npm run childify` can be used to convert your WP Rig theme into a lightweight child theme that inherits from any parent theme.
+5. In WordPress admin, activate the WP Rig development theme.
+6. (Optional) Run `npm run ai:setup` to configure the project for your specific AI coding agent (Claude, Cursor, Windsurf, etc.).
+
+==== Recommended Git Workflow ====
+When working with WP Rig, it is important to understand the appropriate Git workflow depending on what you are working on. If you are using WP Rig as a starting point for a new theme, you should use the following workflow:
+
+[Recommended Git Workflow](https://wprig.io/documentation/recommended-git-workflow/)
+
+It is also important to note that the main branch now ignores the package-lock.json file. While this is ideal for how we distribute WP Rig, it can cause issues when working with a local development environment or on a team using a forked WP Rig. If you are using a local development environment, you should add the package-lock.json file to the .gitignore file with a ! in front to prevent ignoring the file in your new theme's repo.
 
 ==== Defining custom settings for the project ====
 
 Here is an example of creating a custom theme config file for the project. In this example, we want a custom slug, name, and author.
 
-Place the following in your `./config/config.json` file. This config will be versioned in your repo so all developers use the same settings.
+Place the following in your `./config/config.json` file. This config will be versioned in your repo, so all developers use the same settings.
 
-```{
-  "theme": {
-    "slug": "newthemeslug",
-    "name": "New Theme Name",
-    "author": "Name of the theme author"
-  }
-}```
+    {
+      "theme": {
+        "slug": "newthemeslug",
+        "name": "New Theme Name",
+        "author": "Name of the theme author"
+      }
+    }
 
 ==== Defining custom settings for your local environment ====
 
@@ -61,127 +88,142 @@ Some theme settings should only be set for your local environment. For example, 
 
 Place the following in your `./config/config.local.json` file. This config will not be tracked in your repo and will only be executed in your local development environment.
 
-```{
-  "browserSync": {
-    "live": true,
-    "proxyURL": "localwprigenv.test",
-    "https": true,
-    "keyPath": "/path/to/my/browsersync/key",
-    "certPath": "/path/to/my/browsersync/certificate"
-  }
-}```
+    {
+      "dev": {
+        "browserSync": {
+          "live": true,
+          "proxyURL": "localwprigenv.test",
+          "https": true,
+          "keyPath": "/path/to/my/browsersync/key",
+          "certPath": "/path/to/my/browsersync/certificate"
+        }
+      }
+    }
 
-=== Recommended code editor extensions ===
-To take full advantage of the features in WP Rig, your code editor needs support for the following features:
+If your local environment uses a specific port number, for example, `8888`, add it to the `proxyURL` setting as follows:
 
-* [EditorConfig](http://editorconfig.org/#download)
-* [ESLint](https://eslint.org/docs/user-guide/integrations)
-* [PHP CodeSniffer (phpCS)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki)
+    "proxyURL": "localwprigenv.test:8888"
 
-== Working with WP Rig ==
-WP Rig can be used in any development environment. It does not require any specific platform or server setup. It also does not have an opinion about what local or virtual server solution the developer uses.
+== How to build WP Rig for production ==
 
-=== BrowserSync ===
-WP Rig uses [BrowserSync](https://browsersync.io/) to enable synchronized browser testing.
+1. Follow the steps above to install WP Rig.
+2. Run `npm run bundle` from inside the `wp-rig` development theme.
+3. A new, production-ready theme will be generated in `wp-content/themes`.
+4. The production theme can be activated or uploaded to a production environment.
 
-Before first run, visit the [BrowserSync wiki page](https://github.com/wprig/wprig/wiki/BrowserSync).
+== Architecture & Development ==
 
-=== Enabling HTTPS ===
-In order to enable HTTPS with BrowserSync, you must supply a valid certificate and key with the Subject Alternative Name of `localhost`. If needed, WP Rig can generate a key and certificate valid for `localhost` for you with the command `npm run generateCert`.
+WP Rig uses a modular component architecture and a modern build system to optimize your development workflow.
 
-For more information, and instructions, visit the [BrowserSync wiki page](https://github.com/wprig/wprig/wiki/BrowserSync).
+* [Architecture & Component System](./docs/architecture.md): Explore the directory structure and the modular component framework.
+* [Build Process & Workflows](./docs/workflow.md): Learn how CSS, JS, and production bundles are handled, including the modern dev server.
+* [CLI Commands & Scripts](./docs/commands.md): Reference for NPM/Bun, Composer, and WP-CLI commands.
+* [Advanced Features](./docs/advanced-features.md): Documentation for critical assets, font performance, and theme-scoped blocks.
+* [Block-Based Theme Conversion](./docs/block-based-theme.md): Guide on how to align the theme with Full Site Editing.
 
-=== Gulp ===
-WP Rig uses a [Gulp 4](https://gulpjs.com/) build process to generate and optimize the code for the theme. All development is done in the `/dev` folder and Gulp preprocesses, transpiles, and compiles the files into the root folder. The root folder files become the active theme. WordPress ignores anything in the `/dev` folder.
-
-**Note:** If you have previously used Gulp, you may encounter seemingly random errors that prevent the build process from running. To fix this issue, [upgrade to Gulp 4 following the steps outlined in the WP Rig Wiki](https://github.com/wprig/wprig/wiki/Updating-to-Gulp-4).
-
-JavaScript files are automatically linted using [ESLint](https://eslint.org/) in accordance with [WordPress Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/).
-
-PHP and CSS files are automatically linted using [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) in accordance with [WordPress Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/). To take full advantage of this setup, configure your code editor / IDE to automatically test for the WordPress Coding Standards.
-
-Details on how to enable PHPCS in VS Code can be found in the [WP Rig Wiki](https://github.com/wprig/wprig/wiki/Enabling-PHPCodeSniffer-(PHPCS)-in-VS-Code). More details on how to work with PHPCS and WordPress Coding Standards can be found at the [WordPress Coding Standards Wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki). `composer run-phpcs` runs PHPCS locally.
-
-=== `build` process ===
-`npm run build` is the regular development process. While this process is running, files in the `./dev/` folder will be automatically compiled to the live theme and BrowserSync will update if it is enabled.
-
-=== `translate` process ===
-`npm run translate` generates a `.pot` file for the theme to enable translation. The translation file will be stored in `./languages/`.
-
-=== `bundle` process ===
-`npm run bundle` generates a `[themename].zip` archive containing the finished theme. This runs all relevant tasks in series ending with the translation task and the bundle task and stores a new zip archive in the root theme folder.
-
-To bundle the theme without creating a zip archive, define the `export:compress` setting in `./config/config.json` to `false`:
-
-```javascript
-export: {
-	compress: false
-}
-```
-
-== Advanced Features ==
-WP Rig gives the developer an out of the box environment with support for modern technologies including ES2015, CSS grid, CSS custom properties (variables), CSS nesting and more, without making any configurations. Just write code and WP Rig handles the heavy lifting for you.
-
-Configuring the behavior of WP Rig is done by editing `./config/config.json`. Here the developer can set the theme name and theme author name (for translation files), and local server settings for BrowserSync. Additionally, compression of JavaScript and CSS files can be turned off for debugging purposes.
-
-Place your custom theme settings in `./config/config.json` to override default settings, located in `./config/config.default.json`. Place local-only/untracked theme settings in `./config/config.local.json`. For example, if you want to set local information for BrowserSync.
-
-=== Lazy-loading images ===
-WP Rig [lazy loads](https://developers.google.com/web/fundamentals/performance/lazy-loading-guidance/images-and-video/) all images out of the box to improve performance. When lazy-loading images is enabled in the theme, the user will see a Theme Options feature in Customizer allowing them to toggle the feature off.
-
-== WP Rig features ==
-WP Rig takes a component-based approach to WordPress themes. Out of the box, the compiled theme uses `index.php` as the core template file for all views (index, archives, single posts, pages, etc). The `/optional` folder holds optional template files that can be accessed via the [WordPress Template Hierarchy](https://developer.wordpress.org/themes/basics/template-hierarchy/). To activate these files, move or copy them into the root `/dev` folder. The `/optional` folder is ignored by the Gulp build process.
-
-The separation of Pluggable and External features into their own folders allows the theme developer to swap out any feature for an external feature or non-php feature (JavaScript framework etc) without interfering with the core theme functions.
-
-Pluggable functions and features (eg custom header, sliders, other interactive components) are separated into the `/pluggable` folder for easy access. When custom stylesheets and/or JavaScript files are needed, the pluggable component and its dependent files should be placed in a sub-folder to retain separation of concerns.
-
-External features and add-ons are separated into the `/external` folder and are managed the same way as Pluggable functions.
-
-Images and graphics are placed in the `/images` folder and are optimized automatically.
-
-Global JavaScript files are placed in the `/js` folder and linted and optimized automatically. External JavaScript libraries are placed in the `/js/libs` folder. _These files are not linted or optimized by the Gulp process_.
-
-Global stylesheets and stylesheets related to root-level php files are placed in the `/css` folder and are optimized automatically.
-
-Content loop files are placed in the `/template-parts` folder.
-
-`style.css` is loaded in `<head>` through a `wp_enqueue_style()` call in `functions.php`. It is the main stylesheet and serves up global styles and layouts only.
-
-== Progressive Features ==
-
-=== Progressive loading of CSS ===
-To further componentize the theme, WP Rig employs progressive loading of CSS through [in-body `<link>` tags](https://jakearchibald.com/2016/link-in-body/). Component-specific styles are held in component-specific stylesheets and loaded at component level. The `wprig_add_body_style()` in `./dev/inc/template-functions.php` can be used to conditionally preload in-body stylesheets for improved performance.
-This approach has several advantages:
-* The main stylesheet file size is reduced
-* Styles are only loaded if and when a component is present in the view.
-* Stylesheets are associated with their components making them easier to work with.
-* Leverages HTTP/2 multiplexing and can be extended to include server push etc.
-* Component-level stylesheets are cached and can be individually updated without forcing reload of all styles on the site.
-
-To improve the performance of the theme, progressively loaded stylesheets can be conditionally preloaded. This is done using the `wprig_add_body_style()` function in `./dev/inc/template-functions.php`. When preloading a stylesheet, use the console in Chrome developer tools to ensure no unnecessary stylesheets are loaded. A warning will appear letting you know if a stylesheet is preloaded but not used.
-
-=== Modern CSS, custom properties (variables), autoprefixing, etc ===
-All CSS is processed through [lightningcss](https://lightningcss.dev/) to allow the use of modern and future CSS markup like [custom properties (variables)](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) and [nesting](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_nesting).
-Target browsers are defined in `.browserslistrc`.
-
-=== Modern layouts through CSS grid, flex, and float ===
-The theme generated by WP Rig is mobile-first and accessible. It uses the modern layout modules CSS grid and flex to support a minimalist HTML structure.
-
-For backward compatibility with browsers who do not support modern layout modules, WP Rig provides the mobile-first layout across all screen widths and serves two-dimensional layouts as a progressive enhancement.
-
-The CSS philosophy of WP Rig breaks down as follows:
-- Mobile layout for all screen sizes as fallback.
-- Two-dimensional layouts using CSS grid.
-- One dimensional block/list-based displays using flex.
-- In-content wrapping using float and clear.
+For more information about commands and useful workflows, please visit the [WP Rig website](https://wprig.io/documentation/).
 
 == License ==
+
 WP Rig is released under [GNU General Public License v3.0 (or later)](https://github.com/wprig/wprig/blob/master/LICENSE).
+
+== Resources ==
+
+WP Rig includes the following third-party assets or fonts:
+
+* Google Fonts
+  * License: SIL Open Font License, 1.1 (OFL)
+  * License URI: https://scripts.sil.org/OFL
+  * Source: https://fonts.google.com/
 
 = Changelog =
 
-== 2.0.0 ===
+== 3.4.2 ==
+- Added a comprehensive theme-review agent skill and operational playbook. Props @robruiz
+- Hold alt/option key while toggling mobile menu in block-based theme dev locks menu. Props @robruiz
+- Prevented submenu items from overflowing viewport using CSS Anchor Positioning. Props @robruiz
+- Resolved magic numbers in navigation logic by establishing --mobile-breakpoint. Props @robruiz
+- Aligned other hardcoded layout breakpoints in CSS stylesheets to use proper custom media queries. Props @robruiz
+- Fixed child theme bug and added child theme compatibility tests. Props @robruiz
+- Aligned Prettier configuration with ESLint and EditorConfig. Props @robruiz
+- Updated all npm and Composer dependencies to their latest versions. Props @robruiz
+- Added ergebnis/agent-detector. Props @robruiz
+- Refactored font handling to support variable fonts. Props @robruiz
+- Added Gutenberg block schema validator. Props @robruiz
+- Introduced PHP-only block scaffolding support for WordPress 7.0. Props @robruiz
+- Enhanced block build workflow with name/class safeguarding. Props @robruiz
+- Added automated version promotion CLI command. Props @robruiz
+- Leveraged pre-compiled block manifests for high-performance block registration. Props @robruiz
+
+== 3.4.1 ==
+- Fixed pathing resolution error in npm run ai:setup. Props @robruiz
+- Added explicit .gitignore exclusions for generated local agent configurations. Props @robruiz
+- Re-synchronized and updated all local agent-specific instructions. Props @robruiz
+- Marked onboarding as completed and updated agent-state.md. Props @robruiz
+
+== 3.4.0 ==
+- Enhanced configuration retrieval and asset loading logic with transient-based caching. Props @robruiz
+- Improved component loading and caching in Theme.php. Props @robruiz
+- Conducted codebase clean-up and refactoring across components, tests, and styles. Props @robruiz
+- Improved test coverage for internal scripts. Props @robruiz
+- Replaced automated rig:submit command with manual rig:prepare workflow. Props @robruiz
+- Fixed public registry data fetching and improved recursive dependency resolution. Props @robruiz
+- Fixed and improved the block-based theme conversion script and setup. Props @robruiz
+- Added a new logger utility to rig.js. Props @robruiz
+- Implemented robust path traversal protection in rig CLI. Props @robruiz
+- Refactored npm install logic in CLI to use spawnSync. Props @robruiz
+- Added global --yes flag to all rig commands. Props @robruiz
+- Introduced new diagnostic command to validate local component structure. Props @robruiz
+- Updated Theme.php and CLI to ensure normalized component names always form valid PHP identifiers. Props @robruiz
+- Enhanced registry CLI during recursive dependency resolution. Props @robruiz
+- Introduced modular critical asset strategy for loading. Props @robruiz
+- Extracted header and navigation styles to a dedicated critical CSS file. Props @robruiz
+- Updated Asset_Provider manifest system to support custom loading strategies. Props @robruiz
+- Migrated navigation scripts to use manifest-driven performance system. Props @robruiz
+- Improved overall site performance with automated critical CSS inlining. Props @robruiz
+- Resolved font flashing (FOUT) by switching default font-display to block. Props @robruiz
+- Integrated Fonts component into Asset_Provider architecture. Props @robruiz
+- Initial merge of the distributed component registry. Props @robruiz
+- Refactored inc/Theme.php to automatically discover and register components. Props @robruiz
+- Updated scaffolding to include manifest.json, SPEC.md, and SKILL.md. Props @robruiz
+- Introduced new command suite (npm run rig:*) for component lifecycle. Props @robruiz
+- Developed registry WordPress plugin with GitHub API integration. Props @robruiz
+- Updated CLI to support authenticated API calls. Props @robruiz
+- Added inc/Registry_Config component to the theme. Props @robruiz
+- Implemented multi-layer validation for component submissions. Props @robruiz
+- Added GitHub Action templates for automated OWASP Top 10 scanning. Props @robruiz
+- Added component-registry skill in .ai/skills/. Props @robruiz
+
+== 3.3.0 ==
+- Added skills. Props @robruiz
+- Added MCP for documentation access. Props @robruiz
+- Added AI agent script that sets up WP Rig for specific agents. Props @robruiz
+- Leverage screenshot capabilities for self-assessment. Props @robruiz
+- Minor updates to composer and node deps. Props @robruiz
+- Updates to config to explicitly declare theme type. Props @robruiz
+- Initial pass on agents.md. Props @JonImmsWordpressDev
+
+== 3.2.0 ==
+- Added Playwright for E2E testing. Props @robruiz
+- Added Lighthouse CI configuration. Props @robruiz
+- Added PHPStan for static analysis. Props @robruiz
+- Theme-level blocks are now an opt-in feature via custom script. Props @robruiz
+- Improved default mobile navigation. Props @robruiz
+- Improved PHP type declarations and dev modern server. Props @robruiz
+- Added test data for theme testing. Props @robruiz
+- Cleaned up unused packages in package.json. Props @robruiz
+
+== 3.1.0 ==
+- New header and mobile nav experience. Props @robruiz
+- HMR alternative for BrowserSync added. Props @robruiz
+- Added local Google Fonts downloader. Props @robruiz
+- Updated rig-init command for better DX. Props @robruiz
+- Added command to convert WP Rig into child theme build system. Props @robruiz
+- Added theme-level block authoring and management system. Props @robruiz
+- Added command to scaffold new PHP components. Props @robruiz
+- Removed Gulp from WP Rig and replaced with custom script. Props @robruiz
+
+== 2.0.0 ==
 - Full refactor of dev file structure. See [#133](https://github.com/wprig/wprig/pull/133). Props @ataylorme.
 - Full refactor of Gulp process. See [#47](https://github.com/wprig/wprig/pull/47). Props @ataylorme.
 - Full refactor of PHP codebase, leveraging PHP7 features. See [#185](https://github.com/wprig/wprig/pull/185). Props @felixarntz.
@@ -205,12 +247,9 @@ WP Rig is released under [GNU General Public License v3.0 (or later)](https://gi
 - Add abstracted theme config file. See [#233](https://github.com/wprig/wprig/pull/233). Props @Shelob9.
 - Add theme screenshot file. See [#263](https://github.com/wprig/wprig/pull/263). Props @bamadesigner.
 - Ensure `content.css` stylesheet always loads when needed. See [#141](https://github.com/wprig/wprig/pull/141). Props @bamadesigner.
-- Replace `require-uncached` with `import-fresh`. [`require-uncached`](https://www.npmjs.com/package/require-uncached) has been deprecated in favor of [`import-fresh`](https://www.npmjs.com/package/import-fresh). See [#296](https://github.com/wprig/wprig/pull/296). Props @ataylorme.
+- Replace `require-uncached` with `import-fresh`. See [#296](https://github.com/wprig/wprig/pull/296). Props @ataylorme.
 - Upgrade WordPress coding standards to 2.0. See [#288](https://github.com/wprig/wprig/pull/295). Props @ataylorme, @benoitchantre.
-- Use pure CSS files for CSS custom properties and media queries
-`/assets/css/src/custom-properties.css` for custom properties.
-`/assets/css/src/custom-media.css` for custom media queries.
-See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
+- Use pure CSS files for CSS custom properties and media queries. See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
 - Use `.browserslistrc` for browser support definitions. See [#227](https://github.com/wprig/wprig/pull/227). Props @ataylorme.
 - Allow adjusting the mechanism for how stylesheets are loaded, for better compatibility with contexts like AMP or Customizer. See [#319](https://github.com/wprig/wprig/pull/319). Props @felixarntz.
 
@@ -222,7 +261,7 @@ See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
 == 1.0.4 ==
 - Update CSS (front and editor styles) to meet current Gutenberg recommendations as of October 1, 2018. Props mor10.
 - Enable default block styles by default in functions.php. Props mor10.
-- Add readme.txt file as per [Theme Handbook](https://developer.wordpress.org/themes/release/writing-documentation/). Props mor10.
+- Add readme.txt file as per Theme Handbook. Props mor10.
 
 == 1.0.3 ==
 - Add Gutenberg editor-font-sizes. Props @atanas-angelov-dev
@@ -231,7 +270,7 @@ See [#281](https://github.com/wprig/wprig/pull/281). Props @mor10.
 
 == 1.0.2 ==
 - Updated theme support for Gutenberg color palette with a single array attribute. Props @webmandesign
-- `./verbose/` folder no longer holds PHP files. Resolves duplicate functionality as described in [#51](https://github.com/wprig/wprig/issues/51).
+- `./verbose/` folder no longer holds PHP files. Resolves duplicate functionality.
 - Update Composer dependencies to latest versions (and to remove update nag).
 - Use slug for naming language file and ZIP bundle. Props @felixarntz.
 - Fixed bug with is_amp_endpoint() being called too soon. Props @iliman.

@@ -1,8 +1,12 @@
 {
   "theme": {
-    "slug": "gulp-test-prod-theme",
-    "name": "Gulp Test Prod Theme",
-    "author": "Gulp Bot",
-    "PHPNamespace": "Gulp_Bot\\Theme"
+    "slug": "rig-test-prod-theme",
+    "name": "Rig Test Prod Theme",
+    "author": "Rig Bot",
+    "theme_uri": "https://test.local",
+    "author_uri": "https://test.local",
+    "description": "Rig Test",
+    "version": "9.9.9",
+    "PHPNamespace": "Rig_Bot\\Theme"
   }
 }

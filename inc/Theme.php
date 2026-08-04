@@ -10,7 +10,7 @@ namespace WP_Rig\WP_Rig;
 use InvalidArgumentException;
 use function esc_html__;
 use function esc_html;
-use function get_template_directory;
+use function get_stylesheet_directory;
 use function apply_filters;
 
 /**
@@ -232,8 +232,8 @@ class Theme {
 			return $cached_components;
 		}
 		$components = array();
-		// Get the template directory path.
-		$inc_dir       = get_template_directory() . '/inc';
+		// Get the stylesheet/theme directory path.
+		$inc_dir       = get_stylesheet_directory() . '/inc';
 		$manifest_file = $inc_dir . '/components-manifest.json';
 
 		$manifest = array();

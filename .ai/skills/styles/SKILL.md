@@ -53,6 +53,45 @@ To manage the cognitive overhead of WP Rig's distributed CSS architecture, follo
 5.  **Refactoring**: Once final, distribute the styles from the temporary file into the appropriate existing partials (e.g., `_header.css`, `_navigation.css`, etc.) or create a permanent new partial if justified.
 6.  **Cleanup**: Delete the temporary file and remove its `@import` statement.
 
+## PostCSS & Custom Media Queries
+WP Rig uses **PostCSS**, not Sass. We use CSS Custom Properties (`var(--variable)`) and Custom Media Queries (`@media (--query-name)`). **Never write hardcoded pixel media queries like `@media (min-width: 768px)`.**
+
+Available Custom Media Queries (defined in `_custom-media.css`):
+- `@media (--narrow-menu-query)`: max-width 37.5em
+- `@media (--wide-menu-query)`: min-width 37.5em
+- `@media (--medium-query)`: min-width 40em
+- `@media (--content-query)`: min-width 48em
+- `@media (--sidebar-query)`: min-width 60em
+- `@media (--tablet-menu-query)`: max-width 55em
+- `@media (--desktop-menu-query)`: min-width 55em
+
+### ❌ Bad Example (Do NOT do this)
+```css
+/* Hardcoded pixels, nested too deep, high specificity, no CSS variables */
+body .site-header .main-navigation ul li a {
+    color: #c0392b;
+}
+@media (min-width: 768px) {
+    .site-header { margin-top: 20px; }
+}
+```
+
+### ✅ Good Example (DO this)
+```css
+/* Uses CSS variables, shallow nesting, custom media queries */
+.site-header {
+    margin-top: var(--spacing-base);
+
+    @media (--medium-query) {
+        margin-top: calc(var(--spacing-base) * 2);
+    }
+}
+
+.main-navigation-link {
+    color: var(--color-red);
+}
+```
+
 ## Conventions
 
 - **CSS partials**: Source files in `assets/css/src/` should be prefixed with an underscore (e.g., `_header.css`) unless they are intended to be enqueued as standalone files (like `content.css`).

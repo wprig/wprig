@@ -21,7 +21,7 @@ trait Versioning_Trait {
 		static $theme_version = null;
 
 		if ( null === $theme_version ) {
-			$theme_version = wp_get_theme( get_template() )->get( 'Version' );
+			$theme_version = wp_get_theme()->get( 'Version' );
 		}
 
 		return $theme_version;

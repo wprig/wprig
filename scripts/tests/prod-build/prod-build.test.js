@@ -19,7 +19,7 @@ import {
 	paths,
 } from '../../lib/constants';
 
-test( 'gulp runs in production mode', ( done ) => {
+test( 'build runs in production mode', ( done ) => {
 	expect( isProd ).toBe( true );
 	done();
 } );

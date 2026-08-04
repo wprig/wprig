@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import esbuild from 'esbuild';
+import { execSync } from 'child_process';
 import { paths } from '../lib/constants.js';
 
 /**
@@ -115,6 +116,24 @@ export default async function buildAllBlocks( watch = false ) {
 
 	for ( const block of blocks ) {
 		const blockPath = path.join( blocksDir, block );
+		const blockJsonPath = path.join( blockPath, 'block.json' );
+
+		if ( fs.existsSync( blockJsonPath ) ) {
+			try {
+				const blockJson = JSON.parse(
+					fs.readFileSync( blockJsonPath, 'utf8' )
+				);
+				if ( blockJson?.supports?.autoRegister === true ) {
+					console.log(
+						`Block "${ block }" is a PHP-only block (autoRegister enabled). Skipping build step.`
+					);
+					continue;
+				}
+			} catch {
+				// Fallback if parsing fails
+			}
+		}
+
 		const entryPoint = path.join( blockPath, 'src', 'index.js' );
 		const entryPointTs = path.join( blockPath, 'src', 'index.tsx' );
 
@@ -189,6 +208,14 @@ export default async function buildAllBlocks( watch = false ) {
 		} catch ( e ) {
 			console.error( `Error building block ${ block }:`, e.message );
 		}
+	}
+
+	try {
+		console.log( 'Generating blocks manifest...' );
+		execSync( 'npx wp-scripts build-blocks-manifest --input=assets/blocks --output=assets/blocks/blocks-manifest.php', { stdio: 'ignore' } );
+		console.log( 'Block manifest generated successfully.' );
+	} catch ( e ) {
+		console.warn( 'Could not generate block manifest:', e.message );
 	}
 
 	if ( watch ) {

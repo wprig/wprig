@@ -163,13 +163,26 @@ export function escapeRegExp( string ) {
  */
 export function getReplacements( isProdFlag ) {
 	const themeConfig = getThemeConfig( isProdFlag );
-	return Object.keys( nameFieldDefaults ).map( ( nameField ) => ( {
-		searchValue: new RegExp(
-			escapeRegExp( String( nameFieldDefaults[ nameField ] ) ),
-			'g'
-		),
-		replaceValue: themeConfig.theme[ nameField ],
-	} ) );
+	return Object.keys( nameFieldDefaults ).map( ( nameField ) => {
+		let searchValue;
+		if ( nameField === 'slug' ) {
+			searchValue = new RegExp(
+				'(?<!wp-block-)' +
+					escapeRegExp( String( nameFieldDefaults[ nameField ] ) ) +
+					'(?!/)',
+				'g'
+			);
+		} else {
+			searchValue = new RegExp(
+				escapeRegExp( String( nameFieldDefaults[ nameField ] ) ),
+				'g'
+			);
+		}
+		return {
+			searchValue,
+			replaceValue: themeConfig.theme[ nameField ],
+		};
+	} );
 }
 
 /**
@@ -243,10 +256,6 @@ export function createProdDir() {
  * @param {string} file.cwd  - The current working directory from which the relative path is calculated.
  * @return {string} The relative production file path based on the file's base and current working directory.
  */
-export function gulpRelativeDest( file ) {
-	return file.base.replace( file.cwd, prodThemePath );
-}
-
 /**
  * Converts backslashes in the given path or array of paths to forward slashes.
  *

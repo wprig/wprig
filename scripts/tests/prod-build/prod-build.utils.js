@@ -4,7 +4,7 @@
 /**
  * Internal dependencies
  */
-import { testPath, rootPath } from '../../lib/constants';
+import { testPath, rootPath } from '../../lib/constants.js';
 
 export const filesToMock = [
 	{

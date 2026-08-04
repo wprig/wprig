@@ -68,6 +68,46 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			}
 			return;
 		}
+
+		$manifest_file = trailingslashit( $blocks_dir ) . 'blocks-manifest.php';
+
+		// 1. Try modern WordPress 6.8+ batch registration.
+		if ( file_exists( $manifest_file ) && function_exists( 'wp_register_block_types_from_metadata_collection' ) ) {
+			try {
+				wp_register_block_types_from_metadata_collection( $blocks_dir, $manifest_file );
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					do_action( 'wp_rig_log', '[WP Rig Blocks] registered via wp_register_block_types_from_metadata_collection' );
+				}
+				return;
+			} catch ( \Throwable $e ) {
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					do_action( 'wp_rig_log', '[WP Rig Blocks] wp_register_block_types_from_metadata_collection failed: ' . $e->getMessage() );
+				}
+			}
+		}
+
+		// 2. Try WordPress 6.7 metadata collection registration.
+		if ( file_exists( $manifest_file ) && function_exists( 'wp_register_block_metadata_collection' ) ) {
+			try {
+				wp_register_block_metadata_collection( $blocks_dir, $manifest_file );
+				$manifest_data = require $manifest_file;
+				if ( is_array( $manifest_data ) ) {
+					foreach ( array_keys( $manifest_data ) as $block_folder ) {
+						register_block_type_from_metadata( trailingslashit( $blocks_dir ) . $block_folder );
+					}
+					if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+						do_action( 'wp_rig_log', '[WP Rig Blocks] registered via wp_register_block_metadata_collection' );
+					}
+					return;
+				}
+			} catch ( \Throwable $e ) {
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					do_action( 'wp_rig_log', '[WP Rig Blocks] wp_register_block_metadata_collection failed: ' . $e->getMessage() );
+				}
+			}
+		}
+
+		// 3. Backward Compatibility Fallback (Pre-6.7 or if manifest is missing)
 		$dirs = glob( $blocks_dir . '/*', GLOB_ONLYDIR );
 		if ( array() === $dirs || false === $dirs ) {
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {

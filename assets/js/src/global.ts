@@ -16,7 +16,21 @@ declare global {
 // This export makes the file a module and allows declare global to work
 export {};
 
-window.mobileBreakpoint = 55;
+const getMobileBreakpoint = (): number => {
+	const rootStyles = getComputedStyle( document.documentElement );
+	const breakpointStr = rootStyles
+		.getPropertyValue( '--mobile-breakpoint' )
+		.trim();
+	if ( breakpointStr ) {
+		const value = parseFloat( breakpointStr );
+		if ( ! isNaN( value ) ) {
+			return value;
+		}
+	}
+	return 55; // Fallback
+};
+
+window.mobileBreakpoint = getMobileBreakpoint();
 
 window.isWidthMobile = (): boolean => {
 	const fontSizeStr = getComputedStyle(

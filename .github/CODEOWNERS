@@ -1,10 +1,6 @@
 # Default owners of everything in the repo:
 * @robruiz
 
-# Gulp owner:
-gulpfile.babel.js @ataylorme
-/gulp/ @ataylorme
-
 # Tests owner:
 .travis.yml @felixarntz
 phpcs.xml.dist @felixarntz

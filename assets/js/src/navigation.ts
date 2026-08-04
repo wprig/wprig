@@ -1,7 +1,12 @@
 declare const wpRigScreenReaderText: { [ key: string ]: string };
 
+interface Window {
+	mobileBreakpoint?: number;
+}
+
 // Module-level variable to store navigation elements
 let navElements: NodeListOf< HTMLElement >;
+let isMenuLocked = false;
 
 // Initiate the menus when the DOM loads.
 if ( document.readyState === 'loading' ) {
@@ -14,6 +19,91 @@ function initNavigation(): void {
 	initNavToggleSubmenus();
 	initNavToggleSmall();
 	watchForWindowSizeChanges();
+	initSubmenuCollisionObserver();
+	initMenuLockObserver();
+	initFseMobileSubmenuDelegation();
+	initFseMobileCloseListener();
+}
+
+/**
+ * Initializes delegated mobile submenu toggling for FSE / Gutenberg blocks in the capture phase.
+ */
+function initFseMobileSubmenuDelegation(): void {
+	document.addEventListener(
+		'click',
+		( e ) => {
+			if ( ! isMobileWidth() ) {
+				return;
+			}
+
+			const target = e.target as HTMLElement;
+			const clickTarget = target.closest(
+				'li > a, li > span, li > button, li > .wp-block-navigation-item__content'
+			) as HTMLElement | null;
+
+			if ( clickTarget ) {
+				const parentLi = clickTarget.closest(
+					'li'
+				) as HTMLElement | null;
+				if ( parentLi && parentLi.querySelector( ':scope > ul' ) ) {
+					e.preventDefault();
+					e.stopPropagation();
+					toggleSubMenu( parentLi );
+				}
+			}
+		},
+		true
+	); // Crucial: Run in the capture phase to run before other scripts!
+}
+
+/**
+ * Initializes a delegated click listener for the mobile close button.
+ * If the mobile menu is locked for debugging (via Alt + click on the toggle),
+ * clicking the close button must release the lock and allow the menu to close.
+ */
+function initFseMobileCloseListener(): void {
+	document.addEventListener(
+		'click',
+		( e ) => {
+			const target = e.target as HTMLElement;
+			const closeBtn = target.closest(
+				'.wp-block-navigation__responsive-container-close'
+			);
+
+			if ( closeBtn ) {
+				isMenuLocked = false;
+				document.body.classList.remove( 'mobile-menu-locked' );
+
+				// Sync menu states to closed
+				const menuToggles = document.querySelectorAll< HTMLElement >(
+					'.menu-toggle, .wp-block-navigation__responsive-container-open'
+				);
+				menuToggles.forEach( ( menuToggle ) => {
+					menuToggle.setAttribute( 'aria-expanded', 'false' );
+				} );
+
+				if ( navElements && navElements.length ) {
+					navElements.forEach( ( navElement ) => {
+						navElement.classList.remove( 'nav--toggled-on' );
+						// Support Core Navigation Block responsive container
+						if (
+							navElement.classList.contains(
+								'wp-block-navigation'
+							)
+						) {
+							navElement
+								.querySelector(
+									'.wp-block-navigation__responsive-container'
+								)
+								?.classList.remove( 'is-menu-open' );
+						}
+					} );
+				}
+				document.body.classList.remove( 'mobile-menu-open' );
+			}
+		},
+		true
+	); // Run in capture phase to unlock BEFORE the MutationObserver or other scripts block the change.
 }
 
 /**
@@ -24,8 +114,9 @@ function initNavigation(): void {
  * @return {void} This function does not return a value.
  */
 function initNavToggleSubmenus(): void {
-	const navTOGGLE: NodeListOf< HTMLElement > =
-		document.querySelectorAll( '.nav--toggle-sub' );
+	const navTOGGLE: NodeListOf< HTMLElement > = document.querySelectorAll(
+		'.nav--toggle-sub, .wp-block-navigation'
+	);
 
 	if ( ! navTOGGLE.length ) {
 		return;
@@ -41,6 +132,11 @@ function initNavToggleSubmenus(): void {
  * @return {void} This function does not return a value.
  */
 function initEachNavToggleSubmenu( nav: HTMLElement ): void {
+	if ( nav.dataset.navSubmenuInitialized === 'true' ) {
+		return;
+	}
+	nav.dataset.navSubmenuInitialized = 'true';
+
 	const SUBMENUS: NodeListOf< HTMLElement > = nav.querySelectorAll(
 		'ul.sub-menu, ul.wp-block-navigation__submenu-container'
 	);
@@ -132,14 +228,39 @@ function shouldToggleSubMenu(
  * @return {void}
  */
 function initNavToggleSmall(): void {
-	navElements =
-		document.querySelectorAll< HTMLElement >( '.nav--toggle-small' );
+	navElements = document.querySelectorAll< HTMLElement >(
+		'.nav--toggle-small, .wp-block-navigation'
+	);
 
 	if ( ! navElements.length ) {
 		return;
 	}
 
 	initEachNavToggleSmall();
+}
+
+/**
+ * Helper to retrieve the mobile breakpoint dynamically from global settings,
+ * CSS custom properties, or fall back to 55.
+ */
+function getMobileBreakpoint(): number {
+	if (
+		typeof window !== 'undefined' &&
+		( window as Window ).mobileBreakpoint
+	) {
+		return ( window as Window ).mobileBreakpoint as number;
+	}
+	const rootStyles = getComputedStyle( document.documentElement );
+	const breakpointStr = rootStyles
+		.getPropertyValue( '--mobile-breakpoint' )
+		.trim();
+	if ( breakpointStr ) {
+		const value = parseFloat( breakpointStr );
+		if ( ! isNaN( value ) ) {
+			return value;
+		}
+	}
+	return 55; // Fallback
 }
 
 /**
@@ -152,7 +273,7 @@ function initNavToggleSmall(): void {
 function watchForWindowSizeChanges(): void {
 	window.addEventListener( 'resize', () => {
 		const width = window.innerWidth;
-		const mobileBreakPoint = 55;
+		const mobileBreakPoint = getMobileBreakpoint();
 		const emValue =
 			width /
 			parseFloat( getComputedStyle( document.documentElement ).fontSize );
@@ -167,7 +288,7 @@ function watchForWindowSizeChanges(): void {
  */
 function isMobileWidth(): boolean {
 	const width = window.innerWidth;
-	const mobileBreakPoint = 55;
+	const mobileBreakPoint = getMobileBreakpoint();
 	const emValue =
 		width /
 		parseFloat( getComputedStyle( document.documentElement ).fontSize );
@@ -202,19 +323,37 @@ function processEachSubMenu(
 	if ( ! isNavigationBlock ) {
 		// Nothing to do for standard menus.
 	} else {
-		parentMenuItem
-			.querySelector< HTMLElement >(
-				'.wp-block-navigation-submenu__toggle'
-			)
-			?.addEventListener( 'click', ( e ) => {
-				// Ensure we pass the parent <li>
-				const parentLi = ( e.currentTarget as HTMLElement ).closest(
-					'li'
-				) as HTMLElement | null;
-				if ( parentLi ) {
-					toggleSubMenu( parentLi );
-				}
-			} );
+		let toggleBtn = parentMenuItem.querySelector< HTMLElement >(
+			'.wp-block-navigation-submenu__toggle'
+		);
+
+		if ( ! toggleBtn ) {
+			// If there is no toggle button, dynamically create one with a caret SVG!
+			toggleBtn = document.createElement( 'button' );
+			toggleBtn.classList.add(
+				'wp-block-navigation-submenu__toggle',
+				'dropdown-toggle'
+			);
+			toggleBtn.setAttribute( 'aria-expanded', 'false' );
+			toggleBtn.setAttribute(
+				'aria-label',
+				wpRigScreenReaderText.expand
+			);
+			toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="wp-block-navigation-submenu__toggle-and-navigation-item__arrow-icon"><path d="M7 10l5 5 5-5z"/></svg>`;
+
+			// Insert the toggle button right before the submenu ul inside parentMenuItem
+			parentMenuItem.insertBefore( toggleBtn, SUBMENUS[ index ] );
+		}
+
+		toggleBtn.addEventListener( 'click', ( e ) => {
+			// Ensure we pass the parent <li>
+			const parentLi = ( e.currentTarget as HTMLElement ).closest(
+				'li'
+			) as HTMLElement | null;
+			if ( parentLi ) {
+				toggleSubMenu( parentLi );
+			}
+		} );
 	}
 
 	const subMenuParentLink =
@@ -290,8 +429,9 @@ function processEachSubMenu(
  * @return {void} This function does not return a value.
  */
 function initEachNavToggleSmall(): void {
-	const menuToggles =
-		document.querySelectorAll< HTMLElement >( '.menu-toggle' );
+	const menuToggles = document.querySelectorAll< HTMLElement >(
+		'.menu-toggle, .wp-block-navigation__responsive-container-open'
+	);
 
 	if ( ! menuToggles ) {
 		return;
@@ -302,11 +442,15 @@ function initEachNavToggleSmall(): void {
 
 		menuToggle.addEventListener( 'click', toggleMenuToggleState );
 	} );
+
+	// Note: MutationObserver for menu locking is initialized in initNavigation().
+	// See initMenuLockObserver() at the bottom of this file.
 }
 
 function toggleMenuToggleState( e: Event ) {
-	const menuToggles =
-		document.querySelectorAll< HTMLElement >( '.menu-toggle' );
+	const menuToggles = document.querySelectorAll< HTMLElement >(
+		'.menu-toggle, .wp-block-navigation__responsive-container-open'
+	);
 
 	if ( ! menuToggles.length ) {
 		return;
@@ -321,6 +465,17 @@ function toggleMenuToggleState( e: Event ) {
 			? 'true'
 			: 'false';
 
+	// Handle menu lock (Alt + Click to lock/unlock)
+	if ( newExpandedState === 'true' && ( e as MouseEvent ).altKey ) {
+		isMenuLocked = true;
+		document.body.classList.add( 'mobile-menu-locked' );
+		// eslint-disable-next-line no-console
+		console.log( 'WP Rig: Mobile menu locked for debugging.' );
+	} else if ( newExpandedState === 'false' ) {
+		isMenuLocked = false;
+		document.body.classList.remove( 'mobile-menu-locked' );
+	}
+
 	// Update all menu toggles to maintain sync
 	menuToggles.forEach( ( menuToggle ) => {
 		menuToggle.setAttribute( 'aria-expanded', newExpandedState );
@@ -332,9 +487,27 @@ function toggleMenuToggleState( e: Event ) {
 			if ( newExpandedState === 'true' ) {
 				navElement.classList.add( 'nav--toggled-on' );
 				document.body.classList.add( 'mobile-menu-open' );
+
+				// Support Core Navigation Block responsive container
+				if ( navElement.classList.contains( 'wp-block-navigation' ) ) {
+					navElement
+						.querySelector(
+							'.wp-block-navigation__responsive-container'
+						)
+						?.classList.add( 'is-menu-open' );
+				}
 			} else {
 				navElement.classList.remove( 'nav--toggled-on' );
 				document.body.classList.remove( 'mobile-menu-open' );
+
+				// Support Core Navigation Block responsive container
+				if ( navElement.classList.contains( 'wp-block-navigation' ) ) {
+					navElement
+						.querySelector(
+							'.wp-block-navigation__responsive-container'
+						)
+						?.classList.remove( 'is-menu-open' );
+				}
 			}
 		} );
 	}
@@ -351,40 +524,41 @@ function toggleSubMenu(
 	parentMenuItem: HTMLElement,
 	limitOpenSubmenus = false
 ): void {
-	const toggleButton = parentMenuItem.querySelector< HTMLElement >(
-		'.dropdown-toggle, .wp-block-navigation-submenu__toggle'
-	);
-
-	// Fix: Add null check for toggleButton before assigning subMenu
-	if ( ! toggleButton ) {
+	const subMenu = parentMenuItem.querySelector< HTMLElement >( 'ul' );
+	if ( ! subMenu ) {
 		return;
 	}
 
-	// Assign subMenu only after null check
-	const subMenu = parentMenuItem.querySelector< HTMLElement >( 'ul' );
+	const toggleButton = parentMenuItem.querySelector< HTMLElement >(
+		'.dropdown-toggle, .wp-block-navigation-submenu__toggle'
+	);
 
 	const parentMenuItemToggled = parentMenuItem.classList.contains(
 		'menu-item--toggled-on'
 	);
 
-	if (
-		! toggleButton.classList.contains(
-			'wp-block-navigation-submenu__toggle'
-		)
-	) {
-		toggleButton.setAttribute(
-			'aria-expanded',
-			( ! parentMenuItemToggled ).toString()
-		);
+	if ( toggleButton ) {
+		if (
+			! toggleButton.classList.contains(
+				'wp-block-navigation-submenu__toggle'
+			)
+		) {
+			toggleButton.setAttribute(
+				'aria-expanded',
+				( ! parentMenuItemToggled ).toString()
+			);
+		}
 	}
 
 	if ( parentMenuItemToggled ) {
 		parentMenuItem.classList.remove( 'menu-item--toggled-on' );
-		subMenu!.classList.remove( 'toggle-show' );
-		toggleButton.setAttribute(
-			'aria-label',
-			wpRigScreenReaderText.collapse
-		);
+		subMenu.classList.remove( 'toggle-show' );
+		if ( toggleButton ) {
+			toggleButton.setAttribute(
+				'aria-label',
+				wpRigScreenReaderText.collapse
+			);
+		}
 
 		if ( limitOpenSubmenus ) {
 			const subMenuItemsToggled =
@@ -407,8 +581,13 @@ function toggleSubMenu(
 		}
 
 		parentMenuItem.classList.add( 'menu-item--toggled-on' );
-		subMenu!.classList.add( 'toggle-show' );
-		toggleButton.setAttribute( 'aria-label', wpRigScreenReaderText.expand );
+		subMenu.classList.add( 'toggle-show' );
+		if ( toggleButton ) {
+			toggleButton.setAttribute(
+				'aria-label',
+				wpRigScreenReaderText.expand
+			);
+		}
 	}
 }
 
@@ -479,4 +658,164 @@ function isLastFocusableElement(
 		focusableElements.length > 0 &&
 		element === focusableElements[ focusableElements.length - 1 ]
 	);
+}
+
+/**
+ * Detects if the browser supports CSS Anchor Positioning.
+ *
+ * @return {boolean} True if the browser supports CSS Anchor Positioning, otherwise false.
+ */
+function supportsAnchorPositioning(): boolean {
+	return (
+		typeof CSS !== 'undefined' &&
+		'supports' in CSS &&
+		CSS.supports( 'position-anchor', '--foo' )
+	);
+}
+
+/**
+ * Initializes an IntersectionObserver to detect when submenus overflow the viewport.
+ * This acts as the JS fallback for browsers that do not support native CSS Anchor Positioning.
+ *
+ * @return {void}
+ */
+function initSubmenuCollisionObserver(): void {
+	// Skip JS initialization if native browser support is present
+	if ( supportsAnchorPositioning() ) {
+		return;
+	}
+
+	const submenus = document.querySelectorAll< HTMLElement >(
+		'ul.sub-menu, ul.wp-block-navigation__submenu-container'
+	);
+
+	if ( ! submenus.length || ! ( 'IntersectionObserver' in window ) ) {
+		return;
+	}
+
+	const observer = new IntersectionObserver(
+		( entries ) => {
+			entries.forEach( ( entry ) => {
+				const submenu = entry.target as HTMLElement;
+				// Submenu is visible if its bounding width is non-zero
+				const isVisible = entry.boundingClientRect.width > 0;
+
+				if ( isVisible ) {
+					const viewportWidth = document.documentElement.clientWidth;
+					const overflowsRight =
+						entry.boundingClientRect.right > viewportWidth;
+					const overflowsLeft = entry.boundingClientRect.left < 0;
+
+					if ( overflowsRight ) {
+						submenu.classList.add( 'open-left' );
+					} else if ( overflowsLeft ) {
+						// Keep it aligned left if it overflows left
+						submenu.classList.remove( 'open-left' );
+					}
+				} else {
+					// Clean up the class when the menu is closed
+					submenu.classList.remove( 'open-left' );
+				}
+			} );
+		},
+		{
+			root: null, // Relative to viewport
+			threshold: [ 0.99, 1.0 ], // Trigger when fully displayed / slightly clipped
+		}
+	);
+
+	submenus.forEach( ( submenu ) => observer.observe( submenu ) );
+}
+
+/**
+ * Initializes a MutationObserver to keep the mobile menu open when locked.
+ * This prevents other scripts (like WP Core Interactivity API) from auto-closing the menu or submenus.
+ */
+function initMenuLockObserver(): void {
+	if ( typeof MutationObserver === 'undefined' ) {
+		return;
+	}
+
+	const observer = new MutationObserver( () => {
+		if ( ! isMenuLocked ) {
+			return;
+		}
+
+		// 1. Ensure global mobile menu classes are present
+		if ( ! document.body.classList.contains( 'mobile-menu-open' ) ) {
+			document.body.classList.add( 'mobile-menu-open' );
+		}
+		if (
+			! document.documentElement.classList.contains( 'has-modal-open' )
+		) {
+			document.documentElement.classList.add( 'has-modal-open' );
+		}
+
+		// 2. Ensure main navigation elements have the toggled-on class
+		const currentNavElements = document.querySelectorAll< HTMLElement >(
+			'.nav--toggle-small, .wp-block-navigation'
+		);
+		currentNavElements.forEach( ( nav ) => {
+			if ( ! nav.classList.contains( 'nav--toggled-on' ) ) {
+				nav.classList.add( 'nav--toggled-on' );
+			}
+
+			// Support Core Navigation Block responsive container
+			if ( nav.classList.contains( 'wp-block-navigation' ) ) {
+				const responsiveContainer = nav.querySelector(
+					'.wp-block-navigation__responsive-container'
+				);
+				if (
+					responsiveContainer &&
+					! responsiveContainer.classList.contains( 'is-menu-open' )
+				) {
+					responsiveContainer.classList.add( 'is-menu-open' );
+				}
+			}
+		} );
+
+		// 3. Ensure all mobile menu toggles show expanded state
+		const menuToggles = document.querySelectorAll< HTMLElement >(
+			'.menu-toggle, .wp-block-navigation__responsive-container-open'
+		);
+		menuToggles.forEach( ( toggle ) => {
+			if ( toggle.getAttribute( 'aria-expanded' ) !== 'true' ) {
+				toggle.setAttribute( 'aria-expanded', 'true' );
+			}
+		} );
+
+		// 4. Ensure submenus that were open remain open
+		const openSubmenus = document.querySelectorAll< HTMLElement >(
+			'.menu-item--toggled-on'
+		);
+		openSubmenus.forEach( ( li ) => {
+			const ul = li.querySelector< HTMLElement >( 'ul' );
+			if ( ul && ! ul.classList.contains( 'toggle-show' ) ) {
+				ul.classList.add( 'toggle-show' );
+			}
+			const toggle = li.querySelector< HTMLElement >(
+				'.dropdown-toggle, .wp-block-navigation-submenu__toggle'
+			);
+			if ( toggle && toggle.getAttribute( 'aria-expanded' ) !== 'true' ) {
+				toggle.setAttribute( 'aria-expanded', 'true' );
+			}
+		} );
+	} );
+
+	// Observe body and document element for class changes
+	observer.observe( document.body, {
+		attributes: true,
+		attributeFilter: [ 'class' ],
+	} );
+	observer.observe( document.documentElement, {
+		attributes: true,
+		attributeFilter: [ 'class' ],
+	} );
+
+	// Use subtree observation on the body to catch internal state changes in nav blocks
+	observer.observe( document.body, {
+		attributes: true,
+		subtree: true,
+		attributeFilter: [ 'class', 'aria-expanded' ],
+	} );
 }

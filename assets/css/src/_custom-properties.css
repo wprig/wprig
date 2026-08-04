@@ -35,6 +35,12 @@
 	/* End of generated tokens */
 --dropdown-symbol-width: 0.7em;
 
+	/* Responsive Breakpoints
+	 * NOTE: This is the single source of truth for the touch/mobile menu interaction breakpoint.
+	 * Any changes here will automatically propagate to JS. Must use the 'em' unit.
+	 */
+	--mobile-breakpoint: 55em;
+
 	/* Typography */
 	--global-font-size: 20;
 

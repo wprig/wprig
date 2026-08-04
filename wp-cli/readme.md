@@ -1,6 +1,35 @@
 ## Installation
 The commands are automatically registered when WP-CLI is available. Make sure you have WP-CLI installed and are running these commands from your WordPress root directory.
 ## Available Commands
+
+### `wp rig review_setup`
+Sets up the official WordPress.org Theme Review environment.
+**What it does:**
+- Installs and activates reviewer plugins:
+	- `theme-check`
+	- `query-monitor`
+	- `log-deprecated-notices`
+	- `accessibility-checker`
+- Imports the official Theme Unit Test data (unless `--skip-import` is passed)
+- Configures environment settings for testing (pagination and threaded comments)
+
+**Usage:**
+``` bash
+wp rig review_setup [--skip-import]
+```
+
+### `wp rig theme_check`
+Programmatically run the official Theme Check plugin and output JSON findings.
+**What it does:**
+- Validates that the Theme Check plugin is active
+- Runs checks against the specified theme
+- Outputs standard JSON findings
+
+**Usage:**
+``` bash
+wp rig theme_check [--path=<theme_path>]
+```
+
 ### `wp rig dev_setup`
 Sets up a complete development environment by installing curated plugins and configuring WordPress pages.
 **What it does:**

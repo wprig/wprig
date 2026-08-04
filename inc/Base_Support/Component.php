@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * WP_Rig\WP_Rig\Base_Support\Component class
  *
  * @package wp_rig
  */
-
 namespace WP_Rig\WP_Rig\Base_Support;
 
 use WP_Rig\WP_Rig\Component_Interface;
