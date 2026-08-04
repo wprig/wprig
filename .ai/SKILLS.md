@@ -18,6 +18,7 @@ These skills define the core development workflow in WP Rig.
 
 ## 🧱 Gutenberg & UI Components
 - [**Gutenberg Blocks**](skills/gutenberg-blocks/SKILL.md): Developing and styling custom blocks.
+- [**Flawless Gutenberg FSE**](skills/flawless-gutenberg-fse/SKILL.md): Reliable FSE template engineering workflow with `lint:blocks` linter.
 - [**Component Registry**](skills/component-registry/SKILL.md): Using and registering theme components.
 - [**Create Component**](skills/create-component/SKILL.md): Scaffolding new theme components.
 - [**Reveal.js Presentations**](skills/reveal-js/SKILL.md): Creating high-fidelity slideshows via Gutenberg.
