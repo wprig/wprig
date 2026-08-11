@@ -158,6 +158,7 @@
     "mcp": "node bin/mcp-server/index.js",
     "get-dev-url": "node scripts/cli.js get-dev-url",
     "ai:setup": "node scripts/ai-setup.js",
+    "inspect": "node .ai/tools/inspect.js",
     "rig": "node scripts/rig.js",
     "rig:list": "node scripts/rig.js list",
     "rig:search": "node scripts/rig.js search",

@@ -15,7 +15,7 @@ Check the `.ai/agent-state.md` file.
 If your specific agent configuration file (e.g. `GEMINI.md` for Gemini CLI, `CLAUDE.md` for Claude Code, `.cursorrules` for Cursor, etc.) does not exist in the root directory:
 1. Explain that you are running the setup command to configure your files.
 2. Run `npm run ai:setup` and select your agent from the list.
-3. This will copy the core agent instructions to your agent-specific rules file in the root.
+3. This will copy the core agent instructions to your agent-specific rules file in the root, and automatically download the headless Playwright Chromium browser binaries so visual inspection tools are fully operational.
 
 ### Step 3: Read Developer Directions
 Open and read `.ai/developer-directions.md`. This file contains project-specific guidelines, aesthetic rules, styling preferences, and constraints set by the theme developer. You **MUST** strictly adhere to any rules found there.

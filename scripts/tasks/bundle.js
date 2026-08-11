@@ -1,4 +1,4 @@
-import { cleanCSS, cleanJS } from './clean.js';
+import { cleanCSS, cleanJS, cleanInspect } from './clean.js';
 import { images, convertToWebP } from './images.js';
 import phpTask from './php.js';
 import fonts from './fonts.js';
@@ -35,6 +35,7 @@ export default async function runBundle( {
 	await Promise.all( [
 		runTask( cleanCSS, 'cleanCSS' ),
 		runTask( cleanJS, 'cleanJS' ),
+		runTask( cleanInspect, 'cleanInspect' ),
 	] );
 
 	// Lint optionally

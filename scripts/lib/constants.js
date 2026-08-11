@@ -77,6 +77,7 @@ export const paths = {
 			`!${ rootPath }/childify_backup/**/*.*`,
 			`!${ rootPath }/scripts/**/*.*`,
 			`!${ rootPath }/scrips/**/*.*`,
+			`!${ rootPath }/inc/Dev_Tools/**/*.*`,
 		],
 		dest: `${ rootPath }/`,
 	},

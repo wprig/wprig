@@ -45,6 +45,7 @@ This guide describes how to use the npm scripts defined in WP Rig's `package.jso
 *   `npm run test:e2e`: Runs Playwright End-to-End tests.
 *   `npm run test:e2e:ui`: Opens Playwright UI for debugging tests.
 *   `npm run test:e2e:screenshot`: Captures regression screenshots using Playwright.
+*   `npm run inspect`: Runs the fast semantic layout and sibling proximity inspector. Supports `--url`, comma-separated `--selector` strings, and `--screenshot` crop triggers.
 
 ## Utility Scripts
 
