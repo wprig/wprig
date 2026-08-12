@@ -47,6 +47,9 @@ async function main() {
 	const selector = args.find( a => a.startsWith( '--selector=' ) )?.split( '=' )[ 1 ] || ( selectorIndex !== -1 ? args[ selectorIndex + 1 ] : null );
 	
 	const screenshot = args.includes( '--screenshot' );
+
+	const hoverIndex = args.indexOf( '--hover' );
+	const hoverSelector = args.find( a => a.startsWith( '--hover=' ) )?.split( '=' )[ 1 ] || ( hoverIndex !== -1 ? args[ hoverIndex + 1 ] : null );
 	
 	const viewportIndex = args.indexOf( '--viewport' ) !== -1 ? args.indexOf( '--viewport' ) : args.indexOf( '--viewports' );
 	const viewportsArg = args.find( a => a.startsWith( '--viewport=' ) )?.split( '=' )[ 1 ] || args.find( a => a.startsWith( '--viewports=' ) )?.split( '=' )[ 1 ] || ( viewportIndex !== -1 ? args[ viewportIndex + 1 ] : null );
@@ -92,6 +95,20 @@ async function main() {
 			await page.setViewportSize( { width, height } );
 			// Wait a moment for responsive layout and custom media query reflows to settle
 			await page.waitForTimeout( 250 );
+
+			if ( hoverSelector ) {
+			        const hoverSelectors = hoverSelector.split( ',' ).map( s => s.trim() ).filter( Boolean );
+			        for ( const hSel of hoverSelectors ) {
+			                const hoverEl = page.locator( hSel ).first();
+			                if ( await hoverEl.count() > 0 ) {
+			                        await hoverEl.hover();
+			                        // Wait a moment for hover transitions to settle before the next hover
+			                        await page.waitForTimeout( 300 );
+			                }
+			        }
+			        // Final wait for nested menus to settle
+			        await page.waitForTimeout( 200 );
+			}
 
 			results[ vpName ] = {};
 

@@ -78,10 +78,10 @@ class Component implements Component_Interface {
 	/**
 	 * Injects a boundary start comment before a template part loads.
 	 *
-	 * @param string $slug The template slug.
-	 * @param string $name The template name.
+	 * @param string      $slug The template slug.
+	 * @param string|null $name The template name.
 	 */
-	public function inject_template_start_comment( string $slug, string $name ) {
+	public function inject_template_start_comment( string $slug, ?string $name = null ) {
 		$template = $name ? "{$slug}-{$name}.php" : "{$slug}.php";
 		echo "\n<!-- WPRIG_TEMPLATE_START: " . esc_html( $template ) . " -->\n";
 	}
