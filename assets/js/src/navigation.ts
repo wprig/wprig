@@ -25,6 +25,22 @@ function initNavigation(): void {
 	initFseMobileCloseListener();
 }
 
+// Expose initNavigation and toggleSubMenu globally for dynamic re-initialization / E2E testing
+if ( typeof window !== 'undefined' ) {
+	(
+		window as unknown as {
+			initNavigation?: () => void;
+			toggleSubMenu?: ( el: HTMLElement ) => void;
+		}
+	 ).initNavigation = initNavigation;
+	(
+		window as unknown as {
+			initNavigation?: () => void;
+			toggleSubMenu?: ( el: HTMLElement ) => void;
+		}
+	 ).toggleSubMenu = toggleSubMenu;
+}
+
 /**
  * Initializes delegated mobile submenu toggling for FSE / Gutenberg blocks in the capture phase.
  */
@@ -46,6 +62,10 @@ function initFseMobileSubmenuDelegation(): void {
 					'li'
 				) as HTMLElement | null;
 				if ( parentLi && parentLi.querySelector( ':scope > ul' ) ) {
+					// Skip if already handled by direct click listener in processEachSubMenu
+					if ( parentLi.dataset.submenuBound === 'true' ) {
+						return;
+					}
 					e.preventDefault();
 					e.stopPropagation();
 					toggleSubMenu( parentLi );
@@ -321,7 +341,20 @@ function processEachSubMenu(
 	// }
 
 	if ( ! isNavigationBlock ) {
-		// Nothing to do for standard menus.
+		const toggleBtn =
+			parentMenuItem.querySelector< HTMLElement >( '.dropdown-toggle' );
+		if ( toggleBtn ) {
+			toggleBtn.addEventListener( 'click', ( e ) => {
+				e.preventDefault();
+				e.stopPropagation();
+				const parentLi = ( e.currentTarget as HTMLElement ).closest(
+					'li'
+				) as HTMLElement | null;
+				if ( parentLi ) {
+					toggleSubMenu( parentLi );
+				}
+			} );
+		}
 	} else {
 		let toggleBtn = parentMenuItem.querySelector< HTMLElement >(
 			'.wp-block-navigation-submenu__toggle'
@@ -371,7 +404,7 @@ function processEachSubMenu(
 		if ( subMenuParentLink ) {
 			subMenuParentLink.addEventListener( 'click', ( e ) => {
 				e.preventDefault();
-				// Ensure we pass the parent <li>
+				e.stopPropagation();
 				const parentLi = ( e.currentTarget as HTMLElement ).closest(
 					'li'
 				) as HTMLElement | null;
@@ -408,6 +441,7 @@ function processEachSubMenu(
 		subMenuParentLink.addEventListener( 'click', ( e ) => {
 			if ( isMobileWidth() ) {
 				e.preventDefault();
+				e.stopPropagation();
 				const parentLi = ( e.currentTarget as HTMLElement ).closest(
 					'li'
 				) as HTMLElement | null;
@@ -420,6 +454,7 @@ function processEachSubMenu(
 
 	handleToggleSubMenuEvents( parentMenuItem );
 	parentMenuItem.classList.add( 'menu-item--has-toggle' );
+	parentMenuItem.dataset.submenuBound = 'true';
 }
 
 /**
@@ -438,6 +473,11 @@ function initEachNavToggleSmall(): void {
 	}
 
 	menuToggles.forEach( ( menuToggle ) => {
+		if ( menuToggle.dataset.navToggleInitialized === 'true' ) {
+			return;
+		}
+		menuToggle.dataset.navToggleInitialized = 'true';
+
 		menuToggle.setAttribute( 'aria-expanded', 'false' );
 
 		menuToggle.addEventListener( 'click', toggleMenuToggleState );

@@ -24,18 +24,12 @@ Before starting, check `.ai/agent-state.md` for your status:
 
 ---
 
-## AI Agent Skills (`.ai/skills/`)
-Refer to specialized skills in the `/.ai/skills/` directory for step-by-step recipes:
-- [**Onboarding Guide**](.ai/ONBOARDING.md): First-time setup protocol.
-- [**Developer Directions**](.ai/developer-directions.md): Custom requirements from the theme developer.
-- [**Project Rules & Learned Guidelines**](.ai/PROJECT_RULES.md): Discovered theme architecture, custom patterns, and running learning log maintained by the agent.
-- [**Feature Planning**](.ai/skills/feature-planning/SKILL.md): Strategy for planning specs and clarifications.
-- [**Architecture & Conventions**](.ai/skills/architecture/SKILL.md): Core structures and conventions.
-- [**Code Quality Standards**](.ai/skills/code-quality-standards/SKILL.md): Linting, PHPStan, and formatting.
-- [**npm Scripts**](.ai/skills/npm-scripts/SKILL.md): Using the build and utility scripts.
-- [**Styles & CSS**](.ai/skills/styles/SKILL.md): CSS partials, variables, and the build process.
-
-*Additional skills for specific tasks (like Gutenberg blocks, Customizer settings, Playwright E2E tests) can be found under `/.ai/skills/`.*
+## AI Agent Skill Directory
+Refer to [**.ai/SKILLS.md**](.ai/SKILLS.md) for a comprehensive directory of specialized skills, including:
+- **Foundational Pillars:** Architecture, Feature Planning, Code Quality.
+- **Design & UI:** Styles, Typography, Gutenberg Blocks, Hero Canvas.
+- **Logic & Backend:** Advanced Templating, WP-CLI, PHP Filters.
+- **Quality & Workflow:** Testing (PHPUnit/E2E), Modern Dev Workflow.
 
 ## Capabilities & Tooling
 - **WP Rig Docs (MCP)**: Run `npm run mcp` to access the Model Context Protocol server.

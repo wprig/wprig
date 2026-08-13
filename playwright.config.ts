@@ -97,7 +97,7 @@ export default defineConfig( {
 	webServer: {
 		command: 'npm run start',
 		url: wpBaseUrl,
-		reuseExistingServer: ! process.env.CI,
+		reuseExistingServer: true,
 		stdout: 'ignore',
 		stderr: 'pipe',
 		ignoreHTTPSErrors: true,

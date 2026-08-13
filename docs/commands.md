@@ -31,6 +31,11 @@ Use `npm run <command>` (or `bun run <command>`):
 	- `rig:prepare [slug]`: Package a local component into the `dist/components/` folder and provide step-by-step instructions for submitting it to the official registry via a GitHub Pull Request. Use this when you've built something great and want to share it with the community.
 - **Testing**:
 	- `test:e2e`: Run Playwright End-to-End tests.
+	- `test:e2e:nav:watch`: Run full visual navigation watch suite across desktop and mobile.
+	- `test:e2e:nav:watch:mobile`: Launch visual watch test directly in mobile mode (375x750 viewport).
+	- `test:e2e:nav:watch:desktop`: Launch visual watch test directly in desktop mode (1280x800 viewport).
+	- `test:e2e:mobile-nav`: Run 5-level deep mobile navigation tests in headless background mode.
+	- `test:e2e:mobile-nav:watch`: Run 5-level deep mobile navigation tests in headed watch mode.
 	- `test:e2e:screenshot`: Take screenshots for regression testing.
 	- `ai:check`: Comprehensive check for standards compliance.
 
