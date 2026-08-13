@@ -24,7 +24,7 @@
     },
     "browserSync": {
       "live": true,
-      "proxyURL": "wprig-dev.local",
+      "proxyURL": "wprig.test:8888",
       "bypassPort": "8181",
       "https": false,
       "keyPath": "",
