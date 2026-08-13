@@ -270,8 +270,8 @@ body.mobile-menu-open {
 		li.menu-item-has-children,
 		li.menu-item--has-toggle,
 		li:has(ul) {
-		        position: relative;
-		        padding-right: var(--dropdown-symbol-width);
+				position: relative;
+				padding-right: var(--dropdown-symbol-width);
 		}
 
 		/*
@@ -539,43 +539,43 @@ body.mobile-menu-open {
 	.nav--toggle-sub ul ul li.menu-item-has-children,
 	.nav--toggle-sub ul ul li:has(ul),
 	.wp-block-navigation-item.has-child .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
-	        anchor-name: --menu-item-anchor-secondary;
-	        position: relative;
+			anchor-name: --menu-item-anchor-secondary;
+			position: relative;
 	}
 
 	/* 2. Style Submenus to use Anchor Positioning with Fallbacks where supported */
 	@supports (position-anchor: --menu-item-anchor-secondary) {
-	        /* Set 2nd-level parent items to static to break circular containing-block constraints in anchors */
-	        .nav--toggle-sub ul ul li.menu-item-has-children,
-	        .nav--toggle-sub ul ul li:has(ul),
-	        .wp-block-navigation-item.has-child .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
-	                position: static;
-	        }
+			/* Set 2nd-level parent items to static to break circular containing-block constraints in anchors */
+			.nav--toggle-sub ul ul li.menu-item-has-children,
+			.nav--toggle-sub ul ul li:has(ul),
+			.wp-block-navigation-item.has-child .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
+					position: static;
+			}
 
-	        /* 3rd-level and deeper submenus (nested, align directly to secondary anchor item) */
-	        .nav--toggle-sub ul ul ul,
-	        .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container {
-	                position: absolute; /* Align to the parent li containing block to preserve tree proximity and correct sibling placement */
-	                position-anchor: --menu-item-anchor-secondary;
-	                top: anchor(--menu-item-anchor-secondary top);
-	                left: anchor(--menu-item-anchor-secondary right);
-	                bottom: auto;
-	                right: auto;
-	                min-height: auto; /* Prevent stretching to viewport height */
-	                position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
-	                position-try-options: flip-block, flip-inline, flip-block flip-inline;
-	        }
+			/* 3rd-level and deeper submenus (nested, align directly to secondary anchor item) */
+			.nav--toggle-sub ul ul ul,
+			.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container {
+					position: absolute; /* Align to the parent li containing block to preserve tree proximity and correct sibling placement */
+					position-anchor: --menu-item-anchor-secondary;
+					top: anchor(--menu-item-anchor-secondary top);
+					left: anchor(--menu-item-anchor-secondary right);
+					bottom: auto;
+					right: auto;
+					min-height: auto; /* Prevent stretching to viewport height */
+					position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+					position-try-options: flip-block, flip-inline, flip-block flip-inline;
+			}
 
-	        /* 3rd-level and deeper submenus (when forced to open left, or inheriting open-left from parent submenu) */
-	        .nav--toggle-sub ul ul ul.open-left,
-	        .nav--toggle-sub ul.open-left ul ul,
-	        .wp-block-navigation__submenu-container .wp-block-navigation__submenu-container.open-left,
-	        .wp-block-navigation__submenu-container.open-left .wp-block-navigation__submenu-container {
-	                left: auto;
-	                right: anchor(--menu-item-anchor-secondary left);
-	                bottom: auto;
-	                top: anchor(--menu-item-anchor-secondary top);
-	        }
+			/* 3rd-level and deeper submenus (when forced to open left, or inheriting open-left from parent submenu) */
+			.nav--toggle-sub ul ul ul.open-left,
+			.nav--toggle-sub ul.open-left ul ul,
+			.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container.open-left,
+			.wp-block-navigation__submenu-container.open-left .wp-block-navigation__submenu-container {
+					left: auto;
+					right: anchor(--menu-item-anchor-secondary left);
+					bottom: auto;
+					top: anchor(--menu-item-anchor-secondary top);
+			}
 	}
 
 	/* 3. Fallback Helper Classes (Toggled by TS Observer on unsupported browsers) */
