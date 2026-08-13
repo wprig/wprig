@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 import inquirer from 'inquirer';
 import colors from 'ansi-colors';
 
@@ -182,6 +183,18 @@ export default async function setupAgents( options = {} ) {
 				);
 			}
 		}
+	}
+
+	console.log( colors.blue( '\nChecking and installing Playwright browser binaries...' ) );
+	try {
+		execSync( 'npx playwright install chromium', { stdio: 'inherit' } );
+		console.log( colors.green( '✓ Playwright Chromium browser installed successfully!' ) );
+	} catch ( error ) {
+		console.error(
+			colors.yellow(
+				`⚠ Could not install Playwright browser automatically: ${ error.message }\nYou may need to run "npx playwright install chromium" manually.`
+			)
+		);
 	}
 
 	console.log( colors.cyan( '\nAI optimization complete!' ) );

@@ -268,9 +268,10 @@ body.mobile-menu-open {
 		}
 
 		li.menu-item-has-children,
-		li.menu-item--has-toggle {
-			position: relative;
-			padding-right: var(--dropdown-symbol-width);
+		li.menu-item--has-toggle,
+		li:has(ul) {
+				position: relative;
+				padding-right: var(--dropdown-symbol-width);
 		}
 
 		/*
@@ -534,32 +535,47 @@ body.mobile-menu-open {
 	/* Submenu Collision Prevention with CSS Anchor Positioning & Fallbacks */
 
 	/* 1. Register Anchor Names on Parent Menu Items */
-	.nav--toggle-sub li.menu-item-has-children,
-	.nav--toggle-sub li.menu-item--has-toggle,
-	.wp-block-navigation-item.has-child {
-		anchor-name: --menu-item-anchor;
-		position: relative;
+	/* 2nd-level parent items (Secondary level, located inside first submenu) */
+	.nav--toggle-sub ul ul li.menu-item-has-children,
+	.nav--toggle-sub ul ul li:has(ul),
+	.wp-block-navigation-item.has-child .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
+			anchor-name: --menu-item-anchor-secondary;
+			position: relative;
 	}
 
 	/* 2. Style Submenus to use Anchor Positioning with Fallbacks where supported */
-	@supports (position-anchor: --menu-item-anchor) {
-		.nav--toggle-sub ul ul,
-		.wp-block-navigation__submenu-container {
-			position: absolute;
-			position-anchor: --menu-item-anchor;
-			top: anchor(bottom);
-			left: anchor(left);
-			position-try-options: flip-block, flip-inline;
-		}
+	@supports (position-anchor: --menu-item-anchor-secondary) {
+			/* Set 2nd-level parent items to static to break circular containing-block constraints in anchors */
+			.nav--toggle-sub ul ul li.menu-item-has-children,
+			.nav--toggle-sub ul ul li:has(ul),
+			.wp-block-navigation-item.has-child .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
+					position: static;
+			}
 
-		/* 3rd-level submenus (nested) */
-		.nav--toggle-sub ul ul ul,
-		.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container {
-			position-anchor: --menu-item-anchor;
-			top: anchor(top);
-			left: anchor(right);
-			position-try-options: flip-inline;
-		}
+			/* 3rd-level and deeper submenus (nested, align directly to secondary anchor item) */
+			.nav--toggle-sub ul ul ul,
+			.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container {
+					position: absolute; /* Align to the parent li containing block to preserve tree proximity and correct sibling placement */
+					position-anchor: --menu-item-anchor-secondary;
+					top: anchor(--menu-item-anchor-secondary top);
+					left: anchor(--menu-item-anchor-secondary right);
+					bottom: auto;
+					right: auto;
+					min-height: auto; /* Prevent stretching to viewport height */
+					position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+					position-try-options: flip-block, flip-inline, flip-block flip-inline;
+			}
+
+			/* 3rd-level and deeper submenus (when forced to open left, or inheriting open-left from parent submenu) */
+			.nav--toggle-sub ul ul ul.open-left,
+			.nav--toggle-sub ul.open-left ul ul,
+			.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container.open-left,
+			.wp-block-navigation__submenu-container.open-left .wp-block-navigation__submenu-container {
+					left: auto;
+					right: anchor(--menu-item-anchor-secondary left);
+					bottom: auto;
+					top: anchor(--menu-item-anchor-secondary top);
+			}
 	}
 
 	/* 3. Fallback Helper Classes (Toggled by TS Observer on unsupported browsers) */
@@ -571,9 +587,11 @@ body.mobile-menu-open {
 		right: 0;
 	}
 
-	/* Fallback: Align 3rd-level submenus to the left of their parent */
+	/* Fallback: Align 3rd-level submenus to the left of their parent, or inherit if grandparent is open-left */
 	.nav--toggle-sub ul ul ul.open-left,
-	.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container.open-left {
+	.nav--toggle-sub ul.open-left ul ul,
+	.wp-block-navigation__submenu-container .wp-block-navigation__submenu-container.open-left,
+	.wp-block-navigation__submenu-container.open-left .wp-block-navigation__submenu-container {
 		left: auto;
 		right: 100%;
 	}

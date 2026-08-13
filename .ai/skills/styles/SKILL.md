@@ -42,6 +42,37 @@ For visual changes, use Playwright to ensure regressions are avoided:
 3.  **Verify**: Run `npm run test:e2e:screenshot -- SCREENSHOT_NAME="after-change.png"` and compare the results in `tests/e2e/specs/screenshot.spec.ts-snapshots/`.
 4.  **Component Focus**: Use `SCREENSHOT_SELECTOR` to capture only the element you're styling (e.g., `.site-header`).
 
+## The Two-Tier Visual Feedback Loop (Measurement-First)
+
+To prevent excessive prompt token inflation and speed up layout fixes, avoid blindly capturing full-page screenshots. Follow this highly optimized, two-tier visual loop:
+
+1.  **Tier 1: Semantic Measurement (Fast & Token-Cheap)**
+    Use the inspect utility to retrieve exact bounding dimensions, spacing, margins, and computed styles of one or more elements:
+    ```bash
+    npm run inspect -- --url "/my-page" --selector ".my-component"
+    ```
+    You can inspect **multiple selectors simultaneously** as a batch by passing them as a comma-separated list:
+    ```bash
+    npm run inspect -- --url "/" --selector ".site-header, .site-footer"
+    ```
+    You can perform **responsive breakpoint batch-inspections** across multiple viewports (e.g. `mobile` [375px], `tablet` [768px], `desktop` [1200px], or custom dimensions like `400` or `375x667`) simultaneously:
+    ```bash
+    npm run inspect -- --selector ".site-header" --viewport "mobile, desktop"
+    ```
+    This resizes the viewport, triggers media query reflows, and returns properties keyed by viewport size.
+    
+    *Layout Observations & Overlap Auditing:*
+    The returned JSON includes a `layoutObservations` list that automatically flags potential container boundary overflows and element overlaps. **Always verify these observations carefully.** Overlapping elements (e.g., via absolute positioning, negative margins, overlapping grid cells) or container overflows (e.g., full-width elements or wide blocks) are often highly intentional parts of modern layouts. Do not assume an observation indicates a layout failure unless it contradicts design specifications.
+
+2.  **Tier 2: Aesthetic Verification (Visual Fallback)**
+    Only take screenshots when visual rendering issues cannot be expressed by layout properties (e.g., text overlapping, background image misalignment, custom rendering/z-indexing bugs, or color choices):
+    ```bash
+    npm run inspect -- --url "/my-page" --selector ".my-component" --screenshot
+    ```
+    If multiple viewports or selectors are requested with `--screenshot`, individual cropped screenshots will be generated for each permutation (e.g., `inspect_site-header_mobile.png`, `inspect_site-header_desktop.png`), allowing direct local responsive design reviews.
+    
+    These are saved locally under `artifacts/inspect/` for local developer review—do not print raw image binary context back into your agent prompt. Temporary inspect artifacts are automatically cleaned up when compiling the production theme via `npm run bundle`.
+
 ## Methodical Implementation Workflow
 
 To manage the cognitive overhead of WP Rig's distributed CSS architecture, follow this step-by-step approach:

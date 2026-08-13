@@ -123,6 +123,39 @@ files.forEach((file) => {
 		.catch(() => process.exit(1));
 });
 
+// --- Custom WP Rig Dev Toolbar Compiler (Self-Contained Dev-Only Assets) ---
+const devToolbarJS = path.join(process.cwd(), 'assets/js/dev/dev-toolbar.tsx');
+const devToolbarCSS = path.join(process.cwd(), 'assets/js/dev/dev-toolbar.css');
+
+if (existsSync(devToolbarJS)) {
+	esbuild
+		.build({
+			entryPoints: [devToolbarJS],
+			outfile: path.join(process.cwd(), 'assets/js/build/dev-toolbar.js'),
+			minify: true,
+			sourcemap: 'inline',
+			bundle: true,
+			target: ['es6'],
+			loader: { '.tsx': 'tsx', '.ts': 'ts' },
+			plugins: [stripI18nSourceMapPlugin, replaceInlineJSPlugin],
+			// React and ReactDOM are bundled inline so they work on any standard page sandbox
+		})
+		.then(() => console.log('✓ Dev Toolbar JS bundled successfully!'))
+		.catch((err) => console.error('✗ Dev Toolbar JS bundle failed:', err));
+}
+
+if (existsSync(devToolbarCSS)) {
+	esbuild
+		.build({
+			entryPoints: [devToolbarCSS],
+			outfile: path.join(process.cwd(), 'assets/css/dev-toolbar.css'),
+			minify: true,
+			bundle: true,
+		})
+		.then(() => console.log('✓ Dev Toolbar CSS bundled successfully!'))
+		.catch((err) => console.error('✗ Dev Toolbar CSS bundle failed:', err));
+}
+
 // Log watch mode status
 if (isWatchMode) {
 	console.log('🔄 Watch mode enabled for theme JS files');

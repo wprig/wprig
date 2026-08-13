@@ -31,7 +31,80 @@ WP Rig comes with several default tests:
 
 1. **Smoke Tests (`smoke.spec.ts`)**: Verifies the homepage loads, site title is visible, and navigation exists. Includes visual regression testing.
 2. **Accessibility (`accessibility.spec.ts`)**: Runs automated accessibility audits using `axe-core` on key pages (404, Archive).
-3. **Navigation (`navigation.spec.ts`)**: Tests mobile menu functionality and ARIA attribute changes.
+3. **Navigation (`navigation.spec.ts`)**: Tests basic site navigation functionality and ARIA attribute changes.
+4. **Visual Navigation Suite (`visual-navigation.spec.ts`)**: Automated visual test suite covering ALL navigation (desktop top-level hovering, submenus, keyboard traversal, dynamic viewport transitions, and mobile menu toggles) with visual pacing and element highlighting.
+5. **Mobile Navigation Suite (`mobile-navigation.spec.ts`)**: Comprehensive testing for WP Rig's mobile navigation system across multiple viewports, 5-level deep nested submenus, positioning, and developer lock modes.
+
+### Visual Automated Navigation Testing
+
+The Visual Navigation test suite (`tests/e2e/specs/visual-navigation.spec.ts`) provides a visual automated watch mode for **all** theme navigation (both Desktop and Mobile):
+
+#### What You Will See When Watching
+- **Desktop Navigation & Hovering**: Pops open a new browser window, highlights and hovers over all top-level menu items, and traverses through deep nested dropdowns (L1 through L5) with visual pauses.
+- **Keyboard Traversal**: Highlights elements as keyboard `Tab` focus moves through navigation items.
+- **Dynamic Viewport Transitions**: Resizes the browser smoothly from Desktop (`1280x800`) to Tablet (`768x1024`) to Phablet (`412x915`) to Small Mobile (`375x667`), showing the responsive navigation layout adapt.
+- **Mobile Menu & Deep Submenu Interactions**: Clicks the mobile hamburger toggle, expands 5-level deep submenus step-by-step, tests Developer Lock Mode (`Alt + Click`), and closes the menu.
+
+#### How to Run Visual Watch Mode
+To launch the headed browser and watch the automated navigation test execute with visual pacing across all viewports (or explicitly locked to Mobile or Desktop):
+
+```bash
+# Run full visual watch suite (Desktop + Mobile)
+npm run test:e2e:nav:watch
+
+# Launch visual watch test directly in Mobile mode (375x750 viewport)
+npm run test:e2e:nav:watch:mobile
+
+# Launch visual watch test in Desktop mode (1280x800 viewport)
+npm run test:e2e:nav:watch:desktop
+```
+
+You can also control mobile execution on the fly via the `MOBILE=1` environment variable or Playwright test filters:
+```bash
+MOBILE=1 npm run test:e2e:nav:watch
+# or filter by tag
+npm run test:e2e:nav:watch -- -g @mobile
+```
+
+You can adjust the speed of the visual pauses using the `SLOWMO` environment variable (in milliseconds):
+```bash
+SLOWMO=1200 npm run test:e2e:nav:watch
+```
+
+### Mobile Navigation Testing
+
+The Mobile Navigation test suite (`tests/e2e/specs/mobile-navigation.spec.ts`) is designed to validate complex navigation structures in both Classic theme and Gutenberg Block navigation modes.
+
+#### Key Features Tested
+- **Multi-Viewport Responsiveness**: Validates hamburger toggle visibility and container state across Small Mobile (375x667), Phablet (412x915), Tablet (768x1024), and Desktop (1280x800).
+- **Injected 5-Level Deep Submenus**: Uses self-contained DOM fixtures to dynamically inject 5-level deep nested submenus (`L1` through `L5`) for deterministic testing regardless of local WordPress database content.
+- **Bounding Box & Containment Assertions**: Verifies expanded submenus remain properly bounded within the viewport.
+- **Collision Observer (`.open-left`)**: Tests automatic repositioning when submenus approach the right screen boundary.
+- **Menu States & Developer Lock Mode**: Verifies active menu classes (`.current-menu-item`, `.current-menu-ancestor`), keyboard traversal, and `Alt + Click` developer menu locking (`body.mobile-menu-locked`).
+
+#### Running Mobile Navigation Tests
+
+1. **Headless Execution (Background / CI)**:
+   Runs all mobile navigation tests silently in the background:
+   ```bash
+   npm run test:e2e:mobile-nav
+   ```
+
+2. **Visual Watch Mode (Live Headed Browser)**:
+   Launches a live Chromium browser window so you can watch Playwright execute each interaction step-by-step in real time:
+   ```bash
+   npm run test:e2e:mobile-nav:watch
+   ```
+
+3. **Running Specific Viewport or Test Scenarios**:
+   You can pass Playwright filter flags directly to the npm script:
+   ```bash
+   # Run only viewport responsiveness tests in watch mode
+   npm run test:e2e:mobile-nav:watch -- -g "Multiple Viewport Scenarios"
+
+   # Run only 5-level deep submenu tests
+   npm run test:e2e:mobile-nav -- -g "Deeply Nested Submenus"
+   ```
 
 ### Regression Screenshot Testing
 

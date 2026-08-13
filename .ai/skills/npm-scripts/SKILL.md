@@ -43,8 +43,14 @@ This guide describes how to use the npm scripts defined in WP Rig's `package.jso
 ## Testing
 
 *   `npm run test:e2e`: Runs Playwright End-to-End tests.
+*   `npm run test:e2e:nav:watch`: Runs full visual navigation watch test suite in headed browser mode.
+*   `npm run test:e2e:nav:watch:mobile`: Launches visual watch test directly in mobile viewport mode.
+*   `npm run test:e2e:nav:watch:desktop`: Launches visual watch test directly in desktop viewport mode.
+*   `npm run test:e2e:mobile-nav`: Runs 5-level deep mobile navigation tests in headless background mode.
+*   `npm run test:e2e:mobile-nav:watch`: Runs 5-level deep mobile navigation tests in live headed watch mode.
 *   `npm run test:e2e:ui`: Opens Playwright UI for debugging tests.
 *   `npm run test:e2e:screenshot`: Captures regression screenshots using Playwright.
+*   `npm run inspect`: Runs the fast semantic layout and sibling proximity inspector. Supports `--url`, comma-separated `--selector` strings, and `--screenshot` crop triggers.
 
 ## Utility Scripts
 

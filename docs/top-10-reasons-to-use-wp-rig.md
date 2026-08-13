@@ -57,7 +57,7 @@ WP Rig is engineered from the ground up to be **AI-friendly**. It provides highl
 *   **Strict Namespacing:** All theme PHP classes operate under the `WP_Rig\WP_Rig` root namespace, avoiding global scope pollution.
 *   **Autoloading (PSR-4):** Sibling classes map strictly to the directory layout, making it easy for AI agents to locate dependencies.
 *   **Type Hinting:** Extensive use of parameter and return type hints makes code self-documenting and structurally predictable.
-*   **Integrated LLM Mapping:** WP Rig includes a structured `.ai/` directory and `llms.txt` configurations, mapping architectural guidelines so custom AI assistants can immediately grasp local theme conventions and write registry-ready components with near-zero errors.
+*   **Integrated Agent Workflow:** WP Rig includes a structured `.ai/` directory and interactive onboarding (`npm run ai:setup`), mapping architectural guidelines, enforcing project rules, and tracking state so coding agents can immediately grasp local theme conventions and write registry-ready components with near-zero errors.
 
 When your AI assistant understands the codebase, your development velocity skyrockets.
 

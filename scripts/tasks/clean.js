@@ -46,3 +46,11 @@ export function cleanJS() {
 
 	return deleteAsync( delPath.concat( keepExportPath ), { force: true } );
 }
+
+/**
+ * Clean Inspect Screenshots
+ * @return {Promise|string} with the deleted paths
+ */
+export function cleanInspect() {
+	return deleteAsync( [ 'artifacts/inspect/**' ], { force: true } );
+}

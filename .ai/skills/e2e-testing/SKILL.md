@@ -12,6 +12,11 @@ WP Rig uses Playwright for End-to-End (E2E) testing, following WordPress Core te
 Use the following NPM scripts for E2E testing:
 
 - `npm run test:e2e`: Runs all E2E tests.
+- `npm run test:e2e:nav:watch`: Runs full visual navigation watch test suite in headed browser mode.
+- `npm run test:e2e:nav:watch:mobile`: Launches visual watch test directly in mobile viewport mode.
+- `npm run test:e2e:nav:watch:desktop`: Launches visual watch test directly in desktop viewport mode.
+- `npm run test:e2e:mobile-nav`: Runs 5-level deep mobile navigation tests in headless background mode.
+- `npm run test:e2e:mobile-nav:watch`: Runs 5-level deep mobile navigation tests in live headed watch mode.
 - `npm run test:e2e:ui`: Opens the Playwright UI for interactive testing and debugging.
 - `npm run test:e2e:debug`: Runs tests in debug mode, stepping through each action.
 - `npm run test:e2e:codegen`: Opens the Playwright Codegen tool to record new tests by interacting with the browser.
