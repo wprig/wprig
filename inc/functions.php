@@ -28,6 +28,10 @@ function wp_rig(): Template_Tags {
 function wp_rig_theme(): Theme {
 	static $theme = null;
 
+	if ( null !== Theme::get_instance() ) {
+		return Theme::get_instance();
+	}
+
 	if ( null === $theme ) {
 		$theme = new Theme();
 		$theme->initialize();
@@ -60,7 +64,7 @@ function get_asset_content( string $url_or_path, int $expiry = HOUR_IN_SECONDS )
 	// This ensures that updates to local files (like config.json) are reflected immediately
 	// while still avoiding redundant file reads if the file hasn't changed.
 	if ( ! $is_remote ) {
-		$version = wp_rig()->get_asset_version( $url_or_path );
+		$version = file_exists( $url_or_path ) ? (string) filemtime( $url_or_path ) : '';
 	}
 
 	// Use transients only for remote assets. Local files are typically faster via filesystem (with OS caching).

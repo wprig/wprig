@@ -18,6 +18,7 @@
     "cleanup_meta_tags": true
   },
   "dev": {
+    "devTools": true,
     "admin": {
       "user": "admin",
       "password": "password"

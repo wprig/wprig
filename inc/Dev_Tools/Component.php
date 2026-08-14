@@ -11,6 +11,7 @@ namespace WP_Rig\WP_Rig\Dev_Tools;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Versioning_Trait;
+use function WP_Rig\WP_Rig\get_config;
 use function add_action;
 use function add_filter;
 use function wp_enqueue_script;
@@ -44,6 +45,11 @@ class Component implements Component_Interface {
 	 * @return bool True if debug mode is active or local development environment.
 	 */
 	public static function is_active(): bool {
+		$config = get_config( 'config.json' );
+		if ( isset( $config['dev']['devTools'] ) && false === $config['dev']['devTools'] ) {
+			return false;
+		}
+
 		// Return true if WPRIG_DEBUG is defined and true.
 		if ( defined( 'WPRIG_DEBUG' ) && WPRIG_DEBUG ) {
 			return true;
