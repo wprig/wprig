@@ -1,0 +1,1194 @@
+/* WP Rig Dev Toolbar - Sharp, Modern & Crisp Theme */
+
+:host {
+	all: initial;
+	font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 1.4;
+	color: #f4f4f5;
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+	box-sizing: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+	outline: 2px solid #38bdf8 !important;
+	outline-offset: 2px !important;
+}
+
+.wprig-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.wprig-toolbar-container {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	pointer-events: none;
+	z-index: 2147483647;
+}
+
+/* Bottom Docked Navigation Bar */
+.wprig-toolbar-dock {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 38px;
+	background: #09090b;
+	border-top: 1px solid #27272a;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 12px;
+	pointer-events: auto;
+	box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+	backdrop-filter: blur(8px);
+	transform-origin: right bottom;
+	transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+	transform: scale(1);
+	opacity: 1;
+	visibility: visible;
+	z-index: 2147483648;
+}
+
+.wprig-toolbar-dock--closed {
+	transform: scale(0);
+	opacity: 0;
+	pointer-events: none;
+	visibility: hidden;
+}
+
+.wprig-toolbar-tab--close {
+	margin-left: 6px;
+	padding: 4px 8px;
+	color: #a1a1aa;
+}
+
+.wprig-toolbar-tab--close:hover {
+	color: #ef4444;
+	background: rgba(239, 68, 68, 0.15);
+	border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Floating Reopen Circle Button in Bottom Right Corner */
+.wprig-toolbar-reopen {
+	position: fixed;
+	bottom: 12px;
+	right: 12px;
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	background: #09090b;
+	border: 1px solid #27272a;
+	color: #38bdf8;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(56, 189, 248, 0.2);
+	z-index: 2147483647;
+	pointer-events: none;
+	opacity: 0;
+	transform: scale(0);
+	transform-origin: center center;
+	transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.wprig-toolbar-reopen--visible {
+	opacity: 1;
+	transform: scale(1);
+	pointer-events: auto;
+}
+
+.wprig-toolbar-reopen:hover {
+	background: #18181b;
+	border-color: #38bdf8;
+	color: #7dd3fc;
+	box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35), 0 0 0 1px #38bdf8;
+}
+
+.wprig-toolbar-brand {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-weight: 700;
+	font-size: 11px;
+	letter-spacing: 0.05em;
+	color: #f4f4f5;
+	text-transform: uppercase;
+}
+
+.wprig-toolbar-nav {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	height: 100%;
+}
+
+.wprig-toolbar-tab {
+	background: transparent;
+	border: 1px solid transparent;
+	color: #a1a1aa;
+	font-size: 12px;
+	font-weight: 500;
+	padding: 4px 10px;
+	border-radius: 6px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+	height: 28px;
+}
+
+.wprig-tab-icon {
+	width: 15px;
+	height: 15px;
+	flex-shrink: 0;
+	color: currentColor;
+}
+
+.wprig-toolbar-tab:hover {
+	color: #f4f4f5;
+	background: #18181b;
+	border-color: #27272a;
+}
+
+.wprig-toolbar-tab--active {
+	color: #ffffff;
+	background: #27272a;
+	border-color: #3f3f46;
+	font-weight: 600;
+}
+
+.wprig-badge {
+	background: #dc2626;
+	color: #ffffff;
+	font-size: 10px;
+	font-weight: 700;
+	padding: 1px 5px;
+	border-radius: 10px;
+	line-height: 1.2;
+}
+
+.wprig-badge--warning {
+	background: #d97706;
+}
+
+.wprig-badge--info {
+	background: #0070f3;
+}
+
+/* Side Inspection Panel */
+.wprig-toolbar-panel {
+	position: absolute;
+	bottom: 38px;
+	right: 0;
+	width: 460px;
+	max-width: calc(100vw - 24px);
+	height: 600px;
+	max-height: calc(100vh - 50px);
+	background: #09090b;
+	border-left: 1px solid #27272a;
+	border-top: 1px solid #27272a;
+	border-top-left-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	pointer-events: auto;
+	box-shadow: -8px 0 24px rgba(0, 0, 0, 0.5);
+	animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+	overflow: hidden;
+	z-index: 2147483647;
+}
+
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(12px) scale(0.99);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+.wprig-panel-header {
+	padding: 12px 16px;
+	background: #18181b;
+	border-bottom: 1px solid #27272a;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	cursor: grab;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.wprig-panel-header:active,
+.wprig-toolbar-panel--dragging .wprig-panel-header {
+	cursor: grabbing;
+}
+
+.wprig-panel-drag-grip {
+	color: #71717a;
+	margin-right: 4px;
+	flex-shrink: 0;
+	transition: color 0.15s ease;
+}
+
+.wprig-panel-header:hover .wprig-panel-drag-grip {
+	color: #38bdf8;
+}
+
+.wprig-panel-title {
+	font-size: 13px;
+	font-weight: 600;
+	color: #f4f4f5;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	letter-spacing: -0.01em;
+}
+
+.wprig-panel-close {
+	background: transparent;
+	border: 1px solid transparent;
+	color: #a1a1aa;
+	font-size: 14px;
+	cursor: pointer;
+	padding: 2px 8px;
+	border-radius: 4px;
+	transition: all 0.15s ease;
+}
+
+.wprig-panel-close:hover {
+	color: #ffffff;
+	background: #27272a;
+	border-color: #3f3f46;
+}
+
+.wprig-panel-body {
+	flex: 1;
+	padding: 16px;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+/* Metric Cards & Grids */
+.wprig-card {
+	background: #18181b;
+	border: 1px solid #27272a;
+	border-radius: 6px;
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.wprig-card-title {
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: #a1a1aa;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.wprig-metric-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 8px;
+}
+
+.wprig-metric-item {
+	display: flex;
+	flex-direction: column;
+	background: #09090b;
+	padding: 8px 10px;
+	border-radius: 4px;
+	border: 1px solid #27272a;
+}
+
+.wprig-metric-label {
+	font-size: 10px;
+	color: #71717a;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.wprig-metric-value {
+	font-size: 12px;
+	font-weight: 600;
+	color: #f4f4f5;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	word-break: break-all;
+	margin-top: 2px;
+}
+
+/* Code Blocks */
+.wprig-code-block {
+	background: #09090b;
+	border: 1px solid #27272a;
+	border-radius: 6px;
+	padding: 10px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 11px;
+	line-height: 1.5;
+	color: #38bdf8;
+	white-space: pre-wrap;
+	word-break: break-all;
+	max-height: 180px;
+	overflow-y: auto;
+}
+
+/* Form Controls & Directives */
+.wprig-input, .wprig-textarea, .wprig-select {
+	width: 100%;
+	background: #09090b;
+	border: 1px solid #27272a;
+	color: #f4f4f5;
+	font-size: 12px;
+	padding: 8px 10px;
+	border-radius: 6px;
+	outline: none;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+	font-family: inherit;
+}
+
+.wprig-textarea {
+	resize: vertical;
+	min-height: 60px;
+}
+
+.wprig-input:focus, .wprig-textarea:focus, .wprig-select:focus {
+	border-color: #0070f3;
+	box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+/* Buttons */
+.wprig-btn {
+	background: #27272a;
+	border: 1px solid #3f3f46;
+	color: #f4f4f5;
+	font-size: 12px;
+	font-weight: 500;
+	padding: 6px 12px;
+	border-radius: 6px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wprig-btn:hover {
+	background: #3f3f46;
+	border-color: #52525b;
+}
+
+.wprig-btn--primary {
+	background: #0070f3;
+	border-color: #0070f3;
+	color: #ffffff;
+}
+
+.wprig-btn--primary:hover {
+	background: #005bb5;
+	border-color: #005bb5;
+}
+
+.wprig-btn--success {
+	background: #10b981;
+	border-color: #10b981;
+	color: #ffffff;
+}
+
+.wprig-btn--success:hover {
+	background: #059669;
+	border-color: #059669;
+}
+
+/* Directive Chips */
+.wprig-directive-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.wprig-chip {
+	background: #09090b;
+	border: 1px solid #27272a;
+	color: #a1a1aa;
+	font-size: 11px;
+	padding: 4px 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.wprig-chip:hover {
+	color: #f4f4f5;
+	border-color: #38bdf8;
+	background: #18181b;
+}
+
+.wprig-chip--selected {
+	background: rgba(0, 112, 243, 0.15);
+	border-color: #0070f3;
+	color: #38bdf8;
+	font-weight: 600;
+}
+
+/* Audit Summary Card */
+.wprig-audit-summary {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 8px;
+	background: #18181b;
+	padding: 12px;
+	border-radius: 6px;
+	border: 1px solid #27272a;
+}
+
+.wprig-summary-stat {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	transition: opacity 0.15s ease;
+}
+
+.wprig-summary-stat[role='button']:hover {
+	opacity: 0.85;
+}
+
+.wprig-summary-value {
+	font-size: 18px;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+
+.wprig-summary-label {
+	font-size: 10px;
+	color: #a1a1aa;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	margin-top: 2px;
+}
+
+/* View Toggle Switch */
+.wprig-view-toggle {
+	display: flex;
+	background: #09090b;
+	padding: 3px;
+	border-radius: 6px;
+	border: 1px solid #27272a;
+	gap: 2px;
+}
+
+.wprig-toggle-btn {
+	flex: 1;
+	background: transparent;
+	border: none;
+	color: #a1a1aa;
+	font-size: 11px;
+	font-weight: 500;
+	padding: 6px 10px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	text-align: center;
+}
+
+.wprig-toggle-btn:hover {
+	color: #f4f4f5;
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.wprig-toggle-btn--active {
+	background: #27272a;
+	color: #38bdf8;
+	font-weight: 600;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Ignored Header Actions */
+.wprig-ignored-header-actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 8px 12px;
+	background: rgba(168, 85, 247, 0.08);
+	border: 1px dashed rgba(168, 85, 247, 0.3);
+	border-radius: 6px;
+	margin-bottom: 4px;
+}
+
+.wprig-ignored-subtitle {
+	font-size: 11px;
+	color: #c084fc;
+}
+
+.wprig-ignored-timestamp {
+	font-size: 10px;
+	color: #71717a;
+	font-style: italic;
+}
+
+.wprig-empty-state {
+	padding: 24px 16px;
+	text-align: center;
+	color: #a1a1aa;
+	font-size: 12px;
+	background: #18181b;
+	border: 1px dashed #27272a;
+	border-radius: 6px;
+	line-height: 1.5;
+}
+
+/* Issue Cards */
+.wprig-issue-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.wprig-issue-card {
+	background: #18181b;
+	border: 1px solid #27272a;
+	border-radius: 6px;
+	padding: 12px;
+	text-align: left;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	width: 100%;
+}
+
+.wprig-issue-card:hover {
+	border-color: #3f3f46;
+	background: #27272a;
+}
+
+.wprig-issue-card--error {
+	border-left: 3px solid #ef4444;
+}
+
+.wprig-issue-card--warning {
+	border-left: 3px solid #f59e0b;
+}
+
+.wprig-issue-card--ignored {
+	border-left: 3px solid #a855f7;
+	opacity: 0.85;
+}
+
+.wprig-issue-card-top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 8px;
+	width: 100%;
+}
+
+.wprig-btn-action {
+	background: rgba(39, 39, 42, 0.6);
+	border: 1px solid #3f3f46;
+	color: #a1a1aa;
+	font-size: 10px;
+	font-weight: 500;
+	padding: 4px 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	transition: all 0.15s ease;
+	flex-shrink: 0;
+}
+
+.wprig-btn-action:hover {
+	background: #27272a;
+	color: #f4f4f5;
+	border-color: #71717a;
+}
+
+.wprig-btn-action--ignore:hover {
+	color: #f87171;
+	border-color: rgba(239, 68, 68, 0.4);
+	background: rgba(239, 68, 68, 0.1);
+}
+
+.wprig-btn-action--unignore:hover {
+	color: #38bdf8;
+	border-color: rgba(56, 189, 248, 0.4);
+	background: rgba(56, 189, 248, 0.1);
+}
+
+.wprig-issue-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.wprig-issue-type {
+	font-size: 10px;
+	font-weight: 700;
+	text-transform: uppercase;
+	padding: 2px 6px;
+	border-radius: 4px;
+}
+
+.wprig-issue-type--error {
+	background: rgba(239, 68, 68, 0.15);
+	color: #f87171;
+}
+
+.wprig-issue-type--warning {
+	background: rgba(245, 158, 11, 0.15);
+	color: #fbbf24;
+}
+
+.wprig-issue-element {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 11px;
+	color: #38bdf8;
+}
+
+.wprig-issue-message {
+	font-size: 12px;
+	font-weight: 600;
+	color: #f4f4f5;
+}
+
+.wprig-issue-detail {
+	font-size: 11px;
+	color: #a1a1aa;
+}
+
+/* Remediation Box */
+.wprig-remediation-box {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid #27272a;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.wprig-issue-card-header {
+	background: transparent;
+	border: none;
+	padding: 0;
+	margin: 0;
+	text-align: left;
+	width: 100%;
+	color: inherit;
+	font: inherit;
+	font-family: inherit;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.wprig-issue-card--selected {
+	border-color: #0070f3;
+	box-shadow: 0 0 0 1px #0070f3;
+	background: #18181b;
+}
+
+.wprig-remediation-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.wprig-btn--sm {
+	padding: 3px 8px;
+	font-size: 11px;
+}
+
+.wprig-color-picker-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 8px;
+	margin-top: 4px;
+}
+
+.wprig-color-picker-box {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	background: #09090b;
+	padding: 8px;
+	border-radius: 6px;
+	border: 1px solid #27272a;
+}
+
+.wprig-picker-label {
+	font-size: 10px;
+	font-weight: 600;
+	color: #a1a1aa;
+	text-transform: uppercase;
+}
+
+.wprig-color-input-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.wprig-color-swatch-input {
+	-webkit-appearance: none;
+	appearance: none;
+	border: 1px solid #27272a;
+	width: 28px;
+	height: 28px;
+	border-radius: 4px;
+	cursor: pointer;
+	background: transparent;
+	padding: 0;
+}
+
+.wprig-color-swatch-input::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+
+.wprig-color-swatch-input::-webkit-color-swatch {
+	border: none;
+	border-radius: 3px;
+}
+
+.wprig-input--color-hex {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 11px;
+	padding: 4px 6px;
+	height: 28px;
+}
+
+.wprig-compliance-banner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #09090b;
+	border: 1px solid #27272a;
+	padding: 8px 10px;
+	border-radius: 6px;
+}
+
+.wprig-ratio-metric {
+	display: flex;
+	flex-direction: column;
+}
+
+.wprig-ratio-value {
+	font-size: 16px;
+	font-weight: 700;
+	color: #f4f4f5;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.wprig-ratio-label {
+	font-size: 10px;
+	color: #a1a1aa;
+	text-transform: uppercase;
+}
+
+.wprig-status-badges {
+	display: flex;
+	gap: 6px;
+}
+
+.wprig-status-badge {
+	font-size: 10px;
+	font-weight: 700;
+	padding: 3px 6px;
+	border-radius: 4px;
+}
+
+.wprig-status-badge--pass {
+	background: rgba(16, 185, 129, 0.15);
+	color: #10b981;
+	border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.wprig-status-badge--fail {
+	background: rgba(239, 68, 68, 0.15);
+	color: #f87171;
+	border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.wprig-live-preview-card {
+	padding: 10px;
+	border-radius: 6px;
+	border: 1px solid #27272a;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	transition: all 0.15s ease;
+}
+
+.wprig-preview-headline {
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.wprig-preview-body {
+	font-size: 11px;
+	line-height: 1.3;
+	opacity: 0.9;
+}
+
+.wprig-format-list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	background: #09090b;
+	padding: 6px 8px;
+	border-radius: 6px;
+	border: 1px solid #27272a;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 10px;
+}
+
+.wprig-format-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.wprig-format-label {
+	color: #a1a1aa;
+	font-weight: 700;
+}
+
+.wprig-format-value {
+	color: #38bdf8;
+}
+
+.wprig-preset-title {
+	font-size: 10px;
+	font-weight: 700;
+	color: #a1a1aa;
+	text-transform: uppercase;
+	margin-top: 4px;
+}
+
+.wprig-copy-status-msg {
+	font-size: 11px;
+	color: #10b981;
+	align-self: center;
+	font-weight: 600;
+}
+
+.wprig-range-input {
+	width: 100%;
+	accent-color: #0070f3;
+}
+
+.wprig-remediation-title {
+	font-size: 11px;
+	font-weight: 700;
+	color: #a1a1aa;
+	text-transform: uppercase;
+}
+
+.wprig-color-options {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.wprig-color-option {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #09090b;
+	border: 1px solid #27272a;
+	padding: 8px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.wprig-color-option:hover {
+	border-color: #0070f3;
+}
+
+.wprig-color-option--selected {
+	border-color: #0070f3;
+	background: rgba(0, 112, 243, 0.1);
+}
+
+.wprig-swatch-pair {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.wprig-color-swatch {
+	width: 28px;
+	height: 28px;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: 11px;
+	border: 1px solid #27272a;
+}
+
+.wprig-color-meta {
+	display: flex;
+	flex-direction: column;
+}
+
+.wprig-color-name {
+	font-size: 11px;
+	font-weight: 600;
+	color: #f4f4f5;
+}
+
+.wprig-color-ratio {
+	font-size: 10px;
+	color: #a1a1aa;
+}
+
+.wprig-action-bar {
+	display: flex;
+	gap: 8px;
+	margin-top: 6px;
+}
+
+/* On-Page Highlight & Drag Overlays */
+.wprig-hover-overlay {
+	position: fixed;
+	border: 2px dashed #0070f3;
+	background: rgba(0, 112, 243, 0.1);
+	pointer-events: none;
+	z-index: 2147483646;
+	box-sizing: border-box;
+	transition: all 0.05s ease-out;
+}
+
+.wprig-drag-overlay {
+	position: fixed;
+	border: 2px dashed #38bdf8;
+	background: rgba(56, 189, 248, 0.25);
+	pointer-events: none;
+	z-index: 2147483647;
+	box-sizing: border-box;
+}
+
+.wprig-selected-overlay {
+	position: fixed;
+	border: 2px solid #10b981;
+	background: rgba(16, 185, 129, 0.12);
+	pointer-events: none;
+	z-index: 2147483646;
+	box-sizing: border-box;
+}
+
+.wprig-overlay-badge {
+	position: absolute;
+	top: -22px;
+	left: -2px;
+	background: #09090b;
+	color: #ffffff;
+	font-size: 10px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	padding: 2px 6px;
+	border-radius: 4px;
+	border: 1px solid #27272a;
+	white-space: nowrap;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Controls Bar, Search Bar & Dropdown Selects */
+.wprig-controls-bar {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-bottom: 12px;
+}
+
+.wprig-search-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.wprig-search-icon {
+	position: absolute;
+	left: 10px;
+	color: #a1a1aa;
+	pointer-events: none;
+	width: 14px;
+	height: 14px;
+}
+
+.wprig-search-input {
+	width: 100%;
+	height: 34px;
+	padding: 0 10px 0 32px;
+	background: #18181b;
+	border: 1px solid #27272a;
+	border-radius: 6px;
+	color: #f4f4f5;
+	font-size: 12px;
+	outline: none;
+	transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wprig-search-input::placeholder {
+	color: #a1a1aa;
+}
+
+.wprig-search-input:focus {
+	border-color: #38bdf8;
+	box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+	background: #09090b;
+}
+
+.wprig-filter-group {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+}
+
+.wprig-select-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.wprig-filter-select {
+	width: 100%;
+	height: 32px;
+	padding: 0 24px 0 10px;
+	background: #18181b;
+	border: 1px solid #27272a;
+	border-radius: 6px;
+	color: #f4f4f5;
+	font-size: 11px;
+	font-weight: 500;
+	outline: none;
+	cursor: pointer;
+	-webkit-appearance: none;
+	appearance: none;
+	background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+	background-repeat: no-repeat;
+	background-position: right 8px center;
+	transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wprig-filter-select:hover {
+	background-color: #27272a;
+	border-color: #3f3f46;
+}
+
+.wprig-filter-select:focus {
+	border-color: #38bdf8;
+	box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.wprig-filter-select option {
+	background: #18181b;
+	color: #f4f4f5;
+	padding: 6px;
+}
+
+/* On-Page A11y Target Overlays */
+.wprig-a11y-target-overlay {
+	position: fixed;
+	pointer-events: auto;
+	box-sizing: border-box;
+	border-radius: 4px;
+	transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+	z-index: 2147483644;
+	cursor: pointer;
+}
+
+/* Subtle Unselected State for All Flagged Elements when A11y Panel is Open */
+.wprig-a11y-target-overlay--subtle.wprig-a11y-target-overlay--error {
+	border: 1.5px dashed rgba(239, 68, 68, 0.75);
+	background: rgba(239, 68, 68, 0.08);
+}
+
+.wprig-a11y-target-overlay--subtle.wprig-a11y-target-overlay--warning {
+	border: 1.5px dashed rgba(245, 158, 11, 0.75);
+	background: rgba(245, 158, 11, 0.08);
+}
+
+.wprig-a11y-target-overlay--subtle:hover {
+	opacity: 1;
+	border-style: solid;
+	box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+/* Full Opacity Selected State */
+.wprig-a11y-target-overlay--selected {
+	z-index: 2147483646;
+}
+
+.wprig-a11y-target-overlay--selected.wprig-a11y-target-overlay--error {
+	border: 2px solid #ef4444;
+	background: rgba(239, 68, 68, 0.22);
+	box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.35), 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.wprig-a11y-target-overlay--selected.wprig-a11y-target-overlay--warning {
+	border: 2px solid #f59e0b;
+	background: rgba(245, 158, 11, 0.22);
+	box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.35), 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.wprig-a11y-overlay-badge {
+	position: absolute;
+	top: -24px;
+	left: 0;
+	background: #09090b;
+	color: #f4f4f5;
+	font-size: 10px;
+	font-weight: 600;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	padding: 2px 6px;
+	border-radius: 4px;
+	border: 1px solid #27272a;
+	white-space: nowrap;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	pointer-events: none;
+}
