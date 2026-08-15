@@ -95,6 +95,81 @@ const PurgeIcon = () => (
 	</svg>
 );
 
+const SunIcon = () => (
+	<svg
+		className="wprig-theme-icon"
+		viewBox="0 0 24 24"
+		width="14"
+		height="14"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<circle cx="12" cy="12" r="5" />
+		<line x1="12" y1="1" x2="12" y2="3" />
+		<line x1="12" y1="21" x2="12" y2="23" />
+		<line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+		<line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+		<line x1="1" y1="12" x2="3" y2="12" />
+		<line x1="21" y1="12" x2="23" y2="12" />
+		<line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+		<line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+	</svg>
+);
+
+const MoonIcon = () => (
+	<svg
+		className="wprig-theme-icon"
+		viewBox="0 0 24 24"
+		width="14"
+		height="14"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+	</svg>
+);
+
+const SystemIcon = () => (
+	<svg
+		className="wprig-theme-icon"
+		viewBox="0 0 24 24"
+		width="14"
+		height="14"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+		<line x1="8" y1="21" x2="16" y2="21" />
+		<line x1="12" y1="17" x2="12" y2="21" />
+	</svg>
+);
+
+const SyncIcon = () => (
+	<svg
+		className="wprig-theme-icon"
+		viewBox="0 0 24 24"
+		width="14"
+		height="14"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path d="M21.5 2v6h-6" />
+		<path d="M21.34 15.57a10 10 0 1 1-.57-8.38l1.67-1.67" />
+	</svg>
+);
+
 const SearchIcon = () => (
 	<svg
 		className="wprig-search-icon"
@@ -434,7 +509,171 @@ function getEffectiveBackgroundColor( element: HTMLElement ): string {
 		}
 		current = current.parentElement;
 	}
-	return 'rgb(255, 255, 255)';
+	const rootStyle = window.getComputedStyle( document.documentElement );
+	const isDark =
+		rootStyle.colorScheme === 'dark' ||
+		document.documentElement.getAttribute( 'data-wprig-page-theme' ) ===
+			'dark' ||
+		document.documentElement.classList.contains( 'dark' );
+	return isDark ? 'rgb(9, 9, 11)' : 'rgb(255, 255, 255)';
+}
+
+function initMatchMediaPatch(): void {
+	if (
+		typeof window === 'undefined' ||
+		! window.matchMedia ||
+		( window as unknown as { _wprigMatchMediaPatched?: boolean } )
+			._wprigMatchMediaPatched
+	) {
+		return;
+	}
+
+	const originalMatchMedia = window.matchMedia.bind( window );
+	(
+		window as unknown as { _wprigMatchMediaPatched?: boolean }
+	 )._wprigMatchMediaPatched = true;
+
+	window.matchMedia = function ( query: string ): MediaQueryList {
+		const mql = originalMatchMedia( query );
+		if (
+			typeof query === 'string' &&
+			query.includes( 'prefers-color-scheme' )
+		) {
+			const currentTheme = document.documentElement.getAttribute(
+				'data-wprig-page-theme'
+			);
+
+			if ( currentTheme === 'dark' || currentTheme === 'light' ) {
+				const isDarkQuery = query.includes( 'dark' );
+				const matches = isDarkQuery
+					? currentTheme === 'dark'
+					: currentTheme === 'light';
+
+				return {
+					matches,
+					media: mql.media,
+					onchange: mql.onchange,
+					addListener: mql.addListener
+						? mql.addListener.bind( mql )
+						: () => {},
+					removeListener: mql.removeListener
+						? mql.removeListener.bind( mql )
+						: () => {},
+					addEventListener: mql.addEventListener
+						? mql.addEventListener.bind( mql )
+						: () => {},
+					removeEventListener: mql.removeEventListener
+						? mql.removeEventListener.bind( mql )
+						: () => {},
+					dispatchEvent: mql.dispatchEvent
+						? mql.dispatchEvent.bind( mql )
+						: () => true,
+				} as MediaQueryList;
+			}
+		}
+		return mql;
+	};
+}
+
+function syncPrefersColorSchemeRules(
+	mode: 'auto' | 'light' | 'dark'
+): string {
+	if ( mode === 'auto' || typeof document === 'undefined' ) {
+		return '';
+	}
+
+	let extraCss = '';
+	const targetAttr = `data-wprig-page-theme="${ mode }"`;
+
+	try {
+		const stylesheets = Array.from( document.styleSheets );
+		for ( const sheet of stylesheets ) {
+			if (
+				sheet.ownerNode &&
+				( sheet.ownerNode as HTMLElement ).id ===
+					'wprig-page-theme-style'
+			) {
+				continue;
+			}
+			try {
+				const rules = sheet.cssRules || sheet.rules;
+				if ( ! rules ) {
+					continue;
+				}
+				for ( const rule of Array.from( rules ) ) {
+					if ( rule instanceof CSSMediaRule ) {
+						const mediaText = rule.media.mediaText;
+						if ( mediaText.includes( 'prefers-color-scheme' ) ) {
+							const isDarkMedia = mediaText.includes( 'dark' );
+							const isLightMedia = mediaText.includes( 'light' );
+
+							if (
+								( mode === 'dark' && isDarkMedia ) ||
+								( mode === 'light' && isLightMedia )
+							) {
+								for ( const innerRule of Array.from(
+									rule.cssRules
+								) ) {
+									const cssText = innerRule.cssText;
+									const braceIdx = cssText.indexOf( '{' );
+									if ( braceIdx !== -1 ) {
+										const selectorPart = cssText
+											.slice( 0, braceIdx )
+											.trim();
+										const bodyPart =
+											cssText.slice( braceIdx );
+
+										const transformedSelectors =
+											selectorPart
+												.split( ',' )
+												.map( ( sel ) => {
+													const trimmed = sel.trim();
+													if (
+														trimmed === ':root' ||
+														trimmed === 'html'
+													) {
+														return `html[${ targetAttr }]`;
+													}
+													if (
+														trimmed.startsWith(
+															'html'
+														)
+													) {
+														return trimmed.replace(
+															/^html/,
+															`html[${ targetAttr }]`
+														);
+													}
+													if (
+														trimmed.startsWith(
+															':root'
+														)
+													) {
+														return trimmed.replace(
+															/^:root/,
+															`html[${ targetAttr }]`
+														);
+													}
+													return `html[${ targetAttr }] ${ trimmed }`;
+												} )
+												.join( ', ' );
+
+										extraCss += `${ transformedSelectors } ${ bodyPart }\n`;
+									}
+								}
+							}
+						}
+					}
+				}
+			} catch ( e ) {
+				// Cross-origin CORS restricted stylesheet, ignore safely
+			}
+		}
+	} catch ( e ) {
+		// ignore
+	}
+
+	return extraCss;
 }
 
 function generateColorRemediations(
@@ -828,6 +1067,203 @@ const DevToolbarApp: React.FC = () => {
 	const [ isSelecting, setIsSelecting ] = useState< boolean >( false );
 	const [ isClosed, setIsClosed ] = useState< boolean >( false );
 
+	// Page Theme & Toolbar Theme State
+	const [ pageTheme, setPageTheme ] = useState< 'auto' | 'light' | 'dark' >(
+		() => {
+			try {
+				const saved = localStorage.getItem( 'wprig_page_theme' );
+				if (
+					saved === 'light' ||
+					saved === 'dark' ||
+					saved === 'auto'
+				) {
+					return saved;
+				}
+			} catch ( e ) {
+				// ignore
+			}
+			return 'auto';
+		}
+	);
+
+	const [ toolbarTheme, setToolbarTheme ] = useState<
+		'dark' | 'light' | 'sync'
+	>( () => {
+		try {
+			const saved = localStorage.getItem( 'wprig_toolbar_theme' );
+			if ( saved === 'dark' || saved === 'light' || saved === 'sync' ) {
+				return saved;
+			}
+		} catch ( e ) {
+			// ignore
+		}
+		return 'dark';
+	} );
+
+	const isSystemDark =
+		typeof window !== 'undefined' &&
+		window.matchMedia &&
+		window.matchMedia( '(prefers-color-scheme: dark)' ).matches;
+
+	let effectivePageTheme: 'dark' | 'light' = 'light';
+	if ( pageTheme === 'auto' ) {
+		effectivePageTheme = isSystemDark ? 'dark' : 'light';
+	} else {
+		effectivePageTheme = pageTheme;
+	}
+
+	const effectiveToolbarTheme =
+		toolbarTheme === 'sync' ? effectivePageTheme : toolbarTheme;
+
+	const updateHostPageTheme = useCallback(
+		( mode: 'auto' | 'light' | 'dark' ) => {
+			initMatchMediaPatch();
+
+			const root = document.documentElement;
+			const body = document.body;
+			let styleEl = document.getElementById( 'wprig-page-theme-style' );
+			let metaColorScheme = document.querySelector(
+				'meta[name="color-scheme"]'
+			);
+
+			if ( ! metaColorScheme ) {
+				metaColorScheme = document.createElement( 'meta' );
+				metaColorScheme.setAttribute( 'name', 'color-scheme' );
+				document.head.appendChild( metaColorScheme );
+			}
+
+			if ( mode === 'auto' ) {
+				root.removeAttribute( 'data-wprig-page-theme' );
+				root.removeAttribute( 'data-theme' );
+				root.removeAttribute( 'data-bs-theme' );
+				root.style.colorScheme = '';
+
+				metaColorScheme.setAttribute( 'content', 'light dark' );
+
+				const removeClasses = [
+					'wprig-page-dark',
+					'wprig-page-light',
+					'dark',
+					'light',
+					'theme-dark',
+					'theme-light',
+					'is-dark-theme',
+					'is-light-theme',
+				];
+				root.classList.remove( ...removeClasses );
+				if ( body ) {
+					body.removeAttribute( 'data-theme' );
+					body.removeAttribute( 'data-bs-theme' );
+					body.classList.remove( ...removeClasses );
+				}
+				if ( styleEl ) {
+					styleEl.remove();
+				}
+			} else {
+				root.setAttribute( 'data-wprig-page-theme', mode );
+				root.setAttribute( 'data-theme', mode );
+				root.setAttribute( 'data-bs-theme', mode );
+				root.style.colorScheme = mode;
+
+				metaColorScheme.setAttribute( 'content', mode );
+
+				const addClasses =
+					mode === 'dark'
+						? [
+								'wprig-page-dark',
+								'dark',
+								'theme-dark',
+								'is-dark-theme',
+						  ]
+						: [
+								'wprig-page-light',
+								'light',
+								'theme-light',
+								'is-light-theme',
+						  ];
+				const removeClasses =
+					mode === 'dark'
+						? [
+								'wprig-page-light',
+								'light',
+								'theme-light',
+								'is-light-theme',
+						  ]
+						: [
+								'wprig-page-dark',
+								'dark',
+								'theme-dark',
+								'is-dark-theme',
+						  ];
+
+				root.classList.remove( ...removeClasses );
+				root.classList.add( ...addClasses );
+
+				if ( body ) {
+					body.setAttribute( 'data-theme', mode );
+					body.setAttribute( 'data-bs-theme', mode );
+					body.classList.remove( ...removeClasses );
+					body.classList.add( ...addClasses );
+				}
+
+				if ( ! styleEl ) {
+					styleEl = document.createElement( 'style' );
+					styleEl.id = 'wprig-page-theme-style';
+					document.head.appendChild( styleEl );
+				}
+
+				const extraMediaRules = syncPrefersColorSchemeRules( mode );
+
+				if ( mode === 'dark' ) {
+					styleEl.textContent = `
+						html[data-wprig-page-theme="dark"],
+						html[data-wprig-page-theme="dark"] body {
+							color-scheme: dark !important;
+						}
+						html[data-wprig-page-theme="dark"]:not([class*="theme-custom"]),
+						html[data-wprig-page-theme="dark"] body:not([class*="theme-custom"]) {
+							background-color: #09090b !important;
+							color: #f4f4f5 !important;
+						}
+						html[data-wprig-page-theme="dark"] a {
+							color: #38bdf8;
+						}
+						html[data-wprig-page-theme="dark"] input,
+						html[data-wprig-page-theme="dark"] select,
+						html[data-wprig-page-theme="dark"] textarea,
+						html[data-wprig-page-theme="dark"] button {
+							color-scheme: dark !important;
+						}
+						${ extraMediaRules }
+					`;
+				} else {
+					styleEl.textContent = `
+						html[data-wprig-page-theme="light"],
+						html[data-wprig-page-theme="light"] body {
+							color-scheme: light !important;
+						}
+						html[data-wprig-page-theme="light"]:not([class*="theme-custom"]),
+						html[data-wprig-page-theme="light"] body:not([class*="theme-custom"]) {
+							background-color: #ffffff !important;
+							color: #09090b !important;
+						}
+						html[data-wprig-page-theme="light"] a {
+							color: #0284c7;
+						}
+						html[data-wprig-page-theme="light"] input,
+						html[data-wprig-page-theme="light"] select,
+						html[data-wprig-page-theme="light"] textarea,
+						html[data-wprig-page-theme="light"] button {
+							color-scheme: light !important;
+						}
+						${ extraMediaRules }
+					`;
+				}
+			}
+		},
+		[]
+	);
+
 	// Canvas Selection & Overlay State
 	const [ hoverElement, setHoverElement ] = useState< HTMLElement | null >(
 		null
@@ -1215,6 +1651,30 @@ const DevToolbarApp: React.FC = () => {
 	}, [] );
 
 	// Side Effects
+	useEffect( () => {
+		updateHostPageTheme( pageTheme );
+		try {
+			localStorage.setItem( 'wprig_page_theme', pageTheme );
+		} catch ( e ) {
+			// ignore
+		}
+
+		const timer = setTimeout( () => {
+			setIssues( runStrictA11yAudit() );
+			setOverlayTick( ( t ) => t + 1 );
+		}, 60 );
+
+		return () => clearTimeout( timer );
+	}, [ pageTheme, updateHostPageTheme ] );
+
+	useEffect( () => {
+		try {
+			localStorage.setItem( 'wprig_toolbar_theme', toolbarTheme );
+		} catch ( e ) {
+			// ignore
+		}
+	}, [ toolbarTheme ] );
+
 	useEffect( () => {
 		try {
 			localStorage.setItem(
@@ -1693,7 +2153,9 @@ Please update the relevant PostCSS source file under \`assets/css/src/\` to reso
 		: null;
 
 	return (
-		<div className="wprig-toolbar-container">
+		<div
+			className={ `wprig-toolbar-container wprig-tb-theme-${ effectiveToolbarTheme }` }
+		>
 			{ /* Canvas Overlays */ }
 			{ hoverRectCss && isSelecting && (
 				<div
@@ -1911,6 +2373,100 @@ Please update the relevant PostCSS source file under \`assets/css/src/\` to reso
 						<PurgeIcon />
 						<span>Purge Cache</span>
 					</button>
+
+					<div className="wprig-theme-controls">
+						<div
+							className="wprig-theme-toggle-group"
+							title="Page Color Scheme (Host Window)"
+						>
+							<span className="wprig-theme-label">Page:</span>
+							<button
+								type="button"
+								className={ `wprig-theme-btn ${
+									pageTheme === 'light'
+										? 'wprig-theme-btn--active'
+										: ''
+								}` }
+								title="Page Light Mode"
+								aria-label="Switch page to Light Mode"
+								onClick={ () => setPageTheme( 'light' ) }
+							>
+								<SunIcon />
+							</button>
+							<button
+								type="button"
+								className={ `wprig-theme-btn ${
+									pageTheme === 'dark'
+										? 'wprig-theme-btn--active'
+										: ''
+								}` }
+								title="Page Dark Mode"
+								aria-label="Switch page to Dark Mode"
+								onClick={ () => setPageTheme( 'dark' ) }
+							>
+								<MoonIcon />
+							</button>
+							<button
+								type="button"
+								className={ `wprig-theme-btn ${
+									pageTheme === 'auto'
+										? 'wprig-theme-btn--active'
+										: ''
+								}` }
+								title="Page System/Auto Mode"
+								aria-label="Switch page to System Mode"
+								onClick={ () => setPageTheme( 'auto' ) }
+							>
+								<SystemIcon />
+							</button>
+						</div>
+
+						<div
+							className="wprig-theme-toggle-group"
+							title="Toolbar UI Theme"
+						>
+							<span className="wprig-theme-label">Toolbar:</span>
+							<button
+								type="button"
+								className={ `wprig-theme-btn ${
+									toolbarTheme === 'dark'
+										? 'wprig-theme-btn--active'
+										: ''
+								}` }
+								title="Toolbar Dark Theme"
+								aria-label="Set Toolbar to Dark Theme"
+								onClick={ () => setToolbarTheme( 'dark' ) }
+							>
+								<MoonIcon />
+							</button>
+							<button
+								type="button"
+								className={ `wprig-theme-btn ${
+									toolbarTheme === 'light'
+										? 'wprig-theme-btn--active'
+										: ''
+								}` }
+								title="Toolbar Light Theme"
+								aria-label="Set Toolbar to Light Theme"
+								onClick={ () => setToolbarTheme( 'light' ) }
+							>
+								<SunIcon />
+							</button>
+							<button
+								type="button"
+								className={ `wprig-theme-btn ${
+									toolbarTheme === 'sync'
+										? 'wprig-theme-btn--active'
+										: ''
+								}` }
+								title="Sync Toolbar with Page Theme"
+								aria-label="Sync Toolbar with Page Theme"
+								onClick={ () => setToolbarTheme( 'sync' ) }
+							>
+								<SyncIcon />
+							</button>
+						</div>
+					</div>
 
 					<button
 						type="button"
@@ -2442,7 +2998,8 @@ Please update the relevant PostCSS source file under \`assets/css/src/\` to reso
 						onTouchStart={ handlePanelHeaderTouchStart }
 					>
 						<h3 className="wprig-panel-title">
-							<DragGripIcon />♿ Accessibility Inspector
+							<DragGripIcon />
+							Accessibility Inspector
 						</h3>
 						<button
 							type="button"
@@ -2462,6 +3019,62 @@ Please update the relevant PostCSS source file under \`assets/css/src/\` to reso
 							{ `Found ${ filteredIssues.length } accessibility ${
 								filteredIssues.length === 1 ? 'issue' : 'issues'
 							}.` }
+						</div>
+
+						<div className="wprig-a11y-theme-banner">
+							<div className="wprig-a11y-theme-info">
+								<span className="wprig-a11y-theme-title">
+									Page Mode Contrast Auditor
+								</span>
+								<span className="wprig-a11y-theme-desc">
+									Testing Page in{ ' ' }
+									<strong>
+										{ effectivePageTheme === 'dark'
+											? '🌙 Dark Mode'
+											: '☀️ Light Mode' }
+									</strong>{ ' ' }
+									(
+									{ pageTheme === 'auto'
+										? 'System Default'
+										: 'Forced Mode' }
+									)
+								</span>
+							</div>
+							<div className="wprig-a11y-theme-buttons">
+								<button
+									type="button"
+									className={ `wprig-btn-mode ${
+										pageTheme === 'light'
+											? 'wprig-btn-mode--active'
+											: ''
+									}` }
+									onClick={ () => setPageTheme( 'light' ) }
+								>
+									<SunIcon /> Light
+								</button>
+								<button
+									type="button"
+									className={ `wprig-btn-mode ${
+										pageTheme === 'dark'
+											? 'wprig-btn-mode--active'
+											: ''
+									}` }
+									onClick={ () => setPageTheme( 'dark' ) }
+								>
+									<MoonIcon /> Dark
+								</button>
+								<button
+									type="button"
+									className={ `wprig-btn-mode ${
+										pageTheme === 'auto'
+											? 'wprig-btn-mode--active'
+											: ''
+									}` }
+									onClick={ () => setPageTheme( 'auto' ) }
+								>
+									<SystemIcon /> Auto
+								</button>
+							</div>
 						</div>
 
 						<div className="wprig-audit-summary">

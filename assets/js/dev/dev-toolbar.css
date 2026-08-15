@@ -1192,3 +1192,285 @@ textarea:focus-visible,
 	gap: 4px;
 	pointer-events: none;
 }
+
+/* Theme Controls in Dock Navigation */
+.wprig-theme-controls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-left: auto;
+	margin-right: 8px;
+}
+
+.wprig-theme-toggle-group {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid #27272a;
+	border-radius: 6px;
+	padding: 2px 4px;
+}
+
+.wprig-theme-label {
+	font-size: 10px;
+	color: #a1a1aa;
+	font-weight: 500;
+	margin-right: 2px;
+	user-select: none;
+}
+
+.wprig-theme-btn {
+	background: transparent;
+	border: none;
+	color: #71717a;
+	padding: 3px 5px;
+	border-radius: 4px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.15s ease;
+}
+
+.wprig-theme-btn:hover {
+	color: #f4f4f5;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.wprig-theme-btn--active {
+	color: #38bdf8;
+	background: rgba(56, 189, 248, 0.15);
+	font-weight: 600;
+}
+
+/* A11y Theme Banner */
+.wprig-a11y-theme-banner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #18181b;
+	border: 1px solid #27272a;
+	border-radius: 8px;
+	padding: 10px 12px;
+	margin-bottom: 12px;
+}
+
+.wprig-a11y-theme-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.wprig-a11y-theme-title {
+	font-size: 12px;
+	font-weight: 600;
+	color: #f4f4f5;
+}
+
+.wprig-a11y-theme-desc {
+	font-size: 11px;
+	color: #a1a1aa;
+}
+
+.wprig-a11y-theme-buttons {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	background: #09090b;
+	border: 1px solid #27272a;
+	border-radius: 6px;
+	padding: 3px;
+}
+
+.wprig-btn-mode {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: transparent;
+	border: none;
+	color: #a1a1aa;
+	font-size: 11px;
+	font-weight: 500;
+	padding: 4px 8px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.wprig-btn-mode:hover {
+	color: #f4f4f5;
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.wprig-btn-mode--active {
+	color: #38bdf8;
+	background: rgba(56, 189, 248, 0.18);
+	font-weight: 600;
+}
+
+/* Developer Toolbar Light Theme (.wprig-tb-theme-light) */
+.wprig-tb-theme-light {
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-toolbar-dock {
+	background: #ffffff;
+	border-top-color: #e4e4e7;
+	color: #09090b;
+	box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.wprig-tb-theme-light .wprig-toolbar-brand {
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-toolbar-tab {
+	color: #52525b;
+}
+
+.wprig-tb-theme-light .wprig-toolbar-tab:hover {
+	color: #09090b;
+	background: rgba(0, 0, 0, 0.05);
+}
+
+.wprig-tb-theme-light .wprig-toolbar-tab--active {
+	color: #0284c7;
+	background: rgba(2, 132, 199, 0.08);
+	border-color: rgba(2, 132, 199, 0.25);
+}
+
+.wprig-tb-theme-light .wprig-toolbar-reopen {
+	background: #ffffff;
+	border-color: #e4e4e7;
+	color: #0284c7;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(2, 132, 199, 0.2);
+}
+
+.wprig-tb-theme-light .wprig-toolbar-panel {
+	background: #ffffff;
+	border-color: #e4e4e7;
+	color: #09090b;
+	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.wprig-tb-theme-light .wprig-panel-header {
+	background: #f4f4f5;
+	border-bottom-color: #e4e4e7;
+}
+
+.wprig-tb-theme-light .wprig-panel-title {
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-panel-close {
+	color: #71717a;
+}
+
+.wprig-tb-theme-light .wprig-panel-close:hover {
+	color: #09090b;
+	background: rgba(0, 0, 0, 0.06);
+}
+
+.wprig-tb-theme-light .wprig-card,
+.wprig-tb-theme-light .wprig-control-group,
+.wprig-tb-theme-light .wprig-remediation-suite,
+.wprig-tb-theme-light .wprig-a11y-theme-banner {
+	background: #f4f4f5;
+	border-color: #e4e4e7;
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-card-title,
+.wprig-tb-theme-light .wprig-a11y-theme-title {
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-issue-card {
+	background: #ffffff;
+	border-color: #e4e4e7;
+}
+
+.wprig-tb-theme-light .wprig-issue-message {
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-issue-detail {
+	color: #52525b;
+}
+
+.wprig-tb-theme-light .wprig-search-input,
+.wprig-tb-theme-light .wprig-filter-select,
+.wprig-tb-theme-light .wprig-color-hex-input {
+	background: #ffffff;
+	border-color: #d4d4d8;
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-theme-toggle-group,
+.wprig-tb-theme-light .wprig-a11y-theme-buttons {
+	background: #ffffff;
+	border-color: #d4d4d8;
+}
+
+.wprig-tb-theme-light .wprig-theme-label,
+.wprig-tb-theme-light .wprig-a11y-theme-desc {
+	color: #52525b;
+}
+
+.wprig-tb-theme-light .wprig-theme-btn,
+.wprig-tb-theme-light .wprig-btn-mode {
+	color: #71717a;
+}
+
+.wprig-tb-theme-light .wprig-theme-btn:hover,
+.wprig-tb-theme-light .wprig-btn-mode:hover {
+	color: #09090b;
+	background: rgba(0, 0, 0, 0.05);
+}
+
+.wprig-tb-theme-light .wprig-theme-btn--active,
+.wprig-tb-theme-light .wprig-btn-mode--active {
+	color: #0284c7;
+	background: rgba(2, 132, 199, 0.12);
+}
+
+.wprig-tb-theme-light .wprig-btn {
+	background: #e4e4e7;
+	border-color: #d4d4d8;
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-btn:hover {
+	background: #d4d4d8;
+}
+
+.wprig-tb-theme-light .wprig-btn--primary {
+	background: #0284c7;
+	border-color: #0284c7;
+	color: #ffffff;
+}
+
+.wprig-tb-theme-light .wprig-btn--primary:hover {
+	background: #0369a1;
+}
+
+.wprig-tb-theme-light .wprig-btn-action {
+	background: #ffffff;
+	border-color: #d4d4d8;
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-metric-label {
+	color: #52525b;
+}
+
+.wprig-tb-theme-light .wprig-metric-value {
+	color: #09090b;
+}
+
+.wprig-tb-theme-light .wprig-code-preview {
+	background: #ffffff;
+	border-color: #e4e4e7;
+	color: #09090b;
+}
