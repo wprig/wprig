@@ -11,10 +11,14 @@ namespace WP_Rig\WP_Rig\Dev_Tools;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Versioning_Trait;
+use function WP_Rig\WP_Rig\get_config;
 use function add_action;
 use function add_filter;
 use function wp_enqueue_script;
 use function wp_enqueue_style;
+use function wp_localize_script;
+use function admin_url;
+use function wp_create_nonce;
 use function get_theme_file_uri;
 use function get_theme_file_path;
 use function esc_html;
@@ -44,6 +48,15 @@ class Component implements Component_Interface {
 	 * @return bool True if debug mode is active or local development environment.
 	 */
 	public static function is_active(): bool {
+		$config = get_config( 'config.json' );
+		if ( isset( $config['dev']['devTools'] ) && false === $config['dev']['devTools'] ) {
+			return false;
+		}
+
+		if ( isset( $config['dev']['devTools'] ) && true === $config['dev']['devTools'] ) {
+			return true;
+		}
+
 		// Return true if WPRIG_DEBUG is defined and true.
 		if ( defined( 'WPRIG_DEBUG' ) && WPRIG_DEBUG ) {
 			return true;
@@ -75,6 +88,24 @@ class Component implements Component_Interface {
 
 		// Enqueue the Developer Toolbar scripts and styles in the footer.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+
+		// Register AJAX handler for cache purging.
+		add_action( 'wp_ajax_wprig_purge_cache', array( $this, 'ajax_purge_cache' ) );
+	}
+
+	/**
+	 * Handles AJAX request to purge theme transients and object cache.
+	 */
+	public function ajax_purge_cache() {
+		if ( ! self::is_active() ) {
+			wp_send_json_error( array( 'message' => 'Dev tools not active' ) );
+		}
+
+		if ( function_exists( 'wp_cache_flush' ) ) {
+			wp_cache_flush();
+		}
+
+		wp_send_json_success( array( 'message' => 'Caches purged successfully' ) );
 	}
 
 	/**
@@ -138,6 +169,16 @@ class Component implements Component_Interface {
 				array(),
 				$this->get_asset_version( $js_path ),
 				true // Load in footer.
+			);
+
+			wp_localize_script(
+				'wprig-dev-toolbar',
+				'wprigDevToolbarData',
+				array(
+					'cssUri'  => $css_uri,
+					'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+					'nonce'   => wp_create_nonce( 'wprig_dev_toolbar_nonce' ),
+				)
 			);
 		}
 

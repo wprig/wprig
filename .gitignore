@@ -7,9 +7,12 @@
 /assets/css/*
 !/assets/css/src/
 !/assets/css/vendor/
+!/assets/css/dev-toolbar.css
 !/assets/js/
 /assets/js/*
 !/assets/js/src/
+!/assets/js/dev/
+!/assets/js/build/
 !/assets/js/vendor/
 !/assets/images/
 /assets/images/*

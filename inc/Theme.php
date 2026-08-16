@@ -28,6 +28,13 @@ class Theme {
 	protected $components = array();
 
 	/**
+	 * Active Theme instance.
+	 *
+	 * @var Theme|null
+	 */
+	protected static ?Theme $instance = null;
+
+	/**
 	 * The template tags instance, providing access to all available template tags.
 	 *
 	 * @var \WP_Rig\WP_Rig\Template_Tags
@@ -53,6 +60,8 @@ class Theme {
 	 * @throws InvalidArgumentException Thrown if one of the $components does not implement Component_Interface.
 	 */
 	public function __construct( array $components = array() ) {
+		self::$instance = $this;
+
 		if ( array() === $components ) {
 			$components = $this->get_default_components();
 		}
@@ -110,6 +119,15 @@ class Theme {
 				$component->initialize();
 			}
 		);
+	}
+
+	/**
+	 * Retrieves the active Theme instance if one exists.
+	 *
+	 * @return Theme|null Theme instance or null.
+	 */
+	public static function get_instance(): ?Theme {
+		return self::$instance;
 	}
 
 	/**
