@@ -12,6 +12,7 @@ use WP_Customize_control;
 use WP_Customize_Date_Time_Control;
 use WP_Customize_Media_Control;
 use WP_Rig\WP_Rig\Component_Interface;
+use WP_Rig\WP_Rig\Classic_Component_Trait;
 use function WP_Rig\WP_Rig\get_config_content;
 use function add_action;
 use function get_theme_file_uri;
@@ -21,7 +22,7 @@ use function get_theme_file_uri;
  */
 class Component implements Component_Interface {
 
-
+	use Classic_Component_Trait;
 
 	/**
 	 * All theme settings - from JSON file.

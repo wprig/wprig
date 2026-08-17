@@ -295,4 +295,29 @@ export default async function convertToBlockTheme( options = {} ) {
 			}
 		}
 	}
+
+	// 5) Update config/config.json
+	const configPath = path.resolve( THEME_ROOT, 'config/config.json' );
+	if ( fsExtra.existsSync( configPath ) ) {
+		if ( options.dryRun ) {
+			console.log(
+				'Dry-run: would update config/config.json themeType to block-based and enableBlocks to true'
+			);
+		} else {
+			try {
+				const config = await fsExtra.readJson( configPath );
+				config.theme = config.theme || {};
+				config.theme.themeType = 'block-based';
+				config.theme.enableBlocks = true;
+				await fsExtra.writeJson( configPath, config, { spaces: 2 } );
+				console.log(
+					'Updated config/config.json: themeType set to block-based, enableBlocks set to true.'
+				);
+			} catch ( err ) {
+				console.error(
+					`Error updating config/config.json: ${ err.message }`
+				);
+			}
+		}
+	}
 }

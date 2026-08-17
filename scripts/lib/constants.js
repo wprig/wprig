@@ -171,6 +171,26 @@ if ( fs.existsSync( paths.blocks.srcDir ) ) {
 	);
 }
 
+// Add FSE/Universal theme templates, template parts, and theme.json to export if in a universal or block-based theme type.
+const themeType = config?.theme?.themeType || 'classic';
+if ( themeType === 'universal' || themeType === 'block-based' ) {
+	if ( fs.existsSync( path.join( rootPath, 'templates' ) ) ) {
+		paths.export.src.push(
+			`${ rootPath }/templates/**/*.html`.replace( /\\/g, '/' )
+		);
+	}
+	if ( fs.existsSync( path.join( rootPath, 'parts' ) ) ) {
+		paths.export.src.push(
+			`${ rootPath }/parts/**/*.html`.replace( /\\/g, '/' )
+		);
+	}
+	if ( fs.existsSync( path.join( rootPath, 'theme.json' ) ) ) {
+		paths.export.src.push(
+			`${ rootPath }/theme.json`.replace( /\\/g, '/' )
+		);
+	}
+}
+
 // Override paths for production
 if ( isProd ) {
 	paths.php.dest = `${ prodThemePath }/`;

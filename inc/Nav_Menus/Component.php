@@ -20,6 +20,7 @@ namespace WP_Rig\WP_Rig\Nav_Menus;
 use WP_Post;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
+use WP_Rig\WP_Rig\Classic_Component_Trait;
 
 use function WP_Rig\WP_Rig\wp_rig;
 use function WP_Rig\WP_Rig\get_config_content;
@@ -38,6 +39,8 @@ use function wp_nav_menu;
  * * `wp_rig()->display_primary_nav_menu( array $args = array() )`
  */
 class Component implements Component_Interface, Templating_Component_Interface {
+
+	use Classic_Component_Trait;
 
 	const PRIMARY_NAV_MENU_SLUG = 'primary';
 

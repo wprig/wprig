@@ -89,6 +89,17 @@
 	color: #757575;
 }
 
+div.wp-site-blocks {
+	.site-header > .wp-block-group {
+		.site-branding {
+			flex:1;
+		}
+		.main-navigation {
+			flex: 2;
+		}
+	}
+}
+
 @media (--narrow-menu-query) {
 
 	header#masthead:has(nav) {

@@ -136,18 +136,20 @@ function createIndexHtmlWithStarterContent( templatesFolderPath ) {
 			return;
 		}
 
-		// Define Gutenberg-ready starter content.
-		const starterContent = `
-<!-- wp:header {"style":{"spacing":{"margin":{"bottom":"40px"}}}} /-->
+		// Read starter content from template HTML file in scripts/templates/index.html.
+		const templateSourcePath = path.resolve(
+			__dirname,
+			'../scripts/templates/index.html'
+		);
 
-<!-- wp:group {"layout":{"type":"constrained"}} -->
-<div class="wp-block-group">
-    <!-- wp:post-content /-->
-</div>
-<!-- /wp:group -->
+		if ( ! fs.existsSync( templateSourcePath ) ) {
+			console.error(
+				`❌ Starter template source not found at ${ templateSourcePath }`
+			);
+			return;
+		}
 
-<!-- wp:footer {"style":{"spacing":{"margin":{"top":"40px"}}}} /-->
-        `;
+		const starterContent = fs.readFileSync( templateSourcePath, 'utf8' );
 
 		// Write starter content to index.html.
 		fs.writeFileSync( indexPath, starterContent, 'utf8' );

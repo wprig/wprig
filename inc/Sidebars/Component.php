@@ -17,6 +17,7 @@ namespace WP_Rig\WP_Rig\Sidebars;
 
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
+use WP_Rig\WP_Rig\Classic_Component_Trait;
 use function add_action;
 use function add_filter;
 use function register_sidebar;
@@ -34,6 +35,8 @@ use function dynamic_sidebar;
  * @link https://developer.wordpress.org/themes/functionality/sidebars/
  */
 class Component implements Component_Interface, Templating_Component_Interface {
+
+	use Classic_Component_Trait;
 
 	const PRIMARY_SIDEBAR_SLUG = 'sidebar-1';
 
