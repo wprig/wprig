@@ -48,29 +48,4 @@ Agent: Document the custom architectural habits and patterns you and the develop
 Agent: Keep a chronological log of major design decisions, local gotchas, or unique implementations here. This prevents future agents (or yourself after a context clear) from repeating mistakes or refactoring working custom structures.
 -->
 
-### 📅 2026-07-30 - Upgraded `sharp` to 0.35.3
-- **Context:** `sharp` versions prior to 0.35.0 were vulnerable to security issues in `libvips`.
-- **Decision:** Upgraded `sharp` from `^0.33.5` to `^0.35.3`. Verified that current usage in `scripts/tasks/images.js` and `scripts/tasks/screenshotCompare.js` is compatible.
-- **Key Learning:** Dependency upgrades should be verified with targeted scripts when the full build or E2E suite is too heavy for the environment.
-
-### 📅 2026-07-27 - Added WordPress 7.0 PHP-Only Block Support
-- **Context:** The developer wanted to introduce support for the new WordPress 7.0 PHP-only block development architecture alongside the traditional React-based block scaffolding.
-- **Decision:** Updated the `block:new` CLI task in WP Rig to support a `--architecture <react|php>` option and `--php` shorthand flag. Added a specialized scaffolding branch that directly writes a schema-compliant `block.json` with `"supports": { "autoRegister": true }` and a standard `render.php` without invoking `@wordpress/create-block` or producing JS files. Updated the block building task (`buildAllBlocks`) to gracefully skip PHP-only blocks with a clean notice. Documented both architectures in `.ai/skills/gutenberg-blocks/SKILL.md` and mandated that agents ask which architecture the user wants.
-- **Key Learning:** PHP-only blocks provide a rapid, zero-build alternative for custom blocks, but they are still restricted to "plugin territory" for theme-directory submissions. They can be promoted to separate plugins using `npm run block:promote-plugin`.
-
-### 📅 2026-07-30 - Persistent Mobile Navigation for Development
-- **Context:** The mobile navigation menu (especially when using the Core Navigation block) auto-closes when DevTools are opened due to the WordPress Core Interactivity API's "close on focus loss" behavior.
-- **Decision:** Added a "Lock" mechanism to `navigation.ts`. Developers can now hold the **Alt (Option)** key when clicking the menu toggle to pin it open. A robust `MutationObserver` ensures that the `mobile-menu-open`, `nav--toggled-on`, and submenu states (`menu-item--toggled-on`) remain even if Core WP tries to remove them. Supported both theme-defined menus and Core Navigation blocks by recognizing block-specific classes like `is-menu-open` and `has-modal-open`. Added `nav--toggle-small` to Navigation blocks in PHP to ensure they are picked up by the theme's JS. A visual "LOCKED" indicator is shown on the toggle in this state.
-- **Key Learning:** When Core WordPress features (like the Interactivity API) interfere with theme-level state in a way that hinders development, a `MutationObserver` combined with a modifier-key trigger is an effective way to provide a localized "Developer Experience" override without affecting production users. Hybrid themes must bridge the gap between custom JS and Core Block JS by being inclusive with selectors and state enforcement. Use `subtree: true` in observers to catch nested state changes from external APIs.
-
-### 📅 2026-08-02 - Aligned Prettier Coding Standards Environment (wp-prettier)
-- **Context:** When running on GitHub CI, Bun's dependency deduplication resolved standard Prettier's transitive dependency to the custom `@wordpress/scripts`'s `wp-prettier` fork. This forced strict WordPress parenthetical/bracket spacing rules (`parenSpacing: true`) in CI, resulting in 327 prettier errors. Locally, however, standard Prettier was resolved, hiding these errors from local `npm run lint:js` runs.
-- **Decision:** Explicitly added `"prettier": "npm:wp-prettier@3.0.3"` under `devDependencies` in `package.json` to enforce the custom WordPress Prettier fork across all environments. Ran `bun install` followed by `npm run lint:js -- --fix` to format the five source files (`api.js`, `index.jsx`, `customizer.tsx`, `global.ts`, and `navigation.ts`).
-- **Key Learning:** Shared libraries with custom forks (like `wp-prettier` vs `prettier`) must be explicitly locked as top-level dependencies to prevent subtle local vs. CI environmental discrepancies during package resolution and dependency deduplication.
-
-### 📅 2026-08-10 - Automated Playwright and Semantic DOM Layout Inspector
-- **Context:** AI agents styling elements and debugging responsive layouts faced high token overhead and friction due to missing browser binaries and the need to take large full-screen screenshots or run multiple conversational turns of manual measurements.
-- **Decision:** Integrated automatic `playwright install chromium` inside `scripts/tasks/aiSetup.js` and created a highly detailed semantic layout inspector at `.ai/tools/inspect.js` that dumps bounding rects, spacing (margins, padding, gap), and proximity distance to adjacent siblings as a single JSON payload. Added a "Measurement-First" two-tier visual styling loop to `.ai/skills/styles/SKILL.md` to prioritize semantic measurement over screenshots, reserving screenshot-cropping as an opt-in fallback for aesthetic judgments. Enforced correctness with a comprehensive Jest test suite at `scripts/tests/inspect.test.js`.
-- **Key Learning:** Agentic DX (developer experience) can be dramatically enhanced and token costs reduced by 80%+ by shifting from "blind screenshotting" to "semantic layout measurement" as the primary local visual feedback mechanism. Path variables passed to shell commands (such as `execSync`) must always be double-quoted to prevent failure in folders containing spaces (e.g. `Local Sites`).
-
 ---

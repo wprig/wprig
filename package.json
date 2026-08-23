@@ -177,7 +177,10 @@
     "rig:pattern": "node scripts/rig.js pattern",
     "rig:localize": "node scripts/rig.js localize",
     "rig:compare": "node scripts/rig.js compare",
-    "rig:tokens": "node scripts/propagate-tokens.js"
+    "rig:tokens": "node scripts/propagate-tokens.js",
+    "block:schema": "node scripts/tasks/wpCliBridge.js schema",
+    "theme:settings": "node scripts/tasks/wpCliBridge.js settings",
+    "block:compile": "node scripts/tasks/wpCliBridge.js compile"
   },
   "dependencies": {
     "glob": "^11.1.0"

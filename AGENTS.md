@@ -12,6 +12,7 @@ Before starting, check `.ai/agent-state.md` for your status:
 ### 2. ARCHITECTURE & BUILD PIPELINE
 - **Source Files Only:** NEVER edit compiled artifacts (`.min.css`, `.min.js`, etc.). Edit only source files under `src/` directories. See [**Architecture Skill**](.ai/skills/architecture/SKILL.md).
 - **Scaffolding Tooling:** Use existing scripts (like `npm run create-rig-component` or block commands) rather than manually bootstrapping files. See [**Component Registry**](.ai/skills/component-registry/SKILL.md).
+- **Gutenberg Local Authoring:** ALWAYS use our local WP-CLI Gutenberg Bridge for block schema discovery and compiling block markup. NEVER write complex Gutenberg HTML comments manually. See [**Gutenberg Local Authoring Skill**](.ai/skills/flawless-gutenberg-fse/SKILL.md).
 
 ### 3. CONTRACT-FIRST DEVELOPMENT
 - Do not modify source files without an approved plan. You must author a `SPEC.md` in `.ai/plans/` and ask clarifying questions first to reach a >95% confidence score. See [**Feature Planning Skill**](.ai/skills/feature-planning/SKILL.md).
