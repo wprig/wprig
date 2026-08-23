@@ -8,6 +8,7 @@
 namespace WP_Rig\WP_Rig\Image_Sizes;
 
 use WP_Rig\WP_Rig\Component_Interface;
+use WP_Rig\WP_Rig\Sidebars;
 use WP_Post;
 
 use function WP_Rig\WP_Rig\wp_rig;
@@ -93,7 +94,7 @@ class Component implements Component_Interface {
 	 * @return string Responsive sizes value.
 	 */
 	private function get_responsive_sizes_attr( string $default_sizes ): string {
-		if ( wp_rig()->is_primary_sidebar_active() ) {
+		if ( class_exists( 'WP_Rig\WP_Rig\Sidebars\Component' ) && Sidebars\Component::is_active() && wp_rig()->is_primary_sidebar_active() ) {
 			return '(min-width: 960px) 75vw, 100vw';
 		}
 
