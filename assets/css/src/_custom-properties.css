@@ -18,6 +18,7 @@
 	--font-size-base: clamp(0.75rem, 0.667rem + 0.417vw, 1rem);
 	--font-size-large: clamp(1.35rem, 1.2rem + 0.75vw, 1.8rem);
 	--font-size-xlarge: clamp(1.8rem, 1.6rem + 1vw, 2.4rem);
+	/* Breakpoint (viewport.tablet) — drives the JS mobile-nav toggle */
 	--mobile-breakpoint: 782px;
 	--color-primary: #e36d60;
 	--color-secondary: #41848f;

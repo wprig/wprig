@@ -187,8 +187,11 @@ async function updateCssVariables( tokens ) {
 	}
 	spacingVars += `\t--content-width: ${ tokens.spacing[ 'content-width' ] };\n`;
 
-	// Update Breakpoints (drives the JS mobile-nav toggle; px per viewport.tablet)
+	// Update Breakpoints (drives the JS mobile-nav toggle; px per viewport.tablet).
+	// NOTE: --mobile-breakpoint is *named* "mobile" but holds the tablet
+	// (nav-collapse) value — kept for BC (D8); JS reads it directly in px.
 	let breakpointVars = '';
+	breakpointVars += `\t/* Breakpoint (viewport.tablet) — drives the JS mobile-nav toggle */\n`;
 	breakpointVars += `\t--mobile-breakpoint: ${
 		tokens.breakpoints?.tablet || '782px'
 	};\n`;
@@ -237,10 +240,21 @@ async function updateCustomMedia( tokens ) {
 		'_custom-media.css'
 	);
 
-	const mobile = parsePx( tokens.breakpoints?.mobile || '480px' );
-	const tablet = parsePx( tokens.breakpoints?.tablet || '782px' );
+	await fs.writeFile( cssPath, buildCustomMediaCss( tokens.breakpoints ) );
+}
 
-	const aliases = [
+/**
+ * Derives the 7 WP Rig @custom-media aliases from the WP 7.1 viewport
+ * breakpoints (single source of truth — see the Track B plan §4 for the mapping).
+ *
+ * @param {Object} breakpoints Viewport breakpoints { mobile, tablet } in px.
+ * @return {Array<Array<string>>} [ alias, full-query ] pairs.
+ */
+export function buildCustomMediaAliases( breakpoints = {} ) {
+	const mobile = parsePx( breakpoints.mobile || '480px' );
+	const tablet = parsePx( breakpoints.tablet || '782px' );
+
+	return [
 		[ '--narrow-menu-query', `screen and (max-width: ${ mobile }px)` ],
 		[ '--wide-menu-query', `screen and (min-width: ${ mobile + 1 }px)` ],
 		[ '--medium-query', `screen and (min-width: ${ mobile + 1 }px)` ],
@@ -249,25 +263,33 @@ async function updateCustomMedia( tokens ) {
 		[ '--tablet-menu-query', `screen and (max-width: ${ tablet }px)` ],
 		[ '--desktop-menu-query', `screen and (min-width: ${ tablet + 1 }px)` ],
 	];
+}
 
-	const body = aliases
+/**
+ * Builds the full regenerated _custom-media.css file content from viewport
+ * breakpoints.
+ *
+ * @param {Object} breakpoints Viewport breakpoints { mobile, tablet } in px.
+ * @return {string} Complete _custom-media.css source.
+ */
+export function buildCustomMediaCss( breakpoints = {} ) {
+	const mobile = breakpoints.mobile || '480px';
+	const tablet = breakpoints.tablet || '782px';
+
+	const body = buildCustomMediaAliases( breakpoints )
 		.map( ( [ name, query ] ) => `@custom-media ${ name } ${ query };` )
 		.join( '\n' );
 
-	const content = `/**
+	return `/**
  * Custom Media Queries
  * Generated from config/tokens.json "breakpoints" (single source of truth).
- * Mobile = ${ tokens.breakpoints?.mobile || '480px' }, tablet = ${
-		tokens.breakpoints?.tablet || '782px'
- }.
+ * Mobile = ${ mobile }, tablet = ${ tablet }.
  *
  * @link: https://drafts.csswg.org/mediaqueries-5/#custom-mq
  **/
 
 ${ body }
 `;
-
-	await fs.writeFile( cssPath, content );
 }
 
 /**

@@ -745,7 +745,7 @@ body.mobile-menu-open {
 	display: inline-block;
 }
 
-/* Hide injected parent-link item on desktop/wide screens (>=55em) */
+/* Hide injected parent-link item on desktop/wide screens (>=783px) */
 @media (--desktop-menu-query) {
 	.sub-menu > .menu-item--injected-parent-link {
 		display: none;

@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { buildThemeJson } from '../tasks/tokens.js';
+import {
+	buildThemeJson,
+	buildCustomMediaAliases,
+	buildCustomMediaCss,
+} from '../tasks/tokens.js';
 
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
@@ -103,6 +107,69 @@ describe( 'buildThemeJson — theme.json v3/7.1 consolidation (propagateTokens c
 		} );
 		expect( themeJson.settings.layout.contentSize ).toBe(
 			tokens.spacing[ 'content-width' ]
+		);
+	} );
+} );
+
+describe( 'buildCustomMediaAliases — §4 viewport-driven breakpoints', () => {
+	test( 'derives the exact §4 alias mapping from the 480/782 viewport defaults', () => {
+		const aliases = buildCustomMediaAliases( {
+			mobile: '480px',
+			tablet: '782px',
+		} );
+
+		expect( aliases ).toEqual( [
+			[ '--narrow-menu-query', 'screen and (max-width: 480px)' ],
+			[ '--wide-menu-query', 'screen and (min-width: 481px)' ],
+			[ '--medium-query', 'screen and (min-width: 481px)' ],
+			[ '--content-query', 'screen and (min-width: 783px)' ],
+			[ '--sidebar-query', 'screen and (min-width: 783px)' ],
+			[ '--tablet-menu-query', 'screen and (max-width: 782px)' ],
+			[ '--desktop-menu-query', 'screen and (min-width: 783px)' ],
+		] );
+	} );
+
+	test( 'falls back to 480/782 when breakpoints are missing', () => {
+		const aliases = buildCustomMediaAliases( undefined );
+
+		expect( aliases[ 0 ] ).toEqual( [
+			'--narrow-menu-query',
+			'screen and (max-width: 480px)',
+		] );
+		expect( aliases[ 5 ] ).toEqual( [
+			'--tablet-menu-query',
+			'screen and (max-width: 782px)',
+		] );
+	} );
+
+	test( 'derives min-widths from custom breakpoint values', () => {
+		const aliases = buildCustomMediaAliases( {
+			mobile: '400px',
+			tablet: '768px',
+		} );
+
+		expect( aliases[ 1 ] ).toEqual( [
+			'--wide-menu-query',
+			'screen and (min-width: 401px)',
+		] );
+		expect( aliases[ 3 ] ).toEqual( [
+			'--content-query',
+			'screen and (min-width: 769px)',
+		] );
+	} );
+
+	test( 'buildCustomMediaCss emits the full regenerated file', () => {
+		const css = buildCustomMediaCss( {
+			mobile: '480px',
+			tablet: '782px',
+		} );
+
+		expect( css ).toContain( 'Mobile = 480px, tablet = 782px.' );
+		expect( css ).toContain(
+			'@custom-media --narrow-menu-query screen and (max-width: 480px);'
+		);
+		expect( css ).toContain(
+			'@custom-media --desktop-menu-query screen and (min-width: 783px);'
 		);
 	} );
 } );
