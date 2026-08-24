@@ -109,6 +109,24 @@ describe( 'buildThemeJson — theme.json v3/7.1 consolidation (propagateTokens c
 			tokens.spacing[ 'content-width' ]
 		);
 	} );
+
+	test( 'fresh theme.json ships the G3 link interactive states in styles.elements', () => {
+		const themeJson = buildThemeJson( tokens, undefined );
+
+		// Body text references a real palette slug (not the legacy 'foreground').
+		expect( themeJson.styles.color.text ).toBe(
+			'var(--wp--preset--color--text)'
+		);
+
+		// Link interactive states use theme CSS vars (single source of truth).
+		expect( themeJson.styles.elements.link ).toEqual( {
+			color: { text: 'var(--color-link)' },
+			':visited': { color: { text: 'var(--color-link-visited)' } },
+			':hover': { color: { text: 'var(--color-link-active)' } },
+			':focus': { color: { text: 'var(--color-link-active)' } },
+			':active': { color: { text: 'var(--color-link-active)' } },
+		} );
+	} );
 } );
 
 describe( 'buildCustomMediaAliases — §4 viewport-driven breakpoints', () => {

@@ -64,6 +64,33 @@ export function buildThemeJson( tokens, existingThemeJson ) {
 				fontSizes: [],
 			},
 		},
+		styles: {
+			color: {
+				// 'text'/'background' are real palette slugs (tokens.colors).
+				text: 'var(--wp--preset--color--text)',
+				background: 'var(--wp--preset--color--background)',
+			},
+			// Link interactive states live natively in theme.json (G3) so the WP 7.1
+			// editor exposes hover/focus/active — values point at theme CSS vars
+			// (single source of truth in tokens via _custom-properties.css).
+			elements: {
+				link: {
+					color: { text: 'var(--color-link)' },
+					':visited': {
+						color: { text: 'var(--color-link-visited)' },
+					},
+					':hover': {
+						color: { text: 'var(--color-link-active)' },
+					},
+					':focus': {
+						color: { text: 'var(--color-link-active)' },
+					},
+					':active': {
+						color: { text: 'var(--color-link-active)' },
+					},
+				},
+			},
+		},
 	};
 
 	// Upgrade to theme.json v3 / WP 7.1 schema (single source of truth is tokens.json).
