@@ -1,0 +1,32 @@
+{
+	"$comment": "Single source of truth for WP Rig theme-dev paradigms. The ACTIVE theme type is set in config/config.default.json under theme.themeType (one-line change to alter the default) and can be overridden in config/config.json or config/config.local.json. Each feature paradigm tag maps to the theme types where that feature is enabled. Block-based features are active in both 'universal' and 'block-based' (hybrid themes include blocks); they never ship in the 'classic' core.",
+	"themeTypes": {
+		"classic": {
+			"label": "Classic (Standard WP Rig)"
+		},
+		"universal": {
+			"label": "Universal (Hybrid theme with theme.json)"
+		},
+		"block-based": {
+			"label": "Block-based (Full Site Editing)"
+		}
+	},
+	"tags": {
+		"all": [
+			"classic",
+			"universal",
+			"block-based"
+		],
+		"classic": [
+			"classic",
+			"universal"
+		],
+		"universal": [
+			"universal"
+		],
+		"block-based": [
+			"universal",
+			"block-based"
+		]
+	}
+}

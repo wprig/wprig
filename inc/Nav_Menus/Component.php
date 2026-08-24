@@ -20,7 +20,7 @@ namespace WP_Rig\WP_Rig\Nav_Menus;
 use WP_Post;
 use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
-use WP_Rig\WP_Rig\Classic_Component_Trait;
+use WP_Rig\WP_Rig\Paradigm_Component_Trait;
 
 use function WP_Rig\WP_Rig\wp_rig;
 use function WP_Rig\WP_Rig\get_config_content;
@@ -40,7 +40,9 @@ use function wp_nav_menu;
  */
 class Component implements Component_Interface, Templating_Component_Interface {
 
-	use Classic_Component_Trait;
+	use Paradigm_Component_Trait;
+
+	const PARADIGM = 'classic';
 
 	const PRIMARY_NAV_MENU_SLUG = 'primary';
 

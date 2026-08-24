@@ -43,6 +43,29 @@ export default async function runInit( opts = {} ) {
 		! process.env.CI &&
 		! opts.nonInteractive;
 
+	// Theme type choices come from config/paradigms.json (single source of truth).
+	let themeTypeChoices = [];
+	try {
+		const paradigms = JSON.parse(
+			fs.readFileSync( path.join( configDir, 'paradigms.json' ), 'utf-8' )
+		);
+		themeTypeChoices = Object.entries( paradigms.themeTypes ?? {} ).map(
+			( [ value, definition ] ) => ( {
+				name: definition?.label || value,
+				value,
+			} )
+		);
+	} catch {
+		themeTypeChoices = [
+			{ name: 'Classic (Standard WP Rig)', value: 'classic' },
+			{
+				name: 'Universal (Hybrid theme with theme.json)',
+				value: 'universal',
+			},
+			{ name: 'Block-based (Full Site Editing)', value: 'block-based' },
+		];
+	}
+
 	let answers = null;
 
 	if ( isInteractive ) {
@@ -85,17 +108,7 @@ export default async function runInit( opts = {} ) {
 				type: 'list',
 				name: 'themeType',
 				message: 'What type of theme are you building?',
-				choices: [
-					{ name: 'Classic (Standard WP Rig)', value: 'classic' },
-					{
-						name: 'Universal (Hybrid theme with theme.json)',
-						value: 'universal',
-					},
-					{
-						name: 'Block-based (Full Site Editing)',
-						value: 'block-based',
-					},
-				],
+				choices: themeTypeChoices,
 				default: defaults?.theme?.themeType || 'classic',
 			},
 		] );
@@ -115,6 +128,19 @@ export default async function runInit( opts = {} ) {
 		...( userConfig.theme || {} ),
 		themeType: answers.themeType,
 	};
+
+	// Universal and block-based themes are block-capable: enable block
+	// compilation by default unless the developer explicitly chose otherwise.
+	const isBlockCapable =
+		answers.themeType === 'universal' ||
+		answers.themeType === 'block-based';
+	if (
+		isBlockCapable &&
+		typeof userConfig.theme.enableBlocks === 'undefined'
+	) {
+		userConfig.theme.enableBlocks = true;
+	}
+
 	userConfig.dev = userConfig.dev || {};
 	userConfig.dev.browserSync = {
 		...( userConfig.dev.browserSync || {} ),

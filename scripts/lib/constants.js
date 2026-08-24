@@ -12,6 +12,7 @@ import * as process from 'node:process';
  * Internal dependencies
  */
 import { configValueDefined } from './utils.js';
+import { isFeatureEnabled } from './paradigm.js';
 
 import config from '../../config/themeConfig.js';
 
@@ -171,9 +172,9 @@ if ( fs.existsSync( paths.blocks.srcDir ) ) {
 	);
 }
 
-// Add FSE/Universal theme templates, template parts, and theme.json to export if in a universal or block-based theme type.
-const themeType = config?.theme?.themeType || 'classic';
-if ( themeType === 'universal' || themeType === 'block-based' ) {
+// Add FSE/Universal theme templates, template parts, and theme.json to export when the
+// active theme type is block-capable (universal or block-based per config/paradigms.json).
+if ( isFeatureEnabled( 'block-based' ) ) {
 	if ( fs.existsSync( path.join( rootPath, 'templates' ) ) ) {
 		paths.export.src.push(
 			`${ rootPath }/templates/**/*.html`.replace( /\\/g, '/' )
