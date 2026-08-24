@@ -32,7 +32,27 @@ export async function propagateTokens() {
 
 async function updateThemeJson( tokens ) {
 	const themeJsonPath = path.join( themeRoot, 'theme.json' );
-	let themeJson = {
+	let existingThemeJson;
+
+	if ( await fs.pathExists( themeJsonPath ) ) {
+		existingThemeJson = await fs.readJson( themeJsonPath );
+	}
+
+	const themeJson = buildThemeJson( tokens, existingThemeJson );
+	await fs.writeJson( themeJsonPath, themeJson, { spaces: 2 } );
+}
+
+/**
+ * Builds the v3 / WP 7.1 theme.json object from tokens.json, preserving (not
+ * clobbering) any hand-authored sections of an existing theme.json. tokens.js is
+ * the sole theme.json writer (D9); setup and build both call this.
+ *
+ * @param {Object} tokens            Parsed config/tokens.json.
+ * @param {Object} existingThemeJson Current theme.json contents (undefined when absent).
+ * @return {Object} Merged, ready-to-write theme.json object.
+ */
+export function buildThemeJson( tokens, existingThemeJson ) {
+	const themeJson = existingThemeJson ?? {
 		version: 3,
 		settings: {
 			appearanceTools: true,
@@ -46,19 +66,34 @@ async function updateThemeJson( tokens ) {
 		},
 	};
 
-	if ( await fs.pathExists( themeJsonPath ) ) {
-		themeJson = await fs.readJson( themeJsonPath );
-	}
-
 	// Upgrade to theme.json v3 / WP 7.1 schema (single source of truth is tokens.json).
 	themeJson.$schema = 'https://schemas.wp.org/wp/7.1/theme.json';
 	themeJson.version = 3;
 
-	// Viewport breakpoints (WP 7.1) mirror tokens.json breakpoints.
+	// Ensure the sections we own exist — this generator is the sole theme.json writer (D9).
 	themeJson.settings = themeJson.settings || {};
+	themeJson.settings.color = themeJson.settings.color || {};
+	themeJson.settings.typography = themeJson.settings.typography || {};
+
+	// Viewport breakpoints (WP 7.1) mirror tokens.json breakpoints (D4/D6/D10).
 	themeJson.settings.viewport = {
 		mobile: tokens.breakpoints?.mobile || '480px',
 		tablet: tokens.breakpoints?.tablet || '782px',
+	};
+
+	// Layout derives from tokens.spacing (resolves the 800px-vs-45rem drift, D9).
+	themeJson.settings.layout = themeJson.settings.layout || {};
+	themeJson.settings.layout.contentSize =
+		tokens.spacing[ 'content-width' ] || '45rem';
+	themeJson.settings.layout.wideSize =
+		tokens.spacing[ 'wide-width' ] || '64rem';
+
+	// Block visibility: an editor capability for all paradigms (the block editor is
+	// active for classic content too). WP 7.1 default is allowEditing: true; set it
+	// explicitly for clarity. G8 (Track B Phase 6) owns semantic alignment with the
+	// mobile-nav hide patterns.
+	themeJson.settings.blockVisibility = {
+		allowEditing: true,
 	};
 
 	// Update palette
@@ -100,7 +135,7 @@ async function updateThemeJson( tokens ) {
 		return fontSize;
 	} );
 
-	await fs.writeJson( themeJsonPath, themeJson, { spaces: 2 } );
+	return themeJson;
 }
 
 async function updateCssVariables( tokens ) {
@@ -154,7 +189,9 @@ async function updateCssVariables( tokens ) {
 
 	// Update Breakpoints (drives the JS mobile-nav toggle; px per viewport.tablet)
 	let breakpointVars = '';
-	breakpointVars += `\t--mobile-breakpoint: ${ tokens.breakpoints?.tablet || '782px' };\n`;
+	breakpointVars += `\t--mobile-breakpoint: ${
+		tokens.breakpoints?.tablet || '782px'
+	};\n`;
 
 	const rootRegex = /:root\s*{([^}]*)}/s;
 	const match = css.match( rootRegex );
@@ -188,6 +225,8 @@ async function updateCssVariables( tokens ) {
  *
  * All WP Rig @custom-media aliases collapse to derive from the two WP 7.1
  * settings.viewport breakpoints (mobile / tablet) — see the Track B plan §4.
+ *
+ * @param {Object} tokens Parsed config/tokens.json.
  */
 async function updateCustomMedia( tokens ) {
 	const cssPath = path.join(
@@ -218,7 +257,9 @@ async function updateCustomMedia( tokens ) {
 	const content = `/**
  * Custom Media Queries
  * Generated from config/tokens.json "breakpoints" (single source of truth).
- * Mobile = ${ tokens.breakpoints?.mobile || '480px' }, tablet = ${ tokens.breakpoints?.tablet || '782px' }.
+ * Mobile = ${ tokens.breakpoints?.mobile || '480px' }, tablet = ${
+		tokens.breakpoints?.tablet || '782px'
+ }.
  *
  * @link: https://drafts.csswg.org/mediaqueries-5/#custom-mq
  **/

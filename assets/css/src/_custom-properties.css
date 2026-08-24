@@ -8,6 +8,7 @@
 :root {
 	/* Generated from tokens.json */
 	--spacing-content-width: 45rem;
+	--spacing-wide-width: 64rem;
 	--spacing-base: 1rem;
 	--content-width: 45rem;
 	--global-font-family: "Open Sans", "Helvetica Neue", "Arial", sans-serif;
@@ -27,10 +28,10 @@
 	--color-black: #1c2833;
 	--color-grey: #95a5a6;
 	--color-white: #ecf0f1;
-	--color-text: #333333;
-	--color-background: #ffffff;
-	--global-font-color: #333333;
-	--background-color: #ffffff;
+	--color-text: #333;
+	--color-background: #fff;
+	--global-font-color: #333;
+	--background-color: #fff;
 	--color-theme-primary: #e36d60;
 	--color-theme-secondary: #41848f;
 	/* End of generated tokens */

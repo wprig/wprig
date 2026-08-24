@@ -5,96 +5,17 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+/**
+ * Internal dependencies
+ */
+import { propagateTokens } from '../scripts/tasks/tokens.js';
+
 // Initialize __dirname manually
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
 
 // Specify the paths to the files you want to modify.
 const fseFolders = [ '../parts', '../templates' ];
-
-/**
- * Generates a theme.json file in the theme's root directory.
- * This file provides default settings for the block editor.
- */
-function generateThemeJson() {
-	console.log( 'Generating theme.json...' );
-
-	// Define the structure and content of the theme.json file.
-	const themeJsonData = {
-		$schema: 'https://schemas.wp.org/wp/6.4/theme.json',
-		version: 2,
-		settings: {
-			appearanceTools: true,
-			layout: {
-				contentSize: '800px',
-				wideSize: '1200px',
-			},
-			color: {
-				palette: [
-					{
-						slug: 'primary',
-						color: '#0073e5',
-						name: 'Primary',
-					},
-					{
-						slug: 'secondary',
-						color: '#0050a0',
-						name: 'Secondary',
-					},
-					{
-						slug: 'foreground',
-						color: '#333333',
-						name: 'Foreground',
-					},
-					{
-						slug: 'background',
-						color: '#ffffff',
-						name: 'Background',
-					},
-				],
-			},
-			typography: {
-				fontFamilies: [
-					{
-						fontFamily:
-							"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif",
-						slug: 'system-fonts',
-						name: 'System Fonts',
-					},
-				],
-			},
-		},
-		styles: {
-			color: {
-				text: 'var(--wp--preset--color--foreground)',
-				background: 'var(--wp--preset--color--background)',
-			},
-			elements: {
-				link: {
-					color: {
-						text: 'var(--wp--preset--color--primary)',
-					},
-				},
-			},
-		},
-	};
-
-	// Define the output path for the theme.json file (theme root).
-	const outputPath = path.resolve( __dirname, '../theme.json' );
-
-	// Write the theme.json file.
-	try {
-		fs.writeFileSync(
-			outputPath,
-			JSON.stringify( themeJsonData, null, 2 )
-		);
-		console.log(
-			`✅ theme.json generated successfully at ${ outputPath }`
-		);
-	} catch ( error ) {
-		console.error( `❌ Error generating theme.json: ${ error.message }` );
-	}
-}
 
 function checkAndCreateFolders( folderPaths ) {
 	folderPaths.forEach( ( folderPath ) => {
@@ -165,8 +86,19 @@ function createIndexHtmlWithStarterContent( templatesFolderPath ) {
 
 checkAndCreateFolders( fseFolders );
 createIndexHtmlWithStarterContent( '../templates' );
-generateThemeJson(); // Call the new function to create theme.json
 updateConfigThemeType( 'universal' );
+
+// theme.json is generated from config/tokens.json (v3 / WP 7.1) — the single writer
+// is scripts/tasks/tokens.js (D9); this setup step no longer hardcodes theme.json.
+propagateTokens()
+	.then( () =>
+		console.log(
+			'✅ theme.json generated from tokens (v3 / WP 7.1 schema) at ../theme.json'
+		)
+	)
+	.catch( ( error ) =>
+		console.error( `❌ Error propagating tokens: ${ error.message }` )
+	);
 
 function updateConfigThemeType( themeType ) {
 	const configPath = path.resolve( __dirname, '../config/config.json' );
