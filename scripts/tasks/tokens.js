@@ -23,7 +23,10 @@ export async function propagateTokens() {
 	// 2. Update CSS variables in _custom-properties.css
 	await updateCssVariables( tokens );
 
-	// 3. Update tailwind.config.js (if exists)
+	// 3. Regenerate @custom-media aliases in _custom-media.css
+	await updateCustomMedia( tokens );
+
+	// 4. Update tailwind.config.js (if exists)
 	await updateTailwindConfig( tokens );
 }
 
@@ -46,6 +49,17 @@ async function updateThemeJson( tokens ) {
 	if ( await fs.pathExists( themeJsonPath ) ) {
 		themeJson = await fs.readJson( themeJsonPath );
 	}
+
+	// Upgrade to theme.json v3 / WP 7.1 schema (single source of truth is tokens.json).
+	themeJson.$schema = 'https://schemas.wp.org/wp/7.1/theme.json';
+	themeJson.version = 3;
+
+	// Viewport breakpoints (WP 7.1) mirror tokens.json breakpoints.
+	themeJson.settings = themeJson.settings || {};
+	themeJson.settings.viewport = {
+		mobile: tokens.breakpoints?.mobile || '480px',
+		tablet: tokens.breakpoints?.tablet || '782px',
+	};
 
 	// Update palette
 	themeJson.settings.color.palette = Object.entries( tokens.colors ).map(
@@ -138,13 +152,17 @@ async function updateCssVariables( tokens ) {
 	}
 	spacingVars += `\t--content-width: ${ tokens.spacing[ 'content-width' ] };\n`;
 
+	// Update Breakpoints (drives the JS mobile-nav toggle; px per viewport.tablet)
+	let breakpointVars = '';
+	breakpointVars += `\t--mobile-breakpoint: ${ tokens.breakpoints?.tablet || '782px' };\n`;
+
 	const rootRegex = /:root\s*{([^}]*)}/s;
 	const match = css.match( rootRegex );
 
 	if ( match ) {
 		const startMarker = '/* Generated from tokens.json */';
 		const endMarker = '/* End of generated tokens */';
-		const generatedContent = `\n\t${ startMarker }\n${ spacingVars }${ typoVars }${ colorVars }\t${ endMarker }\n`;
+		const generatedContent = `\n\t${ startMarker }\n${ spacingVars }${ typoVars }${ breakpointVars }${ colorVars }\t${ endMarker }\n`;
 
 		const innerContent = match[ 1 ];
 		if ( innerContent.includes( startMarker ) ) {
@@ -163,6 +181,63 @@ async function updateCssVariables( tokens ) {
 	}
 
 	await fs.writeFile( cssPath, css );
+}
+
+/**
+ * Regenerates assets/css/src/_custom-media.css from tokens.json "breakpoints".
+ *
+ * All WP Rig @custom-media aliases collapse to derive from the two WP 7.1
+ * settings.viewport breakpoints (mobile / tablet) — see the Track B plan §4.
+ */
+async function updateCustomMedia( tokens ) {
+	const cssPath = path.join(
+		themeRoot,
+		'assets',
+		'css',
+		'src',
+		'_custom-media.css'
+	);
+
+	const mobile = parsePx( tokens.breakpoints?.mobile || '480px' );
+	const tablet = parsePx( tokens.breakpoints?.tablet || '782px' );
+
+	const aliases = [
+		[ '--narrow-menu-query', `screen and (max-width: ${ mobile }px)` ],
+		[ '--wide-menu-query', `screen and (min-width: ${ mobile + 1 }px)` ],
+		[ '--medium-query', `screen and (min-width: ${ mobile + 1 }px)` ],
+		[ '--content-query', `screen and (min-width: ${ tablet + 1 }px)` ],
+		[ '--sidebar-query', `screen and (min-width: ${ tablet + 1 }px)` ],
+		[ '--tablet-menu-query', `screen and (max-width: ${ tablet }px)` ],
+		[ '--desktop-menu-query', `screen and (min-width: ${ tablet + 1 }px)` ],
+	];
+
+	const body = aliases
+		.map( ( [ name, query ] ) => `@custom-media ${ name } ${ query };` )
+		.join( '\n' );
+
+	const content = `/**
+ * Custom Media Queries
+ * Generated from config/tokens.json "breakpoints" (single source of truth).
+ * Mobile = ${ tokens.breakpoints?.mobile || '480px' }, tablet = ${ tokens.breakpoints?.tablet || '782px' }.
+ *
+ * @link: https://drafts.csswg.org/mediaqueries-5/#custom-mq
+ **/
+
+${ body }
+`;
+
+	await fs.writeFile( cssPath, content );
+}
+
+/**
+ * Parses a px length into a number (defaults to 480 for safety).
+ *
+ * @param {string} value CSS length in px.
+ * @return {number} Numeric px value.
+ */
+function parsePx( value ) {
+	const match = String( value ).match( /^([\d.]+)px$/ );
+	return match ? parseFloat( match[ 1 ] ) : 480;
 }
 
 async function updateTailwindConfig( tokens ) {

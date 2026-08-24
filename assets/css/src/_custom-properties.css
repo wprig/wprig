@@ -17,6 +17,7 @@
 	--font-size-base: clamp(0.75rem, 0.667rem + 0.417vw, 1rem);
 	--font-size-large: clamp(1.35rem, 1.2rem + 0.75vw, 1.8rem);
 	--font-size-xlarge: clamp(1.8rem, 1.6rem + 1vw, 2.4rem);
+	--mobile-breakpoint: 782px;
 	--color-primary: #e36d60;
 	--color-secondary: #41848f;
 	--color-red: #c0392b;
@@ -26,20 +27,14 @@
 	--color-black: #1c2833;
 	--color-grey: #95a5a6;
 	--color-white: #ecf0f1;
-	--color-text: #333;
-	--color-background: #fff;
-	--global-font-color: #333;
-	--background-color: #fff;
+	--color-text: #333333;
+	--color-background: #ffffff;
+	--global-font-color: #333333;
+	--background-color: #ffffff;
 	--color-theme-primary: #e36d60;
 	--color-theme-secondary: #41848f;
 	/* End of generated tokens */
 --dropdown-symbol-width: 0.7em;
-
-	/* Responsive Breakpoints
-	 * NOTE: This is the single source of truth for the touch/mobile menu interaction breakpoint.
-	 * Any changes here will automatically propagate to JS. Must use the 'em' unit.
-	 */
-	--mobile-breakpoint: 55em;
 
 	/* Typography */
 	--global-font-size: 20;
