@@ -40,6 +40,9 @@
       "preload": [
         "_custom-media.css"
       ],
+      "preloadBlockBased": [
+        "_blocks-based.css"
+      ],
       "features": {
         "mobile-nav-type": "modern"
       }

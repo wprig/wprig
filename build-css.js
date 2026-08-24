@@ -13,6 +13,7 @@ import { bundleAsync, browserslistToTargets } from 'lightningcss';
 import themeConfig from './config/themeConfig.js'; // merged WP Rig config (default -> config -> local)
 import { paths } from './scripts/lib/constants.js';
 import { replaceInlineCSS } from './scripts/lib/utils.js';
+import { isFeatureEnabled } from './scripts/lib/paradigm.js';
 
 // Determine if running in development mode
 const isDev = process.argv.includes( '--dev' );
@@ -38,26 +39,52 @@ ensureDirectoryExistence( paths.styles.editorDest );
 const themeSlug = themeConfig?.theme?.slug || 'wp-rig';
 
 /**
+ * Build the CSS preload list from config.dev.styles, appending the block-based
+ * (FSE-only) preload entries when the active theme type is block-capable.
+ *
+ * _blocks-based.css is gated out of classic builds entirely (D13): it is only
+ * concatenated into the virtual preload when isFeatureEnabled('block-based').
+ *
+ * @param {Object}  styles            config.dev.styles
+ * @param {boolean} blockBasedEnabled Whether block-based features ship for the active type.
+ * @return {string[]} Relative preload file paths.
+ */
+export function buildPreloadList( styles, blockBasedEnabled ) {
+	let list = [];
+	if ( Array.isArray( styles?.preload ) && styles.preload.length ) {
+		list = styles.preload;
+	}
+	if ( blockBasedEnabled && Array.isArray( styles?.preloadBlockBased ) ) {
+		list = list.concat( styles.preloadBlockBased );
+	}
+	return list;
+}
+
+/**
  * Resolve preload entries from config:
  * - prefer dev.styles.preload (new)
+ * - append dev.styles.preloadBlockBased only when block-based is enabled
  * - fallback to deprecated dev.styles.importFrom with a warning
  * @param {Object} cfg - Theme config object
  * @return {string[]} Array of relative preload file paths.
  */
 function resolvePreloadList( cfg ) {
 	const styles = cfg?.dev?.styles ?? {};
-	if ( Array.isArray( styles.preload ) && styles.preload.length ) {
-		return styles.preload;
-	}
-	if ( Array.isArray( styles.importFrom ) && styles.importFrom.length ) {
+	let list = buildPreloadList( styles, isFeatureEnabled( 'block-based' ) );
+
+	if (
+		! list.length &&
+		Array.isArray( styles.importFrom ) &&
+		styles.importFrom.length
+	) {
 		// eslint-disable-next-line no-console
 		console.warn(
 			'[deprecation] config.dev.styles.importFrom is deprecated. ' +
 				'Use config.dev.styles.preload instead.'
 		);
-		return styles.importFrom;
+		list = styles.importFrom;
 	}
-	return [];
+	return list;
 }
 
 /** Preload list from merged config (relative to styles srcDir). */
