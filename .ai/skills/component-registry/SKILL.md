@@ -25,7 +25,11 @@ This will:
 1. Place PHP logic in `inc/[Slug]/`.
 2. Place styles and scripts in `assets/css/src/` and `assets/js/src/`.
 3. Link AI context (`SPEC.md` and `SKILL.md`) into `.ai/skills/`.
-4. Automatically register the component in `Theme.php`.
+4. Register the component in **`inc/components-manifest.json`** (the framework-native component list that `Theme::get_default_components()` reads first — not `Theme.php`).
+
+## Paradigm-Aware Components
+
+Components that only serve one theme-dev paradigm declare `const PARADIGM = 'classic' | 'universal' | 'block-based'` and use `Paradigm_Component_Trait`; `Theme` skips inactive components automatically via `is_active()`. When authoring or extending a component, tag it for the paradigm(s) it serves and gate block-based features out of the classic core. Bundled `patterns/` directories inside a component are registered by `inc/Block_Patterns` (block-based).
 
 ## Updating a Component
 Since components are "starters," you can modify them after adding. To pull in framework-level updates without losing your changes:

@@ -17,6 +17,8 @@ export WP_BASE_URL="http://wprig.test"
 npm run test:e2e
 ```
 
+The suite runs across **chromium**, **firefox**, and **webkit** projects. Total workers default to 4 (CI: 1) so the local WordPress harness isn't overwhelmed — on heavily loaded local stacks, WebKit page loads can exceed the 30s default timeout under higher parallelism. Two WebKit-specific notes are handled in the specs themselves: synthetic `Tab` doesn't reach clipped skip-links (explicit `focus()` is used on webkit), and the desktop watch-mode visual-nav suite skips the deepest 5-level flyout hover chain (see `visual-navigation.spec.ts`).
+
 ### Running Tests
 
 - `npm run test:e2e`: Runs all E2E tests.

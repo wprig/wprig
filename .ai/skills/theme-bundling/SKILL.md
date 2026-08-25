@@ -17,7 +17,7 @@ Before modifying the theme structure or preparing a bundle, you **MUST** referen
 
 WP Rig's build system uses a combination of specialized tasks (`phpTask`, `images`, `fonts`, `buildJS`, `buildCSS`) and a manual file-copying task (`prodPrep`).
 
-- **Specialized Tasks**: These tasks automatically handle specific file types in specific locations (e.g., `.php` files anywhere in the theme, except for excluded directories like `node_modules` and `vendor`).
+- **Specialized Tasks**: These tasks automatically handle specific file types in specific locations (e.g., `.php` files anywhere in the theme, except for excluded directories like `node_modules` and `vendor`). The `images` task optimizes `assets/images/src` and emits WebP + AVIF from JPEG/PNG sources.
 - **prodPrep Task**: This task manually copies files and folders specified in the `export.filesToCopy` property of the theme's configuration. It is used for files that are not handled by specialized tasks or for folders that need to be explicitly included in the bundle.
 
 When you add a new root-level folder to the theme (especially for plugin template overrides like `woocommerce/` or `tribe-events/`), it is **mandatory** to add it to the `export.filesToCopy` array in `config/config.json`.

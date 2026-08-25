@@ -28,17 +28,28 @@ Automates code updates and applies modern PHP best practices.
 Enforces coding standards for JavaScript and React components.
 - **Run Checks**: `npm run lint:js`
 
-### 2. Stylelint
-Enforces coding standards for CSS.
+### 2. Stylelint (enforced CSS budget — Track C1)
+Enforces coding standards for CSS, including the modern-CSS budget:
 - **Run Checks**: `npm run lint:css`
 - **Auto-Fix**: `npm run fix:css`
+- **Enforced budget**: nesting depth ≤ 3 · selector specificity `(0,4,1)` (0 IDs, ≤ 4 classes, ≤ 1 element) · no `!important` · custom properties must be read via `var()` · no descending-specificity. See the [Modern CSS Playbook](../styles/SKILL.md).
+
+### 3. Gutenberg Block Markup
+Validates block markup in FSE templates/parts and block patterns against the active core block schemas.
+- **Templates/Parts**: `npm run lint:blocks`
+- **Patterns**: `npm run lint:patterns`
+
+## PHP Baseline (WP 7.1 / PHP 8.1)
+
+`phpcs.xml.dist` reasons against **WP 7.1** (`minimum_supported_wp_version`) and **PHP 8.1+** (`testVersion`), so deprecated/removed pre-7.1 API usage is flagged rather than silently permitted. The full-suite PHPCS gate is **0 errors**; keep it that way (warnings don't fail the exit code but should still be fixed).
 
 ## Comprehensive Quality Check
 
-Run core pre-flight checks (E2E tests, CSS, and JS linting) in a single command:
+Run the full pre-flight gate in a single command:
 ```bash
 npm run ai:check
 ```
+This runs the E2E suite (3 browsers), regression screenshots, block markup lint, block pattern lint, CSS lint, and JS lint.
 
 ## Best Practices for Agents
 

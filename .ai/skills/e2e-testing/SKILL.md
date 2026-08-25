@@ -33,6 +33,8 @@ export WP_BASE_URL="http://wprig.test"
 npm run test:e2e
 ```
 
+The suite runs chromium + firefox + webkit (total workers default 4, CI 1). Two WebKit notes are handled in the specs: synthetic `Tab` doesn't reach clipped skip-links (explicit `focus()` on webkit), and the desktop watch-mode visual-nav suite skips the deepest 5-level flyout hover chain. `tests/e2e/fixtures/` re-exports `@playwright/test` — import WP-specific fixtures directly from `@wordpress/e2e-test-utils-playwright` only if a spec genuinely needs them.
+
 ## Writing E2E Tests
 
 ### Test Structure

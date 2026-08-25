@@ -16,13 +16,17 @@ wprig/
 ├── config/                 # Theme configuration files
 │   ├── config.default.json # Default settings (do not edit)
 │   ├── config.json        # Custom settings (version controlled)
-│   └── config.local.json  # Local-only settings (gitignored)
+│   ├── config.local.json  # Local-only settings (gitignored)
+│   └── paradigms.json     # Paradigm matrix (single source of truth, see below)
 ├── inc/                    # PHP components and theme logic
-│   ├── Theme.php          # Main theme class - registers all components
-│   ├── {Feature}/         # Feature components (Styles, Scripts, Nav_Menus, etc.)
+│   ├── Theme.php          # Main theme class — discovers + initializes components
+│   ├── Paradigm.php       # PHP half of the paradigm system (is_enabled / get_active_theme_type)
+│   ├── components-manifest.json # Component registry manifest (written by rig tooling)
+│   ├── {Feature}/         # Feature components (Styles, Scripts, Nav_Menus, Block_Patterns, etc.)
 │   │   └── Component.php  # Each implements Component_Interface
 │   ├── Template_Tags.php  # Template helper functions accessed via wp_rig()
 │   └── functions.php      # Helper functions
+├── templates/              # Block theme templates (block-based)
 ├── template-parts/         # Reusable template partials
 ├── functions.php           # Theme bootstrap - instantiates Theme class
 └── index.php, header.php, footer.php, etc.  # Main templates
@@ -49,14 +53,24 @@ WebP still ships — one missing codec never breaks the build.
 WP Rig uses a modular component architecture where each feature is encapsulated in its own class:
 
 1. **Bootstrap**: `functions.php` creates the `Theme` instance.
-2. **Registration**: `Theme::__construct()` loads default components from `inc/*/Component.php`.
-3. **Initialization**: Each component's `initialize()` method hooks into WordPress.
+2. **Discovery**: `Theme::get_default_components()` reads `inc/components-manifest.json` (written by `rig` tooling) when present, otherwise scans `inc/*/` directories for `Component.php`. It then skips any component whose static `is_active()` returns false (paradigm gating).
+3. **Initialization**: Each active component's `initialize()` method hooks into WordPress.
 
 ```
-functions.php → Theme.php → Component::initialize() → WordPress hooks
+functions.php → Theme.php → [manifest/glob discovery + is_active() gating] → Component::initialize() → WordPress hooks
 ```
 
 Each component implements `Component_Interface` and optionally `Templating_Component_Interface` for template tags. Components are self-contained: they register their own hooks, enqueue their own assets, and provide their own template functions.
+
+### Paradigm system
+
+WP Rig serves three theme-dev paradigms — **classic**, **universal** (hybrid), and **block-based** (FSE). The tag → theme-type matrix lives once in `config/paradigms.json`; the active type resolves from `theme.themeType` in the merged config (`config.default.json` → `config.json` → `config.local.json`). Both sides fail fast on invalid values.
+
+- **JS**: `scripts/lib/paradigm.js` (`getActiveThemeType()`, `isFeatureEnabled(tag)`) — used by the build to gate assets (e.g., `_blocks-based.css`).
+- **PHP**: `inc/Paradigm.php` (`Paradigm::is_enabled(tag)`) — used at runtime.
+- **Components**: a component gated to a paradigm declares `const PARADIGM = 'classic' | 'block-based'` and uses `Paradigm_Component_Trait` (`is_active()`); `Theme` skips inactive components automatically.
+
+Changing the default theme type is a one-line edit (`theme.themeType`); every gate follows automatically.
 
 ### Component Registry (OCR)
 
@@ -70,7 +84,7 @@ WP Rig features an Open Component Registry that allows you to import and share p
 - **`npm run rig:test-component [slug]`**: Run a "pre-flight" check on a local component to ensure it meets registry standards. Use this before sharing your component.
 - **`npm run rig:prepare [slug]`**: Package a local component and get instructions for submitting it via GitHub Pull Request. Use this when you want to share your work with the community.
 
-Components added via the registry are automatically registered in `inc/Theme.php` and integrated into the build pipeline. For more details, see the [Component Registry Breakdown](development/wprig-v3-4-component-registry-feature-breakdown.md).
+Components added via the registry are recorded in `inc/components-manifest.json` (the framework-native component list that `Theme::get_default_components()` reads first) and integrated into the build pipeline. For more details, see the [Component Registry Breakdown](development/wprig-v3-4-component-registry-feature-breakdown.md).
 
 ### Component Scaffolding
 

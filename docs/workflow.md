@@ -9,20 +9,24 @@ WP Rig uses a fast and efficient build process powered by modern tools like [Lig
 - Source assets should only be edited in their respective `src` locations:
 	- **CSS**: `assets/css/src` (Processed by Lightning CSS).
 	- **JS/TS**: `assets/js/src` (Processed by esbuild).
-	- **Images**: `assets/images/src` (Processed by imagemin).
+	- **Images**: `assets/images/src` (Optimized by sharp; JPEG/PNG additionally emit WebP + AVIF via `scripts/tasks/images.js`).
 
 ## Workflows
 
 ### Style Workflow
 
-Source CSS files in `assets/css/src/` are processed by PostCSS via `build-css.js`:
+Source CSS files in `assets/css/src/` are compiled by **Lightning CSS** via `build-css.js` (native nesting, custom media, custom properties, `@layer`, container queries — no PostCSS/Sass step):
 
 1. **Edit**: Modify source files (e.g., `_header.css`).
 2. **Import**: `global.css` imports partials via `@import`.
-3. **Build**: `build-css.js` processes with PostCSS (custom properties, nesting, autoprefixer).
+3. **Build**: `build-css.js` compiles with Lightning CSS and the Browserslist targets.
 4. **Enqueue**: `Styles/Component.php` enqueues compiled CSS.
 
 **Conditional loading**: Some stylesheets are only loaded on specific pages. See `get_css_files()` in `Styles/Component.php`.
+
+**CSS preloading & paradigm gating**: `config/dev.styles.preload` lists partials injected into every bundle (e.g., `_custom-media.css`). `dev.styles.preloadBlockBased` (`_blocks-based.css`) is appended **only** when the active theme type is block-capable (`theme.themeType` `universal` or `block-based` via `isFeatureEnabled('block-based')`) — it never ships in a classic theme.
+
+**Style budget (enforced)**: `npm run lint:css` fails on nesting deeper than 3 levels, selector specificity above `(0,4,1)`, `!important`, custom properties read without `var()`, and descending-specificity. See the [Modern CSS Playbook skill](../.ai/skills/styles/SKILL.md).
 
 ### Script Workflow
 
@@ -59,14 +63,18 @@ For a faster, Vite-like development experience without BrowserSync, use the new 
 The translation process generates a `.pot` file in the `./languages/` directory.
 
 - **Automatic**: Runs during production builds unless `export:generatePotFile` in `config.json` is `false`.
-- **Manual**: Run `npm run translate`.
+- **Manual**: Run `npm run rig:localize`.
 
 ### Production Bundle Process
 
 `npm run bundle` generates a production-ready theme directory and optionally a `.zip` archive.
 
-- **Optimizations**: Builds all source files, optimizes for production, performs string replacement, and runs translations.
+- **Optimizations**: Builds all source files, optimizes for production (images emit WebP + AVIF), performs string replacement, and runs translations.
 - **Cleanup**: Non-essential files from the development theme are excluded from the production bundle.
+
+### Paradigm configuration
+
+WP Rig serves three theme-dev paradigms — **classic**, **universal** (hybrid), and **block-based** (FSE). The active type is a one-line change in `config/config.json` (`theme.themeType`; default in `config.default.json`) and gates every feature via the shared paradigm system (`config/paradigms.json` → JS `scripts/lib/paradigm.js` → PHP `inc/Paradigm.php`). Block-capable types (`universal`/`block-based`) automatically enable block compilation (`enableBlocks: true`) during `npm run rig-init`.
 
 ## Recommended code editor extensions
 

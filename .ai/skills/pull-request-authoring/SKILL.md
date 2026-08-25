@@ -57,10 +57,11 @@ Examples:
 
 - `v3.3 - Agent Ready`
 - `v3.4 - Faster by Default, Smarter to Extend, Safer to Scale`
+- `v3.5 - WordPress 7.1 Ready`
 
 Title rules:
 
-1. Start with the release version (`v3.4` or `v3.4.0`, matching `CHANGELOG.md`).
+1. Start with the release version (`v3.5` or `v3.5.0`, matching `CHANGELOG.md`).
 2. Add a short, human-readable release headline that reflects the version goals.
 3. Keep it concise (roughly 3-8 words after the dash when possible).
 4. Do **not** use branch-only titles like `Merge develop into master`.
@@ -70,7 +71,7 @@ Title rules:
 Add a `### Release Context` subsection under `## Description` that includes:
 
 1. **Version Number**
-   - State the target release version explicitly (example: `v3.4.0`).
+   - State the target release version explicitly (example: `v3.5.0`).
    - Verify against the top unreleased/target section in `CHANGELOG.md`.
 2. **Version Goals**
    - Include 2-5 bullets describing the goals of that version.

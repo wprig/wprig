@@ -13,8 +13,9 @@ Behavior in WP Rig can be customized by editing `./config/config.json`. Here, de
 
 - **Customizer Settings**: Easily add custom Customizer settings using a simple `.json` file.
 - **Progressive Loading**: Optimized CSS loading for better performance.
-- **Modern CSS**: Support for modern CSS features and layouts (via PostCSS and Lightning CSS).
+- **Modern CSS**: Support for modern CSS features and layouts (compiled natively by **Lightning CSS** — nesting, custom media, `@layer`, container queries).
 - **Component Scaffolding**: System to quickly create new theme components following architectural standards.
+- **Paradigm system**: Choose **classic**, **universal**, or **block-based** via `theme.themeType`; features gate themselves through `config/paradigms.json`.
 
 ### Critical Asset Loading (Cookie-Based Inlining)
 
@@ -61,14 +62,16 @@ WP Rig includes a built-in system for creating and managing theme-scoped Gutenbe
 
 #### Quick Start
 - **Create a block (static)**:
-	- `npm run block:new -- hero --title="Hero"`
-	- `bun run block:new hero --title="Hero"`
+	- `npm run block:new hero --title="Hero"`
 - **Create a dynamic block (server-rendered)**:
 	- `npm run block:new:dynamic testimonial`
-	- `npm run block:new -- testimonial -d --title="Testimonial"`
+	- `npm run block:new testimonial -d --title="Testimonial"`
+- **Create a PHP-only block (auto-registered, no build)**:
+	- `npm run block:new newsletter --php`
 - **List blocks**: `npm run block:list`
 - **Remove a block**: `npm run block:remove wprig/hero`
 - **Promote to a plugin**: `npm run block:promote-plugin wprig/hero`
+- **Inspect/compile against the live site**: `npm run block:schema` and `npm run block:compile <ir.json>` (WP-CLI Gutenberg bridge).
 
 #### Command Reference
 - `block:new <namespace>/<slug>` or `<slug>`
@@ -76,6 +79,7 @@ WP Rig includes a built-in system for creating and managing theme-scoped Gutenbe
 		- `--title <string>`: Human title for the block
 		- `-d, --dynamic`: Generate a dynamic block with `render.php`
 		- `--ts`: Use TypeScript template (`.tsx`)
+		- `--php` / `--architecture php`: PHP-only block — no `src/` build, registered via `supports.autoRegister` (Gutenberg 23.8)
 		- `--category <string>`: Defaults to `widgets`
 		- `--icon <dashicon|svg>`
 		- `--description <string>`
@@ -83,6 +87,8 @@ WP Rig includes a built-in system for creating and managing theme-scoped Gutenbe
 		- `--no-style`: Do not create `style.css`
 		- `--no-editor-style`: Do not create `editor.css`
 		- `--view`: Also generate an optional frontend-only script (`view.js`)
+
+All scaffolds target `apiVersion: 3` (the Gutenberg 23.8 / WP 7.1 default).
 
 #### Filesystem Layout
 Each block lives under `assets/blocks/<slug>/`:

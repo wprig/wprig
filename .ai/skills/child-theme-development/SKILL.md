@@ -28,6 +28,10 @@ The script will:
 3. Copy the necessary assets (`style.css`, `functions.php`, `package.json`, `config/`).
 4. Set the parent theme reference in `style.css`.
 
+### Paradigm-aware child themes (3.5)
+
+`childify` inherits the parent's **paradigm intelligence**: the component keep-list is derived from the active `theme.themeType` (classic keeps the classic core; universal/block-based also keep Editor, Blocks, Block_Patterns, Block_Styles, Icons), and the keep-list is written to `inc/components-manifest.json` through the framework-native mechanism. The child's config resolves from the shared chain (`config.default.json` → `config.json`), never `config.local.json`, so local harness overrides don't leak into a shipped child.
+
 ## Architecture of WP Rig Child Themes
 
 Child themes in WP Rig are designed to be thin layers on top of the parent theme.

@@ -19,8 +19,9 @@ Use the following commands to execute your tests:
 
 ### Run All Tests
 ```bash
-composer test
+composer test:all
 ```
+(`test:all` = unit + integration + PHPStan)
 
 ### Run Unit Tests Only
 ```bash
