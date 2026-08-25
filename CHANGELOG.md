@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.5.0 (unreleased)
+## 3.5.0
 - **WP 7.1 theme.json v3 (G1):** `theme.json` upgraded to v3 / 7.1 schema — added `settings.viewport` (mobile 480px / tablet 782px), explicit `settings.blockVisibility` (`allowEditing: true`), and layout sizes derived from tokens. `scripts/tasks/tokens.js` is now the **sole** `theme.json` writer (pure `buildThemeJson()`); `node/editorSupport.js` delegates to it. Pseudo-state styling enabled (hover/focus/active). Props @robruiz
 - **Viewport-driven breakpoints (G2):** all 7 `@custom-media` aliases now derive from `settings.viewport` values (480/782px) via `config/tokens.json.breakpoints`; `--mobile-breakpoint` is 782px and the JS em→px conversion is removed. One breakpoint scale for every paradigm — the editor and frontend agree. Props @robruiz
 - **Interactive (pseudo-state) styles (G3):** link hover/focus/active/visited states migrated into `theme.json styles.elements.link` (conflict-audited vs buttons/forms/nav); `_links.css` trimmed to focus/outline affordances only; fixed an invalid `foreground` → `text` palette slug in the body text color. Props @robruiz
