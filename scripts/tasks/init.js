@@ -130,14 +130,13 @@ export default async function runInit( opts = {} ) {
 	};
 
 	// Universal and block-based themes are block-capable: enable block
-	// compilation by default unless the developer explicitly chose otherwise.
+	// compilation by default. The shipped default (config.default.json) is
+	// enableBlocks: false for classic themes, so a block-capable choice must
+	// flip it to true rather than inheriting the classic default.
 	const isBlockCapable =
 		answers.themeType === 'universal' ||
 		answers.themeType === 'block-based';
-	if (
-		isBlockCapable &&
-		typeof userConfig.theme.enableBlocks === 'undefined'
-	) {
+	if ( isBlockCapable && userConfig.theme.enableBlocks !== true ) {
 		userConfig.theme.enableBlocks = true;
 	}
 
