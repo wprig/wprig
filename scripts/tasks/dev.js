@@ -3,7 +3,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import chokidar from 'chokidar';
 import { cleanCSS, cleanJS } from './clean.js';
-import { images, convertToWebP } from './images.js';
+import { images, convertToModernFormats } from './images.js';
 import { serve, server } from './browserSync.js';
 import { paths } from '../lib/constants.js';
 import {
@@ -111,7 +111,7 @@ export default async function runDev( options = {} ) {
 	const processImagesWatcher = async () => {
 		try {
 			await runTask( images, 'images' );
-			await runTask( convertToWebP, 'convertToWebP' );
+			await runTask( convertToModernFormats, 'convertToModernFormats' );
 			server.reload();
 		} catch ( e ) {
 			console.error( e?.message || e );

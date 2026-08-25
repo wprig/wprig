@@ -28,6 +28,22 @@ wprig/
 └── index.php, header.php, footer.php, etc.  # Main templates
 ```
 
+## Image Pipeline
+
+Source images live in `assets/images/src/`. The build pipeline
+(`scripts/tasks/images.js`, sharp/libvips) optimizes JPEG/PNG/GIF/SVG and then
+emits **modern formats** from JPEG/PNG sources (`convertToModernFormats`):
+
+- **WebP** — universal baseline (quality 75).
+- **AVIF** — the 7.1-era default, encoded via sharp `heif({ compression: 'av1' })`
+  (verified on sharp 0.35 / libvips 8.18). HDR AVIF (10-bit) is
+  container-supported but needs 10/16-bit sources; the standard pipeline
+  optimizes SDR masters. **HEIC/HEVC is deliberately not a target** — the shipped
+  build has no HEVC encoder, HEIC is Safari-ecosystem-only and patent-encumbered.
+
+If a host sharp build lacks the AV1 codec, AVIF is skipped with a warning and
+WebP still ships — one missing codec never breaks the build.
+
 ## Component System
 
 WP Rig uses a modular component architecture where each feature is encapsulated in its own class:

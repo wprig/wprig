@@ -150,7 +150,20 @@ export async function images() {
 	}
 }
 
-export async function convertToWebP() {
+/**
+ * Converts JPEG/PNG sources to the modern raster formats the 7.1 pipeline
+ * ships: WebP (universal) plus AVIF (HEIF-encapsulated AV1, the 7.1-era
+ * default). AVIF emits through sharp's `heif({ compression: 'av1' })` codec —
+ * verified on sharp 0.35.x / libvips 8.18. Builds whose libheif lacks the AV1
+ * encoder degrade gracefully (AVIF is skipped, WebP still ships).
+ *
+ * HEIC/HEVC is intentionally NOT a target: the shipped sharp build has no HEVC
+ * encoder ("heifsave: Unsupported compression"), HEIC is Safari-ecosystem-only
+ * and patent-encumbered, and AVIF supersedes it on the open web. HDR AVIF
+ * (10-bit) is container-supported (`bitdepth: 10`) but requires 10/16-bit
+ * source imagery; the standard pipeline optimizes SDR masters.
+ */
+export async function convertToModernFormats() {
 	const srcRoot = getSrcRoot();
 	const patterns = [ paths.images.src ];
 	// Normalize patterns for cross-platform globbing (Windows)
@@ -165,29 +178,52 @@ export async function convertToWebP() {
 		const osFile = path.normalize( file );
 		const ext = path.extname( osFile ).toLowerCase();
 		if ( ! [ '.jpg', '.jpeg', '.png' ].includes( ext ) ) {
-			continue; // Skip non-webp convertible types here
+			continue; // Skip non-convertible types here
 		}
 		const rel = path.relative( srcRoot, osFile );
-		const destFile = path
-			.join( getDestRoot(), rel )
-			.replace( /\.[^.]+$/i, '.webp' );
-		if ( ! ( await isNewer( osFile, destFile ) ) ) {
-			continue;
-		}
-		try {
-			await fse.ensureDir( path.dirname( destFile ) );
-			await sharp( osFile, { sequentialRead: true } )
-				.webp( { quality: 75 } )
-				.toFile( destFile );
-		} catch ( err ) {
-			console.warn(
-				`Failed to convert to WebP: ${ path.basename(
-					osFile
-				) }. Skipping this file.`,
-				err.message
-			);
-			// Continue with next file - don't let this error stop the process
-			continue;
-		}
+		const baseDest = path.join( getDestRoot(), rel );
+
+		await convertFormat( osFile, baseDest, 'webp', ( img ) =>
+			img.webp( { quality: 75 } )
+		);
+		await convertFormat( osFile, baseDest, 'avif', ( img ) =>
+			img.heif( { compression: 'av1', quality: 70, effort: 4 } )
+		);
 	}
+}
+
+/**
+ * Encodes `srcFile` to `format`, writing alongside `baseDest` (same basename,
+ * new extension). Returns silently when sharp cannot encode the format on the
+ * host (e.g. an AVIF-less libheif) so one missing codec never breaks the build.
+ *
+ * @param {string}   srcFile  Absolute path to the source image.
+ * @param {string}   baseDest Destination path including the original extension.
+ * @param {string}   format   Target extension without the leading dot (webp/avif).
+ * @param {Function} encode   Sharp format encoder: `(img) => img.format(...)`.
+ */
+async function convertFormat( srcFile, baseDest, format, encode ) {
+	const destFile = baseDest.replace( /\.[^.]+$/i, `.${ format }` );
+	if ( ! ( await isNewer( srcFile, destFile ) ) ) {
+		return;
+	}
+	try {
+		await fse.ensureDir( path.dirname( destFile ) );
+		await encode( sharp( srcFile, { sequentialRead: true } ) ).toFile(
+			destFile
+		);
+	} catch ( err ) {
+		console.warn(
+			`Failed to convert to ${ format.toUpperCase() }: ${ path.basename(
+				srcFile
+			) }. Skipping this file.`,
+			err.message
+		);
+		// Continue with next file - don't let this error stop the process
+	}
+}
+
+/** @deprecated Use {@link convertToModernFormats} (WebP + AVIF). */
+export async function convertToWebP() {
+	await convertToModernFormats();
 }
