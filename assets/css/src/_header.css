@@ -102,7 +102,7 @@ div.wp-site-blocks {
 
 @media (--narrow-menu-query) {
 
-	header#masthead:has(nav) {
+	.site-header:has(nav) {
 		display: grid;
 		grid-template-columns: 1fr 6fr;
 
@@ -131,7 +131,7 @@ div.wp-site-blocks {
 			border: none;
 		}
 
-		& .main-navigation.nav--toggle-sub {
+		:where(& .main-navigation.nav--toggle-sub) {
 			padding: initial;
 			margin: 1em 0;
 

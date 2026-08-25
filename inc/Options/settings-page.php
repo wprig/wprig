@@ -12,5 +12,5 @@ wp_enqueue_style(
 ?>
 <div class="wrap">
 	<h1><?php esc_html_e( 'Theme Settings', 'wp-rig' ); ?></h1>
-	<div id="wp-rig-settings-page"></div>
+	<div class="wp-rig-settings-page"></div>
 </div><?php
