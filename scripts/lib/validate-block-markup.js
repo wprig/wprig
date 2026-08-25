@@ -10,7 +10,16 @@
 import fs from 'fs';
 import path from 'path';
 
-const BLOCK_REGEX = /<!--\s*wp:([a-z0-9-]+\/?[a-z0-9-]+)\s*(\{.*?\})?\s*-->/g;
+/**
+ * Matches both open block comments (`<!-- wp:group {...} -->`) and self-closing
+ * template-part / void blocks (`<!-- wp:header {...} /-->`). The trailing
+ * `\/?` is required: core renders `wp:header`, `wp:footer`, `wp:post-content`,
+ * and `wp:template-part` in self-closing form, and those must be validated too,
+ * not silently skipped. Closing comments (`<!-- /wp:group -->`) never match
+ * because the pattern requires `wp:` immediately after the leading whitespace.
+ */
+const BLOCK_REGEX =
+	/<!--\s*wp:([a-z0-9-]+\/?[a-z0-9-]+)\s*(\{.*?\})?\s*\/?\s*-->/g;
 
 /**
  * Attribute keys WordPress Core injects automatically and should not warn about.
