@@ -54,6 +54,12 @@ class Component_Test extends Unit_Test_Case {
 		parent::setUp();
 
 		Functions\when( 'WP_Rig\WP_Rig\get_config' )->justReturn( array() );
+		Functions\when( 'sanitize_title' )->alias(
+			static function ( $title ) {
+				$title = strtolower( (string) $title );
+				return preg_replace( '/[^a-z0-9_-]+/', '-', $title );
+			}
+		);
 		Functions\when( 'wp_parse_list' )->alias(
 			static function ( $list ) {
 				if ( is_array( $list ) ) {
@@ -343,6 +349,32 @@ class Component_Test extends Unit_Test_Case {
 
 		$this->assertSame( array( 'featured' ), $good['categories'] );
 		$this->assertSame( $this->temp_theme_root . '/inc/Foo/patterns/good.php', $good['filePath'] );
+	}
+
+	/**
+	 * Tests that bare pattern slugs are namespaced by their owning component
+	 * so two components can never register colliding pattern names.
+	 *
+	 * @covers \WP_Rig\WP_Rig\Block_Patterns\Component::register_patterns_from_directory()
+	 */
+	public function test_bare_slugs_are_namespaced_by_owning_component() {
+		Functions\when( 'get_stylesheet_directory' )->justReturn( $this->temp_theme_root );
+
+		$this->createFile( 'inc/My_Component/patterns/bare.php', '<?php /** */' );
+
+		$this->mockFileData(
+			array(
+				'bare.php' => array(
+					'title' => 'Bare Pattern',
+					'slug'  => 'bare',
+				),
+			)
+		);
+
+		$this->component->register_component_patterns();
+
+		$this->assertCount( 1, $this->registered_patterns );
+		$this->assertSame( 'my_component/bare', $this->registered_patterns[0][0] );
 	}
 
 	/**

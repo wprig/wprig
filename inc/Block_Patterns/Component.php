@@ -15,6 +15,7 @@ use function get_file_data;
 use function get_stylesheet_directory;
 use function register_block_pattern;
 use function register_block_pattern_category;
+use function sanitize_title;
 use function trailingslashit;
 use function WP_Rig\WP_Rig\get_config;
 
@@ -183,6 +184,11 @@ class Component implements Component_Interface {
 			return;
 		}
 
+		// Namespace component patterns by their owning component directory so two
+		// components shipping the same bare slug never collide. Core namespaces
+		// theme patterns by stylesheet; this mirrors that for bundled components.
+		$namespace = sanitize_title( basename( dirname( rtrim( $directory, '/' ) ) ) );
+
 		foreach ( $files as $file ) {
 			$pattern = get_file_data( $file, self::PATTERN_HEADERS );
 
@@ -216,7 +222,13 @@ class Component implements Component_Interface {
 				unset( $pattern['inserter'] );
 			}
 
-			register_block_pattern( (string) $pattern['slug'], $pattern );
+			// Slugs carrying an explicit namespace are kept as authored; bare
+			// slugs are prefixed with the owning component slug.
+			$pattern_name = false !== strpos( (string) $pattern['slug'], '/' )
+				? (string) $pattern['slug']
+				: $namespace . '/' . $pattern['slug'];
+
+			register_block_pattern( $pattern_name, $pattern );
 		}
 	}
 }
