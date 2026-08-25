@@ -11,7 +11,7 @@ These skills define the core development workflow in WP Rig.
 - [**Onboarding Guide**](../ONBOARDING.md): First-time setup protocol.
 
 ## 🎨 Design & Typography
-- [**Styles & CSS**](skills/styles/SKILL.md): CSS partials, variables, and the build process.
+- [**Styles & CSS**](skills/styles/SKILL.md): Modern CSS Playbook — Lightning CSS, the enforced (0,4,1) specificity budget, generated custom media, and the technique reference (nesting, `:where()`/`:is()`, `@layer`, container queries, logical props, `:has()`).
 - [**Typography**](skills/typography/SKILL.md): Variable fonts, local loading, and fluid typography.
 - [**Web Designer**](skills/web-designer/SKILL.md): Visual design principles and OKLCH color system.
 - [**Hero Canvas**](skills/hero-canvas/SKILL.md): Advanced canvas-based hero sections and animations.
