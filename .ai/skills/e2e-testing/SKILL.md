@@ -17,6 +17,8 @@ Use the following NPM scripts for E2E testing:
 - `npm run test:e2e:nav:watch:desktop`: Launches visual watch test directly in desktop viewport mode.
 - `npm run test:e2e:mobile-nav`: Runs 5-level deep mobile navigation tests in headless background mode.
 - `npm run test:e2e:mobile-nav:watch`: Runs 5-level deep mobile navigation tests in live headed watch mode.
+- `npm run test:e2e:spatial`: Runs the Spatial & Visual Regression suite (Part A) — deterministic `boundingBox()` geometry checks (no horizontal overflow, no region overlap, content-sibling collisions, viewport containment).
+- `npm run test:e2e:spatial:watch`: Same suite in live headed watch mode.
 - `npm run test:e2e:ui`: Opens the Playwright UI for interactive testing and debugging.
 - `npm run test:e2e:debug`: Runs tests in debug mode, stepping through each action.
 - `npm run test:e2e:codegen`: Opens the Playwright Codegen tool to record new tests by interacting with the browser.
@@ -78,6 +80,28 @@ Use `test:e2e:screenshot` to capture and compare UI states.
 ```bash
 SCREENSHOT_URL="/contact" SCREENSHOT_NAME="contact-page.png" npm run test:e2e:screenshot
 ```
+
+## Spatial & Visual Regression (Part A — geometry)
+
+Pixel snapshots compare against the environment they were recorded in; the
+spatial suite (`tests/e2e/specs/spatial-layout.spec.ts`, helpers in
+`tests/e2e/utils/spatial.ts`) instead asserts **geometry** via `boundingBox()`,
+so it is environment-independent and catches the classic responsive bugs:
+
+- **No horizontal overflow** — `scrollWidth` never exceeds the viewport
+  (overflowing tables, images, unbroken tokens).
+- **Regions don't overlap** — structural regions (header / main / sidebar /
+  footer) never collide; selector lists are paradigm-agnostic so the same suite
+  serves classic and block-based themes.
+- **Content siblings don't collide** — direct children of `.entry-content`
+  stack cleanly.
+- **Viewport containment** — opened mobile menus and content containers stay
+  on-screen.
+
+All assertions take a pixel `tolerance` (default `2`). Viewports track
+`settings.viewport` (mobile 480 / tablet 782) plus 375 and 1280. Prefer
+`npm run test:e2e:spatial` during rapid layout prototyping — it is deterministic
+and ~3s across pages on a live site.
 
 ## Agentic Iteration (Ralph Loop)
 
