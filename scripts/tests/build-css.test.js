@@ -1,13 +1,11 @@
-/* eslint-env es6 */
-/* global test, expect */
-
-/**
- * Internal dependencies
- */
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import {
 	processThemeUrls,
 	insertAfterTopImports,
 	ensureVirtualImportInserted,
+	buildPreloadList,
 } from '../../build-css.js';
 
 test( 'processThemeUrls replaces ~theme/ with absolute theme path', () => {
@@ -51,4 +49,57 @@ test( 'ensureVirtualImportInserted is idempotent', () => {
 	const second = ensureVirtualImportInserted( first );
 	expect( first ).toContain( '@import "virtual:preload.css"' );
 	expect( second ).toBe( first );
+} );
+
+describe( 'buildPreloadList — block-based preload gating (Track B Phase 3 / D13)', () => {
+	const styles = {
+		preload: [ '_custom-media.css' ],
+		preloadBlockBased: [ '_blocks-based.css' ],
+	};
+
+	test( 'excludes preloadBlockBased for classic builds', () => {
+		expect( buildPreloadList( styles, false ) ).toEqual( [
+			'_custom-media.css',
+		] );
+	} );
+
+	test( 'appends preloadBlockBased when block-based is enabled', () => {
+		expect( buildPreloadList( styles, true ) ).toEqual( [
+			'_custom-media.css',
+			'_blocks-based.css',
+		] );
+	} );
+
+	test( 'tolerates a missing preloadBlockBased key', () => {
+		expect(
+			buildPreloadList( { preload: [ '_custom-media.css' ] }, true )
+		).toEqual( [ '_custom-media.css' ] );
+	} );
+} );
+
+describe( 'gate check — _blocks-based.css is only referenced by the build', () => {
+	test( 'no non-_blocks*.css source references _blocks-based.css', () => {
+		const __filename = fileURLToPath( import.meta.url );
+		const __dirname = path.dirname( __filename );
+		const srcDir = path.resolve( __dirname, '../../assets/css/src' );
+		const offenders = [];
+
+		for ( const file of fs.readdirSync( srcDir ) ) {
+			if ( ! file.endsWith( '.css' ) || file.startsWith( '_blocks' ) ) {
+				continue;
+			}
+			const content = fs.readFileSync(
+				path.join( srcDir, file ),
+				'utf8'
+			);
+			if ( content.includes( '_blocks-based' ) ) {
+				offenders.push( file );
+			}
+		}
+
+		expect(
+			offenders,
+			'classic partials must not reference _blocks-based.css'
+		).toEqual( [] );
+	} );
 } );

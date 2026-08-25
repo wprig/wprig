@@ -23,13 +23,36 @@ export async function propagateTokens() {
 	// 2. Update CSS variables in _custom-properties.css
 	await updateCssVariables( tokens );
 
-	// 3. Update tailwind.config.js (if exists)
+	// 3. Regenerate @custom-media aliases in _custom-media.css
+	await updateCustomMedia( tokens );
+
+	// 4. Update tailwind.config.js (if exists)
 	await updateTailwindConfig( tokens );
 }
 
 async function updateThemeJson( tokens ) {
 	const themeJsonPath = path.join( themeRoot, 'theme.json' );
-	let themeJson = {
+	let existingThemeJson;
+
+	if ( await fs.pathExists( themeJsonPath ) ) {
+		existingThemeJson = await fs.readJson( themeJsonPath );
+	}
+
+	const themeJson = buildThemeJson( tokens, existingThemeJson );
+	await fs.writeJson( themeJsonPath, themeJson, { spaces: 2 } );
+}
+
+/**
+ * Builds the v3 / WP 7.1 theme.json object from tokens.json, preserving (not
+ * clobbering) any hand-authored sections of an existing theme.json. tokens.js is
+ * the sole theme.json writer (D9); setup and build both call this.
+ *
+ * @param {Object} tokens            Parsed config/tokens.json.
+ * @param {Object} existingThemeJson Current theme.json contents (undefined when absent).
+ * @return {Object} Merged, ready-to-write theme.json object.
+ */
+export function buildThemeJson( tokens, existingThemeJson ) {
+	const themeJson = existingThemeJson ?? {
 		version: 3,
 		settings: {
 			appearanceTools: true,
@@ -41,11 +64,64 @@ async function updateThemeJson( tokens ) {
 				fontSizes: [],
 			},
 		},
+		styles: {
+			color: {
+				// 'text'/'background' are real palette slugs (tokens.colors).
+				text: 'var(--wp--preset--color--text)',
+				background: 'var(--wp--preset--color--background)',
+			},
+			// Link interactive states live natively in theme.json (G3) so the WP 7.1
+			// editor exposes hover/focus/active — values point at theme CSS vars
+			// (single source of truth in tokens via _custom-properties.css).
+			elements: {
+				link: {
+					color: { text: 'var(--color-link)' },
+					':visited': {
+						color: { text: 'var(--color-link-visited)' },
+					},
+					':hover': {
+						color: { text: 'var(--color-link-active)' },
+					},
+					':focus': {
+						color: { text: 'var(--color-link-active)' },
+					},
+					':active': {
+						color: { text: 'var(--color-link-active)' },
+					},
+				},
+			},
+		},
 	};
 
-	if ( await fs.pathExists( themeJsonPath ) ) {
-		themeJson = await fs.readJson( themeJsonPath );
-	}
+	// Upgrade to theme.json v3 / WP 7.1 schema (single source of truth is tokens.json).
+	themeJson.$schema = 'https://schemas.wp.org/wp/7.1/theme.json';
+	themeJson.version = 3;
+
+	// Ensure the sections we own exist — this generator is the sole theme.json writer (D9).
+	themeJson.settings = themeJson.settings || {};
+	themeJson.settings.color = themeJson.settings.color || {};
+	themeJson.settings.typography = themeJson.settings.typography || {};
+
+	// Viewport breakpoints (WP 7.1) mirror tokens.json breakpoints (D4/D6/D10).
+	themeJson.settings.viewport = {
+		mobile: tokens.breakpoints?.mobile || '480px',
+		tablet: tokens.breakpoints?.tablet || '782px',
+	};
+
+	// Layout derives from tokens.spacing (resolves the 800px-vs-45rem drift, D9).
+	themeJson.settings.layout = themeJson.settings.layout || {};
+	themeJson.settings.layout.contentSize =
+		tokens.spacing[ 'content-width' ] || '45rem';
+	themeJson.settings.layout.wideSize =
+		tokens.spacing[ 'wide-width' ] || '64rem';
+
+	// Block visibility: an editor capability for all paradigms (the block editor is
+	// active for classic content too). WP 7.1 default is allowEditing: true; set it
+	// explicitly for clarity. G8 (Track B Phase 6) owns semantic alignment with the
+	// mobile-nav hide patterns.
+	themeJson.settings.blockVisibility = {
+		allowEditing: true,
+	};
 
 	// Update palette
 	themeJson.settings.color.palette = Object.entries( tokens.colors ).map(
@@ -86,7 +162,7 @@ async function updateThemeJson( tokens ) {
 		return fontSize;
 	} );
 
-	await fs.writeJson( themeJsonPath, themeJson, { spaces: 2 } );
+	return themeJson;
 }
 
 async function updateCssVariables( tokens ) {
@@ -138,13 +214,22 @@ async function updateCssVariables( tokens ) {
 	}
 	spacingVars += `\t--content-width: ${ tokens.spacing[ 'content-width' ] };\n`;
 
+	// Update Breakpoints (drives the JS mobile-nav toggle; px per viewport.tablet).
+	// NOTE: --mobile-breakpoint is *named* "mobile" but holds the tablet
+	// (nav-collapse) value — kept for BC (D8); JS reads it directly in px.
+	let breakpointVars = '';
+	breakpointVars += `\t/* Breakpoint (viewport.tablet) — drives the JS mobile-nav toggle */\n`;
+	breakpointVars += `\t--mobile-breakpoint: ${
+		tokens.breakpoints?.tablet || '782px'
+	};\n`;
+
 	const rootRegex = /:root\s*{([^}]*)}/s;
 	const match = css.match( rootRegex );
 
 	if ( match ) {
 		const startMarker = '/* Generated from tokens.json */';
 		const endMarker = '/* End of generated tokens */';
-		const generatedContent = `\n\t${ startMarker }\n${ spacingVars }${ typoVars }${ colorVars }\t${ endMarker }\n`;
+		const generatedContent = `\n\t${ startMarker }\n${ spacingVars }${ typoVars }${ breakpointVars }${ colorVars }\t${ endMarker }\n`;
 
 		const innerContent = match[ 1 ];
 		if ( innerContent.includes( startMarker ) ) {
@@ -163,6 +248,86 @@ async function updateCssVariables( tokens ) {
 	}
 
 	await fs.writeFile( cssPath, css );
+}
+
+/**
+ * Regenerates assets/css/src/_custom-media.css from tokens.json "breakpoints".
+ *
+ * All WP Rig @custom-media aliases collapse to derive from the two WP 7.1
+ * settings.viewport breakpoints (mobile / tablet) — see the Track B plan §4.
+ *
+ * @param {Object} tokens Parsed config/tokens.json.
+ */
+async function updateCustomMedia( tokens ) {
+	const cssPath = path.join(
+		themeRoot,
+		'assets',
+		'css',
+		'src',
+		'_custom-media.css'
+	);
+
+	await fs.writeFile( cssPath, buildCustomMediaCss( tokens.breakpoints ) );
+}
+
+/**
+ * Derives the 7 WP Rig @custom-media aliases from the WP 7.1 viewport
+ * breakpoints (single source of truth — see the Track B plan §4 for the mapping).
+ *
+ * @param {Object} breakpoints Viewport breakpoints { mobile, tablet } in px.
+ * @return {Array<Array<string>>} [ alias, full-query ] pairs.
+ */
+export function buildCustomMediaAliases( breakpoints = {} ) {
+	const mobile = parsePx( breakpoints.mobile || '480px' );
+	const tablet = parsePx( breakpoints.tablet || '782px' );
+
+	return [
+		[ '--narrow-menu-query', `screen and (max-width: ${ mobile }px)` ],
+		[ '--wide-menu-query', `screen and (min-width: ${ mobile + 1 }px)` ],
+		[ '--medium-query', `screen and (min-width: ${ mobile + 1 }px)` ],
+		[ '--content-query', `screen and (min-width: ${ tablet + 1 }px)` ],
+		[ '--sidebar-query', `screen and (min-width: ${ tablet + 1 }px)` ],
+		[ '--tablet-menu-query', `screen and (max-width: ${ tablet }px)` ],
+		[ '--desktop-menu-query', `screen and (min-width: ${ tablet + 1 }px)` ],
+	];
+}
+
+/**
+ * Builds the full regenerated _custom-media.css file content from viewport
+ * breakpoints.
+ *
+ * @param {Object} breakpoints Viewport breakpoints { mobile, tablet } in px.
+ * @return {string} Complete _custom-media.css source.
+ */
+export function buildCustomMediaCss( breakpoints = {} ) {
+	const mobile = breakpoints.mobile || '480px';
+	const tablet = breakpoints.tablet || '782px';
+
+	const body = buildCustomMediaAliases( breakpoints )
+		.map( ( [ name, query ] ) => `@custom-media ${ name } ${ query };` )
+		.join( '\n' );
+
+	return `/**
+ * Custom Media Queries
+ * Generated from config/tokens.json "breakpoints" (single source of truth).
+ * Mobile = ${ mobile }, tablet = ${ tablet }.
+ *
+ * @link: https://drafts.csswg.org/mediaqueries-5/#custom-mq
+ **/
+
+${ body }
+`;
+}
+
+/**
+ * Parses a px length into a number (defaults to 480 for safety).
+ *
+ * @param {string} value CSS length in px.
+ * @return {number} Numeric px value.
+ */
+function parsePx( value ) {
+	const match = String( value ).match( /^([\d.]+)px$/ );
+	return match ? parseFloat( match[ 1 ] ) : 480;
 }
 
 async function updateTailwindConfig( tokens ) {

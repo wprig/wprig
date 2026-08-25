@@ -3,25 +3,18 @@
 /*--------------------------------------------------------------
 # Links
 --------------------------------------------------------------*/
+
+/*
+ * Link colors (base/visited/hover/focus/active) now live in theme.json
+ * `styles.elements.link` (migrated in Track B Phase 4 / G3) so the WP 7.1 editor
+ * exposes interactive states natively. Only the focus/outline affordances remain
+ * here — those are not expressible in theme.json.
+ */
 /* stylelint-disable */
-a {
-	color: var(--color-link);
-}
-/* stylelint-enable */
-
-a:visited {
-	color: var(--color-link-visited);
-}
-
-a:hover,
-a:focus,
-a:active {
-	color: var(--color-link-active);
-}
-
 a:focus {
 	outline: thin dotted;
 }
+/* stylelint-enable */
 
 a:hover,
 a:active {

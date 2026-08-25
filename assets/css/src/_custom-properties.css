@@ -8,6 +8,7 @@
 :root {
 	/* Generated from tokens.json */
 	--spacing-content-width: 45rem;
+	--spacing-wide-width: 64rem;
 	--spacing-base: 1rem;
 	--content-width: 45rem;
 	--global-font-family: "Open Sans", "Helvetica Neue", "Arial", sans-serif;
@@ -17,6 +18,8 @@
 	--font-size-base: clamp(0.75rem, 0.667rem + 0.417vw, 1rem);
 	--font-size-large: clamp(1.35rem, 1.2rem + 0.75vw, 1.8rem);
 	--font-size-xlarge: clamp(1.8rem, 1.6rem + 1vw, 2.4rem);
+	/* Breakpoint (viewport.tablet) — drives the JS mobile-nav toggle */
+	--mobile-breakpoint: 782px;
 	--color-primary: #e36d60;
 	--color-secondary: #41848f;
 	--color-red: #c0392b;
@@ -34,12 +37,6 @@
 	--color-theme-secondary: #41848f;
 	/* End of generated tokens */
 --dropdown-symbol-width: 0.7em;
-
-	/* Responsive Breakpoints
-	 * NOTE: This is the single source of truth for the touch/mobile menu interaction breakpoint.
-	 * Any changes here will automatically propagate to JS. Must use the 'em' unit.
-	 */
-	--mobile-breakpoint: 55em;
 
 	/* Typography */
 	--global-font-size: 20;

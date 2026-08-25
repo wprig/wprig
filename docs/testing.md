@@ -71,6 +71,42 @@ You can adjust the speed of the visual pauses using the `SLOWMO` environment var
 SLOWMO=1200 npm run test:e2e:nav:watch
 ```
 
+### Spatial & Visual Regression Testing (Part A)
+
+The Spatial & Visual Regression suite (`tests/e2e/specs/spatial-layout.spec.ts`)
+provides deterministic geometric layout checks built on Playwright
+`boundingBox()`. Unlike pixel snapshots, it reasons about geometry (overlap /
+bounds / containment), so it is **environment-independent** — immune to font,
+OS, and antialiasing variance — and runs anywhere the frontend renders.
+
+Geometry helpers live in `tests/e2e/utils/spatial.ts`:
+
+- `assertNoHorizontalOverflow` — the document/body `scrollWidth` must not exceed
+  the viewport width (catches overflowing tables, images, and long tokens).
+- `assertRegionsDoNotOverlap` — structural regions (header / main / sidebar /
+  footer) must not collide. Resolved paradigm-agnostically: the same selector
+  lists serve classic markup (`.site-header`, `.site-main`, `.widget-area`,
+  `.site-footer`) and block-based markup (`.wp-site-blocks` template-part
+  groups).
+- `assertSiblingsDoNotOverlap` — direct block children of `.entry-content`
+  stack cleanly without colliding.
+- `isWithinViewport` / `isHorizontallyWithinViewport` / `isContainedWithin` —
+  containment primitives for custom assertions.
+
+Every assertion takes a pixel `tolerance` (default `2`) so hairline borders and
+shadows never register as collisions.
+
+The suite runs six page audits (home, single post, theme-unit-test stress page,
+archive, search, 404) across four viewports that track the WP 7.1
+`settings.viewport` scale — small mobile `375`, mobile `480`, tablet `782`,
+desktop `1280` — plus a mobile-menu-open audit that asserts the opened menu
+stays on-screen without introducing horizontal scroll.
+
+```bash
+npm run test:e2e:spatial       # headless (all installed browser projects)
+npm run test:e2e:spatial:watch # headed, watch a component live
+```
+
 ### Mobile Navigation Testing
 
 The Mobile Navigation test suite (`tests/e2e/specs/mobile-navigation.spec.ts`) is designed to validate complex navigation structures in both Classic theme and Gutenberg Block navigation modes.

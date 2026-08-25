@@ -1,0 +1,74 @@
+/**
+ * Block-based (FSE-only) theme styles — baseline starter styling.
+ *
+ * Single home for styles targeting strictly-FSE core blocks and theme parts
+ * (Navigation block, Query Loop, template parts). Loaded ONLY when the theme is
+ * block-capable (themeType `universal` | `block-based`) via the build's
+ * `dev.styles.preloadBlockBased` mechanism — it is never included in a classic
+ * build. This is a baseline, not a design system: keep rules minimal and avoid
+ * opinionated overrides that fight the editor's native output.
+ *
+ * Paradigm: `block-based` (see config/paradigms.json).
+ */
+
+/*--------------------------------------------------------------
+# Theme Parts — spacing baseline
+--------------------------------------------------------------*/
+
+/* Site header / footer template parts align with the content width and keep
+ * consistent inline padding instead of stretching full-bleed. */
+.wp-site-header,
+.wp-site-footer,
+.wp-block-template-part {
+	max-width: var(--content-width);
+	margin-inline: auto;
+	padding-inline: 1.5rem;
+	width: 100%;
+}
+
+/*--------------------------------------------------------------
+# Navigation block — desktop layout + mobile-toggle alignment
+--------------------------------------------------------------*/
+
+/* Constrain the Navigation block to the site-header content width so items align
+ * with the content column instead of bleeding to the viewport edge. */
+.wp-site-header .wp-block-navigation,
+header.wp-block-template-part .wp-block-navigation {
+	max-width: var(--content-width);
+	margin-inline: auto;
+}
+
+/* The mobile hamburger/close controls should never stretch full-bleed. */
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container-close {
+	width: auto;
+}
+
+/* Give the mobile drawer's inner content the same inline padding as the header. */
+.wp-block-navigation__responsive-container-content {
+	padding-inline: 1.5rem;
+}
+
+/*--------------------------------------------------------------
+# Query Loop — defaults
+--------------------------------------------------------------*/
+
+.wp-block-query {
+	margin: 0;
+}
+
+/* Core renders the loop as a list; reset native list chrome. */
+.wp-block-post-template {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* Vertical rhythm between loop items. */
+.wp-block-post {
+	margin-bottom: var(--spacing-base);
+}
+
+.wp-block-post-title {
+	margin-block-start: 0;
+}

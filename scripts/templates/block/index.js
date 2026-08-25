@@ -6,7 +6,7 @@ const { __ } = wp.i18n;
 import Edit from './edit';
 
 registerBlockType( 'wprig/example', {
-	apiVersion: 2,
+	apiVersion: 3,
 	title: __( 'Example Block', 'wp-rig' ),
 	edit: Edit,
 	save() {

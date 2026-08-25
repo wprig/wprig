@@ -4,7 +4,12 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getPhpFiles } from '../../node/childify.js';
+import {
+	getPhpFiles,
+	readThemeType,
+	resolveKeepList,
+	readMergedConfig,
+} from '../../node/childify.js';
 
 const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
@@ -28,6 +33,48 @@ describe( 'Childify Script Utilities', () => {
 		expect( hasVendor ).toBe( false );
 		expect( hasNodeModules ).toBe( false );
 		expect( hasGit ).toBe( false );
+	} );
+} );
+
+describe( 'Childify Paradigm-Aware Keep-List (Zero-Config Scaffolding)', () => {
+	test( 'classic theme keeps the classic core (Styles, Scripts, Sidebars)', () => {
+		expect( resolveKeepList( 'classic' ).sort() ).toEqual( [
+			'Styles',
+			'Sidebars',
+			'Scripts',
+		].sort() );
+	} );
+
+	test( 'block-capable themes additionally keep the block components', () => {
+		const expected = [
+			'Styles',
+			'Sidebars',
+			'Scripts',
+			'Editor',
+			'Blocks',
+			'Block_Patterns',
+			'Block_Styles',
+			'Icons',
+		].sort();
+
+		expect( resolveKeepList( 'universal' ).sort() ).toEqual( expected );
+		expect( resolveKeepList( 'block-based' ).sort() ).toEqual( expected );
+	} );
+
+	test( 'readThemeType resolves the active paradigm from the shared config', () => {
+		const themeType = readThemeType();
+		expect( [ 'classic', 'universal', 'block-based' ] ).toContain( themeType );
+		expect( themeType ).toBe( readMergedConfig()?.theme?.themeType );
+	} );
+
+	test( 'readMergedConfig reflects shipped config.json, not config.local.json', () => {
+		const cfg = readMergedConfig();
+		const customPath = path.join( themeRoot, 'config', 'config.json' );
+		if ( ! fs.existsSync( customPath ) ) {
+			return; // No config.json in this clone — nothing to verify.
+		}
+		const custom = JSON.parse( fs.readFileSync( customPath, 'utf8' ) );
+		expect( cfg?.theme?.enableBlocks ).toBe( custom?.theme?.enableBlocks );
 	} );
 } );
 

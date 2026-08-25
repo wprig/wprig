@@ -1,5 +1,5 @@
 import { cleanCSS, cleanJS, cleanInspect } from './clean.js';
-import { images, convertToWebP } from './images.js';
+import { images, convertToModernFormats } from './images.js';
 import phpTask from './php.js';
 import fonts from './fonts.js';
 import prodPrep from './prodPrep.js';
@@ -53,7 +53,7 @@ export default async function runBundle( {
 	// Images, PHP, fonts in parallel
 	const middle = [
 		runTask( images, 'images' ).then( () =>
-			runTask( convertToWebP, 'convertToWebP' )
+			runTask( convertToModernFormats, 'convertToModernFormats' )
 		),
 		runTask( fonts, 'fonts' ),
 		new Promise( ( resolve, reject ) => {

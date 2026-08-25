@@ -280,12 +280,12 @@ function getMobileBreakpoint(): number {
 			return value;
 		}
 	}
-	return 55; // Fallback
+	return 782; // Fallback (viewport tablet)
 }
 
 /**
  * Monitors the window for resize events and performs actions based on the window size.
- * Specifically, if the window width exceeds a specified breakpoint in em units, it triggers
+ * Specifically, if the window width exceeds a specified breakpoint in px units, it triggers
  * the closure of all sub-menus.
  *
  * @return {void} No return value.
@@ -294,25 +294,19 @@ function watchForWindowSizeChanges(): void {
 	window.addEventListener( 'resize', () => {
 		const width = window.innerWidth;
 		const mobileBreakPoint = getMobileBreakpoint();
-		const emValue =
-			width /
-			parseFloat( getComputedStyle( document.documentElement ).fontSize );
-		if ( emValue > mobileBreakPoint ) {
+		if ( width > mobileBreakPoint ) {
 			closeAllSubMenus();
 		}
 	} );
 }
 
 /**
- * Helper to determine if we are at or below the mobile breakpoint (55em).
+ * Helper to determine if we are at or below the mobile breakpoint (px).
  */
 function isMobileWidth(): boolean {
 	const width = window.innerWidth;
 	const mobileBreakPoint = getMobileBreakpoint();
-	const emValue =
-		width /
-		parseFloat( getComputedStyle( document.documentElement ).fontSize );
-	return emValue <= mobileBreakPoint;
+	return width <= mobileBreakPoint;
 }
 
 /**
