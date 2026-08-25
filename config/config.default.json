@@ -70,5 +70,17 @@
       "assets/svg/*.svg",
       "assets/icons/*.svg"
     ]
+  },
+  "patterns": {
+    "categories": {
+      "featured": "Featured",
+      "hero": "Hero",
+      "call-to-action": "Call to Action",
+      "services": "Services",
+      "team": "Team",
+      "testimonials": "Testimonials",
+      "portfolio": "Portfolio",
+      "posts": "Posts"
+    }
   }
 }
