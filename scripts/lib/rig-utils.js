@@ -22,6 +22,28 @@ export const logger = {
 };
 
 /**
+ * Normalizes an `asset_mapping[type]` value into a flat array of asset entries.
+ *
+ * The OCR manifest (schema v2) allows either a single entry object or an array
+ * of entries per type (styles/scripts). All consumers (rig:add, rig:prepare,
+ * rig:test-component) must treat both forms identically.
+ *
+ * @param {Array|Object} mappingEntry The value of `asset_mapping[type]`.
+ * @return {Array<Object>} Flat list of `{ src, target, scoped }` entries.
+ */
+export function normalizeAssetEntries( mappingEntry ) {
+	if ( Array.isArray( mappingEntry ) ) {
+		return mappingEntry.filter(
+			( entry ) => entry && typeof entry === 'object'
+		);
+	}
+	if ( mappingEntry && typeof mappingEntry === 'object' ) {
+		return [ mappingEntry ];
+	}
+	return [];
+}
+
+/**
  * Normalizes a slug to PascalCase with underscores.
  * e.g. mega-menu -> Mega_Menu
  *

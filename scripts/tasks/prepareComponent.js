@@ -5,7 +5,11 @@
 import fs from 'fs-extra';
 import path from 'path';
 import c from 'ansi-colors';
-import { logger, toPascalCase } from '../lib/rig-utils.js';
+import {
+	logger,
+	toPascalCase,
+	normalizeAssetEntries,
+} from '../lib/rig-utils.js';
 import { getAssetPath } from '../lib/utils.js';
 import testComponent from './testComponent.js';
 
@@ -62,6 +66,7 @@ export default async function prepareComponent( slug, themeRoot ) {
 		const manifest = await fs.readJson( manifestPath );
 
 		await copyCoreFiles( componentDir, distDir );
+		await copyComponentDirectories( componentDir, distDir );
 		await copyAssets( manifest, themeRoot, distDir );
 		await copyAdditionalFiles( manifest, componentDir, distDir );
 
@@ -101,6 +106,24 @@ async function copyCoreFiles( componentDir, distDir ) {
 }
 
 /**
+ * Copies component subdirectories (patterns/, src/) into the package.
+ *
+ * Bundled `patterns/` are registered by inc/Block_Patterns on the target
+ * theme; `src/` holds component build sources referenced by the manifest.
+ *
+ * @param {string} componentDir Source component directory
+ * @param {string} distDir      Destination dist directory
+ */
+async function copyComponentDirectories( componentDir, distDir ) {
+	for ( const dirName of [ 'patterns', 'src' ] ) {
+		const srcDir = path.join( componentDir, dirName );
+		if ( await fs.pathExists( srcDir ) ) {
+			await fs.copy( srcDir, path.join( distDir, dirName ) );
+		}
+	}
+}
+
+/**
  * Copies assets from manifest to the dist directory.
  *
  * @param {Object} manifest  Component manifest
@@ -113,16 +136,22 @@ async function copyAssets( manifest, themeRoot, distDir ) {
 	}
 
 	for ( const type in manifest.asset_mapping ) {
-		const asset = manifest.asset_mapping[ type ];
-		if ( ! asset.src ) {
-			continue;
-		}
+		for ( const asset of normalizeAssetEntries(
+			manifest.asset_mapping[ type ]
+		) ) {
+			if ( ! asset.src ) {
+				continue;
+			}
 
-		const assetPath = path.resolve( themeRoot, getAssetPath( asset.src ) );
-		if ( await fs.pathExists( assetPath ) ) {
-			const destAssetPath = path.join( distDir, asset.src );
-			await fs.ensureDir( path.dirname( destAssetPath ) );
-			await fs.copy( assetPath, destAssetPath );
+			const assetPath = path.resolve(
+				themeRoot,
+				getAssetPath( asset.src )
+			);
+			if ( await fs.pathExists( assetPath ) ) {
+				const destAssetPath = path.join( distDir, asset.src );
+				await fs.ensureDir( path.dirname( destAssetPath ) );
+				await fs.copy( assetPath, destAssetPath );
+			}
 		}
 	}
 }

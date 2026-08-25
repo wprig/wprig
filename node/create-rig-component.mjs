@@ -75,11 +75,17 @@ async function createRigComponent() {
 		}
 
 		// Create manifest.json, SPEC.md, and SKILL.md
-		await createManifestFile( componentDir, componentInfo );
+		await createManifestFile( componentDir, componentInfo, options );
 		await createSpecFile( componentDir, componentInfo );
 		await createSkillFile( componentDir, componentInfo );
 
-		console.log( 'Component created successfully! Wiring is handled automatically via dynamic loading.' );
+		// Create stub assets referenced by manifest.asset_mapping so the fresh
+		// component passes rig:test-component out of the box.
+		await createAssetStubs( componentInfo );
+
+		console.log(
+			'Component created successfully! Wiring is handled automatically via dynamic loading.'
+		);
 	} catch ( error ) {
 		console.error( 'Error creating component:', error.message );
 		process.exit( 1 );
@@ -97,6 +103,7 @@ function parseCommandLineArgs( args ) {
 		componentName: null,
 		templating: false,
 		tests: false,
+		paradigm: 'all',
 	};
 
 	// First non-flag argument is the component name
@@ -106,11 +113,17 @@ function parseCommandLineArgs( args ) {
 	}
 
 	// Parse flags
-	for ( const arg of args ) {
+	for ( let i = 0; i < args.length; i++ ) {
+		const arg = args[ i ];
 		if ( arg === '--templating' ) {
 			options.templating = true;
 		} else if ( arg === '--tests' ) {
 			options.tests = true;
+		} else if ( arg === '--paradigm' && args[ i + 1 ] ) {
+			options.paradigm = args[ i + 1 ];
+			i++; // consume the value
+		} else if ( arg.startsWith( '--paradigm=' ) ) {
+			options.paradigm = arg.slice( '--paradigm='.length );
 		}
 	}
 
@@ -144,6 +157,16 @@ function promptForComponentName() {
 function validateOptions( options ) {
 	if ( ! options.componentName ) {
 		console.error( 'Error: Component name is required' );
+		process.exit( 1 );
+	}
+
+	const validParadigms = [ 'all', 'classic', 'universal', 'block-based' ];
+	if ( ! validParadigms.includes( options.paradigm ) ) {
+		console.error(
+			`Error: Invalid paradigm "${
+				options.paradigm
+			}". Valid values: ${ validParadigms.join( ', ' ) }`
+		);
 		process.exit( 1 );
 	}
 }
@@ -211,13 +234,32 @@ async function fileExists( filePath ) {
  */
 async function createComponentFile( filePath, componentInfo, options ) {
 	const { pascalName, kebabSlug } = componentInfo;
-	const { templating } = options;
+	const { templating, paradigm } = options;
 
 	// Build the interfaces list
 	const interfaces = [ 'Component_Interface' ];
 	if ( templating ) {
 		interfaces.push( 'Templating_Component_Interface' );
 	}
+
+	// Paradigm gating (OCR build contract): non-'all' components declare a
+	// PARADIGM const and use Paradigm_Component_Trait so Theme skips them when
+	// the active theme type doesn't include that paradigm.
+	const gated = paradigm !== 'all';
+	const paradigmConst = gated
+		? `
+	/**
+	 * The paradigm tag gating this component (see config/paradigms.json).
+	 *
+	 * @var string
+	 */
+	const PARADIGM = '${ paradigm }';
+`
+		: '';
+	const paradigmTraitUse = gated
+		? `	use Paradigm_Component_Trait;
+`
+		: '';
 
 	// Build the use statements
 	const useStatements = [ `use WP_Rig\\WP_Rig\\Component_Interface;` ];
@@ -226,6 +268,10 @@ async function createComponentFile( filePath, componentInfo, options ) {
 		useStatements.push(
 			`use WP_Rig\\WP_Rig\\Templating_Component_Interface;`
 		);
+	}
+
+	if ( gated ) {
+		useStatements.push( `use WP_Rig\\WP_Rig\\Paradigm_Component_Trait;` );
 	}
 
 	useStatements.push( `use function add_action;` );
@@ -278,7 +324,7 @@ ${ useStatements.join( '\n' ) }
  * Class for ${ componentInfo.originalName } component.
  */
 class Component implements ${ interfaces.join( ', ' ) } {
-
+${ paradigmTraitUse }${ paradigmConst }
 	/**
 	 * Gets the unique identifier for the theme component.
 	 *
@@ -376,30 +422,40 @@ namespace WP_Rig\\WP_Rig;
 }
 
 /**
- * Create manifest.json file
+ * Create manifest.json file (schema v2 — OCR build contract)
  *
- * @param {string} componentDir Component directory
+ * @param {string} componentDir  Component directory
  * @param {Object} componentInfo Component information
+ * @param {Object} options       Command line options (paradigm)
  */
-async function createManifestFile( componentDir, componentInfo ) {
+async function createManifestFile( componentDir, componentInfo, options ) {
 	const manifestPath = path.join( componentDir, 'manifest.json' );
+	const gated = options.paradigm !== 'all';
 	const manifest = {
 		slug: componentInfo.kebabSlug,
 		version: '1.0.0',
 		title: componentInfo.originalName,
 		description: `Functional component for ${ componentInfo.originalName }.`,
+		// OCR build contract: paradigm must match the component's PARADIGM const
+		// (config/paradigms.json). Block-based components are gated out of the
+		// classic core and must ship scoped assets.
+		paradigm: options.paradigm,
 		php_class_mapping: componentInfo.pascalName,
 		asset_mapping: {
 			styles: [
 				{
 					src: `assets/css/src/${ componentInfo.kebabSlug }.css`,
 					target: `assets/css/src/${ componentInfo.kebabSlug }.css`,
+					// Scoped: compiled into the theme pipeline but only enqueued
+					// conditionally by the component's PHP.
+					scoped: gated,
 				},
 			],
 			scripts: [
 				{
 					src: `assets/js/src/${ componentInfo.kebabSlug }.ts`,
 					target: `assets/js/src/${ componentInfo.kebabSlug }.ts`,
+					scoped: gated,
 				},
 			],
 		},
@@ -418,9 +474,45 @@ async function createManifestFile( componentDir, componentInfo ) {
 }
 
 /**
+ * Create stub CSS/TS assets referenced by manifest.asset_mapping.
+ *
+ * @param {Object} componentInfo Component information
+ */
+async function createAssetStubs( componentInfo ) {
+	const { kebabSlug } = componentInfo;
+
+	const cssPath = path.join(
+		themeRoot,
+		'assets',
+		'css',
+		'src',
+		`${ kebabSlug }.css`
+	);
+	if ( ! ( await fileExists( cssPath ) ) ) {
+		await fs.writeFile( cssPath, `/* Styles for ${ kebabSlug } */\n` );
+		console.log( `Created: ${ cssPath }` );
+	}
+
+	const jsPath = path.join(
+		themeRoot,
+		'assets',
+		'js',
+		'src',
+		`${ kebabSlug }.ts`
+	);
+	if ( ! ( await fileExists( jsPath ) ) ) {
+		await fs.writeFile(
+			jsPath,
+			`// Scripts for ${ kebabSlug }\nexport {};\n`
+		);
+		console.log( `Created: ${ jsPath }` );
+	}
+}
+
+/**
  * Create SPEC.md file
  *
- * @param {string} componentDir Component directory
+ * @param {string} componentDir  Component directory
  * @param {Object} componentInfo Component information
  */
 async function createSpecFile( componentDir, componentInfo ) {
@@ -447,7 +539,7 @@ Describe the data structure returned or used by this component.
 /**
  * Create SKILL.md file
  *
- * @param {string} componentDir Component directory
+ * @param {string} componentDir  Component directory
  * @param {Object} componentInfo Component information
  */
 async function createSkillFile( componentDir, componentInfo ) {
@@ -476,7 +568,6 @@ wp_rig()->${ componentInfo.kebabSlug }_method();
  */
 async function wireComponent( componentInfo ) {
 	// No longer needed as Theme.php uses dynamic loading.
-	return;
 }
 
 /**

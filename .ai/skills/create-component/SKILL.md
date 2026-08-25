@@ -5,7 +5,8 @@ globs: inc/**/*.php, functions.php
 
 # Create a New WP Rig Component
 
-This skill provides the recipe to scaffold and register a new theme component.
+This skill provides the recipe to scaffold a new theme component that is ready for the
+Open Component Registry (OCR).
 
 ## Before Creating a New Component
 
@@ -13,16 +14,20 @@ This skill provides the recipe to scaffold and register a new theme component.
 
 ## Step 1: Use the Scaffolding Script
 
-WP Rig provides a dedicated script to create the component directory and initial class file.
+WP Rig provides a dedicated script to create a registry-ready component directory, class file, manifest, SPEC, SKILL, and stub assets.
 
 ```bash
-npm run create-rig-component "Your Feature Name"
+npm run create-rig-component "Your Feature Name" [--paradigm all|classic|universal|block-based]
 ```
 
 This will:
-1. Create a folder in `inc/Your_Feature_Name/`.
-2. Generate `Component.php` inside it, implementing `Component_Interface`.
-3. **Automatically Register** the new component in `inc/Theme.php` by adding it to the `get_default_components()` method.
+1. Create a folder in `inc/Your_Feature_Name/` with `Component.php` (implements `Component_Interface`), `manifest.json` (OCR schema v2), `SPEC.md`, and `SKILL.md`.
+2. Create stub `assets/css/src/<slug>.css` + `assets/js/src/<slug>.ts` referenced by the manifest.
+3. When `--paradigm` is not `all` (e.g. `block-based`), generate a **gated** component: a `PARADIGM` const + `Paradigm_Component_Trait` so `Theme` skips it for inactive paradigms, and mark manifest assets `scoped: true`.
+
+> Wiring is automatic — `Theme::get_default_components()` discovers components from
+> `inc/components-manifest.json` (or directory scan) and gates them via `is_active()`.
+> There is no `inc/Theme.php` registration step.
 
 ## Step 2: Implement Hooks
 
@@ -34,9 +39,19 @@ public function initialize() {
 }
 ```
 
+For a `block-based` component, enqueue its `scoped` styles/scripts conditionally (e.g. `enqueue_block_style()` / `viewScript`) so they never load globally.
+
+## Step 3: Validate for the Registry
+
+```bash
+npm run rig:test-component "Your_Feature_Name"   # pre-flight (manifest, paradigm, security)
+npm run rig:prepare "Your_Feature_Name"          # package to dist/components/ + submit instructions
+```
+
 ## Best Practices
 
 - Always use `npm run create-rig-component` instead of manual creation.
 - Ensure the namespace matches `WP_Rig\WP_Rig\{Feature}`.
 - Implement only the interfaces you need (e.g., `Templating_Component_Interface` if you provide template tags).
-- If the scaffolding script fails to auto-wire (check command output), manually add `new Your_Feature_Name\Component(),` to `inc/Theme.php`.
+- Choose `--paradigm` to match what the component serves; `block-based` components must never be wired into the classic core.
+- Keep `manifest.paradigm` in sync with the `PARADIGM` const — the pre-flight validator fails on mismatch.

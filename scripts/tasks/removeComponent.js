@@ -9,6 +9,7 @@ import {
 	logger,
 	toPascalCase,
 	getDependentsMap,
+	normalizeAssetEntries,
 	updateRegistryManifest,
 } from '../lib/rig-utils.js';
 import { getAssetPath } from '../lib/utils.js';
@@ -99,20 +100,23 @@ async function cleanupAssets( manifest, themeRoot ) {
 	}
 
 	for ( const type in manifest.asset_mapping ) {
-		const asset = manifest.asset_mapping[ type ];
-		if ( ! asset.src ) {
-			continue;
-		}
+		for ( const asset of normalizeAssetEntries(
+			manifest.asset_mapping[ type ]
+		) ) {
+			if ( ! asset.src ) {
+				continue;
+			}
 
-		const mappedSrc = getAssetPath( asset.src );
-		const assetPath = path.resolve( themeRoot, mappedSrc );
+			const mappedSrc = getAssetPath( asset.src );
+			const assetPath = path.resolve( themeRoot, mappedSrc );
 
-		if ( await fs.pathExists( assetPath ) ) {
-			await fs.remove( assetPath );
-			logger.warn( `Removed asset: ${ mappedSrc }` );
+			if ( await fs.pathExists( assetPath ) ) {
+				await fs.remove( assetPath );
+				logger.warn( `Removed asset: ${ mappedSrc }` );
 
-			// Also remove .min files in the root folder if they exist
-			await cleanupMinifiedAssets( mappedSrc, themeRoot );
+				// Also remove .min files in the root folder if they exist
+				await cleanupMinifiedAssets( mappedSrc, themeRoot );
+			}
 		}
 	}
 }

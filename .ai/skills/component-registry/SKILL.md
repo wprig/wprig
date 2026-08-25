@@ -31,6 +31,15 @@ This will:
 
 Components that only serve one theme-dev paradigm declare `const PARADIGM = 'classic' | 'universal' | 'block-based'` and use `Paradigm_Component_Trait`; `Theme` skips inactive components automatically via `is_active()`. When authoring or extending a component, tag it for the paradigm(s) it serves and gate block-based features out of the classic core. Bundled `patterns/` directories inside a component are registered by `inc/Block_Patterns` (block-based).
 
+## Component Build Contract (SPEC-009)
+
+Registry components ship through the theme's Bun/Lightning pipeline — no extra HTTP requests:
+
+- **Manifest v2** requires `paradigm` (matching the `PARADIGM` const) and may mark each `asset_mapping` entry `scoped: true`.
+- **Scoped assets** (`scoped: true`) are compiled into the theme pipeline but enqueued **conditionally** by the component's PHP (e.g. `enqueue_block_style()` / `viewScript`), so block components never add global CSS to pages that don't use them.
+- `rig:test-component` validates the paradigm match + scoped asset existence; `rig:prepare` packages `Component.php` + `manifest.json` + `SPEC.md`/`SKILL.md` + `patterns/` + `src/` + scoped assets; `rig:add`/`rig:remove` install/remove everything (including the `components-manifest.json` entry) with no orphans.
+- `asset_mapping[type]` accepts a single entry object or an array of entries — consumers normalize both.
+
 ## Updating a Component
 Since components are "starters," you can modify them after adding. To pull in framework-level updates without losing your changes:
 

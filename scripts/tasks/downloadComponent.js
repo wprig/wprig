@@ -11,6 +11,7 @@ import { fetchRegistry } from '../lib/registry.js';
 import {
 	logger,
 	toPascalCase,
+	normalizeAssetEntries,
 	updateRegistryManifest,
 } from '../lib/rig-utils.js';
 import { getAssetPath } from '../lib/utils.js';
@@ -380,59 +381,62 @@ async function processAssets( component, themeRoot, componentDir, options ) {
 	const resolvedThemeRoot = path.resolve( themeRoot );
 
 	for ( const type in component.asset_mapping ) {
-		const asset = component.asset_mapping[ type ];
-		if ( ! asset.src ) {
-			continue;
-		}
-
-		const assetUrl =
-			( component.asset_urls && component.asset_urls[ type ] ) ||
-			component.php_url.replace( 'Component.php', asset.src );
-
-		try {
-			const assetRes = await fetch( assetUrl );
-			if ( ! assetRes.ok ) {
-				logger.warn(
-					`✗ Failed to fetch asset ${ asset.src } from ${ assetUrl }: ${ assetRes.status } ${ assetRes.statusText }`
-				);
+		for ( const asset of normalizeAssetEntries(
+			component.asset_mapping[ type ]
+		) ) {
+			if ( ! asset.src ) {
 				continue;
 			}
 
-			const assetContent = await assetRes.text();
-			const destPath = path.resolve(
-				themeRoot,
-				getAssetPath( asset.src )
-			);
+			const assetUrl =
+				( component.asset_urls && component.asset_urls[ type ] ) ||
+				component.php_url.replace( 'Component.php', asset.src );
 
-			// Security check: Ensure destPath is within themeRoot.
-			const relativeDestPath = path.relative(
-				resolvedThemeRoot,
-				destPath
-			);
-			if (
-				relativeDestPath.startsWith( '..' ) ||
-				path.isAbsolute( relativeDestPath )
-			) {
-				throw new Error(
-					`Security Alert: Malicious asset path detected: ${ asset.src }`
+			try {
+				const assetRes = await fetch( assetUrl );
+				if ( ! assetRes.ok ) {
+					logger.warn(
+						`✗ Failed to fetch asset ${ asset.src } from ${ assetUrl }: ${ assetRes.status } ${ assetRes.statusText }`
+					);
+					continue;
+				}
+
+				const assetContent = await assetRes.text();
+				const destPath = path.resolve(
+					themeRoot,
+					getAssetPath( asset.src )
+				);
+
+				// Security check: Ensure destPath is within themeRoot.
+				const relativeDestPath = path.relative(
+					resolvedThemeRoot,
+					destPath
+				);
+				if (
+					relativeDestPath.startsWith( '..' ) ||
+					path.isAbsolute( relativeDestPath )
+				) {
+					throw new Error(
+						`Security Alert: Malicious asset path detected: ${ asset.src }`
+					);
+				}
+
+				const saved = await writeFileWithCheck(
+					destPath,
+					assetContent,
+					asset.src,
+					options
+				);
+				if ( saved ) {
+					logger.success(
+						`Downloaded asset to ${ getAssetPath( asset.src ) }`
+					);
+				}
+			} catch ( assetError ) {
+				logger.warn(
+					`Error fetching asset ${ asset.src }: ${ assetError.message }`
 				);
 			}
-
-			const saved = await writeFileWithCheck(
-				destPath,
-				assetContent,
-				asset.src,
-				options
-			);
-			if ( saved ) {
-				logger.success(
-					`Downloaded asset to ${ getAssetPath( asset.src ) }`
-				);
-			}
-		} catch ( assetError ) {
-			logger.warn(
-				`Error fetching asset ${ asset.src }: ${ assetError.message }`
-			);
 		}
 	}
 }
