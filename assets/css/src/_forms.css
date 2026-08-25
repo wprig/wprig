@@ -23,14 +23,6 @@ input[type="submit"] {
 	cursor: pointer;
 }
 /* stylelint-enable */
-@media (prefers-color-scheme: dark) {
-	button.wp-block-search__button.wp-element-button {
-		border: 1px solid transparent;
-		&:hover {
-			border: 1px solid var(--border-color-dark);
-			}
-	}
-}
 
 button:hover,
 input[type="button"]:hover,

@@ -209,3 +209,145 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 .is-style-optimus-hero-shell {
 	min-height: 80vh;
 }
+
+/*--------------------------------------------------------------
+# Block alignment (moved from _media.css — content-width offset)
+--------------------------------------------------------------*/
+
+@media (--content-query) {
+
+	.wp-block-image.alignright {
+		margin-right: calc((100% - var(--content-width)) / 2);
+	}
+
+	.wp-block-image.alignleft {
+		margin-left: calc((100% - var(--content-width)) / 2);
+	}
+
+}
+
+/*--------------------------------------------------------------
+# Search block (moved from _forms.css — dark-mode button border)
+--------------------------------------------------------------*/
+
+@media (prefers-color-scheme: dark) {
+	button.wp-block-search__button.wp-element-button {
+		border: 1px solid transparent;
+
+		&:hover {
+			border: 1px solid var(--border-color-dark);
+		}
+	}
+}
+
+/*--------------------------------------------------------------
+## Custom block colors.
+--------------------------------------------------------------*/
+
+.has-theme-primary-color {
+	color: var(--color-theme-primary);
+}
+
+.has-theme-primary-background-color {
+	background-color: var(--color-theme-primary);
+}
+
+.has-theme-secondary-color {
+	color: var(--color-theme-secondary);
+}
+
+.has-theme-secondary-background-color {
+	background-color: var(--color-theme-secondary);
+}
+
+.has-theme-red-color {
+	color: var(--color-theme-red);
+}
+
+.has-theme-red-background-color {
+	background-color: var(--color-theme-red);
+}
+
+.has-theme-green-color {
+	color: var(--color-theme-green);
+}
+
+.has-theme-green-background-color {
+	background-color: var(--color-theme-green);
+}
+
+.has-theme-blue-color {
+	color: var(--color-theme-blue);
+}
+
+.has-theme-blue-background-color {
+	background-color: var(--color-theme-blue);
+}
+
+.has-theme-yellow-color {
+	color: var(--color-theme-yellow);
+}
+
+.has-theme-yellow-background-color {
+	background-color: var(--color-theme-yellow);
+}
+
+.has-theme-black-color {
+	color: var(--color-theme-black);
+}
+
+.has-theme-black-background-color {
+	background-color: var(--color-theme-black);
+}
+
+.has-theme-grey-color {
+	color: var(--color-theme-grey);
+}
+
+.has-theme-grey-background-color {
+	background-color: var(--color-theme-grey);
+}
+
+.has-theme-white-color {
+	color: var(--color-theme-white);
+}
+
+.has-theme-white-background-color {
+	background-color: var(--color-theme-white);
+}
+
+.has-custom-daylight-color {
+	color: var(--color-custom-daylight);
+}
+
+.has-custom-daylight-background-color {
+	background-color: var(--color-custom-daylight);
+}
+
+.has-custom-sun-color {
+	color: var(--color-custom-sun);
+}
+
+.has-custom-sun-background-color {
+	background-color: var(--color-custom-sun);
+}
+
+/*--------------------------------------------------------------
+## Custom block font sizes.
+--------------------------------------------------------------*/
+
+.has-small-font-size {
+	font-size: var(--font-size-small);
+}
+
+.has-regular-font-size {
+	font-size: var(--font-size-regular);
+}
+
+.has-large-font-size {
+	font-size: var(--font-size-large);
+}
+
+.has-larger-font-size {
+	font-size: var(--font-size-larger);
+}

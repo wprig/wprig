@@ -43,13 +43,11 @@ object {
 
 @media (--content-query) {
 
-	.wp-caption.alignright,
-	.wp-block-image.alignright {
+	.wp-caption.alignright {
 		margin-right: calc((100% - var(--content-width)) / 2);
 	}
 
-	.wp-caption.alignleft,
-	.wp-block-image.alignleft {
+	.wp-caption.alignleft {
 		margin-left: calc((100% - var(--content-width)) / 2);
 	}
 
