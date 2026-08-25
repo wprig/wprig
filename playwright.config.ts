@@ -36,8 +36,11 @@ export default defineConfig( {
 	forbidOnly: !! process.env.CI,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
-	/* opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	/* Cap total workers: the Local-by-WP harness (nginx + PHP-FPM) cannot serve
+	 * an unbounded number of parallel pages across 3 browser projects — without
+	 * a cap, WebKit page loads exceed the default 30s timeout under load.
+	 * CI overrides to 1 worker below. */
+	workers: process.env.CI ? 1 : 4,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: 'html',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
