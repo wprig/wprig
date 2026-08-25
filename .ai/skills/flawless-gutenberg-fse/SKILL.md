@@ -93,3 +93,30 @@ Once validated, sync the clean block code to the WordPress template parts databa
 - **Linter Task Engine:** `/scripts/tasks/validateBlocks.js`
 - **CLI Commands Registry:** `/scripts/cli.js`
 - **npm Trigger Scripts:** `package.json`
+
+---
+
+## 🧭 Gutenberg 23.8 / WP 7.1 Alignment (Track B G6)
+
+WP Rig's block tooling targets **Gutenberg 23.8** (the WP 7.1 editor). When
+authoring blocks, keep these modern defaults in mind:
+
+- **`block.json` API version:** always `apiVersion: 3` (WP Rig's `block:new`
+  scaffolds v3 for both static JS blocks and PHP-only blocks). Do not downgrade
+  to v2.
+- **PHP-only blocks — `supports.autoRegister: true`:** a block with a
+  `render.php` and no `editorScript` registers itself from `block.json` — no
+  `registerBlockType` JS is required. `npm run block:new <ns>/<slug> --php`
+  generates this. Give it only what a static block needs: `render.php` +
+  optional `style.css` / `editor.css` (no `src/` build).
+- **Static block templates:** prefer classless core-block markup in
+  `templates/` / `parts/` (validated by `lint:blocks`); put custom classes in
+  the block's `className` attribute, not raw `class` on inner elements.
+- **Kebab-cased preset slug refs:** `theme.json` preset slugs and their
+  `var:preset|<type>|<slug>` references must be lowercase-hyphenated
+  (`xlarge`, `brand-secondary`), never camelCase — the 7.1 editor validates
+  this. WP Rig's token→`theme.json` generator emits kebab-cased slugs from
+  `config/tokens.json`; keep new token keys kebab-cased too.
+- **Frontend scripts:** use `viewScript: 'file:./view.js'` (or the
+  interactivity API `viewScriptModule` for stateful blocks) in `block.json`;
+  never enqueue ad-hoc frontend JS from PHP.
