@@ -46,6 +46,125 @@ function pathExists(p) {
 	}
 }
 
+/**
+ * Reads the merged theme config the same way the build does (config.default.json
+ * as the base, config.json as the overlay). config.local.json is deliberately
+ * NOT merged: it is environment-specific and must not leak into a shipped child.
+ *
+ * @return {Object} Merged configuration (may be empty).
+ */
+function readMergedConfig() {
+	let cfg = {};
+	try {
+		const defaultCfgPath = path.join(themeRoot, 'config', 'config.default.json');
+		if (pathExists(defaultCfgPath)) {
+			cfg = JSON.parse(fs.readFileSync(defaultCfgPath, 'utf8'));
+		}
+		const cfgPath = path.join(themeRoot, 'config', 'config.json');
+		if (pathExists(cfgPath)) {
+			const custom = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+			// Shallow-deep merge preserving default keys not present in custom.
+			cfg = mergeDeep(cfg, custom);
+		}
+	} catch {
+		/* best-effort: fall through to empty config */
+	}
+	return cfg || {};
+}
+
+/**
+ * Deep-merges two plain objects (right wins) for config overlays.
+ *
+ * @param {Object} base  Base object.
+ * @param {Object} overlay Overlay object.
+ * @return {Object} Merged object.
+ */
+function mergeDeep(base, overlay) {
+	const out = Array.isArray(base) ? base.slice() : { ...(base || {}) };
+	if (!overlay || typeof overlay !== 'object') {
+		return out;
+	}
+	for (const [key, value] of Object.entries(overlay)) {
+		if (value && typeof value === 'object' && !Array.isArray(value)) {
+			out[key] = mergeDeep(out[key], value);
+		} else {
+			out[key] = value;
+		}
+	}
+	return out;
+}
+
+/**
+ * Resolves the active theme paradigm from the shared config system.
+ * Falls back to 'classic' (the shipped default) when config is absent or
+ * invalid so childify never hard-fails on a not-yet-configured clone.
+ *
+ * @return {string} Active theme type ('classic' | 'universal' | 'block-based').
+ */
+function readThemeType() {
+	try {
+		const paradigmsPath = path.join(themeRoot, 'config', 'paradigms.json');
+		if (pathExists(paradigmsPath)) {
+			const paradigms = JSON.parse(fs.readFileSync(paradigmsPath, 'utf8'));
+			const valid = Object.keys(paradigms.themeTypes || {});
+			const themeType = readMergedConfig()?.theme?.themeType;
+			if (typeof themeType === 'string' && valid.includes(themeType)) {
+				return themeType;
+			}
+		}
+	} catch {
+		/* fall through */
+	}
+	return 'classic';
+}
+
+/**
+ * Resolves the child theme's component keep-list from the active paradigm.
+ * This is how the generated child "inherits the context-aware block/classic
+ * intelligence of the parent build": classic-capable themes keep the classic
+ * core (Sidebars), and block-capable themes additionally keep the block
+ * components (Editor, Blocks, Block_Patterns, Block_Styles, Icons) so the
+ * child build continues to compile and gate block assets. Component PARADIGM
+ * gating (`is_active()`) is respected at runtime regardless.
+ *
+ * @param {string} [themeType] Active theme type. Resolved if omitted.
+ * @return {string[]} Component directory names to keep.
+ */
+function resolveKeepList(themeType = readThemeType()) {
+	const isBlockCapable = ['universal', 'block-based'].includes(themeType);
+	const keep = ['Styles', 'Scripts', 'Sidebars'];
+	if (isBlockCapable) {
+		keep.push('Editor', 'Blocks', 'Block_Patterns', 'Block_Styles', 'Icons');
+	}
+	return keep;
+}
+
+/**
+ * Writes the child theme's inc/components-manifest.json so Theme.php loads
+ * exactly the kept components (the framework-native manifest mechanism).
+ *
+ * @param {string[]} keepList Component directory names to keep.
+ */
+function writeComponentsManifest(keepList) {
+	const manifestPath = path.join(themeRoot, 'inc', 'components-manifest.json');
+	const manifest = {};
+	for (const name of keepList) {
+		const dir = path.join(themeRoot, 'inc', name);
+		if (pathExists(path.join(dir, 'Component.php'))) {
+			manifest[name] = `inc/${name}/Component.php`;
+		}
+	}
+	try {
+		fse.ensureDirSync(path.dirname(manifestPath));
+		fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+		addLog(
+			`🧩 Wrote inc/components-manifest.json with ${Object.keys(manifest).length} kept components: ${Object.keys(manifest).join(', ')}`
+		);
+	} catch (e) {
+		addLog(`⚠️ Failed to write inc/components-manifest.json: ${e.message}`);
+	}
+}
+
 async function promptForParentSlug() {
 	// Try to read existing config for default
 	let defaultSlug = '';
@@ -301,78 +420,12 @@ function updateConfig(parentSlug) {
 	);
 }
 
-function updateThemeComponents() {
-	const themePhp = path.join(themeRoot, 'inc', 'Theme.php');
-	if (!pathExists(themePhp)) {
-		addLog('⚠️ inc/Theme.php not found. Skipping component adjustments.');
-		return;
-	}
-
-	// Components to keep (should match the list in removeIncComponents)
-	const keepComponents = ['Styles', 'Scripts', 'Sidebars'];
-
-	try {
-		// Read the Theme.php file
-		const themeContent = fs.readFileSync(themePhp, 'utf8');
-
-		// Find the get_default_components method
-		const componentsMethodMatch = themeContent.match(
-			/protected\s+function\s+get_default_components\(\)[\s\S]*?\{([\s\S]*?)\}/
-		);
-
-		if (!componentsMethodMatch) {
-			addLog(
-				'⚠️ Could not find get_default_components method in Theme.php'
-			);
-			return;
-		}
-
-		// Get the method body
-		const methodBody = componentsMethodMatch[1];
-
-		// Find all component instantiations in the array
-		const componentRegex = /\s*new\s+([^\s\\]+)\\Component\(\),/g;
-		let matches;
-		let updatedMethodBody = methodBody;
-		const removedComponents = [];
-
-		// Keep track of what we find in order to log it
-		const keptComponents = [];
-
-		// Process each component line
-		while ((matches = componentRegex.exec(methodBody)) !== null) {
-			const fullMatch = matches[0];
-			const componentName = matches[1];
-
-			// If this component is not in our keep list, remove it
-			if (!keepComponents.includes(componentName)) {
-				updatedMethodBody = updatedMethodBody.replace(
-					fullMatch,
-					`\n\t\t// CHILDIFY: removed ${componentName}\\Component`
-				);
-				removedComponents.push(componentName);
-			} else {
-				keptComponents.push(componentName);
-			}
-		}
-
-		// Replace the method body in the full file content
-		const updatedThemeContent = themeContent.replace(
-			componentsMethodMatch[0],
-			`protected function get_default_components() {${updatedMethodBody}}`
-		);
-
-		// Write the updated file
-		fs.writeFileSync(themePhp, updatedThemeContent, 'utf8');
-
-		addLog(`✅ Kept components in Theme.php: ${keptComponents.join(', ')}`);
-		addLog(
-			`🧹 Removed ${removedComponents.length} components from Theme.php`
-		);
-	} catch (e) {
-		addLog(`⚠️ Failed to update Theme.php: ${e.message}`);
-	}
-}
+/**
+ * @deprecated Modern WP Rig discovers components dynamically (Theme.php glob /
+ *   components-manifest.json + `is_active()` gating). Stripping `new X\Component()`
+ *   lines from get_default_components() no longer applies. Kept-elsewhere logic
+ *   lives in resolveKeepList() + writeComponentsManifest().
+ */
 
 function appendDequeueHelper(parentSlug) {
 	const fnPath = path.join(themeRoot, 'functions.php');
@@ -623,10 +676,10 @@ function minimizeAssets(backupDir) {
 	}
 }
 
-// Define components to keep in a const at the top level for consistency
-const COMPONENTS_TO_KEEP = ['Styles', 'Scripts', 'Sidebars'];
+// Define components to keep for each paradigm (see resolveKeepList) so the
+// child theme inherits the parent's context-aware block/classic intelligence.
 
-function removeIncComponents(backupDir) {
+function removeIncComponents(backupDir, keepList) {
 	const incDir = path.join(themeRoot, 'inc');
 	if (!pathExists(incDir)) {
 		addLog('⚠️ inc directory not found. Skipping component removal.');
@@ -652,7 +705,7 @@ function removeIncComponents(backupDir) {
 		const dirsToMove = items.filter((item) => {
 			// Keep our desired components and required files
 			if (
-				COMPONENTS_TO_KEEP.includes(item) ||
+				keepList.includes(item) ||
 				requiredFiles.includes(item)
 			) {
 				return false;
@@ -670,9 +723,9 @@ function removeIncComponents(backupDir) {
 		});
 
 		addLog(
-			`🧹 Removed ${movedCount} items from /inc (keeping only ${COMPONENTS_TO_KEEP.join(
+			`🧹 Removed ${movedCount} items from /inc (keeping paradigm components: ${keepList.join(
 				', '
-			)} components and required PHP files)`
+			)} and required PHP files)`
 		);
 	} catch (e) {
 		addLog(`⚠️ Failed to clean up inc directory: ${e.message}`);
@@ -701,11 +754,16 @@ async function main() {
 	const options = await promptForOptions();
 	const backupDir = ensureBackupDir();
 
+	const themeType = readThemeType();
+	const keepList = resolveKeepList(themeType);
+
+	addLog(
+		`🧭 Child theme paradigm: ${themeType} (keeping ${keepList.join(', ')})`
+	);
+
 	upsertTemplateHeader(parentSlug);
 	updateConfig(parentSlug);
-	if (options.trimComponents) {
-		updateThemeComponents();
-	}
+	writeComponentsManifest(keepList);
 	appendDequeueHelper(parentSlug);
 
 	if (options.trimTemplates) {
@@ -715,7 +773,7 @@ async function main() {
 		minimizeAssets(backupDir);
 	}
 	if (options.trimComponents) {
-		removeIncComponents(backupDir);
+		removeIncComponents(backupDir, keepList);
 	}
 	convertTemplateToCssDirectory();
 
@@ -728,7 +786,13 @@ async function main() {
 	);
 }
 
-export { getPhpFiles, convertTemplateToCssDirectory };
+export {
+	getPhpFiles,
+	convertTemplateToCssDirectory,
+	readThemeType,
+	resolveKeepList,
+	readMergedConfig,
+};
 
 const isMain = process.argv[1] === fileURLToPath(import.meta.url);
 if (isMain) {
