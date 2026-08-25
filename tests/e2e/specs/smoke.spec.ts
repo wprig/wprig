@@ -8,14 +8,20 @@ test.describe( 'Smoke Tests', () => {
 	test( 'Homepage should load with site title and navigation', async ( {
 		page,
 	} ) => {
-		// Check for site title - usually in a class like .site-title or within the header
-		const siteTitle = page.locator( '.site-title' ).first();
+		// Paradigm-agnostic: classic renders `.site-title`, block themes render
+		// `.wp-block-site-title`.
+		const siteTitle = page
+			.locator( '.site-title, .wp-block-site-title' )
+			.first();
 		await expect( siteTitle ).toBeAttached();
-		// If it's hidden, it might be screen-reader-text, which is fine for smoke test
-		// but let's at least check it exists in the DOM.
 
-		// Check for navigation menu
-		const navigation = page.locator( '#site-navigation, .main-navigation' ).first();
+		// Navigation renders as `.main-navigation` (classic) or
+		// `.wp-block-navigation` (block theme).
+		const navigation = page
+			.locator(
+				'#site-navigation, .main-navigation, .wp-block-navigation'
+			)
+			.first();
 		await expect( navigation ).toBeVisible();
 	} );
 
