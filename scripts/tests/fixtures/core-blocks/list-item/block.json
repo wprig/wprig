@@ -1,0 +1,22 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "core/list-item",
+	"title": "List item",
+	"category": "text",
+	"supports": {
+		"className": false,
+		"anchor": true
+	},
+	"attributes": {
+		"placeholder": {
+			"type": "string"
+		},
+		"anchor": {
+			"type": "string"
+		},
+		"className": {
+			"type": "string"
+		}
+	}
+}

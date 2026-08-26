@@ -1,13 +1,21 @@
 /* eslint-env es6 */
 /* global describe, test, expect */
 
-import {
-	validateBlockMarkup,
-	resolveCoreBlocksPath,
-} from '../../scripts/lib/validate-block-markup.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { validateBlockMarkup } from '../../scripts/lib/validate-block-markup.js';
+
+const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 
 describe( 'Gutenberg Block Markup Validator (shared core)', () => {
-	const coreBlocksPath = resolveCoreBlocksPath( process.cwd() );
+	// Self-contained fixture core-block schemas (mirrors WP core paragraph/
+	// list-item/group/post-content). Using fixtures keeps the suite runnable on
+	// any CI runner — a live WordPress wp-includes/blocks is NOT present there.
+	const coreBlocksPath = path.join(
+		__dirname,
+		'fixtures',
+		'core-blocks'
+	);
 
 	test( 'validates open and self-closing block comments', () => {
 		const markup = `
