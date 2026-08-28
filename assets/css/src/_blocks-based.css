@@ -16,7 +16,12 @@
 --------------------------------------------------------------*/
 
 /* Site header / footer template parts align with the content width and keep
- * consistent inline padding instead of stretching full-bleed. */
+ * consistent inline padding instead of stretching full-bleed.
+ *
+ * FULL-BLEED OPT-OUT: add the `is-style-full-bleed` class to the template
+ * part (or its wrapping group) in the site editor — e.g. via the block's
+ * "Advanced → Additional CSS class" field or an `is-style-full-bleed`
+ * block style — to release this clamp (see the override rules below). */
 .wp-site-header,
 .wp-site-footer,
 .wp-block-template-part {
@@ -24,6 +29,16 @@
 	margin-inline: auto;
 	padding-inline: 1.5rem;
 	width: 100%;
+}
+
+/* Full-bleed override — releases the content-width clamp + inline padding
+ * for parts explicitly marked `is-style-full-bleed` (must come after the
+ * default rules above so it wins the cascade). */
+.wp-site-header.is-style-full-bleed,
+.wp-site-footer.is-style-full-bleed,
+.wp-block-template-part.is-style-full-bleed {
+	max-width: none;
+	padding-inline: 0;
 }
 
 /*--------------------------------------------------------------
@@ -36,6 +51,13 @@
 header.wp-block-template-part .wp-block-navigation {
 	max-width: var(--content-width);
 	margin-inline: auto;
+}
+
+/* Full-bleed parts release their inner Navigation block's clamp too. */
+.wp-site-header.is-style-full-bleed .wp-block-navigation,
+.wp-block-template-part.is-style-full-bleed .wp-block-navigation {
+	max-width: none;
+	margin-inline: 0;
 }
 
 /* The mobile hamburger/close controls should never stretch full-bleed. */

@@ -1,6 +1,10 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+	findCorePresetCollisions,
+	describeCorePresetCollision,
+} from '../lib/core-preset-slugs.js';
 
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 const themeRoot = path.resolve( __dirname, '../..' );
@@ -19,6 +23,22 @@ export async function propagateTokens() {
 
 	// 1. Update theme.json
 	await updateThemeJson( tokens );
+
+	// 1b. Warn about preset slugs that collide with WP core defaults — the
+	// generated theme presets silently override core presets with the same
+	// slug, which is hard to trace when unintended.
+	const themeJsonPath = path.join( themeRoot, 'theme.json' );
+	if ( await fs.pathExists( themeJsonPath ) ) {
+		const collisions = findCorePresetCollisions(
+			await fs.readJson( themeJsonPath )
+		);
+		for ( const collision of collisions ) {
+			// eslint-disable-next-line no-console
+			console.warn(
+				`[tokens] ${ describeCorePresetCollision( collision ) }`
+			);
+		}
+	}
 
 	// 2. Update CSS variables in _custom-properties.css
 	await updateCssVariables( tokens );

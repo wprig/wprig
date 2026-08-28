@@ -19,6 +19,23 @@ import { isFeatureEnabled } from './scripts/lib/paradigm.js';
 const isDev = process.argv.includes( '--dev' );
 
 /**
+ * Format the one-line end-of-build summary so success/failure is legible
+ * without inspecting output files.
+ *
+ * @param {Object}  stats       Build totals.
+ * @param {number}  stats.files Number of CSS files compiled.
+ * @param {number}  stats.bytes Total compiled output size in bytes.
+ * @param {boolean} dev         Whether the build ran in development mode.
+ * @return {string} Summary line, e.g. "[css] 14 files compiled, 182.4 kB total (minified)".
+ */
+export function formatCssSummary( { files, bytes }, dev ) {
+	const mode = dev ? 'dev, sourcemaps' : 'minified';
+	return `[css] ${ files } file${ files === 1 ? '' : 's' } compiled, ${ (
+		bytes / 1024
+	).toFixed( 1 ) } kB total (${ mode })`;
+}
+
+/**
  * Ensure output directory exists.
  * @param {string} dir
  * @return {void}
@@ -252,7 +269,7 @@ const getAllFiles = ( dir ) => {
  * @param {string}  filePath      - Path to input CSS file
  * @param {string}  outputPath    - Path to output CSS file
  * @param {boolean} injectPreload - Whether to inject theme preload snippet (default: true)
- * @return {Promise<void>}
+ * @return {Promise<number>} Size of the compiled output in bytes.
  */
 const processCSSFile = async ( filePath, outputPath, injectPreload = true ) => {
 	const entryAbs = path.resolve( filePath );
@@ -338,16 +355,18 @@ const processCSSFile = async ( filePath, outputPath, injectPreload = true ) => {
 		writeFileSync( mapFile, result.map );
 
 		// Append a comment at the end of the CSS file that allows browsers to locate the corresponding map file.
-		const cssWithMap = Buffer.concat( [
-			result.code,
-			Buffer.from(
-				`\n/*# sourceMappingURL=${ path.basename( mapFile ) } */\n`
-			),
-		] );
-		writeFileSync( outputPath, cssWithMap );
+		const mapComment = Buffer.from(
+			`\n/*# sourceMappingURL=${ path.basename( mapFile ) } */\n`
+		);
+		writeFileSync(
+			outputPath,
+			Buffer.concat( [ result.code, mapComment ] )
+		);
 	} else {
 		writeFileSync( outputPath, result.code );
 	}
+
+	return result.code.length;
 };
 
 /**
@@ -355,7 +374,7 @@ const processCSSFile = async ( filePath, outputPath, injectPreload = true ) => {
  *
  * @param {string} dir     - Source directory
  * @param {string} destDir - Destination directory
- * @return {Promise<void>}
+ * @return {Promise<{files: number, bytes: number}>} File count + compiled byte total.
  */
 const processDirectory = async ( dir, destDir ) => {
 	const files = getAllFiles( dir );
@@ -369,51 +388,77 @@ const processDirectory = async ( dir, destDir ) => {
 		ensureDirectoryExistence( outputDir );
 		return processCSSFile( file, outputPath );
 	} );
-	await Promise.all( tasks );
+	const results = await Promise.all( tasks );
+	return {
+		files: results.length,
+		bytes: results.reduce( ( sum, n ) => sum + n, 0 ),
+	};
 };
 
 // Kick off both directories (top-level await wrapper for Node ESM)
 ( async () => {
-	// Theme-level CSS (inject preload snippet if configured)
-	await processDirectory( paths.styles.srcDir, paths.styles.dest );
-	await processDirectory(
-		paths.styles.editorSrcDir,
-		paths.styles.editorDest
-	);
-
-	// Block-level CSS: compile each block's style.css and editor.css into build/ (no theme preload injection)
-	const blocksDir = paths.blocks.srcDir;
 	try {
-		const slugs = readdirSync( blocksDir, {
-			withFileTypes: true,
-		} )
-			.filter( ( d ) => d.isDirectory() )
-			.map( ( d ) => d.name );
+		// Theme-level CSS (inject preload snippet if configured)
+		const themeStats = await processDirectory(
+			paths.styles.srcDir,
+			paths.styles.dest
+		);
+		const editorStats = await processDirectory(
+			paths.styles.editorSrcDir,
+			paths.styles.editorDest
+		);
 
-		for ( const slug of slugs ) {
-			const blockDir = path.join( blocksDir, slug );
-			const outDir = path.join( paths.blocks.dest, slug, 'build' );
-			if ( ! existsSync( outDir ) ) {
-				mkdirSync( outDir, { recursive: true } );
+		// Block-level CSS: compile each block's style.css and editor.css into build/ (no theme preload injection)
+		const blockStats = { files: 0, bytes: 0 };
+		const blocksDir = paths.blocks.srcDir;
+		try {
+			const slugs = readdirSync( blocksDir, {
+				withFileTypes: true,
+			} )
+				.filter( ( d ) => d.isDirectory() )
+				.map( ( d ) => d.name );
+
+			for ( const slug of slugs ) {
+				const blockDir = path.join( blocksDir, slug );
+				const outDir = path.join( paths.blocks.dest, slug, 'build' );
+				if ( ! existsSync( outDir ) ) {
+					mkdirSync( outDir, { recursive: true } );
+				}
+				const styleIn = path.join( blockDir, 'style.css' );
+				const editorIn = path.join( blockDir, 'editor.css' );
+				if ( existsSync( styleIn ) ) {
+					const bytes = await processCSSFile(
+						styleIn,
+						path.join( outDir, 'style.css' ),
+						false
+					);
+					blockStats.files += 1;
+					blockStats.bytes += bytes;
+				}
+				if ( existsSync( editorIn ) ) {
+					const bytes = await processCSSFile(
+						editorIn,
+						path.join( outDir, 'editor.css' ),
+						false
+					);
+					blockStats.files += 1;
+					blockStats.bytes += bytes;
+				}
 			}
-			const styleIn = path.join( blockDir, 'style.css' );
-			const editorIn = path.join( blockDir, 'editor.css' );
-			if ( existsSync( styleIn ) ) {
-				await processCSSFile(
-					styleIn,
-					path.join( outDir, 'style.css' ),
-					false
-				);
-			}
-			if ( existsSync( editorIn ) ) {
-				await processCSSFile(
-					editorIn,
-					path.join( outDir, 'editor.css' ),
-					false
-				);
-			}
+		} catch {
+			// no blocks or cannot read; ignore
 		}
-	} catch {
-		// no blocks or cannot read; ignore
+
+		// One-line legible summary (see formatCssSummary).
+		const total = {
+			files: themeStats.files + editorStats.files + blockStats.files,
+			bytes: themeStats.bytes + editorStats.bytes + blockStats.bytes,
+		};
+		// eslint-disable-next-line no-console
+		console.log( formatCssSummary( total, isDev ) );
+	} catch ( err ) {
+		// eslint-disable-next-line no-console
+		console.error( '[css] build failed:', err.message );
+		process.exitCode = 1;
 	}
 } )();

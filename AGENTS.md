@@ -25,6 +25,25 @@ Before starting, check `.ai/agent-state.md` for your status:
 
 ---
 
+## Day-to-Day Command Shortlist
+
+The full `package.json` has ~90 scripts (e2e, perf, bundle, audit, component registry, …). For day-to-day theme editing you only need these — check here **before** assuming a build command from file exploration:
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Build the dev theme + watch everything (all-in-one loop) |
+| `npm run build` | One-shot dev build, no watch |
+| `npm run build:css` | Compile CSS once (Lightning CSS; prints a summary line) |
+| `npm run dev:css` | Same, unminified + sourcemaps |
+| `npm run watch:css` | Compile CSS, then recompile on every save |
+| `npm run dev:js` / `npm run watch:js` | Same cycle for JS |
+| `npm run lint:css` / `npm run lint:blocks` | Fast targeted linting |
+| `npm run rig:tokens` | Regenerate `theme.json` + CSS vars from `config/tokens.json` |
+
+Full reference: [`docs/commands.md`](./docs/commands.md), or run `npm run` (no args) to list every script.
+
+---
+
 ## AI Agent Skill Directory
 Refer to [**.ai/SKILLS.md**](.ai/SKILLS.md) for a comprehensive directory of specialized skills, including:
 - **Foundational Pillars:** Architecture, Feature Planning, Code Quality.

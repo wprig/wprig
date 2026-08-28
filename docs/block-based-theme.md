@@ -61,3 +61,34 @@ preview and the frontend agree:
   container and produce a double-toggle or an unrecoverable hidden menu.
   Configure the nav's own responsive settings (`overlayMenu` / responsive
   navigation) instead.
+
+## Preset slug collisions with core defaults (silent override risk)
+
+WordPress ships default color and font-size presets. If a theme defines a
+preset whose **slug** matches a core default (`black`, `white`, `small`,
+`large`, `medium`, `x-large`, …), the theme's value **silently overrides** the
+core preset — intended WP merge behavior, but easy to miss: the DOM class and
+CSS variable name look correct while the resolved value differs.
+
+WP Rig guards this at the tooling level:
+
+- `npm run rig:tokens` prints a warning for every generated palette/font-size
+  slug that collides with a core default.
+- The theme-review validator (`theme-json` check) flags collisions in
+  hand-authored `theme.json` files.
+
+Fix options when a collision is unintended: rename the slug (e.g. `base`,
+`xlarge`, `brand`), or disable core defaults explicitly in `theme.json`
+settings — `color.defaultPalette`, `color.defaultGradients`,
+`color.defaultDuotone`, `typography.defaultFontSizes` — set to `false`.
+
+## Full-bleed template parts (`is-style-full-bleed`)
+
+Baseline block-based styling (`assets/css/src/_blocks-based.css`) clamps header
+and footer template parts (`.wp-block-template-part`, `.wp-site-header`,
+`.wp-site-footer`) to `--content-width` with inline padding. To make a part
+run edge-to-edge (full-bleed redesigns), add the **`is-style-full-bleed`**
+class to the part (or its wrapping group) in the site editor — "Advanced →
+Additional CSS class". The stylesheet ships the override rules; the Navigation
+block inside a full-bleed part is released from its content-width clamp as
+well.
