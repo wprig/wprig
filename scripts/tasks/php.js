@@ -8,8 +8,50 @@ import fse from 'fs-extra';
 import { globFiles, destPathFor, writeFileEnsured } from '../lib/filepipe.js';
 import { paths, isProd, rootPath } from '../lib/constants.js';
 import { getReplacements, getThemeConfig } from '../lib/utils.js';
+import { getActiveThemeType, loadParadigms } from '../lib/paradigm.js';
+import { bakeProdPhp, extractParadigmTag } from '../lib/bakeParadigm.js';
 import removeWpCliBlock from './removeWpCliBlock.js';
 import removeDevOnlyBlocks from './removeDevOnlyBlocks.js';
+
+const COMPONENT_PATH_REGEX = /^inc\/([^/]+)\//;
+
+/**
+ * Builds a map of component directory -> paradigm tag for all components
+ * present in the prod file list. Reads each Component.php from disk.
+ *
+ * @param {string[]} files Globbed prod file paths.
+ * @return {Promise<Map<string, string>>} Component dir name -> paradigm tag.
+ */
+async function resolveComponentTags( files ) {
+	const componentDirs = new Set();
+	for ( const file of files ) {
+		const rel = path.relative( rootPath, file ).replace( /\\/g, '/' );
+		const match = rel.match( COMPONENT_PATH_REGEX );
+		if ( match ) {
+			componentDirs.add( match[ 1 ] );
+		}
+	}
+
+	const tags = new Map();
+	await Promise.all(
+		[ ...componentDirs ].map( async ( dir ) => {
+			const componentPath = path.join(
+				rootPath,
+				'inc',
+				dir,
+				'Component.php'
+			);
+			try {
+				const source = await fse.readFile( componentPath, 'utf8' );
+				tags.set( dir, extractParadigmTag( source ) );
+			} catch {
+				// No Component.php (or unreadable) — treated as 'all', ships everywhere.
+				tags.set( dir, 'all' );
+			}
+		} )
+	);
+	return tags;
+}
 
 function applyReplacements( content, replacements ) {
 	let out = content;
@@ -69,16 +111,48 @@ export default function php( runPhpcs, done ) {
 		const config = getThemeConfig();
 		const includeWpCli = config.export && config.export.includeWpCli;
 		const patterns = paths.php.src; // includes negative patterns
-		const files = await globFiles( patterns );
+		let files = await globFiles( patterns );
+
+		// Bake paradigm gating (SPEC-014): resolve the active theme type once,
+		// strip gated-out component directories entirely, and replace
+		// inc/Paradigm.php with a stub whose values are inlined. The bundled
+		// theme performs no config/paradigms.json reads at runtime.
+		const activeThemeType = getActiveThemeType();
+		const definitions = loadParadigms();
+		const componentTags = await resolveComponentTags( files );
+		const bakeCtx = {
+			activeThemeType,
+			definitions,
+			isComponentPath: ( rel ) => COMPONENT_PATH_REGEX.test( rel ),
+			componentTag: ( rel ) =>
+				componentTags.get( rel.match( COMPONENT_PATH_REGEX )[ 1 ] ) ??
+				'all',
+		};
+
+		files = files.filter( ( srcFile ) => {
+			const rel = path
+				.relative( rootPath, srcFile )
+				.replace( /\\/g, '/' );
+			const result = bakeProdPhp( rel, '', bakeCtx );
+			return ! result.skip;
+		} );
 
 		await Promise.all(
 			files.map( async ( srcFile ) => {
 				try {
 					let content = await fse.readFile( srcFile, 'utf8' );
+
+					const relToRoot = path
+						.relative( rootPath, srcFile )
+						.replace( /\\/g, '/' );
+					const baked = bakeProdPhp( relToRoot, content, bakeCtx );
+					if ( baked.content !== undefined ) {
+						content = baked.content;
+					}
+
 					content = applyReplacements( content, replacements );
 
 					// Handle WP-CLI block for root functions.php
-					const relToRoot = path.relative( rootPath, srcFile );
 					if ( relToRoot === 'functions.php' ) {
 						if ( ! includeWpCli ) {
 							content = removeWpCliBlock( content );
