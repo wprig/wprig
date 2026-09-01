@@ -78,6 +78,18 @@ describe( 'buildPreloadList — block-based preload gating (Track B Phase 3 / D1
 } );
 
 describe( 'gate check — _blocks-based.css is only referenced by the build', () => {
+	/**
+	 * Strips CSS comments so prose mentions of a filename inside comments
+	 * don't count as references. Only live code (@import, url(), etc.)
+	 * should trip the gate.
+	 *
+	 * @param {string} css Raw CSS source.
+	 * @return {string} CSS with block comments removed.
+	 */
+	function stripCssComments( css ) {
+		return css.replace( /\/\*[\s\S]*?\*\//g, '' );
+	}
+
 	test( 'no non-_blocks*.css source references _blocks-based.css', () => {
 		const __filename = fileURLToPath( import.meta.url );
 		const __dirname = path.dirname( __filename );
@@ -92,7 +104,7 @@ describe( 'gate check — _blocks-based.css is only referenced by the build', ()
 				path.join( srcDir, file ),
 				'utf8'
 			);
-			if ( content.includes( '_blocks-based' ) ) {
+			if ( stripCssComments( content ).includes( '_blocks-based' ) ) {
 				offenders.push( file );
 			}
 		}
@@ -101,5 +113,20 @@ describe( 'gate check — _blocks-based.css is only referenced by the build', ()
 			offenders,
 			'classic partials must not reference _blocks-based.css'
 		).toEqual( [] );
+	} );
+
+	test( 'stripCssComments ignores prose mentions inside comments', () => {
+		// Regression guard for the gate check itself: a comment that merely
+		// mentions the filename is not a live reference.
+		const css =
+			'/* Do not import _blocks-based.css here; the build injects it. */\n.body { color: red; }';
+		expect( stripCssComments( css ).includes( '_blocks-based' ) ).toBe(
+			false
+		);
+		expect(
+			stripCssComments( '@import "_blocks-based.css";' ).includes(
+				'_blocks-based'
+			)
+		).toBe( true );
 	} );
 } );
