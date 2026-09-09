@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+args=()
+for arg in "$@"; do
+	case "$arg" in --path=*|--url=*|--user=*) ;; *) args+=("$arg") ;; esac
+done
+set -- "${args[@]}"
+
+if [ "${1:-}" = "--version" ]; then
+	echo "WP-CLI 3.0.0"
+	exit 0
+fi
+
+case "${1:-} ${2:-}" in
+	"core is-installed") exit 0 ;;
+	"option get") [ "${3:-}" = "stylesheet" ] && printf '%s\n' 'test-theme' ;;
+	"eval "*)
+		code="${2:-}"
+		case "$code" in
+			*'WP_THEME_CONTROL_RUNTIME_URLS'*)
+				input_path="${WPCTL_RUNTIME_INPUT:?}"
+				output_path="${WPCTL_RUNTIME_OUTPUT:?}"
+				report_path="${WPCTL_RUNTIME_REPORT:?}"
+				content="$(command cat "$input_path")"
+				case "$content" in *'<?'*) printf '%s\n' 'Database block content contains executable PHP syntax.' >&2; exit 1 ;; esac
+				upload_base="${FAKE_UPLOAD_BASE_URL:-http://example.test/wp-content/uploads}"
+				site_base="${FAKE_SITE_URL:-http://example.test}"
+				theme_base="${FAKE_THEME_BASE_URL:-http://localhost:8886/wp-content/themes/test-theme}"
+				theme_count=0
+				remaining="$content"
+				while [[ "$remaining" == *"$theme_base"* ]]; do
+					theme_count=$((theme_count + 1))
+					remaining="${remaining#*"$theme_base"}"
+				done
+				content="${content//"$theme_base"/__WP_THEME_CONTROL_THEME_BASE_6f7c8b__}"
+				upload_count=0
+				remaining="$content"
+				while [[ "$remaining" == *"$upload_base"* ]]; do
+					upload_count=$((upload_count + 1))
+					remaining="${remaining#*"$upload_base"}"
+				done
+				content="${content//"$upload_base"/__WP_THEME_CONTROL_UPLOADS_BASE_6f7c8b__}"
+				home_count=0
+				remaining="$content"
+				while [[ "$remaining" == *"$site_base"* ]]; do
+					home_count=$((home_count + 1))
+					remaining="${remaining#*"$site_base"}"
+				done
+				content="${content//"$site_base"/__WP_THEME_CONTROL_HOME_BASE_6f7c8b__}"
+				upload_php='<?php echo esc_url( wp_get_upload_dir()["baseurl"] ); ?>'
+				home_php='<?php echo esc_url( home_url() ); ?>'
+				theme_php='<?php echo esc_url( get_stylesheet_directory_uri() ); ?>'
+				content="${content//__WP_THEME_CONTROL_THEME_BASE_6f7c8b__/$theme_php}"
+				content="${content//__WP_THEME_CONTROL_UPLOADS_BASE_6f7c8b__/$upload_php}"
+				content="${content//__WP_THEME_CONTROL_HOME_BASE_6f7c8b__/$home_php}"
+				printf '%s' "$content" > "$output_path"
+				total=$((theme_count + upload_count + home_count))
+				if [ "$total" -gt 0 ]; then changed=true; else changed=false; fi
+				printf '{"changed":%s,"total":%s,"theme":%s,"home":%s,"uploads":%s}\n' "$changed" "$total" "$theme_count" "$home_count" "$upload_count" > "$report_path"
+				;;
+			*'delete_pattern_cache'*) printf '%s\n' 'pattern-cache-cleared' >> "$FAKE_LOG" ;;
+			*'JSON_PRETTY_PRINT'*) jq '.settings.color.custom = false | .styles.color.text = "#111111"' "$FAKE_THEME_DIR/theme.json" ;;
+			*'JSON_UNESCAPED_SLASHES'*)
+				# RIG FORK: raw user Global Styles capture (styles-rig.sh).
+				if [ "${FAKE_LOCAL_URL:-0}" -eq 1 ]; then
+					printf '%s' '{"settings":{"color":{"custom":false,"backgroundImageUrl":"http://example.test/wp-content/uploads/2026/bg.jpg"}},"styles":{"color":{"text":"#111111"}}}'
+				else
+					printf '%s' '{"settings":{"color":{"custom":false}},"styles":{"color":{"text":"#111111"}}}'
+				fi
+				;;
+			*'get_block_templates'*) printf '%s' '[{"type":"wp_template","id":"test-theme//home","wp_id":101,"slug":"home","title":"Home"},{"type":"wp_template_part","id":"test-theme//header","wp_id":102,"slug":"header","title":"Header"}]' ;;
+			*'get_block_theme_folders'*) printf '%s' '{"wp_template":"templates","wp_template_part":"parts"}' ;;
+			*'"font_dir"'*) jq -n --arg path "$FAKE_FONT_DIR" --arg url 'http://example.test/uploads/fonts' '{"id":301,"theme":[{"slug":"inter","name":"Inter","fontFamily":"Inter, sans-serif","fontFace":[]},{"slug":"theme-serif","name":"Theme Serif","fontFamily":"Theme Serif, serif","fontFace":[]}],"custom":[{"slug":"inter","name":"Inter","fontFamily":"Inter, sans-serif","preview":"ignored","fontFace":[{"fontFamily":"Inter","fontWeight":"300","fontStyle":"normal","src":($url + "/inter-300.woff2"),"preview":"ignored"}]}],"font_dir":{"path":$path,"url":$url}}' ;;
+			*'has_style_changes'*) printf '%s' '{"id":301,"has_changes":true,"has_style_changes":true}' ;;
+			*'get_user_global_styles_post_id'*) printf '%s' '301' ;;
+			*'get_stylesheet_directory'*) printf '%s' "$FAKE_THEME_DIR" ;;
+			*) : ;;
+		esac
+		;;
+	"post list") printf '%s\n' '201' ;;
+	"post get")
+		field=""
+		for arg in "$@"; do case "$arg" in --field=*) field="${arg#*=}" ;; esac; done
+		case "$field" in
+			post_name) printf '%s\n' 'welcome-banner' ;;
+			post_title) printf '%s\n' 'Welcome Banner' ;;
+			post_content)
+				if [ "${FAKE_PATTERN_PHP:-0}" -eq 1 ]; then
+					printf '%s\n' '<?php echo "unsafe"; ?><p>Pattern</p>'
+				else
+					printf '%s\n' '<!-- wp:image {"id":88,"url":"http://example.test/wp-content/uploads/2026/welcome.jpg"} --><figure class="wp-block-image"><img src="http://example.test/wp-content/uploads/2026/welcome.jpg" class="wp-image-88"/></figure><!-- /wp:image --><!-- wp:image {"url":"http://localhost:8886/wp-content/themes/test-theme/assets/images/pattern-placeholder.webp"} --><figure class="wp-block-image"><img src="http://localhost:8886/wp-content/themes/test-theme/assets/images/pattern-placeholder.webp"/></figure><!-- /wp:image --><!-- wp:paragraph --><p><a href="http://example.test/welcome/">Hello</a></p><!-- /wp:paragraph -->'
+				fi
+				;;
+			post_type)
+				case "${3:-}" in 101) echo wp_template ;; 102) echo wp_template_part ;; 201) echo wp_block ;; esac
+				;;
+		esac
+		;;
+	"post term") printf '%s\n' 'featured' ;;
+	"post meta") printf '%s\n' 'unsynced' ;;
+	"post delete") printf '%s\n' "${3:-}" >> "$FAKE_LOG" ;;
+	"block template")
+		case "${4:-}" in
+			test-theme//home) printf '%s\n' '<!-- wp:cover {"url":"http://example.test/wp-content/uploads/2026/hero.jpg","id":77} --><div class="wp-block-cover"><img class="wp-block-cover__image-background wp-image-77" alt="" src="http://example.test/wp-content/uploads/2026/hero.jpg" srcset="http://example.test/wp-content/uploads/2026/hero.jpg 1x, http://example.test/wp-content/uploads/2026/hero-2x.jpg 2x" data-object-id="77"/><div class="wp-block-cover__inner-container"><!-- wp:paragraph --><p><a href="http://example.test/about/?source=home#team">About</a></p><!-- /wp:paragraph --></div></div><!-- /wp:cover -->' ;;
+			test-theme//header) printf '%s\n' '<!-- wp:site-title /-->' ;;
+		esac
+		;;
+	"cache flush") : ;;
+	*)
+		printf 'Unexpected fake wp call:' >&2
+		printf ' %q' "$@" >&2
+		printf '\n' >&2
+		exit 1
+		;;
+esac

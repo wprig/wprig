@@ -19,7 +19,7 @@ import path from 'path';
  * because the pattern requires `wp:` immediately after the leading whitespace.
  */
 const BLOCK_REGEX =
-	/<!--\s*wp:([a-z0-9-]+\/?[a-z0-9-]+)\s*(\{.*?\})?\s*\/?\s*-->/g;
+	/<!--\s*wp:([a-z0-9-]+\/?[a-z0-9-]+)\s*(\{.*?\})?\s*\/?\s*-->/gs;
 
 /**
  * Attribute keys WordPress Core injects automatically and should not warn about.
@@ -32,6 +32,42 @@ const GLOBAL_ATTRIBUTE_KEYS = [
 	'tagName',
 	'align',
 ];
+
+/**
+ * The three runtime-URL PHP expressions the bake tool writes into block
+ * attributes (SPEC-015 §5.3). Both quote styles are matched for the uploads
+ * expression (upstream emits unescaped quotes in the PHP string; JSON
+ * serializers may escape them). These are neutralized before attribute JSON
+ * parsing so baked markup validates.
+ */
+export const RUNTIME_URL_EXPRESSIONS = [
+	/<\?php\s+echo\s+esc_url\(\s*get_stylesheet_directory_uri\(\s*\)\s*\)\s*;?\s*\?>/g,
+	/<\?php\s+echo\s+esc_url\(\s*wp_get_upload_dir\(\s*\)\s*\[\s*(["'\\]*)baseurl\1?\s*\]\s*\)\s*;?\s*\?>/g,
+	/<\?php\s+echo\s+esc_url\(\s*home_url\(\s*\)\s*\)\s*;?\s*\?>/g,
+];
+
+const RUNTIME_URL_TOKEN = '__WPRIG_RUNTIME_URL__';
+
+/**
+ * Neutralizes the known runtime-URL PHP expressions inside a block
+ * attributes JSON string and detects any remaining PHP syntax.
+ *
+ * @param {string} attributesStr Raw attribute JSON captured from the block comment.
+ * @return {{neutralized: string, phpDetected: boolean}} Neutralized JSON and
+ *   whether an un-approved PHP expression remains.
+ */
+export function neutralizeRuntimePhp( attributesStr ) {
+	let neutralized = attributesStr;
+
+	for ( const expression of RUNTIME_URL_EXPRESSIONS ) {
+		neutralized = neutralized.replace( expression, RUNTIME_URL_TOKEN );
+	}
+
+	return {
+		neutralized,
+		phpDetected: /<\?/.test( neutralized ),
+	};
+}
 
 /**
  * Resolves the Core blocks directory relative to a theme root.
@@ -102,8 +138,22 @@ export function validateBlockMarkup( content, relativePath, options = {} ) {
 
 		let attributes = {};
 		if ( attributesStr ) {
+			// Baked files carry the three known runtime-URL PHP expressions in
+			// their attributes (SPEC-015 §5.3). Neutralize those, refuse any
+			// other PHP syntax, then parse.
+			const { neutralized, phpDetected } =
+				neutralizeRuntimePhp( attributesStr );
+
+			if ( phpDetected ) {
+				errors.push( {
+					message: `Un-approved PHP expression in block attributes for ${ blockName }: "${ attributesStr }". Only the three runtime-URL expressions written by rig:bake are allowed.`,
+					line: lineNumber,
+				} );
+				continue;
+			}
+
 			try {
-				attributes = JSON.parse( attributesStr );
+				attributes = JSON.parse( neutralized );
 			} catch ( err ) {
 				errors.push( {
 					message: `Invalid JSON syntax in block comments for ${ blockName }: "${ attributesStr }"`,

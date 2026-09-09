@@ -58,7 +58,10 @@ Use `npm run <command>` (or `bun run <command>`):
 - `rig:pattern`: Scaffold a new block pattern with i18n-aware headers + config-seeded categories.
 - `rig:localize`: Generate the `.pot` translation file in `languages/`.
 - `rig:compare`: Compare installed components against registry versions.
-- `rig:tokens`: Regenerate `theme.json` + CSS variables + `@custom-media` from `config/tokens.json`.
+- `rig:tokens`: Regenerate `theme.json` + CSS variables + `@custom-media` from `config/tokens.json`. When a baked overlay exists (`config/user-styles.json`, written by `rig:bake`), the generator merges it last — tokens stay canonical, baked Global Styles/fonts survive every regeneration.
+- `rig:bake`: Bake Site Editor database changes (unsynced patterns, custom templates/parts, Font Library fonts, Global Styles) into the theme's version-controlled files. Node port of [`bacoords/wp-theme-control`](https://github.com/bacoords/wp-theme-control) at `bin/wp-theme-control/`; paradigm-gated to `universal`/`block-based`. Runs fonts → templates → styles → patterns, review-first (no DB cleanup).
+- `rig:bake:plan`: Read-only inventory + collision report (writes nothing). Run this before every bake.
+- `rig:bake:clean`: `npm run rig:bake:clean -- .wp-theme-control/runs/<run>/manifest.tsv` — delete only DB records whose exported files still match the manifest sha256; also removes `config/user-styles.json` (font assets are retained).
 - `create-rig-component "Name" [--templating] [--tests]`: Scaffold a new theme component.
 
 ### Testing

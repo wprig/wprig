@@ -150,18 +150,33 @@ export function checkPatternHeaders( headers, options = {} ) {
 /**
  * Checks pattern content for un-translatable placeholders.
  *
- * @param {string} content Extracted pattern block markup.
- * @return {Array<Object>} Content errors.
+ * Baked patterns (files marked `Baked: yes` by rig:bake) carry real,
+ * editor-authored copy, so the placeholder heuristic is downgraded from an
+ * error to a warning (notice) — the diff is the review, not the scaffold
+ * contract (SPEC-015 §5.3).
+ *
+ * @param {string}  content         Extracted pattern block markup.
+ * @param {Object}  [options]       Options.
+ * @param {boolean} [options.baked] Whether the file is marked Baked: yes.
+ * @return {{errors: Array<Object>, warnings: Array<Object>}} Content findings.
  */
-export function checkPatternContent( content ) {
+export function checkPatternContent( content, options = {} ) {
 	const errors = [];
+	const warnings = [];
 	const lower = content.toLowerCase();
 
 	if ( PLACEHOLDER_CONTENT.some( ( phrase ) => lower.includes( phrase ) ) ) {
-		errors.push( {
-			message:
-				'Placeholder content detected (e.g. "Hello world!"). Replace with meaningful, translatable starter content.',
-		} );
+		const finding = options.baked
+			? {
+					message:
+						'Baked pattern contains scaffold-style placeholder text ("Hello world!"). Review the diff — editor-authored copy should not contain it.',
+			  }
+			: {
+					message:
+						'Placeholder content detected (e.g. "Hello world!"). Replace with meaningful, translatable starter content.',
+			  };
+
+		( options.baked ? warnings : errors ).push( finding );
 	}
 
 	const templatePlaceholders = content.match( /\{\{[a-z]+\}\}/gi );
@@ -174,7 +189,7 @@ export function checkPatternContent( content ) {
 		} );
 	}
 
-	return errors;
+	return { errors, warnings };
 }
 
 /**
@@ -227,13 +242,18 @@ export async function runPatternValidation( themeRoot = process.cwd() ) {
 		const fileErrors = [];
 		const fileWarnings = [];
 
+		const isBaked = headers.baked === 'yes';
 		const headerResult = checkPatternHeaders( headers, {
 			knownCategories,
 		} );
 		fileErrors.push( ...headerResult.errors );
 		fileWarnings.push( ...headerResult.warnings );
 
-		fileErrors.push( ...checkPatternContent( markup ) );
+		const contentResult = checkPatternContent( markup, {
+			baked: isBaked,
+		} );
+		fileErrors.push( ...contentResult.errors );
+		fileWarnings.push( ...contentResult.warnings );
 
 		if ( markup ) {
 			const markupResult = validateBlockMarkup( markup, relativePath, {

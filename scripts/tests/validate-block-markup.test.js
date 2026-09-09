@@ -3,7 +3,10 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { validateBlockMarkup } from '../../scripts/lib/validate-block-markup.js';
+import {
+	validateBlockMarkup,
+	neutralizeRuntimePhp,
+} from '../../scripts/lib/validate-block-markup.js';
 
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 
@@ -69,5 +72,73 @@ describe( 'Gutenberg Block Markup Validator (shared core)', () => {
 		expect( result.errors ).toHaveLength( 0 );
 		expect( result.warnings ).toHaveLength( 1 );
 		expect( result.warnings[ 0 ].message ).toMatch( /unlisted attribute/ );
+	} );
+} );
+
+describe( 'baked runtime-URL tolerance (SPEC-015 §5.3)', () => {
+	const coreBlocksPath = path.join( __dirname, 'fixtures', 'core-blocks' );
+
+	const themeExpr = '<?php echo esc_url( get_stylesheet_directory_uri() ); ?>';
+	const uploadsExprUnescaped =
+		'<?php echo esc_url( wp_get_upload_dir()["baseurl"] ); ?>';
+	const uploadsExprEscaped =
+		'<?php echo esc_url( wp_get_upload_dir()[\\"baseurl\\"] ); ?>';
+	const homeExpr = '<?php echo esc_url( home_url() ); ?>';
+
+	test( 'accepts each of the three runtime-URL expressions in attributes', () => {
+		const cases = [
+			themeExpr,
+			uploadsExprUnescaped,
+			uploadsExprEscaped,
+			homeExpr,
+		];
+
+		for ( const expression of cases ) {
+			const result = validateBlockMarkup(
+				`<!-- wp:paragraph {"url":"${ expression }"} -->`,
+				'patterns/welcome-banner.php',
+				{ coreBlocksPath }
+			);
+			expect( result.errors ).toEqual( [] );
+		}
+	} );
+
+	test( 'still rejects rogue PHP expressions in attributes', () => {
+		const result = validateBlockMarkup(
+			'<!-- wp:paragraph {"url":"<?php echo get_post_meta( 1 ); ?>"} -->',
+			'patterns/bad.php',
+			{ coreBlocksPath }
+		);
+
+		expect( result.errors ).toHaveLength( 1 );
+		expect( result.errors[ 0 ].message ).toMatch(
+			/Un-approved PHP expression/
+		);
+	} );
+
+	test( 'still rejects malformed JSON around an approved expression', () => {
+		const result = validateBlockMarkup(
+			`<!-- wp:paragraph {"url":"${ uploadsExprUnescaped }","broken":} -->`,
+			'patterns/broken.php',
+			{ coreBlocksPath }
+		);
+
+		expect( result.errors ).toHaveLength( 1 );
+		expect( result.errors[ 0 ].message ).toMatch( /Invalid JSON syntax/ );
+	} );
+
+	test( 'neutralizeRuntimePhp unit contract', () => {
+		const clean = neutralizeRuntimePhp(
+			`{"url":"${ uploadsExprEscaped }"}`
+		);
+		expect( clean.neutralized ).toBe(
+			'{"url":"__WPRIG_RUNTIME_URL__"}'
+		);
+		expect( clean.phpDetected ).toBe( false );
+
+		const rogue = neutralizeRuntimePhp(
+			'{"url":"<?php echo wp_head(); ?>"}'
+		);
+		expect( rogue.phpDetected ).toBe( true );
 	} );
 } );
