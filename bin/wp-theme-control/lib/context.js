@@ -360,6 +360,9 @@ unset( $user_data[ chr( 36 ) . "schema" ] );
 unset( $user_data["settings"]["viewport"] );
 unset( $user_data["settings"]["blockVisibility"] );
 unset( $user_data["settings"]["typography"]["fontFamilies"] );
+if ( isset( $user_data["settings"]["typography"] ) && empty( $user_data["settings"]["typography"] ) ) {
+	unset( $user_data["settings"]["typography"] );
+}
 echo wp_json_encode( $user_data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );`;
 
 export const CLEAR_PATTERN_CACHE_EVAL = `

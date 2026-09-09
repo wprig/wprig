@@ -105,7 +105,13 @@ try {
 			runPatterns( ctx );
 			break;
 		case 'clean':
-			runClean( ctx, parsed.rest[ 0 ] );
+			if ( parsed.rest.length === 0 ) {
+				runClean( ctx, null );
+			} else {
+				for ( const manifestPath of parsed.rest ) {
+					runClean( ctx, manifestPath );
+				}
+			}
 			break;
 		case 'all':
 			// Upstream invariant: fonts → templates → styles → patterns, so

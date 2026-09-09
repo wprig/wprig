@@ -36,7 +36,12 @@ export const UNSYNCED_PATTERN_IDS_ARGS = [
 ];
 
 /**
- * Builds the full pattern PHP file content (upstream wpctl_build_pattern_file).
+ * Builds the full pattern PHP file content (upstream wpctl_build_pattern_file
+ * + the WP Rig `Baked: yes` header, D7).
+ *
+ * The header is part of the staged file (not injected afterwards) so the
+ * manifest sha256 matches the final committed content and `clean` verifies
+ * without --force.
  *
  * @param {Object} opts               Pattern metadata + body.
  * @param {string} opts.title         Pattern title.
@@ -61,6 +66,7 @@ export function buildPatternFile( {
 	const lines = [
 		'<?php',
 		'/**',
+		' * Baked: yes',
 		` * Title: ${ sanitize( title ) }`,
 		` * Slug: ${ sanitize( slug ) }`,
 	];
@@ -124,7 +130,7 @@ export function runtimePatternIsManaged( filePath, type, slug ) {
  */
 export function unsyncedPatternIds( ctx ) {
 	return wp( ctx, UNSYNCED_PATTERN_IDS_ARGS, { capture: true } )
-		.split( '\n' )
+		.split( /\s+/ )
 		.map( ( line ) => line.trim() )
 		.filter( ( line ) => line && /^\d+$/.test( line ) );
 }

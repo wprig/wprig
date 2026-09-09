@@ -120,10 +120,17 @@ export function checkPatternHeaders( headers, options = {} ) {
 	}
 
 	if ( ! headers.categories ) {
-		errors.push( {
-			message:
-				'Missing required "Categories" header. Wire the pattern into a registered category.',
-		} );
+		// Hidden patterns (Inserter: no — e.g. runtime-URL templates baked by
+		// rig:bake) are never registered in the inserter, so category wiring
+		// is meaningless for them; a warning keeps the diff review honest.
+		const isHiddenPattern = headers.inserter === 'no';
+		const finding = {
+			message: isHiddenPattern
+				? 'Hidden pattern (Inserter: no) has no "Categories" header — expected for runtime patterns; register it manually if it ever goes into the inserter.'
+				: 'Missing required "Categories" header. Wire the pattern into a registered category.',
+		};
+
+		( isHiddenPattern ? warnings : errors ).push( finding );
 	} else {
 		const categorySlugs = headers.categories
 			.split( ',' )

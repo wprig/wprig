@@ -75,10 +75,22 @@ export function runClean( ctx, manifestPath ) {
 			continue;
 		}
 
-		if ( ! fs.existsSync( target ) ) {
+		// RIG FORK: wp_global_styles / wp_global_styles_fonts rows exist to
+		// carry the DB-reset record; their manifest target is theme.json,
+		// which rig:tokens legitimately regenerates between bake and clean.
+		// The record-ID verification below is the real safety, so these kinds
+		// skip both the file-missing and hash checks.
+		const isDbResetRow =
+			kind === 'wp_global_styles' || kind === 'wp_global_styles_fonts';
+
+		if ( ! isDbResetRow && ! fs.existsSync( target ) ) {
 			die( `exported file is missing; refusing cleanup: ${ target }` );
 		}
-		if ( ctx.force !== true && sha256File( target ) !== expectedHash ) {
+		if (
+			! isDbResetRow &&
+			ctx.force !== true &&
+			sha256File( target ) !== expectedHash
+		) {
 			die(
 				`exported file changed after export; refusing cleanup: ${ target }`
 			);
