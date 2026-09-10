@@ -9,6 +9,164 @@ import {
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 const themeRoot = path.resolve( __dirname, '../..' );
 const tokensPath = path.join( themeRoot, 'config', 'tokens.json' );
+const userStylesOverlayPath = path.join(
+	themeRoot,
+	'config',
+	'user-styles.json'
+);
+
+/**
+ * Validates the parsed overlay shape (SPEC-016 §5.7). Pure so tests can
+ * exercise it without touching the real config file.
+ *
+ * @param {Object} overlay Parsed overlay JSON.
+ * @return {Object} The validated overlay (pass-through).
+ * @throws {Error} With a message naming config/user-styles.json.
+ */
+export function validateUserStylesOverlay( overlay ) {
+	if (
+		! overlay ||
+		typeof overlay !== 'object' ||
+		Array.isArray( overlay )
+	) {
+		throw new Error(
+			'config/user-styles.json must be an object with "settings" and "styles" blocks.'
+		);
+	}
+
+	if (
+		! overlay.settings ||
+		typeof overlay.settings !== 'object' ||
+		Array.isArray( overlay.settings ) ||
+		! overlay.styles ||
+		typeof overlay.styles !== 'object' ||
+		Array.isArray( overlay.styles )
+	) {
+		throw new Error(
+			'config/user-styles.json is malformed: expected "settings" and "styles" objects. Re-bake with rig:bake or fix the file.'
+		);
+	}
+
+	if (
+		overlay.fonts !== undefined &&
+		( typeof overlay.fonts !== 'object' || Array.isArray( overlay.fonts ) )
+	) {
+		throw new Error(
+			'config/user-styles.json is malformed: "fonts" must be an object when present.'
+		);
+	}
+
+	return overlay;
+}
+
+/**
+ * Reads and validates the baked user-styles overlay
+ * (config/user-styles.json), when present. Absence = "no user layer".
+ *
+ * @return {Promise<Object|null>} Validated overlay object, or null.
+ * @throws {Error} When the overlay exists but is malformed (fail-fast,
+ *   naming the file, per SPEC-016 §5.7).
+ */
+export async function readUserStylesOverlay() {
+	if ( ! ( await fs.pathExists( userStylesOverlayPath ) ) ) {
+		return null;
+	}
+
+	let overlay;
+
+	try {
+		overlay = await fs.readJson( userStylesOverlayPath );
+	} catch ( error ) {
+		throw new Error(
+			`config/user-styles.json is not valid JSON: ${ error.message }`
+		);
+	}
+
+	return validateUserStylesOverlay( overlay );
+}
+
+/**
+ * Deep-merges source over target. Objects merge recursively; arrays replace
+ * wholesale (WP preset-replace semantics: the editor authors a complete
+ * palette list, not a delta).
+ *
+ * @param {Object} target Base object (generated theme.json section).
+ * @param {Object} source Overlay section.
+ * @return {Object} Merged result (new object).
+ */
+export function deepMergePreservingArrays( target, source ) {
+	const result = { ...target };
+
+	for ( const [ key, value ] of Object.entries( source ) ) {
+		const current = result[ key ];
+
+		if (
+			current &&
+			typeof current === 'object' &&
+			! Array.isArray( current ) &&
+			value &&
+			typeof value === 'object' &&
+			! Array.isArray( value )
+		) {
+			result[ key ] = deepMergePreservingArrays( current, value );
+		} else {
+			result[ key ] = value;
+		}
+	}
+
+	return result;
+}
+
+/**
+ * Collapses the overlay `fonts` block into a single fontFamilies list
+ * (SPEC-016 §3.1 rule 2): theme activation families first, custom Font
+ * Library families after; duplicate slugs resolve to the custom definition.
+ *
+ * @param {Object} fonts Overlay fonts block.
+ * @return {Array} Merged fontFamilies list.
+ */
+export function collapseOverlayFonts( fonts = {} ) {
+	const themeFamilies = Array.isArray( fonts.themeFamilies )
+		? fonts.themeFamilies
+		: [];
+	const customFamilies = Array.isArray( fonts.customFamilies )
+		? fonts.customFamilies
+		: [];
+
+	const bySlug = new Map();
+
+	for ( const family of themeFamilies ) {
+		if ( family && family.slug ) {
+			bySlug.set( family.slug, family );
+		}
+	}
+
+	for ( const family of customFamilies ) {
+		if ( family && family.slug ) {
+			bySlug.set( family.slug, family );
+		}
+	}
+
+	return [ ...bySlug.values() ];
+}
+
+/**
+ * Strips the SSOT/guard keys from an overlay before merging so the tokens
+ * layer always wins on them (SPEC-016 §3.1 rules 3–4).
+ *
+ * @param {Object} overlay Raw overlay.
+ * @return {Object} Overlay copy with forbidden keys removed.
+ */
+export function stripOverlaySsotKeys( overlay ) {
+	const { $schema, version, isGlobalStylesUserThemeJSON, settings, ...rest } =
+		overlay;
+
+	const cleanedSettings = { ...( settings || {} ) };
+	delete cleanedSettings.viewport;
+	delete cleanedSettings.blockVisibility;
+
+	return { ...rest, settings: cleanedSettings };
+}
 
 /**
  * Propagates tokens from tokens.json to theme.json, CSS variables, and Tailwind config.
@@ -21,8 +179,12 @@ export async function propagateTokens() {
 
 	const tokens = await fs.readJson( tokensPath );
 
+	// 0. Read the baked user-styles overlay, when present (SPEC-016). Absent
+	// file = no user layer; buildThemeJson stays trivially pure.
+	const userStylesOverlay = await readUserStylesOverlay();
+
 	// 1. Update theme.json
-	await updateThemeJson( tokens );
+	await updateThemeJson( tokens, userStylesOverlay );
 
 	// 1b. Warn about preset slugs that collide with WP core defaults — the
 	// generated theme presets silently override core presets with the same
@@ -50,7 +212,7 @@ export async function propagateTokens() {
 	await updateTailwindConfig( tokens );
 }
 
-async function updateThemeJson( tokens ) {
+async function updateThemeJson( tokens, userStylesOverlay = null ) {
 	const themeJsonPath = path.join( themeRoot, 'theme.json' );
 	let existingThemeJson;
 
@@ -58,20 +220,30 @@ async function updateThemeJson( tokens ) {
 		existingThemeJson = await fs.readJson( themeJsonPath );
 	}
 
-	const themeJson = buildThemeJson( tokens, existingThemeJson );
+	const themeJson = buildThemeJson(
+		tokens,
+		existingThemeJson,
+		userStylesOverlay
+	);
 	await fs.writeJson( themeJsonPath, themeJson, { spaces: 2 } );
 }
 
 /**
  * Builds the v3 / WP 7.1 theme.json object from tokens.json, preserving (not
- * clobbering) any hand-authored sections of an existing theme.json. tokens.js is
- * the sole theme.json writer (D9); setup and build both call this.
+ * clobbering) any hand-authored sections of an existing theme.json, and
+ * merging the baked user-styles overlay last (SPEC-016). tokens.js is the
+ * sole theme.json writer (D9); setup and build both call this.
  *
- * @param {Object} tokens            Parsed config/tokens.json.
- * @param {Object} existingThemeJson Current theme.json contents (undefined when absent).
+ * @param {Object}      tokens              Parsed config/tokens.json.
+ * @param {Object}      existingThemeJson   Current theme.json contents (undefined when absent).
+ * @param {Object|null} [userStylesOverlay] Validated config/user-styles.json overlay (null when absent).
  * @return {Object} Merged, ready-to-write theme.json object.
  */
-export function buildThemeJson( tokens, existingThemeJson ) {
+export function buildThemeJson(
+	tokens,
+	existingThemeJson,
+	userStylesOverlay = null
+) {
 	const themeJson = existingThemeJson ?? {
 		version: 3,
 		settings: {
@@ -181,6 +353,28 @@ export function buildThemeJson( tokens, existingThemeJson ) {
 
 		return fontSize;
 	} );
+
+	// 2. Merge the baked user-styles overlay last (SPEC-016 §3): the user
+	// layer wins over token content, except on SSOT keys, which are stripped
+	// from the overlay before merging.
+	if ( userStylesOverlay ) {
+		const cleaned = stripOverlaySsotKeys( userStylesOverlay );
+
+		themeJson.settings = deepMergePreservingArrays(
+			themeJson.settings,
+			cleaned.settings || {}
+		);
+		themeJson.styles = deepMergePreservingArrays(
+			themeJson.styles || {},
+			cleaned.styles || {}
+		);
+
+		if ( cleaned.fonts ) {
+			themeJson.settings.typography.fontFamilies = collapseOverlayFonts(
+				cleaned.fonts
+			);
+		}
+	}
 
 	return themeJson;
 }

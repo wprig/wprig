@@ -141,24 +141,42 @@ describe( 'checkPatternContent', () => {
 			checkPatternContent(
 				'<!-- wp:paragraph --><p>Start here.</p><!-- /wp:paragraph -->'
 			)
-		).toHaveLength( 0 );
+		).toEqual( { errors: [], warnings: [] } );
 	} );
 
 	test( 'flags "Hello world!" placeholder content', () => {
-		const errors = checkPatternContent(
+		const result = checkPatternContent(
 			'<!-- wp:paragraph --><p>Hello world!</p><!-- /wp:paragraph -->'
 		);
-		expect( errors ).toHaveLength( 1 );
-		expect( errors[ 0 ].message ).toMatch( /Placeholder content/ );
+		expect( result.errors ).toHaveLength( 1 );
+		expect( result.errors[ 0 ].message ).toMatch( /Placeholder content/ );
 	} );
 
 	test( 'flags un-substituted template placeholders', () => {
-		const errors = checkPatternContent(
+		const result = checkPatternContent(
 			'<p>This is the "{{title}}" pattern.</p>'
 		);
-		expect( errors ).toHaveLength( 1 );
-		expect( errors[ 0 ].message ).toMatch(
+		expect( result.errors ).toHaveLength( 1 );
+		expect( result.errors[ 0 ].message ).toMatch(
 			/Un-substituted template placeholders/
 		);
+	} );
+
+	test( 'baked profile: placeholder content becomes a warning, not an error', () => {
+		const result = checkPatternContent(
+			'<!-- wp:paragraph --><p>Hello world!</p><!-- /wp:paragraph -->',
+			{ baked: true }
+		);
+		expect( result.errors ).toHaveLength( 0 );
+		expect( result.warnings ).toHaveLength( 1 );
+		expect( result.warnings[ 0 ].message ).toMatch( /Baked pattern/ );
+	} );
+
+	test( 'baked profile still errors on un-substituted template placeholders', () => {
+		const result = checkPatternContent(
+			'<p>This is the "{{title}}" pattern.</p>',
+			{ baked: true }
+		);
+		expect( result.errors ).toHaveLength( 1 );
 	} );
 } );

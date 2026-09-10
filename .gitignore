@@ -28,6 +28,7 @@
 !style.css
 !/*.php
 !/inc/
+!/patterns/
 !/templates/
 !/template-parts/
 !/page-templates/

@@ -155,6 +155,7 @@ WP Rig uses a modular component architecture and a modern build system to optimi
 - [**CLI Commands & Scripts**](./docs/commands.md): Reference for NPM/Bun, Composer, and WP-CLI commands.
 - [**Advanced Features**](./docs/advanced-features.md): Documentation for critical assets, font performance, and theme-scoped blocks.
 - [**Block-Based Theme Conversion**](./docs/block-based-theme.md): Guide on how to align the theme with Full Site Editing.
+- [**Site Editor Bake & Sync (`rig:bake`)**](./docs/rig-bake.md): Version-control Site Editor work — patterns, templates, fonts, Global Styles — with the bake round-trip and the user-styles overlay.
 
 For more information about commands and useful workflows, please visit the [WP Rig website](https://wprig.io/documentation/).
 

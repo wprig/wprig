@@ -337,12 +337,36 @@ class Component implements Component_Interface, Templating_Component_Interface, 
 	/**
 	 * Gets local font files for preloading.
 	 *
+	 * Strict guard: only families shipped by this component's own download
+	 * pipeline (`wp rig fonts-download`) are preloaded. That pipeline
+	 * materializes both the font files and the google-fonts.css manifest, so
+	 * the manifest's presence is the marker for "these woff2 files are the
+	 * component's". When the manifest is absent, any files under
+	 * assets/fonts/ come from other sources (e.g. `rig:bake` Font Library
+	 * exports, which are served via theme.json instead) and must not be
+	 * preloaded.
+	 *
 	 * @return array Array of font URLs.
 	 */
 	protected function get_font_files_to_preload(): array {
 		$fonts_to_preload = array();
 		$theme_dir        = get_stylesheet_directory();
-		$font_base_path   = $theme_dir . '/assets/fonts';
+
+		// The component's own local-fonts artifact: source CSS in dev, built
+		// CSS in production (same lookup as get_asset_manifest()).
+		$shipped_css = null;
+		foreach ( array( 'assets/css/src/google-fonts.css', 'assets/css/google-fonts.min.css' ) as $candidate ) {
+			if ( file_exists( $theme_dir . '/' . $candidate ) ) {
+				$shipped_css = $candidate;
+				break;
+			}
+		}
+
+		if ( null === $shipped_css ) {
+			return $fonts_to_preload;
+		}
+
+		$font_base_path = $theme_dir . '/assets/fonts';
 
 		if ( ! is_dir( $font_base_path ) ) {
 			return $fonts_to_preload;

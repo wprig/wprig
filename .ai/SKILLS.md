@@ -43,3 +43,4 @@ These skills define the core development workflow in WP Rig.
 
 ## 📦 Specialized
 - [**Child Theme Development**](skills/child-theme-development/SKILL.md): Creating and managing WP Rig child themes.
+- [**Bake & Sync (rig:bake)**](skills/bake-sync/SKILL.md): Bake Site Editor DB changes (patterns, templates, fonts, Global Styles) into the theme via `rig:bake` and review them as a git diff — the Site Editor version-control round-trip (block-based only).

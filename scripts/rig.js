@@ -21,6 +21,7 @@ import scaffoldPattern from './tasks/scaffoldPattern.js';
 import localizeAssets from './tasks/localizeAssets.js';
 import screenshotCompare from './tasks/screenshotCompare.js';
 import promoteVersion from './tasks/promoteVersion.js';
+import { bakeSync } from './tasks/bakeSync.js';
 
 // Setup paths
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
@@ -250,6 +251,32 @@ program
 			logger.error(
 				`\n✗ ${ totalErrors } component(s) failed validation.`
 			);
+		}
+	} );
+
+/**
+ * Command: bake
+ *
+ * Site Editor bake & sync (vendored wp-theme-control wrapper). Everything
+ * after the scope is passed through to the vendored Bash scripts untouched,
+ * including upstream WP-CLI args (--path/--url/--user/--state-dir/--dry-run/
+ * --clean/--force). The paradigm gate and WP-root resolution live in the
+ * task module (SPEC-015 §5.1).
+ */
+program
+	.command( 'bake [scope]' )
+	.description(
+		'Bake Site Editor changes (patterns, templates, fonts, Global Styles) into the theme'
+	)
+	.allowUnknownOption( true )
+	.action( async ( scope ) => {
+		const bakeIndex = process.argv.lastIndexOf( 'bake' );
+		const passthrough = process.argv
+			.slice( bakeIndex + 1 )
+			.filter( ( arg ) => arg !== scope && arg !== '--' );
+		const code = await bakeSync( scope || 'all', { passthrough } );
+		if ( code !== 0 ) {
+			process.exitCode = code;
 		}
 	} );
 
