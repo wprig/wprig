@@ -21,6 +21,7 @@ import {
 	manifestAdd,
 	wp,
 	wpEval,
+	wpTry,
 	THEME_FOLDERS_EVAL,
 	TEMPLATE_INVENTORY_EVAL,
 } from './context.js';
@@ -72,7 +73,10 @@ export function runTemplates( ctx ) {
 					inspectDir,
 					`${ type }-${ slug }.report.json`
 				);
-				fs.writeFileSync( sourcePath, exportTemplate( ctx, id, type ) );
+				fs.writeFileSync(
+					sourcePath,
+					exportTemplate( ctx, id, type, recordId )
+				);
 				rewriteRuntimeUrls( ctx, sourcePath, outputPath, reportPath );
 				const runtimeCount = JSON.parse(
 					fs.readFileSync( reportPath, 'utf8' )
@@ -143,7 +147,10 @@ export function runTemplates( ctx ) {
 			`${ slug }.html`
 		);
 
-		fs.writeFileSync( sourcePath, exportTemplate( ctx, id, type ) );
+		fs.writeFileSync(
+			sourcePath,
+			exportTemplate( ctx, id, type, recordId )
+		);
 		if ( ! fs.statSync( sourcePath ).size ) {
 			die( `empty export for ${ id }` );
 		}
@@ -250,18 +257,59 @@ export function runTemplates( ctx ) {
 	}
 }
 
+const EXPORT_FALLBACK_NOTICE =
+	'wp block template export not available (needs WP-CLI 3.0 / wp-cli/block-command) — falling back to reading the template post content directly';
+
 /**
- * Exports one template via WP-CLI 3.0 block template export.
+ * Exports one template's markup. Prefers `wp block template export`
+ * (WP-CLI 3.0 / wp-cli/block-command); on WP-CLI 2.x — where the `block`
+ * command group does not exist — falls back to reading the underlying
+ * template post's post_content (what the 3.0 export prints). Any other
+ * export failure is fatal.
  *
  * @param {Object} ctx  Loaded context.
  * @param {string} id   Template id (theme//slug).
  * @param {string} type wp_template | wp_template_part.
+ * @param {number} wpId Underlying post ID from the inventory.
  * @return {string} Exported markup.
  */
-export function exportTemplate( ctx, id, type ) {
-	return wp(
+export function exportTemplate( ctx, id, type, wpId ) {
+	const result = wpTry( ctx, [
+		'block',
+		'template',
+		'export',
+		id,
+		`--type=${ type }`,
+		'--stdout',
+	] );
+
+	if ( result.ok ) {
+		return result.stdout;
+	}
+
+	const commandMissing =
+		/not a registered/i.test( result.stderr ) ||
+		/no such file or directory/i.test( result.stderr );
+
+	if ( ! commandMissing ) {
+		die(
+			`template export failed: ${
+				result.stderr.trim() || 'unknown error'
+			}`
+		);
+	}
+
+	info( EXPORT_FALLBACK_NOTICE );
+
+	const content = wp(
 		ctx,
-		[ 'block', 'template', 'export', id, `--type=${ type }`, '--stdout' ],
+		[ 'post', 'get', String( wpId ), '--field=post_content' ],
 		{ capture: true }
 	);
+
+	if ( ! content.trim() ) {
+		die( `empty export for ${ id }` );
+	}
+
+	return content;
 }

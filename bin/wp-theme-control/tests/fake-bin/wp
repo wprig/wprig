@@ -88,6 +88,11 @@ case "${1:-} ${2:-}" in
 			post_content)
 				if [ "${FAKE_PATTERN_PHP:-0}" -eq 1 ]; then
 					printf '%s\n' '<?php echo "unsafe"; ?><p>Pattern</p>'
+				elif [ "${3:-}" = "101" ]; then
+					# Template post content (export fallback source, RIG).
+					printf '%s\n' '<!-- wp:cover {"url":"http://example.test/wp-content/uploads/2026/hero.jpg","id":77} --><div class="wp-block-cover"><img class="wp-block-cover__image-background wp-image-77" alt="" src="http://example.test/wp-content/uploads/2026/hero.jpg" srcset="http://example.test/wp-content/uploads/2026/hero.jpg 1x, http://example.test/wp-content/uploads/2026/hero-2x.jpg 2x" data-object-id="77"/><div class="wp-block-cover__inner-container"><!-- wp:paragraph --><p><a href="http://example.test/about/?source=home#team">About</a></p><!-- /wp:paragraph --></div></div><!-- /wp:cover -->'
+				elif [ "${3:-}" = "102" ]; then
+					printf '%s\n' '<!-- wp:site-title /-->'
 				else
 					printf '%s\n' '<!-- wp:image {"id":88,"url":"http://example.test/wp-content/uploads/2026/welcome.jpg"} --><figure class="wp-block-image"><img src="http://example.test/wp-content/uploads/2026/welcome.jpg" class="wp-image-88"/></figure><!-- /wp:image --><!-- wp:image {"url":"http://localhost:8886/wp-content/themes/test-theme/assets/images/pattern-placeholder.webp"} --><figure class="wp-block-image"><img src="http://localhost:8886/wp-content/themes/test-theme/assets/images/pattern-placeholder.webp"/></figure><!-- /wp:image --><!-- wp:paragraph --><p><a href="http://example.test/welcome/">Hello</a></p><!-- /wp:paragraph -->'
 				fi
@@ -101,6 +106,11 @@ case "${1:-} ${2:-}" in
 	"post meta") printf '%s\n' 'unsynced' ;;
 	"post delete") printf '%s\n' "${3:-}" >> "$FAKE_LOG" ;;
 	"block template")
+		if [ "${FAKE_NO_BLOCK_COMMAND:-0}" -eq 1 ]; then
+			# RIG: simulate WP-CLI 2.x without the wp-cli/block-command package.
+			printf 'Error: ''%s'' is not a registered wp command. See `wp help` for available commands.\n' "$1" >&2
+			exit 1
+		fi
 		case "${4:-}" in
 			test-theme//home) printf '%s\n' '<!-- wp:cover {"url":"http://example.test/wp-content/uploads/2026/hero.jpg","id":77} --><div class="wp-block-cover"><img class="wp-block-cover__image-background wp-image-77" alt="" src="http://example.test/wp-content/uploads/2026/hero.jpg" srcset="http://example.test/wp-content/uploads/2026/hero.jpg 1x, http://example.test/wp-content/uploads/2026/hero-2x.jpg 2x" data-object-id="77"/><div class="wp-block-cover__inner-container"><!-- wp:paragraph --><p><a href="http://example.test/about/?source=home#team">About</a></p><!-- /wp:paragraph --></div></div><!-- /wp:cover -->' ;;
 			test-theme//header) printf '%s\n' '<!-- wp:site-title /-->' ;;

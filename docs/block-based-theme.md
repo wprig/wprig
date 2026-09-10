@@ -157,8 +157,12 @@ still fails.
 
 ### Requirements & safety
 
-- Node 18+, WP-CLI 3.0+ (`wp block template export`), a writable active
-  block theme. Windows: plain Node — no bash/jq/WSL needed.
+- Node 18+, WP-CLI 2.12+, a writable active block theme. Windows: plain
+  Node — no bash/jq/WSL needed.
+- Template exports prefer `wp block template export` (WP-CLI 3.0 /
+  `wp-cli/block-command`); on WP-CLI 2.x the tool automatically falls back
+  to reading the underlying template post's content directly (same data the
+  3.0 command prints).
 - Auto-detects the WordPress root (walks up for `wp-settings.php`); override
   with `--path=`. Passthrough flags: `--url`, `--user`, `--state-dir`,
   `--dry-run`, `--clean`, `--force`.

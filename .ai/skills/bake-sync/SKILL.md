@@ -112,8 +112,10 @@ Passthrough flags: `--path=`, `--url=`, `--user=`, `--state-dir=`,
 - Classic-theme work (`themeType: classic`) never uses this workflow — the
   classic lifecycle has no Site Editor artifacts.
 - The tool is a **Node port** (`bin/wp-theme-control/index.js` + `lib/`, no
-  bash/jq). Requirements: Node 18+, WP-CLI 3.0+, writable active block theme.
-  Windows works natively.
+  bash/jq). Requirements: Node 18+, WP-CLI 2.12+, writable active block
+  theme. Windows works natively. Template export prefers the WP-CLI 3.0
+  `wp block template export` and auto-falls back to the template post
+  content on 2.x.
 
 ## Reference
 

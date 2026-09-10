@@ -87,6 +87,37 @@ export function parseCommonArgs( argv = [] ) {
 }
 
 /**
+ * Runs a WP-CLI command and returns the raw result instead of dying on
+ * failure (graceful-degradation paths, e.g. the template export fallback).
+ *
+ * @param {Object}   ctx  Loaded context.
+ * @param {string[]} args WP-CLI subcommand + arguments.
+ * @return {{ok: boolean, status: number|null, stdout: string, stderr: string}} Result.
+ */
+export function wpTry( ctx, args ) {
+	const result = spawnSync( 'wp', [ ...ctx.globalArgs, ...args ], {
+		encoding: 'utf8',
+		env: process.env,
+	} );
+
+	if ( result.error ) {
+		return {
+			ok: false,
+			status: null,
+			stdout: '',
+			stderr: result.error.message,
+		};
+	}
+
+	return {
+		ok: result.status === 0,
+		status: result.status,
+		stdout: result.stdout ?? '',
+		stderr: result.stderr ?? '',
+	};
+}
+
+/**
  * Runs a WP-CLI command. Global args (--path/--url/--user) come first,
  * mirroring the upstream wp_cmd helper.
  *

@@ -291,6 +291,65 @@ describe( 'wp-theme-control Node port — full bake round-trip', () => {
 	} );
 } );
 
+describe( 'wp-theme-control Node port — WP-CLI 2.x template export fallback', () => {
+	test( 'templates scope works without the WP-CLI 3.0 block command (post content fallback)', () => {
+		const fixture = makeFixture();
+
+		const result = runScope(
+			fixture,
+			'templates',
+			[
+				`--path=${ fixture.testDir }/wordpress`,
+				`--state-dir=${ fixture.stateDir }`,
+			],
+			{ FAKE_NO_BLOCK_COMMAND: '1' }
+		);
+
+		expect( result.status ).toBe( 0 );
+		expect( result.stdout ).toContain(
+			'falling back to reading the template post content directly'
+		);
+
+		const home = fs.readFileSync(
+			path.join( fixture.themeDir, 'templates', 'home.html' ),
+			'utf8'
+		);
+		expect( home ).toContain(
+			'<!-- wp:pattern {"slug":"test-theme/hidden-template-home"} /-->'
+		);
+		const hiddenPattern = fs.readFileSync(
+			path.join(
+				fixture.themeDir,
+				'patterns',
+				'hidden-template-home.php'
+			),
+			'utf8'
+		);
+		expect( hiddenPattern ).toContain( 'wp_get_upload_dir()["baseurl"]' );
+		expect( hiddenPattern ).toContain( 'data-object-id="77"' );
+
+		const header = fs.readFileSync(
+			path.join( fixture.themeDir, 'parts', 'header.html' ),
+			'utf8'
+		);
+		expect( header ).toContain( '<!-- wp:site-title /-->' );
+	} );
+
+	test( 'plan works without the block command too', () => {
+		const fixture = makeFixture();
+
+		const plan = runScope(
+			fixture,
+			'plan',
+			[ `--path=${ fixture.testDir }/wordpress` ],
+			{ FAKE_NO_BLOCK_COMMAND: '1' }
+		);
+
+		expect( plan.status ).toBe( 0 );
+		expect( plan.stdout ).toContain( 'custom templates and parts: 2' );
+	} );
+} );
+
 describe( 'wp-theme-control Node port — safety refusals', () => {
 	test( 'refuses pattern content containing executable PHP syntax', () => {
 		const fixture = makeFixture();

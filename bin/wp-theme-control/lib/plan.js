@@ -25,6 +25,7 @@ import {
 	runtimePatternSlug,
 	unsyncedPatternIds,
 } from './patterns.js';
+import { exportTemplate } from './templates.js';
 
 /**
  * Runs the plan scope.
@@ -64,17 +65,11 @@ export function runPlan( ctx ) {
 			);
 			fs.writeFileSync(
 				sourcePath,
-				wp(
+				exportTemplate(
 					ctx,
-					[
-						'block',
-						'template',
-						'export',
-						template.id,
-						`--type=${ template.type }`,
-						'--stdout',
-					],
-					{ capture: true }
+					template.id,
+					template.type,
+					template.wp_id
 				)
 			);
 			rewriteRuntimeUrls( ctx, sourcePath, outputPath, reportPath );
