@@ -102,3 +102,44 @@ Each block lives under `assets/blocks/<slug>/`:
 
 #### Auto-registration in PHP
 The theme component at `inc/Blocks/Component.php` scans `assets/blocks/*/block.json` on `init`. No manual PHP changes are required after scaffolding a new block.
+
+## Theme Fonts vs Baked Fonts (two layers, pick one home per family)
+
+WP Rig has two font pipelines. They complement each other but write to
+different layers — a family should live in **one** of them, not both:
+
+| Layer | Owner | Source of truth | Output |
+| :--- | :--- | :--- | :--- |
+| **Theme fonts** (`inc/Fonts`, all paradigms) | the `wp_rig_google_fonts` filter + `wp rig fonts-download` | Google Fonts list | `assets/fonts/<family>/` + `assets/css/src/google-fonts.css` @font-face, enqueued on the frontend and in the editor |
+| **Baked fonts** (`rig:bake fonts`, block-based themes) | Site Editor / Font Library | database (user activation + custom families) | `assets/fonts/<slug>/` + `config/user-styles.json` `fonts` block, merged into `theme.json` `fontFamilies` by `rig:tokens` |
+
+The Fonts component also registers Font Library **collections**
+(`modern-stacks`, `local-fonts`) so users can browse fonts in the editor —
+the bake then persists whichever families the user activates. That division
+is complementary, not overlapping.
+
+Rules of thumb:
+
+- **One home per family.** If a family is in the Google Fonts list
+  (`wp_rig_google_fonts`), serve it through the component's CSS; don't also
+  bake the same family from the Font Library. Same in reverse.
+- **After baking fonts, tokens families leave the editor presets.** The
+  user-styles overlay replaces the token-derived `fontFamilies` list in
+  `theme.json` wholesale (user layer wins — SPEC-016). Frontend styling is
+  unaffected (tokens CSS vars in `_custom-properties.css` keep working);
+  the editor dropdown simply reflects the baked list. Re-bake after token
+  font changes, or run `rig:bake:clean` to re-home to tokens.
+- **Preload discipline.** The component's preload list
+  (`get_font_files_to_preload()`) is strictly scoped to fonts the component
+  itself downloaded (marked by `google-fonts.css`). Baked Font Library files
+  in the same directory are never preloaded — WP serves them through
+  theme.json instead.
+
+Consequences and known boundaries:
+
+- The Font Library files baked into `assets/fonts/<slug>/` are the Font
+  Library's own copies; `google-fonts.css` is not regenerated for them, and
+  that is intentional — WP renders them from `theme.json` `@font-face`
+  definitions.
+- Removing a baked font family from the Font Library in the editor and
+  re-baking updates the overlay; deleting the files manually leaves orphans.

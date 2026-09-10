@@ -121,3 +121,12 @@ Passthrough flags: `--path=`, `--url=`, `--user=`, `--state-dir=`,
 - Overlay design: `.ai/plans/SPEC-016-user-styles-overlay.md`
 - Node port entry point: `bin/wp-theme-control/index.js` (scopes: plan, fonts,
   templates, styles, patterns, clean, all).
+
+## Fonts boundary (theme fonts vs baked fonts)
+
+`inc/Fonts` (Google Fonts via CSS + preload) and `rig:bake fonts` (Font
+Library via theme.json) are two different layers — **one home per family**:
+don't bake a family that `wp_rig_google_fonts` already serves, and vice
+versa. Baking fonts replaces the token `fontFamilies` list in theme.json
+(editor presets follow the baked list; tokens CSS vars unaffected). Details:
+`docs/advanced-features.md` → "Theme Fonts vs Baked Fonts".
