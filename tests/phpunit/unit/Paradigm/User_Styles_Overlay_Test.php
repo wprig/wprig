@@ -15,8 +15,8 @@ use FilesystemIterator;
 /**
  * Verifies that the PHP runtime is overlay-blind (SPEC-016 §5.10).
  *
- * config/user-styles.json is a BUILD-TIME-ONLY input: it is read by the
- * Node tokens generator (scripts/tasks/tokens.js) when regenerating
+ * The config/user-styles.json file is a BUILD-TIME-ONLY input: it is read
+ * by the Node tokens generator (scripts/tasks/tokens.js) when regenerating
  * theme.json. No shipped PHP may ever read it — the production bundle runs
  * with the merged theme.json and no config directory.
  *
