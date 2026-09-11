@@ -60,6 +60,10 @@ describe( 'bakeSync — paradigm gate', () => {
 
 	test( 'proceeds to spawn when the gate passes', async () => {
 		const root = tempDir();
+		// Hermetic WP root: bakeSync resolves wpRoot via --path= passthrough so
+		// the test never depends on a WordPress install above process.cwd().
+		const wpRoot = tempDir();
+		fs.writeFileSync( path.join( wpRoot, 'wp-settings.php' ), '<?php' );
 		fs.mkdirSync( path.join( root, 'bin', 'wp-theme-control' ), {
 			recursive: true,
 		} );
@@ -81,6 +85,7 @@ describe( 'bakeSync — paradigm gate', () => {
 		const code = await bakeSync( 'all', {
 			spawnFn,
 			root,
+			passthrough: [ `--path=${ wpRoot }` ],
 		} );
 
 		expect( code ).toBe( 0 );
