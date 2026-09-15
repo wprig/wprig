@@ -57,6 +57,8 @@
 	--color-link-active: #00a0d2;
 	--color-quote-border: #000;
 	--color-quote-citation: #6c7781;
+	--code-background-color: #eee;
+	--code-text-color: #333;
 
 	/* Custom editor colors */
 	--color-theme-red: #c0392b;
@@ -80,6 +82,10 @@
 		--color-link: #4e9efd; /* Link color */
 		--color-link-active: #bbdfff; /* Link hover/focus color */
 		--color-link-visited: #bbdfff; /* Link hover/focus color */
+
+		/* Code blocks: keep readable on dark surfaces */
+		--code-background-color: #2b2b2b;
+		--code-text-color: #e6e6e6;
 
 		/* reverse dark/light colors */
 		--border-color-dark: #ccc;
