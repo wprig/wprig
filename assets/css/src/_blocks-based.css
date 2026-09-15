@@ -72,6 +72,50 @@ header.wp-block-template-part .wp-block-navigation {
 }
 
 /*--------------------------------------------------------------
+# Page List inside Navigation — default-state baseline
+--------------------------------------------------------------*/
+
+/* The starter navigation ships inline `home-link` + `page-list` inner blocks
+ * (no `ref`), so a fresh rig never triggers core's lazy fallback-post path.
+ * Normalize the page-list to match the navigation-link look: inherit the
+ * nav block's font, gap, and color instead of rendering unstyled list chrome. */
+.wp-block-navigation .wp-block-page-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: inherit;
+	align-items: center;
+}
+
+.wp-block-navigation .wp-block-page-list li {
+	list-style: none;
+	display: flex;
+	align-items: center;
+}
+
+/* Nested pages render a nested <ul> — indent and keep the nav rhythm. */
+.wp-block-navigation .wp-block-page-list ul {
+	padding-inline-start: 1rem;
+	margin: 0;
+	list-style: none;
+}
+
+.wp-block-navigation .wp-block-page-list a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.wp-block-navigation .wp-block-page-list a:hover,
+.wp-block-navigation .wp-block-page-list a:focus-visible,
+.wp-block-navigation .wp-block-page-list .current-menu-item > a,
+.wp-block-navigation .wp-block-page-list .current_page_item > a {
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+
+/*--------------------------------------------------------------
 # Query Loop — defaults
 --------------------------------------------------------------*/
 
