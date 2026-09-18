@@ -97,7 +97,7 @@ the staged pattern file, so manifest hashes match the committed content.
 
 **The overlay contract (SPEC-016):** `config/user-styles.json` holds the
 RAW user Global Styles data (SSOT keys stripped at capture) plus the
-collapsed fonts block. `buildThemeJson( tokens, existing, overlay )`
+collapsed fonts block. `buildThemeJson( tokens, existing, overlay, { extraPalette, themeCustom } )`
 merges it last: objects deep-merge, arrays replace wholesale, fonts
 collapse (custom definitions win duplicate slugs), SSOT keys
 (`version`, `$schema`, `settings.viewport`, `settings.blockVisibility`) and

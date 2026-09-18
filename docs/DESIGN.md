@@ -94,14 +94,13 @@ background: oklch(from var(--color-accent) calc(l - 0.06) c h);
 color: oklch(from var(--color-accent) l c calc(h + 180));
 ```
 
-- `alpha(from var(--x) / 50%)` is **opt-in** (`platform.alphaFunction:
-  "progressive"`) — it is at-risk in the spec and ~58% supported; the baseline
-  is relative color syntax (~87%).
-- Use the `derive` block in `tokens.json` only when a non-CSS consumer
-  (theme.json / Tailwind / fallback) needs a computed value; otherwise write
-  the math inline.
-- `theme.designTokens.derive.strategy`: `runtime` | `build` | `both`
-  (default `both`).
+- `alpha(from var(--x) / 50%)` is **planned, not yet wired** (`platform.alphaFunction:
+  "progressive"` in SPEC-017 §4.5.8) — it is at-risk in the spec and ~58%
+  supported; the baseline to use today is relative color syntax (~87%).
+- The `derive` block and `theme.designTokens.derive.strategy` are **planned
+  (SPEC-017 §4.5.4, §12.1), not yet implemented**. Today, write the CSS math
+  inline as above; `theme.json` / Tailwind consumers get concrete values from
+  the primitives/semantic tokens themselves.
 
 ## Dark mode
 
@@ -113,7 +112,8 @@ color: oklch(from var(--color-accent) l c calc(h + 180));
   Global Styles own dark.
 - `meta.darkMode: "none"` disables the generated dark block (used by the v1→v2
   upgrade so existing hand-authored dark CSS keeps working).
-- `light-dark()` and a `[data-theme]` toggle are future opt-ins.
+- `light-dark()` and a `[data-theme]` toggle are **planned opt-ins** (SPEC-017
+  §10.5, §17), not implemented.
 
 ## Configuration
 
@@ -174,6 +174,37 @@ owned by tokens.
   content.
 - **Deprecate:** legacy aliases are emitted while `legacyAliases: true`; the
   codemod removes the layer when usages are rewritten.
+
+## Upgrading an existing theme (v1 → v2)
+
+Existing themes using the old flat `tokens.json` (top-level `colors`,
+`typography`, `spacing`, `breakpoints`) migrate in one reviewed run:
+
+```
+npm run rig:tokens:setup            # dry-run: reports schema + the rename plan
+npm run rig:tokens:setup -- --apply # writes tokens.json v2 + rewrites usages
+npm run rig:tokens                  # regenerate
+npm run lint:css                    # no-undefined-custom-properties = safety net
+```
+
+What it does:
+
+1. **Schema:** `upgradeV1ToV2` maps the flat keys into `primitives` +
+   `semantic`, and sets `meta.darkMode: "none"` so your existing hand-authored
+   dark CSS keeps working (add `semantic.*.dark` pairs later to switch dark
+   generation on).
+2. **Names:** the collapse-aware codemod rewrites legacy custom-property names
+   (`--content-width` → `--layout-content`, `--global-font-color` →
+   `--color-text`, `--mobile-breakpoint` → `--breakpoint-tablet`, …) across
+   `assets/css/src/**`, `**/*.php`, and `assets/js/src/**`. It does **not**
+   touch generated files or Gutenberg color **slugs**.
+3. **Backups:** every touched file is copied to
+   `.rig-backup/<timestamp>/tokens-setup/` before writing. Nothing is deleted.
+4. **Idempotent:** re-running on a v2 tree is a no-op.
+
+`legacyAliases` defaults to `false`. If you need a staged rollout, set
+`theme.designTokens.legacyAliases: true` to keep emitting `--old: var(--new)`
+aliases while you migrate usages yourself, then flip it off.
 
 ## Lint & gates
 
