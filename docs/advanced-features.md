@@ -126,9 +126,9 @@ Rules of thumb:
 - **After baking fonts, tokens families leave the editor presets.** The
   user-styles overlay replaces the token-derived `fontFamilies` list in
   `theme.json` wholesale (user layer wins — SPEC-016). Frontend styling is
-  unaffected (tokens CSS vars in `_custom-properties.css` keep working);
-  the editor dropdown simply reflects the baked list. Re-bake after token
-  font changes, or run `rig:bake:clean` to re-home to tokens.
+  unaffected (tokens CSS vars in `_tokens.generated.css` / `_tokens.custom.css`
+  keep working); the editor dropdown simply reflects the baked list. Re-bake
+  after token font changes, or run `rig:bake:clean` to re-home to tokens.
 - **Preload discipline.** The component's preload list
   (`get_font_files_to_preload()`) is strictly scoped to fonts the component
   itself downloaded (marked by `google-fonts.css`). Baked Font Library files

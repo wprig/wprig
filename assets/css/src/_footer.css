@@ -4,7 +4,7 @@
 .site-footer {
 	margin: 1em 0 0;
 	padding: 2em 0;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 }
 

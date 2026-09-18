@@ -8,6 +8,11 @@
 !/assets/css/src/
 !/assets/css/vendor/
 !/assets/css/dev-toolbar.css
+# Generated, config-dependent artifacts (regenerate with `npm run rig:tokens`):
+/assets/css/src/_tokens.generated.css
+/config/tailwind.tokens.js
+/artifacts/token-inventory.json
+/design/tokens.dtcg.json
 !/assets/js/
 /assets/js/*
 !/assets/js/src/

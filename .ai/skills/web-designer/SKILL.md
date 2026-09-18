@@ -38,8 +38,8 @@ Before styling, you must understand the theme's type and what needs to be styled
 
 Define the core design tokens:
 
-- **Global Settings:** For `universal` or `block-based` themes, define colors, typography, and spacing in `theme.json` under `settings`.
-- **CSS Variables:** For all theme types, define additional or complementary design tokens in `assets/css/src/_custom-properties.css`.
+- **Global Settings:** For `universal` or `block-based` themes, define colors, typography, and spacing in `config/tokens.json` (layered primitives → semantic → component); the generator propagates them to `theme.json`.
+- **CSS Variables:** Hand-authored tokens and overrides go in `assets/css/src/_tokens.custom.css` (generated tokens live in `_tokens.generated.css`). Full contract: `docs/DESIGN.md`.
 
 ### Step 3: Styling Strategy
 
@@ -71,6 +71,6 @@ When styling blocks and components:
 
 The Web Designer skill is the aesthetic and interactive heart of the theme, and it relies on:
 
-- **Architecture:** The design tokens and styles must be implemented within the theme's structural conventions (e.g., `_custom-properties.css`, `_blocks.css`). See [Architecture skill](../architecture/SKILL.md).
+- **Architecture:** The design tokens and styles must be implemented within the theme's structural conventions (e.g., `config/tokens.json`, `_tokens.custom.css`, `_blocks.css`). See [Architecture skill](../architecture/SKILL.md) and `docs/DESIGN.md`.
 - **Feature Planning:** Any major visual or interactive feature (like a new style guide or a complex block layout) must be planned and agreed upon using the "Contract-First" approach in the [Feature Planning skill](../feature-planning/SKILL.md). The `STYLE-GUIDE.md` informs plans, and plans update the `STYLE-GUIDE.md`.
 - **Component Registry:** The [Component Registry skill](../component-registry/SKILL.md) provides a library of pre-built, performance-optimized, and styled components that should be considered before starting a design from scratch.

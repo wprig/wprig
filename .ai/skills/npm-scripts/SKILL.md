@@ -64,7 +64,9 @@ This guide describes how to use the npm scripts defined in WP Rig's `package.jso
 *   `npm run rig:list` / `rig:search` / `rig:add` / `rig:update` / `rig:remove` / `rig:test-component` / `rig:check` / `rig:prepare` / `rig:compare`: Manage OCR components (registered in `inc/components-manifest.json`).
 *   `npm run rig:pattern`: Scaffold a new block pattern with i18n-aware headers + config-seeded categories.
 *   `npm run rig:localize`: Generate the `.pot` translation file.
-*   `npm run rig:tokens`: Regenerate `theme.json` + CSS variables + `@custom-media` from `config/tokens.json`.
+*   `npm run rig:tokens`: Regenerate `theme.json` + CSS variables + `@custom-media` + Tailwind from `config/tokens.json` (run automatically by `build:css` / `dev:css` / `lint:css`).
+*   `npm run rig:tokens:setup [-- --apply]`: One-time v1→v2 token migration + legacy-name codemod (dry-run default; backups in `.rig-backup/`).
+*   `npm run rig:tokens:import -- --from <dtcg.json> [--apply]` / `npm run rig:tokens:export [--out <file>]`: DTCG / Figma token round-trip. See `.ai/skills/design-tokens/SKILL.md`.
 *   `npm run images`: Optimize images and emit WebP + AVIF (`assets/images/`).
 *   `npm run create-rig-component "Name" [--templating] [--tests]`: Scaffold a new theme component in `inc/`.
 *   `npm run mcp`: Starts the Model Context Protocol server for documentation access.

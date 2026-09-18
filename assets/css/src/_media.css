@@ -44,11 +44,11 @@ object {
 @media (--content-query) {
 
 	.wp-caption.alignright {
-		margin-right: calc((100% - var(--content-width)) / 2);
+		margin-right: calc((100% - var(--layout-content)) / 2);
 	}
 
 	.wp-caption.alignleft {
-		margin-left: calc((100% - var(--content-width)) / 2);
+		margin-left: calc((100% - var(--layout-content)) / 2);
 	}
 
 }
@@ -100,7 +100,7 @@ object {
 
 .gallery-item {
 	padding: 0.5em;
-	border: 1px solid var(--border-color-light);
+	border: 1px solid var(--color-border);
 }
 
 .gallery-icon {

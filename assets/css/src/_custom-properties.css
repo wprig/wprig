@@ -2,93 +2,14 @@
  * Custom Properties
  * aka CSS variables.
  *
+ * Thin wrapper. Tokens are split so the generator can own its output without
+ * touching hand-authored edits:
+ *
+ * - `_tokens.generated.css` — generated from config/tokens.json (do not edit)
+ * - `_tokens.custom.css`    — hand-authored tokens and overrides (edit freely)
+ *
  * @link: https://developer.mozilla.org/en-US/docs/Web/CSS/--*
  **/
 
-:root {
-	/* Generated from tokens.json */
-	--spacing-content-width: 45rem;
-	--spacing-wide-width: 64rem;
-	--spacing-base: 1rem;
-	--content-width: 45rem;
-	--global-font-family: "Open Sans", "Helvetica Neue", "Arial", sans-serif;
-	--highlight-font-family: "Roboto Condensed", "Helvetica Neue", "Arial Narrow", sans-serif;
-	--global-font-line-height: 1.4;
-	--font-size-small: clamp(0.6rem, 0.533rem + 0.333vw, 0.8rem);
-	--font-size-base: clamp(0.75rem, 0.667rem + 0.417vw, 1rem);
-	--font-size-large: clamp(1.35rem, 1.2rem + 0.75vw, 1.8rem);
-	--font-size-xlarge: clamp(1.8rem, 1.6rem + 1vw, 2.4rem);
-	/* Breakpoint (viewport.tablet) — drives the JS mobile-nav toggle */
-	--mobile-breakpoint: 782px;
-	--color-primary: #e36d60;
-	--color-secondary: #41848f;
-	--color-red: #c0392b;
-	--color-green: #27ae60;
-	--color-blue: #2980b9;
-	--color-yellow: #f1c40f;
-	--color-black: #1c2833;
-	--color-grey: #95a5a6;
-	--color-white: #ecf0f1;
-	--color-text: #333;
-	--color-background: #fff;
-	--global-font-color: #333;
-	--background-color: #fff;
-	--color-theme-primary: #e36d60;
-	--color-theme-secondary: #41848f;
-	/* End of generated tokens */
---dropdown-symbol-width: 0.7em;
-
-	/* Typography */
-	--global-font-size: 20;
-
-	/* Custom editor font sizes */
-	--font-size-regular: calc(var(--global-font-size) / 16 * 1rem);
-	--font-size-larger: calc(48 / var(--global-font-size) * 1rem);
-
-	/* Colors */
-	--content-background-color: #fff; /* Content-specific background */
-	--sub-content-background-color: #f6f6f6; /* Content-specific background */
-	--header-background-color: #f6f6f6;
-	--footer-background-color: #fbfbfb;
-	--border-color-dark: #333;
-	--border-color-light: #ccc;
-	--color-link: #0073aa;
-	--color-link-visited: #333;
-	--color-link-active: #00a0d2;
-	--color-quote-border: #000;
-	--color-quote-citation: #6c7781;
-	--code-background-color: #eee;
-	--code-text-color: #333;
-
-	/* Custom editor colors */
-	--color-theme-red: #c0392b;
-	--color-theme-green: #27ae60;
-	--color-theme-blue: #2980b9;
-	--color-theme-yellow: #f1c40f;
-	--color-theme-black: #1c2833;
-	--color-theme-grey: #95a5a6;
-	--color-theme-white: #ecf0f1;
-	--color-custom-daylight: #97c0b7;
-	--color-custom-sun: #eee9d1;
-
-	@media (prefers-color-scheme: dark) {
-		/* Global color adjustments for dark mode */
-		--global-font-color: #fff; /* Default text color */
-		--background-color: #121212; /* Page background color */
-		--content-background-color: #181818; /* Content-specific background */
-		--sub-content-background-color: #333;
-		--header-background-color: #1a1a1a;
-		--footer-background-color: #1a1a1a;
-		--color-link: #4e9efd; /* Link color */
-		--color-link-active: #bbdfff; /* Link hover/focus color */
-		--color-link-visited: #bbdfff; /* Link hover/focus color */
-
-		/* Code blocks: keep readable on dark surfaces */
-		--code-background-color: #2b2b2b;
-		--code-text-color: #e6e6e6;
-
-		/* reverse dark/light colors */
-		--border-color-dark: #ccc;
-		--border-color-light: #333;
-	}
-}
+@import "_tokens.generated.css";
+@import "_tokens.custom.css";

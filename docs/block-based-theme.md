@@ -133,7 +133,8 @@ Baked Global Styles and fonts land in `config/user-styles.json` — **not**
 `theme.json`. `theme.json` stays a generated artifact written only by
 `rig:tokens`, which merges the overlay **last**:
 
-- `tokens.json` (canonical) < `config/user-styles.json` (user layer).
+- `tokens.json` (canonical) < `config/theme.custom.json` (hand-authored
+  fragments) < `config/user-styles.json` (baked user layer).
 - Arrays replace wholesale (the editor authors a complete palette, not a
   delta); objects merge recursively.
 - SSOT keys (`version`, `$schema`, `settings.viewport`,

@@ -20,7 +20,7 @@ Agent: Document the specific setup of this WP Rig theme as you discover it (clas
 
 ## 🎨 Discovered Design System & Tokens
 <!--
-Agent: Document custom colors, spacing systems, and typography rules configured for this theme. Refer to config/tokens.json or assets/css/src/_custom-properties.css.
+Agent: Document custom colors, spacing systems, and typography rules configured for this theme. Refer to config/tokens.json (v2: primitives → semantic → component), assets/css/src/_tokens.custom.css for hand-authored vars, or docs/DESIGN.md for the full contract.
 -->
 
 - **Color Palette:**
