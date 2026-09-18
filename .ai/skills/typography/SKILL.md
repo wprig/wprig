@@ -1,6 +1,6 @@
 ---
 description: Comprehensive guide to typography, font loading, and variable fonts in WP Rig.
-globs: inc/Fonts/Component.php, theme.json, assets/css/src/_custom-properties.css
+globs: inc/Fonts/Component.php, theme.json, config/tokens.json, assets/css/src/_tokens.custom.css
 ---
 
 # WP Rig Typography
@@ -20,13 +20,16 @@ For modern WP Rig themes, `theme.json` is the source of truth for typography pre
 *   **fontSizes**: Use the `fluid` property for automatic responsive sizing.
 
 ### CSS Variables (Classic & Hybrid Themes)
-Define typography tokens in `assets/css/src/_custom-properties.css`:
+Generated typography tokens come from `config/tokens.json`
+(`primitives.font.*` → `--font-family-*` / `--font-size-*` / `--line-height-*`);
+hand overrides go in `assets/css/src/_tokens.custom.css`:
 ```css
 :root {
-	--global-font-family: "Open Sans", sans-serif;
+	--font-family-base: "Open Sans", sans-serif;
 	--font-size-base: clamp(0.75rem, 0.667rem + 0.417vw, 1rem);
 }
 ```
+See `docs/DESIGN.md` for the full token contract.
 
 ## 3. The Fonts Component (`inc/Fonts/Component.php`)
 This component handles the technical registration and loading of fonts.
@@ -72,9 +75,9 @@ WP Rig automatically handles `preconnect` for Google Fonts and `preload` for loc
 
 ### Adding a New Font
 1.  Add the font to `get_google_fonts()` in `inc/Fonts/Component.php`.
-2.  Update the font variables in `_custom-properties.css`.
-3.  Update the `fontFamilies` in `theme.json`.
-4.  Run `npm run dev` to rebuild CSS.
+2.  Add the family in `config/tokens.json` (`primitives.font.family`) — or
+    `_tokens.custom.css` for a one-off — then run `npm run rig:tokens`.
+3.  Run `npm run dev` to rebuild CSS.
 
 ### Troubleshooting
 *   **Fonts not loading?** Check the generated URL in the HTML `<head>`. Ensure `add_query_arg()` isn't collapsing duplicate `family` parameters (WP Rig core fix may be required for multiple fonts).

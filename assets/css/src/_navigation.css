@@ -28,11 +28,11 @@ body.mobile-menu-open {
 	display: block;
 	margin: 0;
 	padding: 0.6em 1.2em 0.5em;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 	font-size: 80%;
 	text-transform: uppercase;
-	border: 2px solid var(--border-color-dark);
+	border: 2px solid var(--color-border-strong);
 	border-radius: 0;
 	background: transparent;
 
@@ -55,7 +55,7 @@ body.mobile-menu-open {
 	}
 
 	svg {
-		fill: var(--global-font-color);
+		fill: var(--color-text);
 	}
 }
 
@@ -118,7 +118,7 @@ body.mobile-menu-open {
 			& .primary-menu-container {
 				position: absolute;
 				z-index: -5;
-				background: var(--content-background-color);
+				background: var(--color-surface-content);
 				width: 100vw;
 				top: 300px;
 				left: 0;
@@ -172,7 +172,7 @@ body.mobile-menu-open {
 	display: inline-block;
 	width: 1em;          /* or a fixed px size */
 	height: 1em;
-	stroke: var(--border-color-dark);  /* inherit text color */
+	stroke: var(--color-border-strong);  /* inherit text color */
 	fill: none;
 	stroke-width: 2;
 	vector-effect: non-scaling-stroke; /* keeps stroke consistent when scaled */
@@ -225,7 +225,7 @@ body.mobile-menu-open {
 			position: absolute;
 			top: 100%;
 			flex-direction: column;
-			background: var(--sub-content-background-color);
+			background: var(--color-surface-subtle);
 			margin-left: 0;
 			box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
 			z-index: 100;
@@ -317,7 +317,7 @@ body.mobile-menu-open {
 		color: var(--color-link);
 	}
 	a:hover, a:focus, a:active {
-		border-color: var(--color-link-active);
+		border-color: var(--color-link-hover);
 	}
 
 	.nav-links {
@@ -354,7 +354,7 @@ body.mobile-menu-open {
 		border: none;
 	}
 	.current {
-		border-color: var(--border-color-dark);
+		border-color: var(--color-border-strong);
 	}
 }
 
@@ -365,7 +365,7 @@ body.mobile-menu-open {
 	display: block;
 	margin: 0 auto 2em;
 	padding: 0 1em;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 
 	a, button {
@@ -373,7 +373,7 @@ body.mobile-menu-open {
 		width: 100%;
 		padding: 0.5em 1em 0.5em 0;
 		text-decoration: none;
-		color: var(--global-font-color);
+		color: var(--color-text);
 	}
 
 	button {
@@ -602,7 +602,7 @@ body.mobile-menu-open {
 		justify-content: flex-start;
 		padding: 1em;
 		z-index: -1;
-		background: var(--content-background-color);
+		background: var(--color-surface-content);
 		opacity: 0;
 		overflow: hidden;
 		display: flex;
@@ -685,10 +685,10 @@ body.mobile-menu-open {
 		}
 	}
 	.wp-block-navigation:not(.has-text-color) .wp-block-navigation__responsive-container.is-menu-open {
-		color: var(--global-font-color);
+		color: var(--color-text);
 	}
 	.wp-block-navigation:not(.has-background) .wp-block-navigation__responsive-container.is-menu-open {
-		background: var(--content-background-color);
+		background: var(--color-surface-content);
 	}
 }
 
@@ -701,12 +701,12 @@ body.mobile-menu-open {
 .site-main .posts-navigation,
 .site-main .post-navigation,
 .site-main .pagination {
-	border-bottom: 1px solid var(--border-color-dark);
+	border-bottom: 1px solid var(--color-border-strong);
 	margin: 0 auto 2em;
-	max-width: var(--content-width);
+	max-width: var(--layout-content);
 	overflow: hidden;
 	padding: 0 1.5rem 2em;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 }
 
@@ -736,7 +736,7 @@ body.mobile-menu-open {
 }
 
 .post-navigation-sub span {
-	color: var(--global-font-color);
+	color: var(--color-text);
 	text-decoration: none;
 	display: inline-block;
 }

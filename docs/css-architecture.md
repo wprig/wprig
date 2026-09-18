@@ -9,7 +9,9 @@ separate; editor/admin CSS stays isolated.
 
 | Module | Role | Droppable scenario | Paradigm gate |
 | --- | --- | --- | --- |
-| `_custom-properties.css` | Design tokens (generated from `config/tokens.json`) | never (core) | all |
+| `_custom-properties.css` | Thin wrapper importing the two token files below (keep for BC) | never (core) | all |
+| `_tokens.generated.css` | Design tokens **generated** from `config/tokens.json` (do not edit) | never (core) | all |
+| `_tokens.custom.css` | **Hand-authored** tokens/overrides (the edit surface) | never (core) | all |
 | `_custom-media.css` | `@custom-media` aliases (generated from `settings.viewport`) | never (core) | all |
 | `_reset.css` | Baseline reset | never (core) | all |
 | `_typography.css` | Fonts / type scale | never (core) | all |

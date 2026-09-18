@@ -126,9 +126,10 @@ a lint error.
 }
 ```
 
-Design tokens live in `config/tokens.json` and are propagated to
-`_custom-properties.css` (classic) and `theme.json` (universal/block-based). Colors,
-spacing, and fonts come from there — not from inline literals.
+Design tokens live in `config/tokens.json` (v2: primitives → semantic → component)
+and are generated into `_tokens.generated.css` (gitignored) + `theme.json` + Tailwind.
+Hand-authored overrides go in `_tokens.custom.css`. Colors, spacing, and fonts come
+from there — not from inline literals. Full contract: `docs/DESIGN.md`.
 
 ### 5. Custom media (generated from `settings.viewport`)
 
@@ -261,8 +262,9 @@ Avoid full-page screenshots — they bloat prompts and slow iteration.
   `editor/`, `admin/`).
 - **Conditional styles**: use `inc/Styles/Component.php` + the `wp_rig_css_files`
   filter; `enqueue_block_style()` for block-scoped styles.
-- **Design tokens**: from `config/tokens.json` → `_custom-properties.css` /
-  `theme.json`. No inline color/spacing literals.
+- **Design tokens**: from `config/tokens.json` → `_tokens.generated.css` /
+  `theme.json` / Tailwind; hand overrides in `_tokens.custom.css`. No inline
+  color/spacing literals (`docs/DESIGN.md`).
 - **Media queries**: the named custom-media aliases only (see §5). No raw `px`/`em`.
 - **Nesting**: use sparingly, ≤ 3 levels.
 - **Specificity**: stay ≤ `(0,4,1)`; no IDs; `:where()` for context.

@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wprig.io/schemas/tokens.schema.json",
+  "title": "WP Rig design tokens (v2)",
+  "description": "Layered design-token schema: primitives -> semantic -> component. Generated into CSS custom properties, theme.json, and Tailwind by `npm run rig:tokens`. Enforcement lives in scripts/tasks/tokens.js (validateTokens); keep this file in sync as the editor-facing contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "primitives", "semantic"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version"],
+      "properties": {
+        "version": { "const": 2 },
+        "colorSpace": { "enum": ["hex", "oklch"] },
+        "darkMode": { "enum": ["media", "none", "class"] },
+        "generator": { "type": "string" },
+        "fluid": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "minViewport": { "type": "string" },
+            "maxViewport": { "type": "string" },
+            "minScale": { "type": "number" }
+          }
+        }
+      }
+    },
+    "primitives": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "color": {
+          "type": "object",
+          "description": "hue -> step -> CSS color literal. Leaf values must be literals, never {references}.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "layout": { "type": "object", "additionalProperties": { "type": "string" } },
+        "space": { "type": "object", "additionalProperties": { "type": "string" } },
+        "font": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "family": { "type": "object", "additionalProperties": { "type": "string" } },
+            "size": { "type": "object", "additionalProperties": { "type": "string" } },
+            "leading": { "type": "object", "additionalProperties": { "type": "string" } }
+          }
+        },
+        "breakpoint": { "type": "object", "additionalProperties": { "type": "string" } },
+        "hue": { "type": "object", "additionalProperties": { "type": "number" } },
+        "alpha": { "type": "object", "additionalProperties": { "type": "string" } },
+        "radius": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+    "semantic": {
+      "type": "object",
+      "description": "role -> { light, dark }. Values are literals or {primitives.*} references. Nested groups (e.g. state) are allowed.",
+      "$ref": "#/$defs/semanticGroup"
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "derive": {
+      "type": "object",
+      "description": "Optional computed tokens. Ops: shade | tint | mix | alpha | rotate-hue | contrast-on.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["op", "from"],
+        "properties": {
+          "op": { "enum": ["shade", "tint", "mix", "alpha", "rotate-hue", "contrast-on"] },
+          "from": { "type": "string" },
+          "with": { "type": "string" },
+          "amount": { "type": ["number", "string"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "colorPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["light", "dark"],
+      "properties": {
+        "light": { "type": "string" },
+        "dark": { "type": "string" }
+      }
+    },
+    "semanticGroup": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/$defs/colorPair" },
+          { "$ref": "#/$defs/semanticGroup" }
+        ]
+      }
+    }
+  }
+}

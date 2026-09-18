@@ -16,8 +16,8 @@ This guide describes the core structure and conventions used in WP Rig.
 | Component registry manifest | `inc/components-manifest.json` (written by `rig` tooling) |
 | Navigation menu | `inc/Nav_Menus/Component.php`, `assets/css/src/_navigation.css`, `assets/js/src/navigation.ts` |
 | Typography | `assets/css/src/_typography.css` |
-| CSS variables | `assets/css/src/_custom-properties.css` (tokens-generated) |
-| Theme tokens → theme.json / CSS | `config/tokens.json`, `scripts/tasks/tokens.js` |
+| CSS variables | `assets/css/src/_tokens.generated.css` (generated, gitignored) + `_tokens.custom.css` (hand-authored); `_custom-properties.css` is the wrapper |
+| Theme tokens → theme.json / CSS / Tailwind | `config/tokens.json` (v2 layered), `config/theme.custom.json`, `config/tailwind.custom.js`, `scripts/tasks/tokens.js` |
 | Accessibility | `inc/Accessibility/Component.php`, `assets/css/src/_accessibility.css` |
 | Sidebar/widgets | `inc/Sidebars/Component.php`, `assets/css/src/sidebar.css`, `assets/css/src/widgets.css` |
 | Comments | `inc/Comments/Component.php`, `assets/css/src/comments.css` |
@@ -108,7 +108,9 @@ Source files are in `assets/js/src/` and processed by `build-js.js`.
 | File | Purpose |
 |------|---------|
 | `config/paradigms.json` | Paradigm matrix — the single source of truth for `themeType` + feature tags |
-| `config/tokens.json` | Design tokens — the single source of truth for colors/fonts/spacing/breakpoints (propagated to `theme.json` + CSS) |
+| `config/tokens.json` | Design tokens (v2: primitives → semantic → component) — single source of truth for colors/fonts/spacing/breakpoints (propagated to `theme.json` + CSS + Tailwind). See `docs/DESIGN.md` |
+| `config/theme.custom.json` | Hand-authored `theme.json` fragments (merged over tokens, under the user layer) |
+| `config/tailwind.custom.js` | Hand-authored Tailwind extensions |
 | `config/config.default.json` | Default theme settings (do not edit) |
 | `config/config.json` | Custom theme settings (version controlled) |
 | `config/config.local.json` | Local-only settings (gitignored) |

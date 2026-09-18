@@ -10,10 +10,10 @@ input,
 select,
 optgroup,
 textarea {
-	color: var(--global-font-color);
-	font-family: var(--global-font-family);
+	color: var(--color-text);
+	font-family: var(--font-family-base);
 	font-size: var(--font-size-regular);
-	line-height: var(--global-font-line-height);
+	line-height: var(--line-height-base);
 }
 /* stylelint-enable */
 
@@ -23,7 +23,7 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 	clear: both;
 }
@@ -79,8 +79,8 @@ address {
 
 /* stylelint-disable */
 pre {
-	background: var(--code-background-color);
-	color: var(--code-text-color);
+	background: var(--color-code-surface);
+	color: var(--color-code-text);
 	font-family: "Courier 10 Pitch", Courier, monospace;
 	font-size: 0.9375rem;
 	line-height: 1.6;

@@ -40,7 +40,7 @@ option {
 }
 
 .editor-post-title__input {
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 	font-size: 2.5rem;
 	line-height: 1.4;
@@ -55,12 +55,12 @@ option {
 
 /* Main column width */
 .wp-block {
-	max-width: calc(var(--content-width) + 30px);
+	max-width: calc(var(--layout-content) + 30px);
 }
 
 /* Width of "wide" blocks */
 .wp-block[data-align="wide"] {
-	max-width: calc(50% + var(--content-width) / 2 + 76px);
+	max-width: calc(50% + var(--layout-content) / 2 + 76px);
 }
 
 /* Width of "full-wide" blocks */

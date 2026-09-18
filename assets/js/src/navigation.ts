@@ -272,7 +272,7 @@ function getMobileBreakpoint(): number {
 	}
 	const rootStyles = getComputedStyle( document.documentElement );
 	const breakpointStr = rootStyles
-		.getPropertyValue( '--mobile-breakpoint' )
+		.getPropertyValue( '--breakpoint-tablet' )
 		.trim();
 	if ( breakpointStr ) {
 		const value = parseFloat( breakpointStr );

@@ -173,7 +173,7 @@ Modern CSS has evolved, and WP Rig embraces it directly. Moving away from pre-pr
         }
     }
     ```
-*   **Custom Properties (Variables):** Declare variables globally in `assets/css/src/_custom-properties.css` under the `:root` selector and reference them dynamically throughout your stylesheets.
+*   **Custom Properties (Variables):** Define tokens once in `config/tokens.json` (layered primitives → semantic → component) and they generate into `assets/css/src/_tokens.generated.css`; hand-authored variables and overrides go in `_tokens.custom.css`. Dark mode and the editor palette stay in sync — see `docs/DESIGN.md`.
 *   **Bleeding-Edge Custom Media Support:** Store breakpoint media queries as variables using the upcoming `@custom-media` specifications declared in `_custom-media.css`. Lightning CSS parses these declarations and compiles them into fully backwards-compatible media queries automatically.
 *   **Automated CSS Image Path Resolution:** Referencing local theme images in static CSS files is a classic absolute pathing headache for developers. WP Rig's Lightning CSS pipeline includes a specialized automation script that dynamically resolves relative image paths (e.g., pointing to assets inside `assets/images/`) and compiles them into production-ready URLs. This removes manual path correction entirely.
 

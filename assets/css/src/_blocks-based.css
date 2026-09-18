@@ -25,7 +25,7 @@
 .wp-site-header,
 .wp-site-footer,
 .wp-block-template-part {
-	max-width: var(--content-width);
+	max-width: var(--layout-content);
 	margin-inline: auto;
 	padding-inline: 1.5rem;
 	width: 100%;
@@ -49,7 +49,7 @@
  * with the content column instead of bleeding to the viewport edge. */
 .wp-site-header .wp-block-navigation,
 header.wp-block-template-part .wp-block-navigation {
-	max-width: var(--content-width);
+	max-width: var(--layout-content);
 	margin-inline: auto;
 }
 
@@ -132,7 +132,7 @@ header.wp-block-template-part .wp-block-navigation {
 
 /* Vertical rhythm between loop items. */
 .wp-block-post {
-	margin-bottom: var(--spacing-base);
+	margin-bottom: var(--space-base);
 }
 
 .wp-block-post-title {

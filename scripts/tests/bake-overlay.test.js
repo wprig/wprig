@@ -12,6 +12,8 @@ import {
 	stripOverlaySsotKeys,
 	validateUserStylesOverlay,
 	collapseOverlayFonts,
+	loadTokens,
+	toLegacyFlat,
 } from '../tasks/tokens.js';
 import fs from 'fs';
 import path from 'path';
@@ -21,8 +23,16 @@ const __filename = fileURLToPath( import.meta.url );
 const __dirname = path.dirname( __filename );
 const themeRoot = path.resolve( __dirname, '../..' );
 
-const tokens = JSON.parse(
-	fs.readFileSync( path.join( themeRoot, 'config', 'tokens.json' ), 'utf8' )
+// buildThemeJson consumes the v1-flat view (SPEC-017 §6.2).
+const tokens = toLegacyFlat(
+	loadTokens(
+		JSON.parse(
+			fs.readFileSync(
+				path.join( themeRoot, 'config', 'tokens.json' ),
+				'utf8'
+			)
+		)
+	)
 );
 
 const overlay = {

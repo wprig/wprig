@@ -120,7 +120,7 @@ Sage is heavily opinionated toward Tailwind CSS. While Tailwind is fantastic for
 ### WP Rig: Standards-Driven CSS via Lightning CSS
 WP Rig champions writing **native, future-proof CSS** without heavy pre-processors or utility bloat. Operating entirely via **Lightning CSS**, WP Rig supports modern specifications today with zero-configuration browser fallbacks:
 *   **CSS Nesting Level 1:** Write clean, nested selectors natively without Sass.
-*   **CSS Variables:** Store design tokens globally in `_custom-properties.css` using `:root`.
+*   **CSS Variables:** Store design tokens in `config/tokens.json` (layered, light/dark aware) — generated into `_tokens.generated.css` and `theme.json`, with hand-authored overrides in `_tokens.custom.css` (`docs/DESIGN.md`).
 *   **Custom Media Breakpoints:** Declare breakpoint variables under the upcoming `@custom-media` spec in `_custom-media.css`, which Lightning CSS transpiles into standard media queries.
 *   **Dynamic Image Path Resolution:** WP Rig includes a custom build script that resolves and rewrites relative image paths (e.g., pointing to files in `assets/images/`) into production-ready URLs. You never have to manually hardcode absolute paths in your CSS.
 
