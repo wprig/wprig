@@ -78,7 +78,7 @@ Design tokens are the single source of truth for colors, typography, spacing, an
 
 - `assets/css/src/_tokens.generated.css` — CSS custom properties (gitignored, regenerated), imported by the committed `_custom-properties.css` wrapper alongside the hand-authored `_tokens.custom.css`.
 - `theme.json` — palette/typography/layout via `buildThemeJson()`, merging `config/theme.custom.json` (hand-authored) and `config/user-styles.json` (baked user layer) over the token output.
-- `tailwind.config.js` — via generated `config/tailwind.tokens.js` + hand-authored `config/tailwind.custom.js`.
+- `tailwind.config.js` — **only when opted in** (`theme.designTokens.emit.tailwind: true`), via generated `config/tailwind.tokens.js` + hand-authored `config/tailwind.custom.js`.
 
 Binding is config-driven (`theme.designTokens.colorBinding`): `independent` (own namespace) or `wp-preset` (semantic vars alias `--wp--preset--color--*`), with paradigm-aware defaults and a hard rule that classic never emits preset refs. `scripts/tasks/tokens.js` is the sole writer. See [`docs/DESIGN.md`](DESIGN.md) for the developer contract and [`.ai/skills/design-tokens/SKILL.md`](../.ai/skills/design-tokens/SKILL.md) for the agent quick reference.
 

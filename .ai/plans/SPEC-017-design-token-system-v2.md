@@ -1342,7 +1342,7 @@ Paradigm resolution is **never** hardcoded per file: it flows through
 | `theme.designTokens.emit.customProperties` | boolean | `true` | Write `_tokens.generated.css` |
 | `theme.designTokens.emit.themeJson` | boolean | `true` | Write `theme.json` |
 | `theme.designTokens.emit.customMedia` | boolean | `true` | Write `_custom-media.css` |
-| `theme.designTokens.emit.tailwind` | boolean | `true` | Write `config/tailwind.tokens.js` |
+| `theme.designTokens.emit.tailwind` | boolean | `false` | **Opt-in.** Write `config/tailwind.tokens.js` + the `tailwind.config.js` shell. WP Rig ships without Tailwind; nothing is written while `false`. |
 | `theme.designTokens.legacyAliases` | boolean | `false` | Emit deprecated aliases (staged migration only) |
 | `theme.designTokens.contrast.level` | `"AA"\|"AAA"\|"off"` | `"AA"` | Contrast gate threshold |
 | `theme.designTokens.contrast.onFail` | `"warn"\|"error"` | `"error"` | Gate severity |

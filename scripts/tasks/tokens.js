@@ -259,8 +259,12 @@ export async function propagateTokens() {
 	// 3. Regenerate @custom-media aliases in _custom-media.css
 	await updateCustomMedia( flat );
 
-	// 4. Update tailwind.config.js (if exists)
-	await updateTailwindConfig( flat );
+	// 4. Update Tailwind config — OPT-IN only (SPEC-017 §6.3). WP Rig ships
+	// without Tailwind; generation runs only when explicitly enabled via
+	// `theme.designTokens.emit.tailwind`.
+	if ( designTokens.emit?.tailwind === true ) {
+		await updateTailwindConfig( flat );
+	}
 
 	// 5. Contrast gate (SPEC-017 §7.5). Severity is configurable (Q7);
 	// warn-only until the palette is remediated / codemod lands.
@@ -360,8 +364,7 @@ export function buildThemeJson(
 	opts = {}
 ) {
 	const { extraPalette = [] } = opts;
-	const hasCustom =
-		opts.themeCustom && typeof opts.themeCustom === 'object';
+	const hasCustom = opts.themeCustom && typeof opts.themeCustom === 'object';
 	const themeJson = hasCustom
 		? freshThemeJson()
 		: existingThemeJson ?? freshThemeJson();
@@ -694,12 +697,30 @@ export default {
 `;
 }
 
+const TAILWIND_CUSTOM_STUB = `/**
+ * Hand-authored Tailwind extensions (opt-in).
+ *
+ * Created by \`npm run rig:tokens\` when \`theme.designTokens.emit.tailwind\` is
+ * enabled. Edit freely — the generator never overwrites this file.
+ */
+export default {
+	extend: {},
+};
+`;
+
 async function updateTailwindConfig( tokens ) {
 	// Generated token values.
 	await fs.writeFile(
 		path.join( themeRoot, 'config', 'tailwind.tokens.js' ),
 		buildTailwindTokens( tokens )
 	);
+
+	// Hand-authored extensions file — create a stub only if absent, so the
+	// generated shell is valid and user edits are never clobbered.
+	const customPath = path.join( themeRoot, 'config', 'tailwind.custom.js' );
+	if ( ! ( await fs.pathExists( customPath ) ) ) {
+		await fs.writeFile( customPath, TAILWIND_CUSTOM_STUB );
+	}
 
 	// Generated shell (tailwind.config.js is a gitignored build artifact).
 	await fs.writeFile(

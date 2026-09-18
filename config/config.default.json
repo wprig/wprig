@@ -15,6 +15,9 @@
       "source": "config/tokens.json",
       "colorBinding": "auto",
       "legacyAliases": false,
+      "emit": {
+        "tailwind": false
+      },
       "contrast": {
         "level": "AA",
         "onFail": "warn"

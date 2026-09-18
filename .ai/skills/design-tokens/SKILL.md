@@ -1,6 +1,6 @@
 ---
 description: Design tokens in WP Rig — the layered config/tokens.json source, generated CSS custom properties + theme.json + Tailwind, dark mode, paradigm-aware binding, and the migration/import/export commands. Use whenever editing colors, spacing, typography tokens, dark mode, or the editor palette.
-globs: config/tokens.json, config/tokens.schema.json, config/theme.custom.json, config/tailwind.custom.js, assets/css/src/_tokens.custom.css, assets/css/src/_custom-properties.css, theme.json
+globs: config/tokens.json, config/tokens.schema.json, config/theme.custom.json, assets/css/src/_tokens.custom.css, assets/css/src/_custom-properties.css, theme.json
 ---
 
 # WP Rig Design Tokens
@@ -12,7 +12,7 @@ This skill is the agent-facing quick reference.
 
 `config/tokens.json` is the **seed** (default color/type/space system + editor
 palette), not a style store. It generates CSS custom properties, `theme.json`,
-and Tailwind values. Component styles stay in CSS — there is **no CSS-as-JSON**.
+and (opt-in) Tailwind values. Component styles stay in CSS — there is **no CSS-as-JSON**.
 CSS custom properties are the interface; `_tokens.custom.css` is first-class for
 pure-CSS authors.
 
@@ -26,7 +26,7 @@ pure-CSS authors.
 | `assets/css/src/_tokens.custom.css` | Hand-authored vars/overrides | yes |
 | `assets/css/src/_custom-properties.css` | Wrapper importing both | no (transitional) |
 | `config/theme.custom.json` | Hand-authored `theme.json` fragments | yes |
-| `config/tailwind.custom.js` | Hand-authored Tailwind extensions | yes |
+| `config/tailwind.custom.js` | Hand-authored Tailwind extensions (opt-in only) | yes |
 
 Generated files are gitignored (content depends on the active paradigm /
 `colorBinding`). `build:css` / `dev:css` / `lint:css` regenerate them via
@@ -70,19 +70,20 @@ Do not hand-write dark overrides for semantic tokens. With
 
 | Command | Purpose |
 | --- | --- |
-| `npm run rig:tokens` | Regenerate CSS vars + theme.json + Tailwind |
+| `npm run rig:tokens` | Regenerate CSS vars + theme.json (+ Tailwind when enabled) |
 | `npm run rig:tokens:setup [-- --apply]` | v1→v2 upgrade + legacy-name codemod (dry-run default; backups in `.rig-backup/`) |
 | `npm run rig:tokens:import -- --from <dtcg.json> [--mode merge\|replace] [--apply]` | Import DTCG / Figma JSON |
 | `npm run rig:tokens:export [--out <file>]` | Export to DTCG (default `design/tokens.dtcg.json`) |
 
 ## Gotchas
 
-- Never edit `_tokens.generated.css`, `config/tailwind.tokens.js`, or
-  `tailwind.config.js` — regenerate instead.
+- Never edit `_tokens.generated.css` — regenerate instead. Tailwind files
+  (`config/tailwind.tokens.js`, `tailwind.config.js`) are generated **only when
+  `theme.designTokens.emit.tailwind` is enabled**; WP Rig ships without Tailwind.
 - Never rename Gutenberg color **slugs** (`has-*-color`) automatically; they
   live in saved content.
 - After editing `tokens.json`, run `rig:tokens` (or a build) so the editor
-  palette, Tailwind, and CSS stay in sync.
+  palette and CSS stay in sync (plus Tailwind when enabled).
 - Contrast gate runs at `warn` (6 known AA diagnostics on the default palette).
 - Lint: `wprig/no-undefined-custom-properties` and `wprig/no-hardcoded-colors`
   (warnings) catch dangling/duplicated values.
