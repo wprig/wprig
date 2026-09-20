@@ -1,5 +1,4 @@
 /* eslint-env es6 */
-/* global test, expect, describe */
 
 import fs from 'fs';
 import path from 'path';
@@ -20,14 +19,22 @@ describe( 'Childify Script Utilities', () => {
 		const phpFiles = getPhpFiles( themeRoot );
 
 		// Expect basic theme files to be found
-		const relativePaths = phpFiles.map( ( f ) => path.relative( themeRoot, f ) );
+		const relativePaths = phpFiles.map( ( f ) =>
+			path.relative( themeRoot, f )
+		);
 		expect( relativePaths ).toContain( 'functions.php' );
 		expect( relativePaths ).toContain( path.join( 'inc', 'Theme.php' ) );
-		expect( relativePaths ).toContain( path.join( 'inc', 'Template_Tags.php' ) );
+		expect( relativePaths ).toContain(
+			path.join( 'inc', 'Template_Tags.php' )
+		);
 
 		// Expect excluded directories to be ignored
-		const hasVendor = relativePaths.some( ( p ) => p.startsWith( 'vendor/' ) );
-		const hasNodeModules = relativePaths.some( ( p ) => p.startsWith( 'node_modules/' ) );
+		const hasVendor = relativePaths.some( ( p ) =>
+			p.startsWith( 'vendor/' )
+		);
+		const hasNodeModules = relativePaths.some( ( p ) =>
+			p.startsWith( 'node_modules/' )
+		);
 		const hasGit = relativePaths.some( ( p ) => p.startsWith( '.git/' ) );
 
 		expect( hasVendor ).toBe( false );
@@ -38,11 +45,9 @@ describe( 'Childify Script Utilities', () => {
 
 describe( 'Childify Paradigm-Aware Keep-List (Zero-Config Scaffolding)', () => {
 	test( 'classic theme keeps the classic core (Styles, Scripts, Sidebars)', () => {
-		expect( resolveKeepList( 'classic' ).sort() ).toEqual( [
-			'Styles',
-			'Sidebars',
-			'Scripts',
-		].sort() );
+		expect( resolveKeepList( 'classic' ).sort() ).toEqual(
+			[ 'Styles', 'Sidebars', 'Scripts' ].sort()
+		);
 	} );
 
 	test( 'block-capable themes additionally keep the block components', () => {
@@ -63,16 +68,18 @@ describe( 'Childify Paradigm-Aware Keep-List (Zero-Config Scaffolding)', () => {
 
 	test( 'readThemeType resolves the active paradigm from the shared config', () => {
 		const themeType = readThemeType();
-		expect( [ 'classic', 'universal', 'block-based' ] ).toContain( themeType );
+		expect( [ 'classic', 'universal', 'block-based' ] ).toContain(
+			themeType
+		);
 		expect( themeType ).toBe( readMergedConfig()?.theme?.themeType );
 	} );
 
 	test( 'readMergedConfig reflects shipped config.json, not config.local.json', () => {
-		const cfg = readMergedConfig();
 		const customPath = path.join( themeRoot, 'config', 'config.json' );
 		if ( ! fs.existsSync( customPath ) ) {
 			return; // No config.json in this clone — nothing to verify.
 		}
+		const cfg = readMergedConfig();
 		const custom = JSON.parse( fs.readFileSync( customPath, 'utf8' ) );
 		expect( cfg?.theme?.enableBlocks ).toBe( custom?.theme?.enableBlocks );
 	} );
@@ -111,11 +118,23 @@ describe( 'Child Theme Regression & Static Analysis Guard', () => {
 	} );
 
 	test( 'inc/Localization/Component.php supports child theme translations', () => {
-		const filePath = path.join( themeRoot, 'inc', 'Localization/Component.php' );
+		const filePath = path.join(
+			themeRoot,
+			'inc',
+			'Localization/Component.php'
+		);
 		const content = fs.readFileSync( filePath, 'utf8' );
 
 		expect( content ).toContain( 'is_child_theme()' );
 		expect( content ).toContain( 'get_stylesheet_directory()' );
 		expect( content ).toContain( 'get_template_directory()' );
+	} );
+
+	test( 'childify strips the source-only framework version file', () => {
+		const filePath = path.join( themeRoot, 'node', 'childify.js' );
+		const content = fs.readFileSync( filePath, 'utf8' );
+
+		// A built child theme must not carry the WP Rig framework version.
+		expect( content ).toContain( 'stripFrameworkVersion' );
 	} );
 } );

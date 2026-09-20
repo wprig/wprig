@@ -21,6 +21,8 @@ import scaffoldPattern from './tasks/scaffoldPattern.js';
 import localizeAssets from './tasks/localizeAssets.js';
 import screenshotCompare from './tasks/screenshotCompare.js';
 import promoteVersion from './tasks/promoteVersion.js';
+import promoteFrameworkVersion from './tasks/promoteFrameworkVersion.js';
+import { readFrameworkVersion, readThemeVersion } from './lib/versions.js';
 import { bakeSync } from './tasks/bakeSync.js';
 
 // Setup paths
@@ -281,15 +283,56 @@ program
 	} );
 
 /**
- * Command: version
+ * Command: version [newVersion]
+ *
+ * Promotes the theme version. With no argument, prints both the theme version
+ * and the WP Rig framework version so they can be assessed independently.
  */
 program
-	.command( 'version <newVersion>' )
-	.description( 'Promote the theme version across all relevant files' )
+	.command( 'version [newVersion]' )
+	.description(
+		'Promote the theme version (or print theme + WP Rig framework versions)'
+	)
+	.option( '-d, --description <description>', 'Changelog description' )
+	.action( async ( newVersion, opts ) => {
+		if ( ! newVersion ) {
+			const themeVersion = readThemeVersion( themeRoot );
+			const frameworkVersion = readFrameworkVersion( themeRoot );
+
+			logger.info(
+				`Theme version:         ${ themeVersion || 'unknown' }`
+			);
+			logger.info(
+				`WP Rig framework version: ${
+					frameworkVersion || 'not present (built theme)'
+				}`
+			);
+			return;
+		}
+
+		try {
+			await promoteVersion( themeRoot, newVersion, opts );
+		} catch ( e ) {
+			logger.error( e.message );
+			process.exit( 1 );
+		}
+	} );
+
+/**
+ * Command: version:framework
+ *
+ * Promotes the WP Rig framework version (config/framework.json + package.json),
+ * independently of the theme version.
+ */
+program
+	.command( 'version:framework <newVersion>' )
+	.description(
+		'Promote the WP Rig framework version (separate from the theme version)'
+	)
 	.option( '-d, --description <description>', 'Changelog description' )
 	.action( async ( newVersion, opts ) => {
 		try {
-			await promoteVersion( themeRoot, newVersion, opts );
+			await promoteFrameworkVersion( themeRoot, newVersion, opts );
 		} catch ( e ) {
 			logger.error( e.message );
 			process.exit( 1 );

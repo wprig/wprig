@@ -1,32 +1,54 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { logger } from '../lib/rig-utils.js';
+import { isValidVersion } from '../lib/versions.js';
 
 /**
- * Promotes the theme version across multiple files.
+ * Promotes the **theme** version across the files WordPress and the build
+ * pipeline read.
  *
- * @param {string} themeRoot Path to the theme root.
- * @param {string} newVersion New version string.
- * @param {Object} options Optional settings.
+ * The WP Rig framework version is tracked separately in `config/framework.json`
+ * (see `promoteFrameworkVersion`); this task never touches it.
+ *
+ * @param {string} themeRoot  Path to the theme root.
+ * @param {string} newVersion New theme version string.
+ * @param {Object} options    Optional settings.
  */
-export default async function promoteVersion( themeRoot, newVersion, options = {} ) {
+export default async function promoteVersion(
+	themeRoot,
+	newVersion,
+	options = {}
+) {
 	if ( ! newVersion ) {
 		throw new Error( 'No version specified.' );
 	}
 
-	// Basic SemVer validation
-	if ( ! /^\d+\.\d+\.\d+/.test( newVersion ) ) {
-		throw new Error( `Invalid version format: ${ newVersion }. Expected x.y.z` );
+	if ( ! isValidVersion( newVersion ) ) {
+		throw new Error(
+			`Invalid version format: ${ newVersion }. Expected x.y.z`
+		);
 	}
 
-	logger.info( `Promoting version to ${ newVersion }...` );
+	logger.info( `Promoting theme version to ${ newVersion }...` );
 
 	const filesToUpdate = [
 		{
-			path: 'package.json',
+			path: 'config/config.default.json',
 			type: 'json',
 			update: ( content ) => {
-				content.version = newVersion;
+				if ( content.theme ) {
+					content.theme.version = newVersion;
+				}
+				return content;
+			},
+		},
+		{
+			path: 'config/config.json',
+			type: 'json',
+			update: ( content ) => {
+				if ( content.theme ) {
+					content.theme.version = newVersion;
+				}
 				return content;
 			},
 		},
@@ -62,7 +84,9 @@ export default async function promoteVersion( themeRoot, newVersion, options = {
 					text = text.replace( file.regex, file.replace );
 					await fs.writeFile( filePath, text, 'utf8' );
 				} else {
-					logger.warn( `Could not find version pattern in ${ file.path }.` );
+					logger.warn(
+						`Could not find version pattern in ${ file.path }.`
+					);
 				}
 			}
 			logger.success( `Updated ${ file.path }` );
@@ -80,18 +104,29 @@ export default async function promoteVersion( themeRoot, newVersion, options = {
 
 			if ( ! changelog.includes( versionHeader ) ) {
 				// Insert after the main # Changelog header
-				const description = options.description || '- Added new features and improvements.';
+				const description =
+					options.description ||
+					'- Added new features and improvements.';
 				const newEntry = `\n${ versionHeader }\n${ description }\n`;
-				changelog = changelog.replace( /# Changelog\s*/, `# Changelog\n${ newEntry }` );
+				changelog = changelog.replace(
+					/# Changelog\s*/,
+					`# Changelog\n${ newEntry }`
+				);
 				await fs.writeFile( changelogPath, changelog, 'utf8' );
-				logger.success( 'Updated CHANGELOG.md with new version section.' );
+				logger.success(
+					'Updated CHANGELOG.md with new version section.'
+				);
 			} else {
-				logger.info( `CHANGELOG.md already has a section for ${ newVersion }.` );
+				logger.info(
+					`CHANGELOG.md already has a section for ${ newVersion }.`
+				);
 			}
 		} catch ( e ) {
 			logger.error( `Failed to update CHANGELOG.md: ${ e.message }` );
 		}
 	}
 
-	logger.success( `\n✓ Version promotion to ${ newVersion } completed.` );
+	logger.success(
+		`\n✓ Theme version promotion to ${ newVersion } completed.`
+	);
 }

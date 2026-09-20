@@ -28,6 +28,30 @@ trait Versioning_Trait {
 	}
 
 	/**
+	 * Gets the WP Rig framework version this theme was built on.
+	 *
+	 * Reads the source-only `config/framework.json`. That file is not part of a
+	 * production bundle and is stripped by `childify`, so this returns null in
+	 * themes built with WP Rig — the framework version never leaks into a
+	 * distributed theme.
+	 *
+	 * @return string|null Framework version, or null when unavailable.
+	 */
+	public function get_wp_rig_version(): ?string {
+		$path = get_theme_file_path( 'config/framework.json' );
+		if ( ! file_exists( $path ) ) {
+			return null;
+		}
+
+		$data = json_decode( (string) file_get_contents( $path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Source-only framework metadata.
+		if ( is_array( $data ) && isset( $data['version'] ) && is_string( $data['version'] ) ) {
+			return $data['version'];
+		}
+
+		return null;
+	}
+
+	/**
 	 * Gets the version for a given asset.
 	 *
 	 * Returns filemtime when in local or debug mode, otherwise the theme version.

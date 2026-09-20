@@ -43,7 +43,6 @@ export const nameFieldDefaults = {
 	author: 'The WP Rig Contributors',
 	author_uri: 'https://wprig.io/',
 	description: 'A progressive theme development rig for WordPress.',
-	version: '3.0.1',
 	underscoreCase: 'wp_rig',
 	constant: 'WP_RIG',
 	camelCase: 'WpRig',
@@ -124,6 +123,7 @@ export const paths = {
 		src: [],
 		stringReplaceSrc: [
 			`${ rootPath }/style.css`,
+			`${ rootPath }/readme.txt`,
 			`${ rootPath }/languages/*.po`,
 		],
 	},
