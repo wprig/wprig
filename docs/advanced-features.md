@@ -103,6 +103,17 @@ Each block lives under `assets/blocks/<slug>/`:
 #### Auto-registration in PHP
 The theme component at `inc/Blocks/Component.php` scans `assets/blocks/*/block.json` on `init`. No manual PHP changes are required after scaffolding a new block.
 
+### Icons & the Icon Block (WP 7.1)
+
+Drop SVG files into `assets/icons/` and WP Rig registers them with the native WordPress Icon API on `init`, so they appear in the editor's Icon block in **every paradigm** (classic, universal, block-based) — no component install required.
+
+- **Collection:** every icon is registered under the `wprig-icons` collection (namespaced `wprig-icons/<slug>`); the editor discovers them through the native REST endpoints.
+- **Child themes:** an icon in the child theme's `assets/icons/` overrides a parent icon with the same filename.
+- **Template tag:** `wp_rig()->wprig_icon( 'arrow-right', array( 'class' => 'my-icon' ) )` renders an icon. It prefers the natively registered icon and falls back to reading the file directly.
+- **Opt out:** `add_filter( 'wp_rig_icons_register_collection', '__return_false' );`
+- **Icon markup constraint:** WordPress core sanitizes registered icon content to `<path>` and `<polygon>` only. Icons built solely from other primitives (`<rect>`, `<circle>`, `<line>`, `<polyline>`, …) are skipped at registration (with a `wp_rig_log` note) rather than registered blank — convert them to `<path>`/`<polygon>` markup.
+- **WordPress < 7.1:** registration silently no-ops; `wprig_icon()` keeps working from the files.
+
 ## Theme Fonts vs Baked Fonts (two layers, pick one home per family)
 
 WP Rig has two font pipelines. They complement each other but write to
