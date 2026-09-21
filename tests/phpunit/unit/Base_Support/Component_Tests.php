@@ -45,6 +45,58 @@ class Component_Tests extends Unit_Test_Case {
 	}
 
 	/**
+	 * Tests that get_wp_rig_version() is exposed as a template tag.
+	 *
+	 * @covers Component::template_tags()
+	 */
+	public function test_template_tags_expose_wp_rig_version() {
+		$this->assertArrayHasKey( 'get_wp_rig_version', $this->component->template_tags() );
+	}
+
+	/**
+	 * Tests that the WP Rig framework version is read from the source-only file.
+	 *
+	 * @covers Component::get_wp_rig_version()
+	 */
+	public function test_get_wp_rig_version_reads_framework_file() {
+		$dir = sys_get_temp_dir() . '/wprig-fw-' . uniqid();
+		mkdir( $dir . '/config', 0777, true );
+		file_put_contents( $dir . '/config/framework.json', '{"name":"wp-rig","version":"9.9.9"}' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- Test fixture.
+
+		Functions\when( 'get_theme_file_path' )->alias(
+			function ( $path ) use ( $dir ) {
+				return $dir . '/' . ltrim( $path, '/' );
+			}
+		);
+
+		$this->assertSame( '9.9.9', $this->component->get_wp_rig_version() );
+
+		unlink( $dir . '/config/framework.json' );
+		rmdir( $dir . '/config' );
+		rmdir( $dir );
+	}
+
+	/**
+	 * Tests that get_wp_rig_version() returns null in a built theme (file absent).
+	 *
+	 * @covers Component::get_wp_rig_version()
+	 */
+	public function test_get_wp_rig_version_returns_null_when_absent() {
+		$dir = sys_get_temp_dir() . '/wprig-fw-' . uniqid();
+		mkdir( $dir, 0777, true );
+
+		Functions\when( 'get_theme_file_path' )->alias(
+			function ( $path ) use ( $dir ) {
+				return $dir . '/' . ltrim( $path, '/' );
+			}
+		);
+
+		$this->assertNull( $this->component->get_wp_rig_version() );
+
+		rmdir( $dir );
+	}
+
+	/**
 	 * Tests that the component adds hooks correctly.
 	 *
 	 * @covers Component::initialize()

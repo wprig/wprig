@@ -184,6 +184,8 @@
     "rig:pattern": "node scripts/rig.js pattern",
     "rig:localize": "node scripts/rig.js localize",
     "rig:compare": "node scripts/rig.js compare",
+    "rig:version": "node scripts/rig.js version",
+    "rig:version:framework": "node scripts/rig.js version:framework",
     "rig:tokens": "node scripts/propagate-tokens.js",
     "rig:tokens:setup": "node scripts/tasks/tokensSetup.js",
     "rig:tokens:import": "node scripts/tasks/tokensImport.js",

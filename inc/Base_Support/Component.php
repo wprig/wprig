@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace WP_Rig\WP_Rig\Base_Support;
 
 use WP_Rig\WP_Rig\Component_Interface;
+use WP_Rig\WP_Rig\Templating_Component_Interface;
+use WP_Rig\WP_Rig\Versioning_Trait;
 use function add_action;
 use function add_filter;
 use function add_theme_support;
@@ -25,8 +27,11 @@ use function wp_scripts;
  * Exposes template tags:
  * * `wp_rig()->get_version()`
  * * `wp_rig()->get_asset_version( string $filepath )`
+ * * `wp_rig()->get_wp_rig_version()`
  */
-class Component implements Component_Interface {
+class Component implements Component_Interface, Templating_Component_Interface {
+
+	use Versioning_Trait;
 
 	/**
 	 * Gets the unique identifier for the theme component.
@@ -35,6 +40,19 @@ class Component implements Component_Interface {
 	 */
 	public function get_slug(): string {
 		return 'base_support';
+	}
+
+	/**
+	 * Gets template tags to expose as methods on the Template_Tags class instance, accessible through `wp_rig()`.
+	 *
+	 * @return array Associative array of $method_name => $callback_info pairs.
+	 */
+	public function template_tags(): array {
+		return array(
+			'get_version'        => array( $this, 'get_version' ),
+			'get_asset_version'  => array( $this, 'get_asset_version' ),
+			'get_wp_rig_version' => array( $this, 'get_wp_rig_version' ),
+		);
 	}
 
 	/**

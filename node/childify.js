@@ -21,6 +21,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
+import { stripFrameworkVersion } from '../scripts/lib/versions.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -763,6 +764,13 @@ async function main() {
 
 	upsertTemplateHeader(parentSlug);
 	updateConfig(parentSlug);
+	// A child theme is a built theme: it must not carry the WP Rig framework
+	// version. config/framework.json is source-only and is stripped here.
+	if (stripFrameworkVersion(themeRoot)) {
+		addLog(
+			'🧹 Removed config/framework.json (WP Rig framework version is source-only)'
+		);
+	}
 	writeComponentsManifest(keepList);
 	appendDequeueHelper(parentSlug);
 
