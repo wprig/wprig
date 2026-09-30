@@ -601,6 +601,10 @@ function sanitizeDependencyList( dependencies, source ) {
  * @param {string}        cwd     Working directory.
  */
 function runSafeCommand( command, args, cwd ) {
+	if ( ! /^[a-zA-Z0-9._-]+$/.test( command ) ) {
+		throw new Error( `Invalid command: ${ command }` );
+	}
+
 	const result = spawnSync( command, args, {
 		cwd,
 		stdio: 'inherit',
