@@ -141,7 +141,8 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			return $this->processed_icons[ $cache_key ];
 		}
 
-		$args = array_merge(
+		$explicit_args = $args;
+		$args          = array_merge(
 			array(
 				'class'       => '',
 				'aria_hidden' => true,
@@ -149,6 +150,13 @@ class Component implements Component_Interface, Templating_Component_Interface {
 			),
 			$args
 		);
+
+		// An aria_label means the icon should be announced; keep aria_hidden
+		// only when the caller set it explicitly (an aria-hidden icon with an
+		// aria-label is a contradictory accessibility state).
+		if ( '' !== $args['aria_label'] && ! array_key_exists( 'aria_hidden', $explicit_args ) ) {
+			$args['aria_hidden'] = false;
+		}
 
 		$native_content = $this->get_native_icon( $name, $args );
 		if ( null !== $native_content ) {
@@ -171,11 +179,26 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		// Simple attribute injection.
-		// If the SVG already has a class, we might want to append to it, but for simplicity we'll just prepend our classes.
+		// Prepend our classes to an existing class attribute (double- or
+		// single-quoted); only inject a new attribute when none exists, so
+		// the SVG never ends up with a duplicate class attribute.
 		if ( ! empty( $args['class'] ) ) {
-			$icon_content = preg_replace( '/<svg([^>]+)class="([^"]+)"/', '<svg$1class="' . esc_attr( $args['class'] ) . ' $2"', $icon_content );
-			if ( ! str_contains( $icon_content, 'class="' ) ) {
-				$icon_content = str_replace( '<svg', '<svg class="' . esc_attr( $args['class'] ) . '"', $icon_content );
+			$prepended = preg_replace(
+				'/<svg([^>]*?)class=(["\'])([^"\']*)\2/',
+				'<svg$1class=$2' . esc_attr( $args['class'] ) . ' $3$2',
+				$icon_content,
+				1,
+				$count
+			);
+
+			if ( $count > 0 ) {
+				$icon_content = $prepended;
+			} elseif ( ! str_contains( $icon_content, 'class=' ) ) {
+				$icon_content = str_replace(
+					'<svg',
+					'<svg class="' . esc_attr( $args['class'] ) . '"',
+					$icon_content
+				);
 			}
 		}
 

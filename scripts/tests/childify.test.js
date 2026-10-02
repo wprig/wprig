@@ -8,6 +8,7 @@ import {
 	readThemeType,
 	resolveKeepList,
 	readMergedConfig,
+	REQUIRED_INC_FILES,
 } from '../../node/childify.js';
 
 const __filename = fileURLToPath( import.meta.url );
@@ -86,6 +87,54 @@ describe( 'Childify Paradigm-Aware Keep-List (Zero-Config Scaffolding)', () => {
 } );
 
 describe( 'Child Theme Regression & Static Analysis Guard', () => {
+	test( 'REQUIRED_INC_FILES keeps every framework file the kept components depend on', () => {
+		// Regression: childify used to move Paradigm.php, the paradigm traits,
+		// Versioning_Trait.php, and Asset_Provider.php to the backup even though
+		// kept components (Theme.php, Styles, Scripts, Sidebars, Block_Patterns,
+		// Icons) import them — producing a child theme that fatals on load.
+		for ( const required of [
+			'Paradigm.php',
+			'Paradigm_Component_Trait.php',
+			'Classic_Component_Trait.php',
+			'Versioning_Trait.php',
+			'Asset_Provider.php',
+		] ) {
+			expect( REQUIRED_INC_FILES ).toContain( required );
+		}
+	} );
+
+	test( 'every root-namespace import of kept components resolves to a kept file', () => {
+		// Invariant: for each kept component (superset keep-list) plus Theme.php,
+		// any `use WP_Rig\WP_Rig\X;` class/trait import that maps to a root
+		// inc/X.php file must be in REQUIRED_INC_FILES — otherwise childify
+		// would move a live dependency into the backup.
+		const keptDirs = resolveKeepList( 'block-based' );
+		const sources = [ 'Theme.php' ].concat(
+			keptDirs.map( ( dir ) => `${ dir }/Component.php` )
+		);
+
+		const violations = [];
+		for ( const rel of sources ) {
+			const filePath = path.join( themeRoot, 'inc', rel );
+			if ( ! fs.existsSync( filePath ) ) {
+				continue;
+			}
+			const content = fs.readFileSync( filePath, 'utf8' );
+			const imports = content.match( /^use WP_Rig\\WP_Rig\\(\w+);/gm );
+			for ( const className of imports || [] ) {
+				const depFile = `${ className }.php`;
+				if (
+					fs.existsSync( path.join( themeRoot, 'inc', depFile ) ) &&
+					! REQUIRED_INC_FILES.includes( depFile )
+				) {
+					violations.push( `${ rel } -> inc/${ depFile }` );
+				}
+			}
+		}
+
+		expect( violations ).toEqual( [] );
+	} );
+
 	test( 'inc/Theme.php is child-theme compatible', () => {
 		const filePath = path.join( themeRoot, 'inc', 'Theme.php' );
 		const content = fs.readFileSync( filePath, 'utf8' );

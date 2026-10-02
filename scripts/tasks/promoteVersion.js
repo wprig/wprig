@@ -55,13 +55,16 @@ export default async function promoteVersion(
 		{
 			path: 'style.css',
 			type: 'text',
-			regex: /Version:\s*(\d+\.\d+\.\d+)/,
+			// Anchored to the whole line: an unanchored \d+\.\d+\.\d+ match
+			// used to leave a pre-release suffix behind (promoting from
+			// 1.2.3-beta.1 to 2.0.0 produced "Version: 2.0.0-beta.1").
+			regex: /^Version:\s*.+$/m,
 			replace: `Version: ${ newVersion }`,
 		},
 		{
 			path: 'readme.txt',
 			type: 'text',
-			regex: /Stable tag:\s*(\d+\.\d+\.\d+)/,
+			regex: /^Stable tag:\s*.+$/m,
 			replace: `Stable tag: ${ newVersion }`,
 		},
 	];
@@ -104,18 +107,24 @@ export default async function promoteVersion(
 
 			if ( ! changelog.includes( versionHeader ) ) {
 				// Insert after the main # Changelog header
-				const description =
-					options.description ||
-					'- Added new features and improvements.';
-				const newEntry = `\n${ versionHeader }\n${ description }\n`;
-				changelog = changelog.replace(
-					/# Changelog\s*/,
-					`# Changelog\n${ newEntry }`
-				);
-				await fs.writeFile( changelogPath, changelog, 'utf8' );
-				logger.success(
-					'Updated CHANGELOG.md with new version section.'
-				);
+				if ( /^#\s+Changelog/m.test( changelog ) ) {
+					const description =
+						options.description ||
+						'- Added new features and improvements.';
+					const newEntry = `\n${ versionHeader }\n${ description }\n`;
+					changelog = changelog.replace(
+						/^#\s+Changelog\s*/m,
+						`# Changelog\n${ newEntry }`
+					);
+					await fs.writeFile( changelogPath, changelog, 'utf8' );
+					logger.success(
+						'Updated CHANGELOG.md with new version section.'
+					);
+				} else {
+					logger.warn(
+						'CHANGELOG.md has no "# Changelog" header — version section not added.'
+					);
+				}
 			} else {
 				logger.info(
 					`CHANGELOG.md already has a section for ${ newVersion }.`

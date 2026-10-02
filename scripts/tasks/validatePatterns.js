@@ -22,7 +22,9 @@ import {
 import themeConfig from '../../config/themeConfig.js';
 
 const HEADER_REGEX = /^\s*\*\s*([A-Za-z ]+?):\s*(.*)$/;
-const SLUG_REGEX = /^[A-z0-9/_-]+$/;
+// [A-Za-z], not [A-z]: the latter silently matches the punctuation range
+// between "Z" and "a" ( [ \ ] ^ _ ` ).
+const SLUG_REGEX = /^[A-Za-z0-9/_-]+$/;
 const PLACEHOLDER_TITLES = [ 'new pattern' ];
 const PLACEHOLDER_CONTENT = [ 'hello world!' ];
 

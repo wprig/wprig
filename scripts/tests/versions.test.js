@@ -105,4 +105,17 @@ describe( 'Version helpers', () => {
 			stampVersionHeaders( 'Version: 3.5.0\n', '/tmp/style.css', '' )
 		).toBe( 'Version: 3.5.0\n' );
 	} );
+
+	test( 'stampVersionHeaders inserts $-bearing versions literally', () => {
+		// Regression: the version was interpolated into the replacement
+		// string, so "$&" / "$1" sequences in a version value would expand
+		// as replacement patterns and corrupt the header.
+		const stamped = stampVersionHeaders(
+			'/*\nVersion: 3.5.0\n*/\n',
+			'/tmp/style.css',
+			'1.0.0$&x'
+		);
+		expect( stamped ).toContain( 'Version: 1.0.0$&x' );
+		expect( stamped ).not.toContain( 'Version: 1.0.0Version' );
+	} );
 } );

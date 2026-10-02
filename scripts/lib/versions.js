@@ -139,11 +139,19 @@ export function stampVersionHeaders( content, filePath, version ) {
 	const base = path.basename( filePath );
 
 	if ( base === 'style.css' ) {
-		return content.replace( /(^\s*Version:\s*).+$/m, `$1${ version }` );
+		// Function replacement: a "$" sequence in the version must be
+		// inserted literally, not expanded as a replacement pattern.
+		return content.replace(
+			/(^\s*Version:\s*).+$/m,
+			( _, prefix ) => `${ prefix }${ version }`
+		);
 	}
 
 	if ( base === 'readme.txt' ) {
-		return content.replace( /(^\s*Stable tag:\s*).+$/m, `$1${ version }` );
+		return content.replace(
+			/(^\s*Stable tag:\s*).+$/m,
+			( _, prefix ) => `${ prefix }${ version }`
+		);
 	}
 
 	return content;

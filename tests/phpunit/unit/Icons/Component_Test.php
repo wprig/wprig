@@ -339,4 +339,69 @@ class Component_Test extends Unit_Test_Case {
 		$this->removeDirectory( $parent_root );
 		$this->removeDirectory( $child_root );
 	}
+
+	/**
+	 * Tests that passing aria_label implies the icon is announced: aria_hidden
+	 * defaults to false unless the caller set it explicitly.
+	 *
+	 * @covers \WP_Rig\WP_Rig\Icons\Component::wprig_icon()
+	 */
+	public function test_wprig_icon_aria_label_implies_not_hidden_by_default() {
+		// Force the theme-asset fallback path (no native icon).
+		Functions\when( 'wp_get_icon' )->justReturn( '' );
+		$tags = $this->mockTemplateTags( array( 'get_theme_asset' ) );
+		$tags->method( 'get_theme_asset' )->willReturn(
+			'<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0"/></svg>'
+		);
+
+		$output = $this->component->wprig_icon( 'check', array( 'aria_label' => 'Close' ) );
+
+		$this->assertStringContainsString( 'aria-label="Close"', $output );
+		$this->assertStringNotContainsString( 'aria-hidden', $output );
+	}
+
+	/**
+	 * Tests that an explicit aria_hidden=true wins over the aria_label
+	 * implication (caller's explicit choice is respected).
+	 *
+	 * @covers \WP_Rig\WP_Rig\Icons\Component::wprig_icon()
+	 */
+	public function test_wprig_icon_explicit_aria_hidden_wins() {
+		Functions\when( 'wp_get_icon' )->justReturn( '' );
+		$tags = $this->mockTemplateTags( array( 'get_theme_asset' ) );
+		$tags->method( 'get_theme_asset' )->willReturn(
+			'<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0"/></svg>'
+		);
+
+		$output = $this->component->wprig_icon(
+			'check',
+			array(
+				'aria_label'  => 'Close',
+				'aria_hidden' => true,
+			)
+		);
+
+		$this->assertStringContainsString( 'aria-label="Close"', $output );
+		$this->assertStringContainsString( 'aria-hidden="true"', $output );
+	}
+
+	/**
+	 * Tests that prepending a class to a single-quoted SVG class attribute
+	 * does not produce a duplicate class attribute.
+	 *
+	 * @covers \WP_Rig\WP_Rig\Icons\Component::wprig_icon()
+	 */
+	public function test_wprig_icon_single_quoted_class_attribute() {
+		Functions\when( 'wp_get_icon' )->justReturn( '' );
+		$tags = $this->mockTemplateTags( array( 'get_theme_asset' ) );
+		$tags->method( 'get_theme_asset' )->willReturn(
+			"<svg class='base' xmlns='http://www.w3.org/2000/svg'><path d='M0 0'/></svg>"
+		);
+
+		$output = $this->component->wprig_icon( 'check', array( 'class' => 'big' ) );
+
+		$this->assertSame( 1, substr_count( $output, 'class=' ) );
+		$this->assertStringContainsString( 'big', $output );
+		$this->assertStringContainsString( 'base', $output );
+	}
 }

@@ -123,6 +123,25 @@ describe( 'checkPatternHeaders', () => {
 		expect( result.errors[ 0 ].message ).toMatch( /Invalid slug/ );
 	} );
 
+	test( 'flags slug punctuation between Z and a (the [A-z] regex trap)', () => {
+		// Regression: /^[A-z0-9/_-]+$/ matched the punctuation range between
+		// "Z" and "a" ( [ \ ] ^ _ ` ), so slugs containing backslashes,
+		// brackets, carets, or backticks passed the charset guard.
+		for ( const bad of [
+			'bad\\slug',
+			'bad]slug',
+			'bad^slug',
+			'bad`slug',
+		] ) {
+			const result = checkPatternHeaders( {
+				title: 'Good',
+				slug: bad,
+				categories: 'hero',
+			} );
+			expect( result.errors[ 0 ].message ).toMatch( /Invalid slug/ );
+		}
+	} );
+
 	test( 'warns about unknown categories', () => {
 		const result = checkPatternHeaders(
 			{ title: 'Good', slug: 't/good', categories: 'bogus' },

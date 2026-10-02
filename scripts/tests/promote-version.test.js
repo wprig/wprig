@@ -102,6 +102,69 @@ describe( 'Version promotion tasks', () => {
 		expect( pkg.version ).toBe( '3.5.0' );
 	} );
 
+	test( 'promoteVersion replaces a pre-release current version completely', async () => {
+		// Regression: the unanchored /Version:\s*(\d+\.\d+\.\d+)/ regex used to
+		// leave the old pre-release suffix behind — promoting from
+		// 1.2.3-beta.1 to 2.0.0 produced "Version: 2.0.0-beta.1".
+		fs.writeFileSync(
+			path.join( root, 'style.css' ),
+			'/*\nTheme Name: Demo\nVersion: 1.2.3-beta.1\n*/\n',
+			'utf8'
+		);
+		fs.writeFileSync(
+			path.join( root, 'readme.txt' ),
+			'Stable tag: 1.2.3-beta.1\n',
+			'utf8'
+		);
+
+		await promoteVersion( root, '2.0.0' );
+
+		const styleCss = fs.readFileSync(
+			path.join( root, 'style.css' ),
+			'utf8'
+		);
+		const readme = fs.readFileSync(
+			path.join( root, 'readme.txt' ),
+			'utf8'
+		);
+
+		expect( styleCss ).toContain( 'Version: 2.0.0' );
+		expect( styleCss ).not.toContain( 'beta.1' );
+		expect( readme ).toContain( 'Stable tag: 2.0.0' );
+		expect( readme ).not.toContain( 'beta.1' );
+	} );
+
+	test( 'promoteVersion warns instead of claiming success when CHANGELOG has no header', async () => {
+		fs.writeFileSync(
+			path.join( root, 'CHANGELOG.md' ),
+			'No header here.\n',
+			'utf8'
+		);
+
+		// Native-ESM jest has no jest global; capture logger output (which
+		// delegates to console) via monkeypatching instead of jest.spyOn.
+		const successes = [];
+		const warnings = [];
+		const origLog = console.log;
+		const origWarn = console.warn;
+		console.log = ( msg ) => successes.push( String( msg ) );
+		console.warn = ( msg ) => warnings.push( String( msg ) );
+
+		try {
+			await promoteVersion( root, '1.2.0' );
+		} finally {
+			console.log = origLog;
+			console.warn = origWarn;
+		}
+
+		expect( successes.some( ( msg ) => msg.includes( 'CHANGELOG' ) ) ).toBe(
+			false
+		);
+		expect( warnings.some( ( msg ) => msg.includes( 'CHANGELOG' ) ) ).toBe(
+			true
+		);
+	} );
+
 	test( 'promoteFrameworkVersion bumps only the framework version', async () => {
 		await promoteFrameworkVersion( root, '3.6.0' );
 
