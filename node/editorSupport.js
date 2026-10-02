@@ -96,9 +96,12 @@ propagateTokens()
 			'✅ theme.json generated from tokens (v3 / WP 7.1 schema) at ../theme.json'
 		)
 	)
-	.catch( ( error ) =>
-		console.error( `❌ Error propagating tokens: ${ error.message }` )
-	);
+	.catch( ( error ) => {
+		console.error( `❌ Error propagating tokens: ${ error.message }` );
+		// A failed token propagation leaves theme.json missing or stale —
+		// surface the failure instead of letting init report success.
+		process.exitCode = 1;
+	} );
 
 function updateConfigThemeType( themeType ) {
 	const configPath = path.resolve( __dirname, '../config/config.json' );

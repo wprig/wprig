@@ -82,7 +82,8 @@ async function optimizeRaster( srcFile, destFile ) {
 		if ( ext === '.png' ) {
 			await img
 				.png( {
-					quality: 80,
+					// Note: sharp ignores `quality` for non-palette PNGs;
+					// compressionLevel is the effective knob here.
 					compressionLevel: 9,
 					adaptiveFiltering: true,
 				} )
@@ -174,6 +175,13 @@ export async function convertToModernFormats() {
 		onlyFiles: true,
 	} );
 
+	// Source files that already ship in a modern format: converting a
+	// same-basename raster (photo.jpg -> photo.webp) would collide with the
+	// source photo.webp on the same destination path (last writer wins).
+	const sourceBasenames = new Set(
+		files.map( ( file ) => path.basename( file ).toLowerCase() )
+	);
+
 	for ( const file of files ) {
 		const osFile = path.normalize( file );
 		const ext = path.extname( osFile ).toLowerCase();
@@ -183,12 +191,29 @@ export async function convertToModernFormats() {
 		const rel = path.relative( srcRoot, osFile );
 		const baseDest = path.join( getDestRoot(), rel );
 
-		await convertFormat( osFile, baseDest, 'webp', ( img ) =>
-			img.webp( { quality: 75 } )
-		);
-		await convertFormat( osFile, baseDest, 'avif', ( img ) =>
-			img.heif( { compression: 'av1', quality: 70, effort: 4 } )
-		);
+		for ( const format of [ 'webp', 'avif' ] ) {
+			const siblingSource = `${ osFile.slice(
+				0,
+				osFile.length - ext.length
+			) }.${ format }`;
+			if (
+				sourceBasenames.has(
+					path.basename( siblingSource ).toLowerCase()
+				)
+			) {
+				console.warn(
+					`Skipping ${ format.toUpperCase() } conversion for ${ path.basename(
+						osFile
+					) }: a source file with the same basename already ships as .${ format }.`
+				);
+				continue;
+			}
+			await convertFormat( osFile, baseDest, format, ( img ) =>
+				format === 'webp'
+					? img.webp( { quality: 75 } )
+					: img.heif( { compression: 'av1', quality: 70, effort: 4 } )
+			);
+		}
 	}
 }
 

@@ -186,6 +186,24 @@ export function getReplacements( isProdFlag ) {
 }
 
 /**
+ * Applies a replacement list to file content. Replacement values are inserted
+ * via a function replacement so "$" sequences (e.g. "$&", "$1") in a theme
+ * name/slug are inserted literally instead of expanding as replacement
+ * patterns and corrupting production output.
+ *
+ * @param {string}        content      File content.
+ * @param {Array<Object>} replacements Array of { searchValue, replaceValue }.
+ * @return {string} Content with all replacements applied.
+ */
+export function applyReplacements( content, replacements ) {
+	let out = content;
+	replacements.forEach( ( { searchValue, replaceValue } ) => {
+		out = out.replace( searchValue, () => replaceValue );
+	} );
+	return out;
+}
+
+/**
  * Creates a stream transformation for replacing strings based on the theme config.
  * @param {boolean} isProdFlag - Flag indicating whether it's in production mode.
  * @return {import('stream').Transform} - A stream transformation for string replacements.

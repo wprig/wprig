@@ -7,7 +7,11 @@ import fse from 'fs-extra';
 
 import { globFiles, destPathFor, writeFileEnsured } from '../lib/filepipe.js';
 import { paths, isProd, rootPath } from '../lib/constants.js';
-import { getReplacements, getThemeConfig } from '../lib/utils.js';
+import {
+	getReplacements,
+	getThemeConfig,
+	applyReplacements,
+} from '../lib/utils.js';
 import { getActiveThemeType, loadParadigms } from '../lib/paradigm.js';
 import { bakeProdPhp, extractParadigmTag } from '../lib/bakeParadigm.js';
 import removeWpCliBlock from './removeWpCliBlock.js';
@@ -51,14 +55,6 @@ async function resolveComponentTags( files ) {
 		} )
 	);
 	return tags;
-}
-
-function applyReplacements( content, replacements ) {
-	let out = content;
-	replacements.forEach( ( { searchValue, replaceValue } ) => {
-		out = out.replace( searchValue, replaceValue );
-	} );
-	return out;
 }
 
 /**

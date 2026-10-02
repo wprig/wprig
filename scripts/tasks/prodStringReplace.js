@@ -5,17 +5,13 @@ import path from 'node:path';
 import fse from 'fs-extra';
 
 import { isProd, rootPath, prodThemePath, paths } from '../lib/constants.js';
-import { getThemeConfig, getReplacements } from '../lib/utils.js';
+import {
+	getThemeConfig,
+	getReplacements,
+	applyReplacements,
+} from '../lib/utils.js';
 import { stampVersionHeaders } from '../lib/versions.js';
 import { globFiles, writeFileEnsured } from '../lib/filepipe.js';
-
-function applyReplacements( content, replacements ) {
-	let out = content;
-	replacements.forEach( ( { searchValue, replaceValue } ) => {
-		out = out.replace( searchValue, replaceValue );
-	} );
-	return out;
-}
 
 /**
  * Run string replacements on selected export files and write them into prod directory.
