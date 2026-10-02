@@ -1,4 +1,5 @@
 ---
+name: advanced-templating
 description: Guide for creating and using template tags within WP Rig's component-based architecture.
 globs: inc/**/*.php, template-parts/**/*.php, *.php
 ---

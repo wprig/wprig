@@ -1,4 +1,5 @@
 ---
+name: web-designer
 description: Creatively conjure aesthetically pleasing, satisfyingly interactive, performant, and accessible style guides for theme components.
 globs: assets/css/src/**/*.css, assets/blocks/**/*, .ai/plans/**/*
 ---

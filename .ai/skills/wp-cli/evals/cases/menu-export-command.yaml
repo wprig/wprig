@@ -1,0 +1,24 @@
+schema_version: 2
+id: menu-export-command
+mode: prose
+eval_type: capability
+skill_under_test: wp-cli
+skills_loaded: [wp-cli]
+model: openrouter/google/gemini-3.8-flash
+description: "Agent answers with the exact wp rig menu export command when the skill is loaded"
+tags: [smoke, knowledge-retrieval]
+
+prompt: |
+  Load the wp-cli skill. Using ONLY what the skill documents, what is the
+  exact WP-CLI command to export the main menu to a JSON file (pretty-printed)?
+  Respond with just the command, nothing else.
+
+budget:
+  max_tokens: 3000
+  max_seconds: 120
+
+checks:
+  - kind: output_contains
+    value: "wp rig menu export"
+  - kind: output_contains
+    value: "--file="

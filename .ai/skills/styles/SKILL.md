@@ -1,4 +1,5 @@
 ---
+name: styles
 description: Modern CSS authoring for WP Rig — Lightning CSS, enforced specificity budget, generated custom media, native nesting.
 globs: assets/css/src/**/*.css, build-css.js
 ---

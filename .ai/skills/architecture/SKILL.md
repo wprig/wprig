@@ -1,4 +1,5 @@
 ---
+name: architecture
 description: Guide to WP Rig theme architecture, file structure, components, and coding conventions.
 globs: inc/**/*.php, functions.php, config/*.json, *.php
 ---

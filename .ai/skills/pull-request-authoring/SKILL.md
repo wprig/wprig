@@ -1,4 +1,5 @@
 ---
+name: pull-request-authoring
 description: Workflow for creating WP Rig pull requests that match the repository template, including release-specific guidance for develop-to-master merges.
 globs: .github/PULL_REQUEST_TEMPLATE.md, CHANGELOG.md, docs/**/*.md
 ---

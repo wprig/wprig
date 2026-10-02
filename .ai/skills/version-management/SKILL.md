@@ -1,4 +1,5 @@
 ---
+name: version-management
 description: Guide to managing the WP Rig framework version and the theme version independently.
 globs: config/framework.json, config/config.default.json, config/config.json, package.json, style.css, readme.txt, CHANGELOG.md
 ---

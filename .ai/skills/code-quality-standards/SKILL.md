@@ -1,4 +1,5 @@
 ---
+name: code-quality-standards
 description: Guide for ensuring code quality and adherence to WordPress and WP Rig standards using linting and analysis tools.
 globs: phpstan.neon.dist, .phpcs.xml.dist, rector.php, .prettierrc, .eslintrc.json
 ---

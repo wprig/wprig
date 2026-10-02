@@ -1,4 +1,5 @@
 ---
+name: bake-sync
 description: Bake Site Editor changes (patterns, templates, template parts, Global Styles, Font Library fonts) from the WordPress database into the active WP Rig block theme with rig:bake, review them as a git diff, and clean the DB records — the Site Editor version-control round-trip.
 globs: ["patterns/**", "templates/**", "parts/**", "config/user-styles.json"]
 ---

@@ -1,3 +1,8 @@
+---
+name: flawless-gutenberg-fse
+description: Verified workflow for engineering standard-compliant static block templates and template parts in WordPress Full Site Editing using the WP Rig block schema linter.
+---
+
 # Flawless Gutenberg FSE Template Engineering Skill
 
 This skill provides a 100% reliable, repeatable, and verified workflow for engineering premium, standard-compliant static block templates and template parts in WordPress Full Site Editing (FSE). It leverages our custom, built-in **WP Rig Block Schema Linter (`npm run lint:blocks`)** to achieve error-free Gutenberg validation.

@@ -1,4 +1,5 @@
 ---
+name: ez-customizer
 description: Guide for adding and managing WordPress Customizer settings via JSON configuration in WP Rig.
 globs: inc/EZ_Customizer/themeCustomizeSettings.json, inc/EZ_Customizer/Component.php
 ---

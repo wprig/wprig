@@ -1,4 +1,5 @@
 ---
+name: modern-dev-workflow
 description: Guide for using the Vite-powered modern dev server and managing local development configuration in WP Rig.
 globs: config/config.json, config/config.default.json, dev-server.js
 ---

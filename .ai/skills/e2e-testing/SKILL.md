@@ -1,4 +1,5 @@
 ---
+name: e2e-testing
 description: Guide for writing and running Playwright E2E tests for WP Rig theme components to ensure reliability and accessibility.
 globs: tests/e2e/**/*, playwright.config.ts
 ---

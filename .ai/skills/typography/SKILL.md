@@ -1,4 +1,5 @@
 ---
+name: typography
 description: Comprehensive guide to typography, font loading, and variable fonts in WP Rig.
 globs: inc/Fonts/Component.php, theme.json, config/tokens.json, assets/css/src/_tokens.custom.css
 ---

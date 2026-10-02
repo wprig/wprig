@@ -1,6 +1,7 @@
 ---
+name: phpcs-cleanup
 description: Specific instructions and patterns for resolving PHP CodeSniffer (PHPCS) issues within WP Rig, following WordPress Coding Standards.
-globs: "**/*.php", phpcs.xml.dist
+globs: ["**/*.php", "phpcs.xml.dist"]
 ---
 
 # PHPCS Cleanup Skill

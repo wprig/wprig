@@ -1,4 +1,5 @@
 ---
+name: theme-settings
 description: Guide for adding and managing theme settings using the React-based Options framework in WP Rig.
 globs: assets/js/src/admin/*.{json,jsx,js}, inc/Options/Component.php
 ---

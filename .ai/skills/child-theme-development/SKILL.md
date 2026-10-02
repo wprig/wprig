@@ -1,4 +1,5 @@
 ---
+name: child-theme-development
 description: Guide for creating and managing child themes using WP Rig's "childify" script.
 globs: childify.js, package.json
 ---

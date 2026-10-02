@@ -1,4 +1,5 @@
 ---
+name: create-component
 description: Step-by-step recipe for creating a new PHP component in WP Rig.
 globs: inc/**/*.php, functions.php
 ---

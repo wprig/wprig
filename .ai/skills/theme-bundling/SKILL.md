@@ -1,4 +1,5 @@
 ---
+name: theme-bundling
 description: Guide to ensuring new root-level folders (like WooCommerce template overrides) are included in the bundled theme.
 globs: config/config.json, config/config.default.json, woocommerce/**/*, tribe-events/**/*, buddypress/**/*, edd/**/*, **/template-overrides/**/*
 ---

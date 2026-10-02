@@ -1,3 +1,8 @@
+---
+name: component-registry
+description: WP Rig component registry (OCR) — search for and import verified, performance-optimized, agent-ready theme components.
+---
+
 # SKILL: WP Rig Component Registry (OCR)
 
 ## Overview

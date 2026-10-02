@@ -1,4 +1,5 @@
 ---
+name: design-tokens
 description: Design tokens in WP Rig — the layered config/tokens.json source, generated CSS custom properties + theme.json + Tailwind, dark mode, paradigm-aware binding, and the migration/import/export commands. Use whenever editing colors, spacing, typography tokens, dark mode, or the editor palette.
 globs: config/tokens.json, config/tokens.schema.json, config/theme.custom.json, assets/css/src/_tokens.custom.css, assets/css/src/_custom-properties.css, theme.json
 ---

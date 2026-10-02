@@ -1,4 +1,5 @@
 ---
+name: npm-scripts
 description: Guide for using npm scripts in WP Rig to manage builds, development, testing, and registry tooling.
 globs: package.json, scripts/**/*.js, node/**/*.js
 ---
