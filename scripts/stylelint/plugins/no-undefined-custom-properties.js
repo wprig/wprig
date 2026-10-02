@@ -16,6 +16,7 @@ const meta = {
 const ALLOWED_PREFIXES = [ '--wp--', '--lightningcss-', '--tw-' ];
 
 let cachedInventory = null;
+let warnedInventoryFailure = false;
 
 /**
  * Loads (and caches) the token inventory for the current theme root.
@@ -29,6 +30,15 @@ function knownNames() {
 				loadTokenInventory( process.cwd() ).names
 			);
 		} catch ( error ) {
+			// An unloadable inventory must not silently disable the rule —
+			// warn once so the gate failure is visible in lint output.
+			if ( ! warnedInventoryFailure ) {
+				// eslint-disable-next-line no-console
+				console.warn(
+					`[wprig/no-undefined-custom-properties] token inventory could not be loaded (${ error.message }) — the rule is not enforced for this run.`
+				);
+				warnedInventoryFailure = true;
+			}
 			cachedInventory = new Set();
 		}
 	}

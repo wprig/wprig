@@ -136,6 +136,20 @@ describe( 'resolveReferences — {dotted.path} (SPEC-017 §4.3)', () => {
 } );
 
 describe( 'toLegacyFlat — v1 view for theme.json/Tailwind parity (§6.2)', () => {
+	test( 'throws an actionable error when a required primitive hue is missing', () => {
+		const partial = loadTokens( {
+			meta: { version: 2 },
+			primitives: {
+				color: { brand: { 500: '#e36d60' } },
+			},
+			semantic: { text: { light: '#333', dark: '#eee' } },
+		} );
+
+		expect( () => toLegacyFlat( partial ) ).toThrow(
+			/missing required primitive\(s\).*"primitives\.color\.accent\.500"/
+		);
+	} );
+
 	test( 'maps v2 back to the exact v1 flat shape', () => {
 		expect( flat.colors ).toEqual( {
 			primary: '#e36d60',
@@ -279,6 +293,12 @@ describe( 'buildCustomMediaAliases — §4 viewport-driven breakpoints', () => {
 			'--tablet-menu-query',
 			'screen and (max-width: 782px)',
 		] );
+	} );
+
+	test( 'throws on a present but unparseable breakpoint instead of silently defaulting', () => {
+		expect( () =>
+			buildCustomMediaAliases( { mobile: '48rem', tablet: '782px' } )
+		).toThrow( /breakpoints\.mobile/ );
 	} );
 
 	test( 'derives min-widths from custom breakpoint values', () => {

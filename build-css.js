@@ -426,27 +426,44 @@ const processDirectory = async ( dir, destDir ) => {
 				}
 				const styleIn = path.join( blockDir, 'style.css' );
 				const editorIn = path.join( blockDir, 'editor.css' );
-				if ( existsSync( styleIn ) ) {
-					const bytes = await processCSSFile(
-						styleIn,
-						path.join( outDir, 'style.css' ),
-						false
+				try {
+					if ( existsSync( styleIn ) ) {
+						const bytes = await processCSSFile(
+							styleIn,
+							path.join( outDir, 'style.css' ),
+							false
+						);
+						blockStats.files += 1;
+						blockStats.bytes += bytes;
+					}
+					if ( existsSync( editorIn ) ) {
+						const bytes = await processCSSFile(
+							editorIn,
+							path.join( outDir, 'editor.css' ),
+							false
+						);
+						blockStats.files += 1;
+						blockStats.bytes += bytes;
+					}
+				} catch ( err ) {
+					// A broken block stylesheet must be visible — theme and
+					// editor CSS already fail loudly; blocks get the same
+					// treatment (warn + failed summary) instead of silence.
+					// eslint-disable-next-line no-console
+					console.error(
+						`[css] block "${ slug }" stylesheet failed:`,
+						err.message
 					);
-					blockStats.files += 1;
-					blockStats.bytes += bytes;
-				}
-				if ( existsSync( editorIn ) ) {
-					const bytes = await processCSSFile(
-						editorIn,
-						path.join( outDir, 'editor.css' ),
-						false
-					);
-					blockStats.files += 1;
-					blockStats.bytes += bytes;
+					process.exitCode = 1;
 				}
 			}
-		} catch {
-			// no blocks or cannot read; ignore
+		} catch ( err ) {
+			if ( err.code !== 'ENOENT' ) {
+				// eslint-disable-next-line no-console
+				console.error( '[css] block CSS scan failed:', err.message );
+				process.exitCode = 1;
+			}
+			// ENOENT = no blocks directory; nothing to compile.
 		}
 
 		// One-line legible summary (see formatCssSummary).

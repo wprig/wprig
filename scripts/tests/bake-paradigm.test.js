@@ -162,6 +162,15 @@ describe( 'bakeParadigmClass', () => {
 		} );
 	}
 
+	test( 'escapes quote-bearing themeType values into valid PHP', () => {
+		// The active theme type is interpolated into PHP string literals;
+		// an unvalidated config value must not break the baked file.
+		const baked = bakeParadigmClass( "weird'type", DEFINITIONS );
+
+		expect( baked ).toContain( "weird\\'type" );
+		lint( baked, "weird'type" );
+	} );
+
 	test( 'baked is_enabled() resolves true/false per the matrix at runtime', () => {
 		// Execute the baked stub for each theme type and exercise is_enabled().
 		if ( ! phpAvailable ) {

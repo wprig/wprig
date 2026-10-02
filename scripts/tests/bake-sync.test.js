@@ -209,6 +209,24 @@ describe( 'parseManifestTargets + injectBakedHeader — post-bake layer', () => 
 		expect( injectBakedHeader( content ) ).toBe( content );
 	} );
 
+	test( 'injects the Baked header into CRLF docblocks', async () => {
+		const { injectBakedHeader } = await import( '../tasks/bakeSync.js' );
+		const content = PATTERN_TEMPLATE(
+			'Welcome',
+			'welcome',
+			'featured',
+			'<!-- wp:paragraph --><p>Hi</p><!-- /wp:paragraph -->'
+		).replace( /\n/g, '\r\n' );
+
+		const updated = injectBakedHeader( content );
+		expect( updated ).toContain( ' * Baked: yes' );
+		expect( updated.indexOf( 'Baked: yes' ) ).toBeLessThan(
+			updated.indexOf( 'Title:' )
+		);
+		// Idempotent.
+		expect( injectBakedHeader( updated ) ).toBe( updated );
+	} );
+
 	test( 'runPostBakeLayer marks every manifest pattern target and is idempotent', async () => {
 		const root = tempDir();
 		fs.mkdirSync( path.join( root, 'patterns' ), { recursive: true } );
@@ -319,6 +337,16 @@ describe( 'empty-state overlay rule (SPEC-016 §2.2)', () => {
 
 		runPostBakeLayer( root, [ 'fonts' ] );
 
+		expect( fs.existsSync( overlayPath ) ).toBe( true );
+	} );
+
+	test( 'keeps a malformed overlay instead of crashing after a successful bake', () => {
+		const root = tempDir();
+		const overlayPath = path.join( root, 'config', 'user-styles.json' );
+		fs.mkdirSync( path.dirname( overlayPath ), { recursive: true } );
+		fs.writeFileSync( overlayPath, '{ not valid json' );
+
+		expect( () => runPostBakeLayer( root, [ 'styles' ] ) ).not.toThrow();
 		expect( fs.existsSync( overlayPath ) ).toBe( true );
 	} );
 } );

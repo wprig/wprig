@@ -133,17 +133,20 @@ export function injectBakedHeader( content ) {
 		return content;
 	}
 
-	const docblockOpen = content.match( /^<\?php\s*\n\/\*\*\s*\n/ );
+	// Accept LF and CRLF docblocks — Windows-authored pattern files must
+	// still get the marker.
+	const docblockOpen = content.match( /^<\?php[ \t]*\r?\n\/\*\*[ \t]*\r?\n/ );
 
 	if ( ! docblockOpen ) {
 		return content;
 	}
 
+	const eol = docblockOpen[ 0 ].includes( '\r\n' ) ? '\r\n' : '\n';
 	const insertAt = docblockOpen[ 0 ].length;
 
 	return (
 		content.slice( 0, insertAt ) +
-		` * ${ BAKED_MARKER }\n` +
+		` * ${ BAKED_MARKER }${ eol }` +
 		content.slice( insertAt )
 	);
 }
@@ -260,11 +263,21 @@ export function runPostBakeLayer( root, scopes, options = {} ) {
 		const overlayPath = path.join( root, OVERLAY_RELATIVE_PATH );
 
 		if ( fs.existsSync( overlayPath ) ) {
-			const overlay = JSON.parse(
-				fs.readFileSync( overlayPath, 'utf8' )
-			);
+			let overlay;
 
-			if ( isOverlayEmpty( overlay ) ) {
+			try {
+				overlay = JSON.parse( fs.readFileSync( overlayPath, 'utf8' ) );
+			} catch ( error ) {
+				// A malformed overlay must not fail an otherwise successful
+				// bake; keep the file so the user can repair it.
+				logger.warn(
+					`Could not parse ${ OVERLAY_RELATIVE_PATH } (${ error.message }) — ` +
+						'skipping the empty-state rule. Fix or re-bake the overlay.'
+				);
+				overlay = undefined;
+			}
+
+			if ( overlay !== undefined && isOverlayEmpty( overlay ) ) {
 				fs.rmSync( overlayPath );
 				logger.info(
 					`No baked style or font changes — removed empty ${ OVERLAY_RELATIVE_PATH }.`

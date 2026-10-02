@@ -580,8 +580,14 @@ async function updateCustomMedia( tokens ) {
  * @return {Array<Array<string>>} [ alias, full-query ] pairs.
  */
 export function buildCustomMediaAliases( breakpoints = {} ) {
-	const mobile = parsePx( breakpoints.mobile || '480px' );
-	const tablet = parsePx( breakpoints.tablet || '782px' );
+	const mobile = parsePx(
+		breakpoints.mobile || '480px',
+		'breakpoints.mobile'
+	);
+	const tablet = parsePx(
+		breakpoints.tablet || '782px',
+		'breakpoints.tablet'
+	);
 
 	return [
 		[ '--narrow-menu-query', `screen and (max-width: ${ mobile }px)` ],
@@ -622,14 +628,21 @@ ${ body }
 }
 
 /**
- * Parses a px length into a number (defaults to 480 for safety).
+ * Parses a px length into a number. A present-but-unparseable value throws —
+ * a silent default would generate wrong media queries with no warning.
  *
- * @param {string} value CSS length in px.
+ * @param {string} value  CSS length in px.
+ * @param {string} [name] Breakpoint name for the error message.
  * @return {number} Numeric px value.
  */
-function parsePx( value ) {
+function parsePx( value, name = 'breakpoint' ) {
 	const match = String( value ).match( /^([\d.]+)px$/ );
-	return match ? parseFloat( match[ 1 ] ) : 480;
+	if ( ! match ) {
+		throw new Error(
+			`config/tokens.json ${ name } "${ value }" is not a px length (e.g. "480px").`
+		);
+	}
+	return parseFloat( match[ 1 ] );
 }
 
 /**
@@ -1108,6 +1121,40 @@ export function toLegacyFlat( tokens ) {
 	const color = resolved.primitives.color;
 	const sem = resolved.semantic;
 	const font = resolved.primitives.font;
+
+	// The v1 view hardcodes the canonical hue/step structure; fail with an
+	// actionable message instead of an opaque TypeError deep in the mapping.
+	const requiredPaths = [
+		[ 'primitives.color.brand.500', color?.brand?.[ '500' ] ],
+		[ 'primitives.color.accent.500', color?.accent?.[ '500' ] ],
+		[ 'primitives.color.red.500', color?.red?.[ '500' ] ],
+		[ 'primitives.color.green.500', color?.green?.[ '500' ] ],
+		[ 'primitives.color.blue.500', color?.blue?.[ '500' ] ],
+		[ 'primitives.color.yellow.500', color?.yellow?.[ '500' ] ],
+		[ 'primitives.color.neutral.900', color?.neutral?.[ '900' ] ],
+		[ 'primitives.color.neutral.500', color?.neutral?.[ '500' ] ],
+		[ 'primitives.color.neutral.100', color?.neutral?.[ '100' ] ],
+		[ 'semantic.text.light', sem?.text?.light ],
+		[ 'semantic.surface.light', sem?.surface?.light ],
+		[ 'primitives.font.family', resolved.primitives.font?.family ],
+		[ 'primitives.font.size', resolved.primitives.font?.size ],
+		[ 'primitives.font.leading.base', font?.leading?.base ],
+		[ 'primitives.layout.content', resolved.primitives.layout?.content ],
+		[ 'primitives.layout.wide', resolved.primitives.layout?.wide ],
+		[ 'primitives.space.base', resolved.primitives.space?.base ],
+		[ 'primitives.breakpoint', resolved.primitives.breakpoint ],
+	];
+	const missing = requiredPaths
+		.filter( ( [ , value ] ) => value === undefined )
+		.map( ( [ tokenPath ] ) => `"${ tokenPath }"` );
+
+	if ( missing.length ) {
+		throw new Error(
+			`config/tokens.json is missing required primitive(s): ${ missing.join(
+				', '
+			) }. The v1-flat view (theme.json/Tailwind/custom-media) needs the canonical hue, layout, space, font, and breakpoint structure (SPEC-017 §4).`
+		);
+	}
 
 	return {
 		colors: {

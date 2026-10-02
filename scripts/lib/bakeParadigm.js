@@ -123,8 +123,19 @@ export function toPhpArray( value, depth = 0 ) {
  * @param {Object} definitions     Paradigm definitions { themeTypes, tags }.
  * @return {string} PHP source for the baked Paradigm class.
  */
+/**
+ * Escapes a string for interpolation into a single-quoted PHP literal.
+ *
+ * @param {string} value Raw value.
+ * @return {string} Escaped value.
+ */
+function phpSingleQuoteEscape( value ) {
+	return String( value ).replace( /\\/g, '\\\\' ).replace( /'/g, "\\'" );
+}
+
 export function bakeParadigmClass( activeThemeType, definitions ) {
 	const phpDefinitions = toPhpArray( definitions, 2 );
+	const safeThemeType = phpSingleQuoteEscape( activeThemeType );
 	const phpBody = `<?php
 /**
  * WP_Rig\\WP_Rig\\Paradigm class
@@ -137,7 +148,7 @@ namespace WP_Rig\\WP_Rig;
 /**
  * Single source of truth for WP Rig theme-dev paradigms.
  *
- * BAKED AT BUILD TIME: the active theme type ("${ activeThemeType }") and the
+ * BAKED AT BUILD TIME: the active theme type ("${ safeThemeType }") and the
  * tag matrix are inlined below. The bundled theme performs no config reads at
  * runtime. In development this class is generated from the paradigm config.
  */
@@ -148,7 +159,7 @@ class Paradigm {
 	 *
 	 * @var string
 	 */
-	const ACTIVE_THEME_TYPE = '${ activeThemeType }';
+	const ACTIVE_THEME_TYPE = '${ safeThemeType }';
 
 	/**
 	 * Cached paradigm definitions.

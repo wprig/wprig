@@ -195,10 +195,10 @@ export function runTemplates( ctx ) {
 					body: fs.readFileSync( bodyPath, 'utf8' ),
 				} )
 			);
-			fs.writeFileSync(
-				templateStage,
-				`<!-- wp:pattern {"slug":"${ ctx.themeSlug }/${ runtimeSlug }"} /-->\n`
-			);
+			const patternRef = `<!-- wp:pattern {"slug":${ JSON.stringify(
+				`${ ctx.themeSlug }/${ runtimeSlug }`
+			) }} /-->\n`;
+			fs.writeFileSync( templateStage, patternRef );
 		} else {
 			fs.copyFileSync( bodyPath, templateStage );
 		}

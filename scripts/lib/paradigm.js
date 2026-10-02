@@ -14,9 +14,15 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import themeConfig from '../../config/themeConfig.js';
 
-const PARADIGMS_PATH = path.resolve( process.cwd(), 'config/paradigms.json' );
+// Resolved relative to this module (not the cwd): the helper lives inside the
+// theme and describes that theme, so it must work from any invoking cwd.
+const PARADIGMS_PATH = path.resolve(
+	path.dirname( fileURLToPath( import.meta.url ) ),
+	'../../config/paradigms.json'
+);
 
 let cachedDefinitions = null;
 

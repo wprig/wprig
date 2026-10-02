@@ -83,7 +83,12 @@ const rule = ( primary ) => ( root, result ) => {
 	const valueMap = tokenValueMap();
 
 	root.walkDecls( ( decl ) => {
-		const literals = ( decl.value || '' ).match( /#[0-9a-fA-F]{3,6}/g );
+		// 3- or 6-digit hex only, and not the prefix of a longer hex token
+		// (e.g. 8-digit #RRGGBBAA) — the bare {3,6} scan matched the first
+		// six digits of alpha hex and reported false positives.
+		const literals = ( decl.value || '' ).match(
+			/#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-fA-F])/g
+		);
 		if ( ! literals ) {
 			return;
 		}

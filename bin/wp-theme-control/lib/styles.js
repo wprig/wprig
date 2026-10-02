@@ -74,9 +74,19 @@ export function runStyles( ctx, options = {} ) {
 		die( 'WordPress produced invalid Global Styles data' );
 	}
 
-	const existingOverlay = fs.existsSync( target )
-		? JSON.parse( fs.readFileSync( target, 'utf8' ) )
-		: null;
+	let existingOverlay = null;
+	if ( fs.existsSync( target ) ) {
+		try {
+			existingOverlay = JSON.parse( fs.readFileSync( target, 'utf8' ) );
+		} catch ( error ) {
+			// A malformed overlay is replaced by the fresh capture rather
+			// than failing the bake; the previous content is unrecoverable
+			// anyway and the run backup keeps a copy.
+			warn(
+				`existing ${ OVERLAY_RELATIVE_PATH } is not valid JSON (${ error.message }) — starting a fresh overlay`
+			);
+		}
+	}
 
 	const overlay = buildStylesOverlay( existingOverlay, {
 		userData,

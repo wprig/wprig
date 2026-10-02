@@ -4,8 +4,10 @@
  * External dependencies
  */
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as childProcess from 'child_process';
 
 /**
  * Internal dependencies
@@ -113,4 +115,30 @@ test( 'isFeatureEnabled fails fast on an unknown tag', () => {
 	expect( () => isFeatureEnabled( 'bogus-tag' ) ).toThrow(
 		/Unknown paradigm tag "bogus-tag"/
 	);
+} );
+
+test( 'loadParadigms resolves config relative to the module, not the cwd', () => {
+	// The helper lives inside the theme and describes that theme, so it must
+	// work regardless of the invoking process cwd (npm --prefix, programmatic
+	// use, editors). Reproduced via a child node process with a foreign cwd.
+	const { spawnSync } = childProcess;
+	const script = [
+		`import { loadParadigms } from ${ JSON.stringify(
+			path.resolve( __dirname, '../lib/paradigm.js' )
+		) };`,
+		'const p = loadParadigms();',
+		'console.log(JSON.stringify({ ok: true, types: Object.keys(p.themeTypes) }));',
+	].join( '\n' );
+
+	const result = spawnSync(
+		process.execPath,
+		[ '--input-type=module', '-e', script ],
+		{
+			cwd: fs.mkdtempSync( path.join( os.tmpdir(), 'paradigm-cwd-' ) ),
+			encoding: 'utf8',
+		}
+	);
+
+	expect( result.status ).toBe( 0 );
+	expect( JSON.parse( result.stdout ).ok ).toBe( true );
 } );

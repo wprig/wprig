@@ -8,9 +8,10 @@
  * @package wp_rig
  */
 
-// If we are not running inside WordPress, abort.
+// If we are not running inside WordPress, abort. WordPress is not loaded in
+// this state, so wp_json_encode() is unavailable — emit a literal JSON string.
 if ( ! defined( 'ABSPATH' ) ) {
-	echo wp_json_encode( array( 'error' => 'WordPress context not detected' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode -- Early abort: WP may not be loaded, so wp_json_encode() is unavailable.
+	echo '{"error":"WordPress context not detected"}';
 	exit( 1 );
 }
 
