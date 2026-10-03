@@ -48,6 +48,7 @@ class Component implements Component_Interface, Asset_Provider {
 	public function initialize() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'action_enqueue_navigation_script' ) );
 		add_action( 'wp_print_footer_scripts', array( $this, 'action_print_skip_link_focus_fix' ) );
+		add_action( 'wp_print_footer_scripts', array( $this, 'action_print_scrollable_region_focus' ) );
 		add_filter( 'nav_menu_link_attributes', array( $this, 'filter_nav_menu_link_attributes_aria_current' ), 10, 2 );
 		add_filter( 'page_menu_link_attributes', array( $this, 'filter_nav_menu_link_attributes_aria_current' ), 10, 2 );
 	}
@@ -99,6 +100,23 @@ class Component implements Component_Interface, Asset_Provider {
 		?>
 		<script>
 		/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
+		</script>
+		<?php
+	}
+
+	/**
+	 * Makes scrollable regions keyboard-focusable (WCAG 2.1.1 / 2.1.2).
+	 *
+	 * Elements whose content scrolls (e.g. `pre`/code blocks styled with
+	 * `overflow: auto`) must be reachable by keyboard or users cannot scroll
+	 * them at all. Marks such elements with `tabindex="0"` unless they are
+	 * already focusable. Printed inline because it is tiny and has no
+	 * dependencies.
+	 */
+	public function action_print_scrollable_region_focus() {
+		?>
+		<script>
+		(function(){function m(){Array.prototype.forEach.call(document.querySelectorAll("pre,code,table,blockquote"),function(n){var s=n.scrollWidth>n.clientWidth||n.scrollHeight>n.clientHeight;if(!s||n.hasAttribute("tabindex"))return;var t=n.tagName;if("A"===t||"BUTTON"===t||"INPUT"===t||"SELECT"===t||"TEXTAREA"===t||"IFRAME"===t)return;n.setAttribute("tabindex","0")})}if("loading"===document.readyState){document.addEventListener("DOMContentLoaded",m)}else{m()}})();
 		</script>
 		<?php
 	}

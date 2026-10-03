@@ -9,18 +9,35 @@ import * as path from 'path';
 // import dotenv from 'dotenv';
 // dotenv.config();
 
-const configPath = path.resolve( process.cwd(), 'config/config.json' );
-const config = JSON.parse( fs.readFileSync( configPath, 'utf-8' ) );
+const readJson = ( filePath: string ) =>
+	fs.existsSync( filePath )
+		? JSON.parse( fs.readFileSync( filePath, 'utf-8' ) )
+		: {};
 
-const proxyURL = config.dev.browserSync.proxyURL || 'localhost';
-const protocol = config.dev.browserSync.https ? 'https' : 'http';
+// Merge config.json with the gitignored config.local.json override so the
+// suite can point at the right dev URL / credentials per machine.
+const config = readJson( path.resolve( process.cwd(), 'config/config.json' ) );
+const localConfig = readJson(
+	path.resolve( process.cwd(), 'config/config.local.json' )
+);
+const dev = { ...( config.dev || {} ), ...( localConfig.dev || {} ) };
+const browserSync = {
+	...( config.dev?.browserSync || {} ),
+	...( localConfig.dev?.browserSync || {} ),
+};
+const admin = {
+	...( config.dev?.admin || {} ),
+	...( localConfig.dev?.admin || {} ),
+};
+
+const proxyURL = browserSync.proxyURL || 'localhost';
+const protocol = browserSync.https ? 'https' : 'http';
 const wpBaseUrl = process.env.WP_BASE_URL || `${ protocol }://${ proxyURL }`;
 
 // Set WordPress admin credentials for @wordpress/e2e-test-utils-playwright
-process.env.WP_ADMIN_USER =
-	process.env.WP_ADMIN_USER || config.dev.admin?.user || 'admin';
+process.env.WP_ADMIN_USER = process.env.WP_ADMIN_USER || admin.user || 'admin';
 process.env.WP_ADMIN_PASSWORD =
-	process.env.WP_ADMIN_PASSWORD || config.dev.admin?.password || 'password';
+	process.env.WP_ADMIN_PASSWORD || admin.password || 'password';
 process.env.WP_USERNAME = process.env.WP_USERNAME || process.env.WP_ADMIN_USER;
 process.env.WP_PASSWORD =
 	process.env.WP_PASSWORD || process.env.WP_ADMIN_PASSWORD;
@@ -36,8 +53,11 @@ export default defineConfig( {
 	forbidOnly: !! process.env.CI,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
-	/* opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	/* Cap total workers: the Local-by-WP harness (nginx + PHP-FPM) cannot serve
+	 * an unbounded number of parallel pages across 3 browser projects — without
+	 * a cap, WebKit page loads exceed the default 30s timeout under load.
+	 * CI overrides to 1 worker below. */
+	workers: process.env.CI ? 1 : 4,
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: 'html',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

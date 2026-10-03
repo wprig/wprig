@@ -92,9 +92,10 @@
 	</rule>
 
 	<!-- Set the minimum supported WP version. This is used by several sniffs.
-		 The minimum version set here should be in line with the minimum WP version
-		 as set in the "Requires at least" tag in the readme.txt file. -->
-	<config name="minimum_supported_wp_version" value="4.5"/>
+		 WP Rig 3.5 is a "WordPress 7.1 Ready" platform release: PHPCS reasons
+		 against the modern baseline so deprecated/removed pre-7.1 API usage is
+		 flagged rather than silently permitted. -->
+	<config name="minimum_supported_wp_version" value="7.1"/>
 
 	<rule ref="WordPress.Arrays.MultipleStatementAlignment">
 		<properties>
@@ -113,7 +114,8 @@
 	#############################################################################
 	-->
 
-	<config name="testVersion" value="8.0-99.0"/>
+	<!-- The theme requires PHP 8.1+ (see composer.json / readme.txt). -->
+	<config name="testVersion" value="8.1-99.0"/>
 	<rule ref="PHPCompatibility" />
 
 </ruleset>

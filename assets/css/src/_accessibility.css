@@ -9,10 +9,12 @@
  */
 .screen-reader-text {
 	clip: rect(1px, 1px, 1px, 1px);
+	/* stylelint-disable-next-line declaration-no-important -- WP screen-reader-text pattern: !important guarantees the element stays visually hidden regardless of competing styles. */
 	position: absolute !important;
 	height: 1px;
 	width: 1px;
 	overflow: hidden;
+	/* stylelint-disable-next-line declaration-no-important -- WP screen-reader-text pattern: see above. */
 	word-wrap: normal !important;
 }
 
@@ -20,6 +22,7 @@
 	background-color: #f1f1f1;
 	border-radius: 3px;
 	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	/* stylelint-disable-next-line declaration-no-important -- WP screen-reader-text pattern: focus must restore clip despite any other rule. */
 	clip: auto !important;
 	color: #21759b;
 	display: block;

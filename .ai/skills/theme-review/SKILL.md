@@ -1,4 +1,5 @@
 ---
+name: theme-review
 description: Run and interpret WordPress.org theme review checks for WP Rig themes.
 globs: style.css, readme.txt, functions.php, inc/**/*.php, theme.json, templates/**/*, parts/**/*
 ---

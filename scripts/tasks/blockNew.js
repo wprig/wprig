@@ -20,7 +20,7 @@ import themeConfig from '../../config/themeConfig.js';
 async function createMinimalBlockJson( dir, options ) {
 	const raw = {
 		name: `${ options.namespace }/${ options.slug }`,
-		apiVersion: 2,
+		apiVersion: 3,
 		title: options.title
 			? options.title
 					.replace( /&quot;/g, '"' )
@@ -72,6 +72,8 @@ async function adjustBlockJson( dir, options ) {
 	}
 	const raw = await fse.readJSON( blockJsonPath );
 	raw.name = `${ options.namespace }/${ options.slug }`;
+	// Gutenberg 23.8 / WP 7.1 default — never scaffold an older API version.
+	raw.apiVersion = 3;
 	if ( options.title ) {
 		raw.title = options.title
 			.replace( /&quot;/g, '"' )

@@ -2,9 +2,9 @@
 Contributors: mor10, bamadesigner, ataylorme, felixarntz, et.al
 Tags:
 Requires at least: 4.8
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 3.4.2
+Stable tag: 1.0.0
 License: GNU General Public License v3.0 (or later)
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

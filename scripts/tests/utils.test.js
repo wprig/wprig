@@ -1,5 +1,4 @@
 /* eslint-env es6 */
-/* global test, expect */
 
 /**
  * Internal dependencies
@@ -10,6 +9,7 @@ import {
 	backslashToForwardSlash,
 	appendBaseToFilePathArray,
 	getReplacements,
+	applyReplacements,
 } from '../lib/utils.js';
 
 test( 'getAssetPath maps assets to src directory', () => {
@@ -92,4 +92,19 @@ test( 'getReplacements protects block namespaces and block classes', () => {
 	expect( testBlockName.replace( searchValue, replaceValue ) ).toBe(
 		testBlockName
 	); // Should remain unchanged!
+} );
+
+test( 'applyReplacements inserts $-bearing replacement values literally', () => {
+	// Regression: replacement values were interpolated into String.replace,
+	// so a theme name/slug containing "$&" or "$1" expanded as a replacement
+	// pattern and corrupted production output.
+	const replacements = [
+		{
+			searchValue: new RegExp( escapeRegExp( 'wp-rig' ), 'g' ),
+			replaceValue: 'my-$&-theme',
+		},
+	];
+	expect( applyReplacements( 'Powered by wp-rig.', replacements ) ).toBe(
+		'Powered by my-$&-theme.'
+	);
 } );

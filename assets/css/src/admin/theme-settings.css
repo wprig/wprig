@@ -1,30 +1,28 @@
-#wp-rig-settings-page {
-	.components-panel__row {
-		flex-direction: column;
-		max-width: 45%;
-		align-items: normal;
-		margin-top: 1.3em;
-	}
-	#settings-saved {
-		position: fixed;
-		width: 50%;
-		top: 50px;
+.wp-rig-settings-page .components-panel__row {
+	flex-direction: column;
+	max-width: 45%;
+	align-items: normal;
+	margin-top: 1.3em;
+}
 
+.wp-rig-settings-page .settings-saved {
+	position: fixed;
+	width: 50%;
+	top: 50px;
+}
 
-		.components-snackbar-list {
-			position: relative;
+.wp-rig-settings-page .settings-saved .components-snackbar-list {
+	position: relative;
+}
 
-			& > div {
-				position: relative;
-				left: 0;
-				animation: swipeIn .2s forwards;
+.wp-rig-settings-page .settings-saved .components-snackbar-list > div {
+	position: relative;
+	left: 0;
+	animation: swipeIn .2s forwards;
+}
 
-				.components-snackbar {
-					background: #3c8000;
-				}
-			}
-		}
-	}
+.wp-rig-settings-page .settings-saved .components-snackbar {
+	background: #3c8000;
 }
 
 @keyframes swipeIn {

@@ -1,4 +1,5 @@
 ---
+name: gutenberg-blocks
 description: Guide for creating and managing theme-scoped Gutenberg blocks (React and PHP-only) in WP Rig.
 globs: assets/blocks/**/*, inc/Blocks/Component.php, build-js.js, build-css.js
 ---

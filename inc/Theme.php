@@ -166,6 +166,15 @@ class Theme {
 			$config = array_replace_recursive( $config, $custom_config );
 		}
 
+		// config.local.json is the local-dev override layer. Mirror the JS merge
+		// chain (config.default.json -> config.json -> config.local.json) so PHP
+		// paradigm gating (Paradigm::is_enabled) and the JS build resolve the same
+		// active theme type (e.g. a block-based override in a local clone).
+		$local_config = get_config_content( 'config.local.json' );
+		if ( 'config.json' === $filename && is_array( $local_config ) ) {
+			$config = array_replace_recursive( $config, $local_config );
+		}
+
 		/**
 		 * Filters the theme configuration.
 		 *

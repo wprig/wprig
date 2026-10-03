@@ -2275,7 +2275,12 @@ Please update the relevant PostCSS source file under \`assets/css/src/\` to reso
 				<div className="wprig-toolbar-brand">
 					<span>WP Rig Tools</span>
 				</div>
-				<div className="wprig-toolbar-nav" role="tablist">
+				<div className="wprig-toolbar-nav">
+					<div
+						className="wprig-toolbar-tabs"
+						role="tablist"
+						aria-label="Toolbar tabs"
+					>
 					<button
 						type="button"
 						role="tab"
@@ -2363,6 +2368,7 @@ Please update the relevant PostCSS source file under \`assets/css/src/\` to reso
 							</span>
 						) }
 					</button>
+					</div>
 
 					<button
 						type="button"

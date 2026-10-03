@@ -1,4 +1,5 @@
 ---
+name: wp-cli
 description: Guide for using WP Rig custom WP-CLI commands to manage development environments.
 globs: wp-cli/**/*.php
 ---

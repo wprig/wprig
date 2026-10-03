@@ -1,56 +1,92 @@
 ---
-description: Guide to managing and promoting theme versions in WP Rig.
-globs: package.json, style.css, readme.txt, CHANGELOG.md
+name: version-management
+description: Guide to managing the WP Rig framework version and the theme version independently.
+globs: config/framework.json, config/config.default.json, config/config.json, package.json, style.css, readme.txt, CHANGELOG.md
 ---
 
 # Version Management in WP Rig
 
-This guide describes how to manage and promote theme versions in WP Rig using automated tooling.
+WP Rig tracks **two independent versions**:
 
-## Core Principle
+| Version | What it is | Single source of truth | Bundled? |
+| --- | --- | --- | --- |
+| **WP Rig framework version** | The version of WP Rig the theme is built on | `config/framework.json` (mirrored in `package.json`) | **No** — source-only, stripped on `childify` |
+| **Theme version** | The version of the theme being built with WP Rig | `config/config.default.json` → `theme.version` (overridable in `config/config.json`) | Yes — stamped into `style.css` / `readme.txt` |
 
-Theme versions must be consistent across all metadata files. WP Rig uses `package.json` as the primary source of truth for tooling, and `style.css` as the source of truth for WordPress.
+The framework version never appears in a theme built with WP Rig: `config/` is
+not part of the production bundle, and `childify` deletes
+`config/framework.json`. `wp_rig()->get_wp_rig_version()` therefore returns
+`null` in a built theme.
 
-## Automated Version Promotion
+## Assessing the versions
 
-WP Rig provides a CLI command to update all version-related files simultaneously.
+```bash
+npm run rig version
+```
 
-### Usage
+Prints both:
+
+```
+Theme version:         1.0.0
+WP Rig framework version: 3.5.0
+```
+
+In a built theme the framework line reads `not present (built theme)`.
+
+## Promoting the theme version
 
 ```bash
 npm run rig version <new-version>
 ```
 
+Updates the **theme** version only:
+
+1. `config/config.default.json` → `theme.version`
+2. `config/config.json` → `theme.version` (if present)
+3. `style.css` → `Version:` header
+4. `readme.txt` → `Stable tag:`
+5. `CHANGELOG.md` → new section
+
+The production build stamps `style.css` / `readme.txt` from
+`config.theme.version`, so the built theme always reports the theme version —
+never the framework version.
+
+## Promoting the WP Rig framework version
+
+```bash
+npm run rig version:framework <new-version>
+```
+
+Updates the **framework** version only:
+
+1. `config/framework.json` → `version` (the single source of truth)
+2. `package.json` → `version` (npm mirror, source-only)
+3. `CHANGELOG.md` → new section
+
 ### Options
 
-- `-d, --description <text>`: Provide a short description for the `CHANGELOG.md` entry.
+Both commands accept `-d, --description <text>` for the `CHANGELOG.md` entry.
 
-### Files Updated
+## Manual verification
 
-1. **`package.json`**: Updates the `"version"` field.
-2. **`style.css`**: Updates the `Version:` header.
-3. **`readme.txt`**: Updates the `Stable tag:` field.
-4. **`CHANGELOG.md`**: Adds a new version section at the top.
+1. **Changelog**: ensure the new entry reflects the release.
+2. **WordPress Admin**: the Appearance → Themes version is the **theme** version.
+3. **Source repo**: `npm run rig version` shows both numbers.
+4. **Built theme**: confirm no `config/framework.json` exists and
+   `wp_rig()->get_wp_rig_version()` returns `null`.
 
-## Manual Verification
+## PHP implementation
 
-After running the version promotion command, you should verify:
-
-1.  **Changelog**: Ensure the new entry accurately reflects the changes in the release.
-2.  **WordPress Admin**: Check the theme version in the Appearance -> Themes screen.
-3.  **Asset Versioning**: Verify that enqueued scripts and styles are using the new version (WP Rig does this automatically via the `Versioning_Trait`).
-
-## PHP Implementation
-
-WP Rig components use the `Versioning_Trait` to fetch the theme version dynamically from `style.css`.
+- `Versioning_Trait::get_version()` — theme version (from `style.css`, via `wp_get_theme()`); drives asset cache-busting.
+- `Versioning_Trait::get_wp_rig_version()` — framework version (from `config/framework.json`); `null` when absent.
 
 ```php
 // In a component
-$version = $this->get_version();
-wp_enqueue_style( 'my-handle', $url, [], $version );
+$theme_version     = $this->get_version();
+$framework_version = $this->get_wp_rig_version(); // null in a built theme
 ```
 
 ## Related Skills
 
-- [**Theme Bundling**](../theme-bundling/SKILL.md): Preparing the theme for distribution.
-- [**npm Scripts**](../npm-scripts/SKILL.md): Other utility scripts in WP Rig.
+- [**Theme Bundling**](../theme-bundling/SKILL.md): preparing the theme for distribution.
+- [**npm Scripts**](../npm-scripts/SKILL.md): other utility scripts in WP Rig.

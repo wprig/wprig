@@ -2,6 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import inquirer from 'inquirer';
 import { exec } from '../lib/cli-utils.js';
+import {
+	teardownClassicArtifacts,
+	stripLocalParadigmOverrides,
+} from '../lib/paradigm-switch.js';
 
 /**
  * Initializes WP Rig theme configuration.
@@ -42,6 +46,29 @@ export default async function runInit( opts = {} ) {
 		process.stdin.isTTY &&
 		! process.env.CI &&
 		! opts.nonInteractive;
+
+	// Theme type choices come from config/paradigms.json (single source of truth).
+	let themeTypeChoices = [];
+	try {
+		const paradigms = JSON.parse(
+			fs.readFileSync( path.join( configDir, 'paradigms.json' ), 'utf-8' )
+		);
+		themeTypeChoices = Object.entries( paradigms.themeTypes ?? {} ).map(
+			( [ value, definition ] ) => ( {
+				name: definition?.label || value,
+				value,
+			} )
+		);
+	} catch {
+		themeTypeChoices = [
+			{ name: 'Classic (Standard WP Rig)', value: 'classic' },
+			{
+				name: 'Universal (Hybrid theme with theme.json)',
+				value: 'universal',
+			},
+			{ name: 'Block-based (Full Site Editing)', value: 'block-based' },
+		];
+	}
 
 	let answers = null;
 
@@ -85,17 +112,7 @@ export default async function runInit( opts = {} ) {
 				type: 'list',
 				name: 'themeType',
 				message: 'What type of theme are you building?',
-				choices: [
-					{ name: 'Classic (Standard WP Rig)', value: 'classic' },
-					{
-						name: 'Universal (Hybrid theme with theme.json)',
-						value: 'universal',
-					},
-					{
-						name: 'Block-based (Full Site Editing)',
-						value: 'block-based',
-					},
-				],
+				choices: themeTypeChoices,
 				default: defaults?.theme?.themeType || 'classic',
 			},
 		] );
@@ -115,6 +132,18 @@ export default async function runInit( opts = {} ) {
 		...( userConfig.theme || {} ),
 		themeType: answers.themeType,
 	};
+
+	// Universal and block-based themes are block-capable: enable block
+	// compilation by default. The shipped default (config.default.json) is
+	// enableBlocks: false for classic themes, so a block-capable choice must
+	// flip it to true rather than inheriting the classic default.
+	const isBlockCapable =
+		answers.themeType === 'universal' ||
+		answers.themeType === 'block-based';
+	if ( isBlockCapable && userConfig.theme.enableBlocks !== true ) {
+		userConfig.theme.enableBlocks = true;
+	}
+
 	userConfig.dev = userConfig.dev || {};
 	userConfig.dev.browserSync = {
 		...( userConfig.dev.browserSync || {} ),
@@ -130,10 +159,39 @@ export default async function runInit( opts = {} ) {
 		'utf-8'
 	);
 
+	// The interactive init choice is authoritative: a stale paradigm override
+	// in config.local.json (gitignored machine layer) must never silently win
+	// the merge chain (config.default.json -> config.json -> config.local.json).
+	const localStrip = stripLocalParadigmOverrides( configDir );
+	if ( localStrip.modified ) {
+		console.log(
+			`- Cleared stale paradigm override(s) in config/config.local.json ( ${ localStrip.stripped.join(
+				', '
+			) } ) — init choice "${ answers.themeType }" is authoritative.`
+		);
+	}
+
+	if ( answers.themeType === 'classic' ) {
+		// A classic theme must never carry FSE artifacts: a leftover
+		// templates/index.html makes WordPress core treat the theme as a block
+		// theme (wp_is_block_theme()) and surface the Site Editor regardless
+		// of config. Move them to a backup instead of deleting.
+		const moved = teardownClassicArtifacts( root );
+		if ( moved.length ) {
+			console.log(
+				'\nClassic theme selected: moved FSE artifacts to backup:'
+			);
+			for ( const dest of moved ) {
+				console.log( `  - ${ dest }` );
+			}
+		}
+	}
+
 	if ( answers.themeType === 'universal' ) {
 		console.log( '\nSetting up Universal theme features...' );
 		try {
 			await exec( 'node node/editorSupport.js', { stdio: 'inherit' } );
+			await exec( 'node node/seedNavigation.js', { stdio: 'inherit' } );
 		} catch ( err ) {
 			console.error(
 				`Failed to run editor-support script: ${ err.message }`
@@ -145,6 +203,7 @@ export default async function runInit( opts = {} ) {
 		console.log( '\nSetting up Block-based theme features...' );
 		try {
 			await exec( 'node node/editorSupport.js', { stdio: 'inherit' } );
+			await exec( 'node node/seedNavigation.js', { stdio: 'inherit' } );
 			await exec( 'node scripts/convert-to-block-theme.js', {
 				stdio: 'inherit',
 			} );

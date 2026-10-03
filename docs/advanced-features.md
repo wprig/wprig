@@ -13,8 +13,9 @@ Behavior in WP Rig can be customized by editing `./config/config.json`. Here, de
 
 - **Customizer Settings**: Easily add custom Customizer settings using a simple `.json` file.
 - **Progressive Loading**: Optimized CSS loading for better performance.
-- **Modern CSS**: Support for modern CSS features and layouts (via PostCSS and Lightning CSS).
+- **Modern CSS**: Support for modern CSS features and layouts (compiled natively by **Lightning CSS** — nesting, custom media, `@layer`, container queries).
 - **Component Scaffolding**: System to quickly create new theme components following architectural standards.
+- **Paradigm system**: Choose **classic**, **universal**, or **block-based** via `theme.themeType`; features gate themselves through `config/paradigms.json`.
 
 ### Critical Asset Loading (Cookie-Based Inlining)
 
@@ -61,14 +62,16 @@ WP Rig includes a built-in system for creating and managing theme-scoped Gutenbe
 
 #### Quick Start
 - **Create a block (static)**:
-	- `npm run block:new -- hero --title="Hero"`
-	- `bun run block:new hero --title="Hero"`
+	- `npm run block:new hero --title="Hero"`
 - **Create a dynamic block (server-rendered)**:
 	- `npm run block:new:dynamic testimonial`
-	- `npm run block:new -- testimonial -d --title="Testimonial"`
+	- `npm run block:new testimonial -d --title="Testimonial"`
+- **Create a PHP-only block (auto-registered, no build)**:
+	- `npm run block:new newsletter --php`
 - **List blocks**: `npm run block:list`
 - **Remove a block**: `npm run block:remove wprig/hero`
 - **Promote to a plugin**: `npm run block:promote-plugin wprig/hero`
+- **Inspect/compile against the live site**: `npm run block:schema` and `npm run block:compile <ir.json>` (WP-CLI Gutenberg bridge).
 
 #### Command Reference
 - `block:new <namespace>/<slug>` or `<slug>`
@@ -76,6 +79,7 @@ WP Rig includes a built-in system for creating and managing theme-scoped Gutenbe
 		- `--title <string>`: Human title for the block
 		- `-d, --dynamic`: Generate a dynamic block with `render.php`
 		- `--ts`: Use TypeScript template (`.tsx`)
+		- `--php` / `--architecture php`: PHP-only block — no `src/` build, registered via `supports.autoRegister` (Gutenberg 23.8)
 		- `--category <string>`: Defaults to `widgets`
 		- `--icon <dashicon|svg>`
 		- `--description <string>`
@@ -83,6 +87,8 @@ WP Rig includes a built-in system for creating and managing theme-scoped Gutenbe
 		- `--no-style`: Do not create `style.css`
 		- `--no-editor-style`: Do not create `editor.css`
 		- `--view`: Also generate an optional frontend-only script (`view.js`)
+
+All scaffolds target `apiVersion: 3` (the Gutenberg 23.8 / WP 7.1 default).
 
 #### Filesystem Layout
 Each block lives under `assets/blocks/<slug>/`:
@@ -96,3 +102,55 @@ Each block lives under `assets/blocks/<slug>/`:
 
 #### Auto-registration in PHP
 The theme component at `inc/Blocks/Component.php` scans `assets/blocks/*/block.json` on `init`. No manual PHP changes are required after scaffolding a new block.
+
+### Icons & the Icon Block (WP 7.1)
+
+Drop SVG files into `assets/icons/` and WP Rig registers them with the native WordPress Icon API on `init`, so they appear in the editor's Icon block in **every paradigm** (classic, universal, block-based) — no component install required.
+
+- **Collection:** every icon is registered under the `wprig-icons` collection (namespaced `wprig-icons/<slug>`); the editor discovers them through the native REST endpoints.
+- **Child themes:** an icon in the child theme's `assets/icons/` overrides a parent icon with the same filename.
+- **Template tag:** `wp_rig()->wprig_icon( 'arrow-right', array( 'class' => 'my-icon' ) )` renders an icon. It prefers the natively registered icon and falls back to reading the file directly.
+- **Opt out:** `add_filter( 'wp_rig_icons_register_collection', '__return_false' );`
+- **Icon markup constraint:** WordPress core sanitizes registered icon content to `<path>` and `<polygon>` only. Icons built solely from other primitives (`<rect>`, `<circle>`, `<line>`, `<polyline>`, …) are skipped at registration (with a `wp_rig_log` note) rather than registered blank — convert them to `<path>`/`<polygon>` markup.
+- **WordPress < 7.1:** registration silently no-ops; `wprig_icon()` keeps working from the files.
+
+## Theme Fonts vs Baked Fonts (two layers, pick one home per family)
+
+WP Rig has two font pipelines. They complement each other but write to
+different layers — a family should live in **one** of them, not both:
+
+| Layer | Owner | Source of truth | Output |
+| :--- | :--- | :--- | :--- |
+| **Theme fonts** (`inc/Fonts`, all paradigms) | the `wp_rig_google_fonts` filter + `wp rig fonts-download` | Google Fonts list | `assets/fonts/<family>/` + `assets/css/src/google-fonts.css` @font-face, enqueued on the frontend and in the editor |
+| **Baked fonts** (`rig:bake fonts`, block-based themes) | Site Editor / Font Library | database (user activation + custom families) | `assets/fonts/<slug>/` + `config/user-styles.json` `fonts` block, merged into `theme.json` `fontFamilies` by `rig:tokens` |
+
+The Fonts component also registers Font Library **collections**
+(`modern-stacks`, `local-fonts`) so users can browse fonts in the editor —
+the bake then persists whichever families the user activates. That division
+is complementary, not overlapping.
+
+Rules of thumb:
+
+- **One home per family.** If a family is in the Google Fonts list
+  (`wp_rig_google_fonts`), serve it through the component's CSS; don't also
+  bake the same family from the Font Library. Same in reverse.
+- **After baking fonts, tokens families leave the editor presets.** The
+  user-styles overlay replaces the token-derived `fontFamilies` list in
+  `theme.json` wholesale (user layer wins — SPEC-016). Frontend styling is
+  unaffected (tokens CSS vars in `_tokens.generated.css` / `_tokens.custom.css`
+  keep working); the editor dropdown simply reflects the baked list. Re-bake
+  after token font changes, or run `rig:bake:clean` to re-home to tokens.
+- **Preload discipline.** The component's preload list
+  (`get_font_files_to_preload()`) is strictly scoped to fonts the component
+  itself downloaded (marked by `google-fonts.css`). Baked Font Library files
+  in the same directory are never preloaded — WP serves them through
+  theme.json instead.
+
+Consequences and known boundaries:
+
+- The Font Library files baked into `assets/fonts/<slug>/` are the Font
+  Library's own copies; `google-fonts.css` is not regenerated for them, and
+  that is intentional — WP renders them from `theme.json` `@font-face`
+  definitions.
+- Removing a baked font family from the Font Library in the editor and
+  re-baking updates the overlay; deleting the files manually leaves orphans.

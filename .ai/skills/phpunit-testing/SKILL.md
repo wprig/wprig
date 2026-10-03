@@ -1,4 +1,5 @@
 ---
+name: phpunit-testing
 description: Guide for writing and running PHPUnit unit and integration tests for WP Rig theme components.
 globs: tests/phpunit/**/*, phpunit.xml.dist
 ---
@@ -19,8 +20,9 @@ Use the following commands to execute your tests:
 
 ### Run All Tests
 ```bash
-composer test
+composer test:all
 ```
+(`test:all` = unit + integration + PHPStan)
 
 ### Run Unit Tests Only
 ```bash

@@ -19,7 +19,7 @@ export {};
 const getMobileBreakpoint = (): number => {
 	const rootStyles = getComputedStyle( document.documentElement );
 	const breakpointStr = rootStyles
-		.getPropertyValue( '--mobile-breakpoint' )
+		.getPropertyValue( '--breakpoint-tablet' )
 		.trim();
 	if ( breakpointStr ) {
 		const value = parseFloat( breakpointStr );
@@ -27,17 +27,12 @@ const getMobileBreakpoint = (): number => {
 			return value;
 		}
 	}
-	return 55; // Fallback
+	return 782; // Fallback (viewport tablet)
 };
 
 window.mobileBreakpoint = getMobileBreakpoint();
 
 window.isWidthMobile = (): boolean => {
-	const fontSizeStr = getComputedStyle(
-		document.documentElement
-	).fontSize.slice( 0, -2 );
-	const fontSize = parseFloat( fontSizeStr );
-	const emValue = window.innerWidth / fontSize;
 	window.wpRig = document.querySelector( '.wp-rig' );
-	return emValue <= window.mobileBreakpoint;
+	return window.innerWidth <= window.mobileBreakpoint;
 };

@@ -1,5 +1,5 @@
 import { cleanCSS, cleanJS } from './clean.js';
-import { images, convertToWebP } from './images.js';
+import { images, convertToModernFormats } from './images.js';
 import phpTask from './php.js';
 import { propagateTokens } from './tokens.js';
 import {
@@ -48,7 +48,7 @@ export default async function runBuild( {
 	// Images and PHP in parallel
 	const postBuildTasks = [
 		runTask( images, 'images' ).then( () =>
-			runTask( convertToWebP, 'convertToWebP' )
+			runTask( convertToModernFormats, 'convertToModernFormats' )
 		),
 		new Promise( ( resolve, reject ) => {
 			try {

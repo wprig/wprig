@@ -9,7 +9,20 @@
     "description": "A progressive theme development rig for WordPress.",
     "version": "1.0.0",
     "themeType": "classic",
-    "enableBlocks": false
+    "enableBlocks": false,
+    "designTokens": {
+      "enabled": true,
+      "source": "config/tokens.json",
+      "colorBinding": "auto",
+      "legacyAliases": false,
+      "emit": {
+        "tailwind": false
+      },
+      "contrast": {
+        "level": "AA",
+        "onFail": "warn"
+      }
+    }
   },
   "performance": {
     "cleanup_emojis": true,
@@ -40,6 +53,9 @@
       "preload": [
         "_custom-media.css"
       ],
+      "preloadBlockBased": [
+        "_blocks-based.css"
+      ],
       "features": {
         "mobile-nav-type": "modern"
       }
@@ -67,5 +83,17 @@
       "assets/svg/*.svg",
       "assets/icons/*.svg"
     ]
+  },
+  "patterns": {
+    "categories": {
+      "featured": "Featured",
+      "hero": "Hero",
+      "call-to-action": "Call to Action",
+      "services": "Services",
+      "team": "Team",
+      "testimonials": "Testimonials",
+      "portfolio": "Portfolio",
+      "posts": "Posts"
+    }
   }
 }

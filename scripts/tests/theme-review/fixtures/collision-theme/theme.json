@@ -1,0 +1,34 @@
+{
+  "version": 3,
+  "settings": {
+    "color": {
+      "defaultPalette": true,
+      "palette": [
+        {
+          "slug": "black",
+          "color": "#111111",
+          "name": "Ink"
+        },
+        {
+          "slug": "brand",
+          "color": "#e36d60",
+          "name": "Brand"
+        }
+      ]
+    },
+    "typography": {
+      "fontSizes": [
+        {
+          "slug": "small",
+          "size": "0.8rem",
+          "name": "Small"
+        },
+        {
+          "slug": "giant",
+          "size": "3rem",
+          "name": "Giant"
+        }
+      ]
+    }
+  }
+}

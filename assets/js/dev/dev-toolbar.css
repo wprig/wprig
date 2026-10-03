@@ -143,6 +143,13 @@ textarea:focus-visible,
 	height: 100%;
 }
 
+/* The tablist wraps only the tab buttons; display:contents keeps them in the
+ * dock's flex row while the other dock actions (purge/theme/close) stay as
+ * siblings OUTSIDE the tablist (a tablist may only contain role=tab children). */
+.wprig-toolbar-tabs {
+	display: contents;
+}
+
 .wprig-toolbar-tab {
 	background: transparent;
 	border: 1px solid transparent;
@@ -190,7 +197,7 @@ textarea:focus-visible,
 }
 
 .wprig-badge--warning {
-	background: #d97706;
+	background: #b45309; /* amber-700: >= 4.5:1 vs white at 10px bold */
 }
 
 .wprig-badge--info {

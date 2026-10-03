@@ -1,6 +1,6 @@
 /* stylelint-disable no-descending-specificity */
 /* Do not show the outline on the skip link target. */
-#primary[tabindex="-1"]:focus {
+.site-main[tabindex="-1"]:focus {
 	outline: 0;
 }
 
@@ -28,11 +28,11 @@ body.mobile-menu-open {
 	display: block;
 	margin: 0;
 	padding: 0.6em 1.2em 0.5em;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 	font-size: 80%;
 	text-transform: uppercase;
-	border: 2px solid var(--border-color-dark);
+	border: 2px solid var(--color-border-strong);
 	border-radius: 0;
 	background: transparent;
 
@@ -55,7 +55,7 @@ body.mobile-menu-open {
 	}
 
 	svg {
-		fill: var(--global-font-color);
+		fill: var(--color-text);
 	}
 }
 
@@ -94,7 +94,7 @@ body.mobile-menu-open {
 			}
 		}
 
-		& .menu-toggle.icon svg.close {
+		:where(&) .menu-toggle.icon svg.close {
 			display: block;
 		}
 	}
@@ -118,7 +118,7 @@ body.mobile-menu-open {
 			& .primary-menu-container {
 				position: absolute;
 				z-index: -5;
-				background: var(--content-background-color);
+				background: var(--color-surface-content);
 				width: 100vw;
 				top: 300px;
 				left: 0;
@@ -131,19 +131,16 @@ body.mobile-menu-open {
 				visibility: hidden;
 			}
 
-			&.nav--toggled-on {
+			:where(&.nav--toggled-on) .menu-toggle span.dashicons::before {
+				content: "\f158";
+			}
 
-				& .menu-toggle span.dashicons::before {
-					content: "\f158";
-				}
-
-				& .primary-menu-container {
-					top: 180px;
-					z-index: 5;
-					opacity: 1;
-					transition: opacity 0.3s ease, top 0.3s ease-out;
-					visibility: visible;
-				}
+			&.nav--toggled-on .primary-menu-container {
+				top: 180px;
+				z-index: 5;
+				opacity: 1;
+				transition: opacity 0.3s ease, top 0.3s ease-out;
+				visibility: visible;
 			}
 		}
 	}
@@ -175,7 +172,7 @@ body.mobile-menu-open {
 	display: inline-block;
 	width: 1em;          /* or a fixed px size */
 	height: 1em;
-	stroke: var(--border-color-dark);  /* inherit text color */
+	stroke: var(--color-border-strong);  /* inherit text color */
 	fill: none;
 	stroke-width: 2;
 	vector-effect: non-scaling-stroke; /* keeps stroke consistent when scaled */
@@ -186,7 +183,7 @@ body.mobile-menu-open {
 	transform: rotate(180deg);
 }
 
-.nav--toggle-sub li.menu-item--toggled-on > button.dropdown-toggle .dropdown-symbol {
+:where(.nav--toggle-sub li.menu-item--toggled-on) > button.dropdown-toggle .dropdown-symbol {
 	transform: rotate(180deg);
 }
 
@@ -206,7 +203,7 @@ body.mobile-menu-open {
 }
 
 @media (--wide-menu-query) {
-	#primary-menu {
+	.primary-menu {
 		gap: 1em;
 		.sub-menu {
 			width: 50vw;
@@ -228,7 +225,7 @@ body.mobile-menu-open {
 			position: absolute;
 			top: 100%;
 			flex-direction: column;
-			background: var(--sub-content-background-color);
+			background: var(--color-surface-subtle);
 			margin-left: 0;
 			box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
 			z-index: 100;
@@ -297,7 +294,7 @@ body.mobile-menu-open {
 	}
 
 	.entry-content {
-		.nav--toggle-sub ul.wp-block-navigation__container > ul:not(.wp-block-navigation__submenu-container) {
+		:where(.nav--toggle-sub ul.wp-block-navigation__container) > ul:not(.wp-block-navigation__submenu-container) {
 			position: relative;
 		}
 	}
@@ -320,7 +317,7 @@ body.mobile-menu-open {
 		color: var(--color-link);
 	}
 	a:hover, a:focus, a:active {
-		border-color: var(--color-link-active);
+		border-color: var(--color-link-hover);
 	}
 
 	.nav-links {
@@ -357,7 +354,7 @@ body.mobile-menu-open {
 		border: none;
 	}
 	.current {
-		border-color: var(--border-color-dark);
+		border-color: var(--color-border-strong);
 	}
 }
 
@@ -368,7 +365,7 @@ body.mobile-menu-open {
 	display: block;
 	margin: 0 auto 2em;
 	padding: 0 1em;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 
 	a, button {
@@ -376,7 +373,7 @@ body.mobile-menu-open {
 		width: 100%;
 		padding: 0.5em 1em 0.5em 0;
 		text-decoration: none;
-		color: var(--global-font-color);
+		color: var(--color-text);
 	}
 
 	button {
@@ -428,7 +425,7 @@ body.mobile-menu-open {
 			padding-right: 0;
 		}
 	}
-	.sub-menu .li.menu-item-has-children button.submenu-toggle {
+	:where(& .sub-menu li.menu-item-has-children) button.submenu-toggle {
 		justify-content: space-between;
 	}
 }
@@ -437,7 +434,7 @@ body.mobile-menu-open {
 ## Main navigation menu - overrides for navigation block
 --------------------------------------------------------------*/
 
-.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content {
+:where(.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content) {
 
 	& ul.wp-block-navigation__container {
 		width: 100%;
@@ -451,7 +448,7 @@ body.mobile-menu-open {
 		width: 100%;
 	}
 
-	& li.wp-block-navigation-submenu.has-child {
+	& li.wp-block-navigation-submenu {
 		flex-direction: row;
 		flex-wrap: wrap;
 
@@ -470,7 +467,7 @@ body.mobile-menu-open {
 	}
 }
 
-.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content .has-child .wp-block-navigation__submenu-container {
+:where(.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content .has-child) .wp-block-navigation__submenu-container {
 	padding: 0.3em 0.5em;
 }
 
@@ -538,7 +535,7 @@ body.mobile-menu-open {
 	/* 2nd-level parent items (Secondary level, located inside first submenu) */
 	.nav--toggle-sub ul ul li.menu-item-has-children,
 	.nav--toggle-sub ul ul li:has(ul),
-	.wp-block-navigation-item.has-child .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
+	:where(.wp-block-navigation-item.has-child) .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
 			anchor-name: --menu-item-anchor-secondary;
 			position: relative;
 	}
@@ -548,7 +545,7 @@ body.mobile-menu-open {
 			/* Set 2nd-level parent items to static to break circular containing-block constraints in anchors */
 			.nav--toggle-sub ul ul li.menu-item-has-children,
 			.nav--toggle-sub ul ul li:has(ul),
-			.wp-block-navigation-item.has-child .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
+			:where(.wp-block-navigation-item.has-child) .wp-block-navigation__submenu-container .wp-block-navigation-item.has-child {
 					position: static;
 			}
 
@@ -605,7 +602,7 @@ body.mobile-menu-open {
 		justify-content: flex-start;
 		padding: 1em;
 		z-index: -1;
-		background: var(--content-background-color);
+		background: var(--color-surface-content);
 		opacity: 0;
 		overflow: hidden;
 		display: flex;
@@ -635,19 +632,12 @@ body.mobile-menu-open {
 			}
 		}
 	}
-	#site-navigation {
+	.main-navigation {
 		width: 100%;
 		flex-grow: 1;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
-	}
-	.wp-block-navigation:not(.has-text-color) .wp-block-navigation__responsive-container.is-menu-open {
-		color: var(--global-font-color);
-	}
-	.wp-block-navigation:not(.has-background) .wp-block-navigation__responsive-container.is-menu-open {
-		background: var(--content-background-color);
-	}
-	.main-navigation {
+
 		li.menu-item {
 			button {
 				text-align: left;
@@ -694,6 +684,12 @@ body.mobile-menu-open {
 			}
 		}
 	}
+	.wp-block-navigation:not(.has-text-color) .wp-block-navigation__responsive-container.is-menu-open {
+		color: var(--color-text);
+	}
+	.wp-block-navigation:not(.has-background) .wp-block-navigation__responsive-container.is-menu-open {
+		background: var(--color-surface-content);
+	}
 }
 
 
@@ -705,12 +701,12 @@ body.mobile-menu-open {
 .site-main .posts-navigation,
 .site-main .post-navigation,
 .site-main .pagination {
-	border-bottom: 1px solid var(--border-color-dark);
+	border-bottom: 1px solid var(--color-border-strong);
 	margin: 0 auto 2em;
-	max-width: var(--content-width);
+	max-width: var(--layout-content);
 	overflow: hidden;
 	padding: 0 1.5rem 2em;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 }
 
@@ -740,12 +736,12 @@ body.mobile-menu-open {
 }
 
 .post-navigation-sub span {
-	color: var(--global-font-color);
+	color: var(--color-text);
 	text-decoration: none;
 	display: inline-block;
 }
 
-/* Hide injected parent-link item on desktop/wide screens (>=55em) */
+/* Hide injected parent-link item on desktop/wide screens (>=783px) */
 @media (--desktop-menu-query) {
 	.sub-menu > .menu-item--injected-parent-link {
 		display: none;

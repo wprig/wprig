@@ -21,6 +21,9 @@ import scaffoldPattern from './tasks/scaffoldPattern.js';
 import localizeAssets from './tasks/localizeAssets.js';
 import screenshotCompare from './tasks/screenshotCompare.js';
 import promoteVersion from './tasks/promoteVersion.js';
+import promoteFrameworkVersion from './tasks/promoteFrameworkVersion.js';
+import { readFrameworkVersion, readThemeVersion } from './lib/versions.js';
+import { bakeSync } from './tasks/bakeSync.js';
 
 // Setup paths
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
@@ -254,15 +257,82 @@ program
 	} );
 
 /**
- * Command: version
+ * Command: bake
+ *
+ * Site Editor bake & sync (vendored wp-theme-control wrapper). Everything
+ * after the scope is passed through to the vendored Bash scripts untouched,
+ * including upstream WP-CLI args (--path/--url/--user/--state-dir/--dry-run/
+ * --clean/--force). The paradigm gate and WP-root resolution live in the
+ * task module (SPEC-015 §5.1).
  */
 program
-	.command( 'version <newVersion>' )
-	.description( 'Promote the theme version across all relevant files' )
+	.command( 'bake [scope]' )
+	.description(
+		'Bake Site Editor changes (patterns, templates, fonts, Global Styles) into the theme'
+	)
+	.allowUnknownOption( true )
+	.action( async ( scope ) => {
+		const bakeIndex = process.argv.lastIndexOf( 'bake' );
+		const passthrough = process.argv
+			.slice( bakeIndex + 1 )
+			.filter( ( arg ) => arg !== scope && arg !== '--' );
+		const code = await bakeSync( scope || 'all', { passthrough } );
+		if ( code !== 0 ) {
+			process.exitCode = code;
+		}
+	} );
+
+/**
+ * Command: version [newVersion]
+ *
+ * Promotes the theme version. With no argument, prints both the theme version
+ * and the WP Rig framework version so they can be assessed independently.
+ */
+program
+	.command( 'version [newVersion]' )
+	.description(
+		'Promote the theme version (or print theme + WP Rig framework versions)'
+	)
+	.option( '-d, --description <description>', 'Changelog description' )
+	.action( async ( newVersion, opts ) => {
+		if ( ! newVersion ) {
+			const themeVersion = readThemeVersion( themeRoot );
+			const frameworkVersion = readFrameworkVersion( themeRoot );
+
+			logger.info(
+				`Theme version:         ${ themeVersion || 'unknown' }`
+			);
+			logger.info(
+				`WP Rig framework version: ${
+					frameworkVersion || 'not present (built theme)'
+				}`
+			);
+			return;
+		}
+
+		try {
+			await promoteVersion( themeRoot, newVersion, opts );
+		} catch ( e ) {
+			logger.error( e.message );
+			process.exit( 1 );
+		}
+	} );
+
+/**
+ * Command: version:framework
+ *
+ * Promotes the WP Rig framework version (config/framework.json + package.json),
+ * independently of the theme version.
+ */
+program
+	.command( 'version:framework <newVersion>' )
+	.description(
+		'Promote the WP Rig framework version (separate from the theme version)'
+	)
 	.option( '-d, --description <description>', 'Changelog description' )
 	.action( async ( newVersion, opts ) => {
 		try {
-			await promoteVersion( themeRoot, newVersion, opts );
+			await promoteFrameworkVersion( themeRoot, newVersion, opts );
 		} catch ( e ) {
 			logger.error( e.message );
 			process.exit( 1 );

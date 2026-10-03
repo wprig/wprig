@@ -1,0 +1,140 @@
+/**
+ * Block-based (FSE-only) theme styles — baseline starter styling.
+ *
+ * Single home for styles targeting strictly-FSE core blocks and theme parts
+ * (Navigation block, Query Loop, template parts). Loaded ONLY when the theme is
+ * block-capable (themeType `universal` | `block-based`) via the build's
+ * `dev.styles.preloadBlockBased` mechanism — it is never included in a classic
+ * build. This is a baseline, not a design system: keep rules minimal and avoid
+ * opinionated overrides that fight the editor's native output.
+ *
+ * Paradigm: `block-based` (see config/paradigms.json).
+ */
+
+/*--------------------------------------------------------------
+# Theme Parts — spacing baseline
+--------------------------------------------------------------*/
+
+/* Site header / footer template parts align with the content width and keep
+ * consistent inline padding instead of stretching full-bleed.
+ *
+ * FULL-BLEED OPT-OUT: add the `is-style-full-bleed` class to the template
+ * part (or its wrapping group) in the site editor — e.g. via the block's
+ * "Advanced → Additional CSS class" field or an `is-style-full-bleed`
+ * block style — to release this clamp (see the override rules below). */
+.wp-site-header,
+.wp-site-footer,
+.wp-block-template-part {
+	max-width: var(--layout-content);
+	margin-inline: auto;
+	padding-inline: 1.5rem;
+	width: 100%;
+}
+
+/* Full-bleed override — releases the content-width clamp + inline padding
+ * for parts explicitly marked `is-style-full-bleed` (must come after the
+ * default rules above so it wins the cascade). */
+.wp-site-header.is-style-full-bleed,
+.wp-site-footer.is-style-full-bleed,
+.wp-block-template-part.is-style-full-bleed {
+	max-width: none;
+	padding-inline: 0;
+}
+
+/*--------------------------------------------------------------
+# Navigation block — desktop layout + mobile-toggle alignment
+--------------------------------------------------------------*/
+
+/* Constrain the Navigation block to the site-header content width so items align
+ * with the content column instead of bleeding to the viewport edge. */
+.wp-site-header .wp-block-navigation,
+header.wp-block-template-part .wp-block-navigation {
+	max-width: var(--layout-content);
+	margin-inline: auto;
+}
+
+/* Full-bleed parts release their inner Navigation block's clamp too. */
+.wp-site-header.is-style-full-bleed .wp-block-navigation,
+.wp-block-template-part.is-style-full-bleed .wp-block-navigation {
+	max-width: none;
+	margin-inline: 0;
+}
+
+/* The mobile hamburger/close controls should never stretch full-bleed. */
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container-close {
+	width: auto;
+}
+
+/* Give the mobile drawer's inner content the same inline padding as the header. */
+.wp-block-navigation__responsive-container-content {
+	padding-inline: 1.5rem;
+}
+
+/*--------------------------------------------------------------
+# Page List inside Navigation — default-state baseline
+--------------------------------------------------------------*/
+
+/* The starter navigation ships inline `home-link` + `page-list` inner blocks
+ * (no `ref`), so a fresh rig never triggers core's lazy fallback-post path.
+ * Normalize the page-list to match the navigation-link look: inherit the
+ * nav block's font, gap, and color instead of rendering unstyled list chrome. */
+.wp-block-navigation .wp-block-page-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: inherit;
+	align-items: center;
+}
+
+.wp-block-navigation .wp-block-page-list li {
+	list-style: none;
+	display: flex;
+	align-items: center;
+}
+
+/* Nested pages render a nested <ul> — indent and keep the nav rhythm. */
+.wp-block-navigation .wp-block-page-list ul {
+	padding-inline-start: 1rem;
+	margin: 0;
+	list-style: none;
+}
+
+.wp-block-navigation .wp-block-page-list a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.wp-block-navigation .wp-block-page-list a:hover,
+.wp-block-navigation .wp-block-page-list a:focus-visible,
+.wp-block-navigation .wp-block-page-list .current-menu-item > a,
+.wp-block-navigation .wp-block-page-list .current_page_item > a {
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+
+/*--------------------------------------------------------------
+# Query Loop — defaults
+--------------------------------------------------------------*/
+
+.wp-block-query {
+	margin: 0;
+}
+
+/* Core renders the loop as a list; reset native list chrome. */
+.wp-block-post-template {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* Vertical rhythm between loop items. */
+.wp-block-post {
+	margin-bottom: var(--space-base);
+}
+
+.wp-block-post-title {
+	margin-block-start: 0;
+}

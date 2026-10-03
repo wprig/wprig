@@ -25,6 +25,7 @@ use WP_Rig\WP_Rig\Component_Interface;
 use WP_Rig\WP_Rig\Templating_Component_Interface;
 use WP_Rig\WP_Rig\Asset_Provider;
 use WP_Rig\WP_Rig\Versioning_Trait;
+use WP_Rig\WP_Rig\Sidebars;
 use WP_Rig\WP_Rig\Performance\Component as Performance_Component;
 use function WP_Rig\WP_Rig\get_asset_content;
 use function WP_Rig\WP_Rig\wp_rig;
@@ -344,39 +345,43 @@ class Component implements Component_Interface, Templating_Component_Interface {
 		}
 
 		$css_files = array(
-			'wp-rig-global'     => array(
+			'wp-rig-global'   => array(
 				'file'   => 'global.min.css',
 				'global' => true,
 			),
-			'wp-rig-comments'   => array(
+			'wp-rig-comments' => array(
 				'file'             => 'comments.min.css',
 				'preload_callback' => function () {
 					return ! post_password_required() && is_singular() && ( comments_open() || get_comments_number() );
 				},
 			),
-			'wp-rig-content'    => array(
+			'wp-rig-content'  => array(
 				'file'             => 'content.min.css',
 				'preload_callback' => '__return_true',
 			),
-			'wp-rig-sidebar'    => array(
+		);
+
+		if ( class_exists( 'WP_Rig\WP_Rig\Sidebars\Component' ) && Sidebars\Component::is_active() ) {
+			$css_files['wp-rig-sidebar'] = array(
 				'file'             => 'sidebar.min.css',
 				'preload_callback' => function () {
 					return wp_rig()->is_primary_sidebar_active();
 				},
-			),
-			'wp-rig-widgets'    => array(
+			);
+			$css_files['wp-rig-widgets'] = array(
 				'file'             => 'widgets.min.css',
 				'preload_callback' => function () {
 					return wp_rig()->is_primary_sidebar_active();
 				},
-			),
-			'wp-rig-front-page' => array(
-				'file'             => 'front-page.min.css',
-				'preload_callback' => function () {
-					global $template;
-					return 'front-page.php' === basename( $template );
-				},
-			),
+			);
+		}
+
+		$css_files['wp-rig-front-page'] = array(
+			'file'             => 'front-page.min.css',
+			'preload_callback' => function () {
+				global $template;
+				return 'front-page.php' === basename( $template );
+			},
 		);
 
 		// Aggregate manifests from components implementing Asset_Provider.

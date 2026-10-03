@@ -1,4 +1,5 @@
 ---
+name: feature-planning
 description: Contract-first approach for planning new features in WP Rig themes.
 globs: .ai/plans/**/*.md, inc/**/*.php, assets/**/*
 ---

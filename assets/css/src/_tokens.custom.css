@@ -1,0 +1,25 @@
+/**
+ * Custom Properties — hand-authored.
+ *
+ * Tokens generated from config/tokens.json live in `_tokens.generated.css`
+ * (including the generated dark-mode block). Everything in this file is yours
+ * to edit. `_custom-properties.css` imports both, in order, so generated
+ * tokens are available here.
+ *
+ * @link: https://developer.mozilla.org/en-US/docs/Web/CSS/--*
+ **/
+
+:root {
+	--dropdown-symbol-width: 0.7em;
+
+	/* Typography */
+	--global-font-size: 20;
+
+	/* Custom editor font sizes */
+	--font-size-regular: calc(var(--global-font-size) / 16 * 1rem);
+	--font-size-larger: calc(48 / var(--global-font-size) * 1rem);
+
+	/* Custom editor colors (not part of the token schema) */
+	--color-custom-daylight: #97c0b7;
+	--color-custom-sun: #eee9d1;
+}

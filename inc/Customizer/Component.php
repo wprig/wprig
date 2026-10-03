@@ -8,6 +8,7 @@
 namespace WP_Rig\WP_Rig\Customizer;
 
 use WP_Rig\WP_Rig\Component_Interface;
+use WP_Rig\WP_Rig\Paradigm_Component_Trait;
 use WP_Customize_Manager;
 
 use function WP_Rig\WP_Rig\wp_rig;
@@ -21,6 +22,10 @@ use function get_theme_file_path;
  * Class for managing Customizer integration.
  */
 class Component implements Component_Interface {
+
+	use Paradigm_Component_Trait;
+
+	const PARADIGM = 'classic';
 
 	/**
 	 * Gets the unique identifier for the theme component.

@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import c from 'ansi-colors';
 import { getAssetPath } from '../lib/utils.js';
+import { normalizeAssetEntries } from '../lib/rig-utils.js';
 
 /**
  * Validates a component for registry readiness.
@@ -30,6 +31,7 @@ export default async function testComponent( themeRoot, componentSlug ) {
 	];
 
 	let errors = 0;
+	let manifest = null;
 
 	for ( const file of requiredFiles ) {
 		const filePath = path.join( componentDir, file );
@@ -45,7 +47,7 @@ export default async function testComponent( themeRoot, componentSlug ) {
 	const manifestPath = path.join( componentDir, 'manifest.json' );
 	if ( await fs.pathExists( manifestPath ) ) {
 		try {
-			const manifest = await fs.readJson( manifestPath );
+			manifest = await fs.readJson( manifestPath );
 			const requiredFields = [
 				'slug',
 				'version',
@@ -60,6 +62,32 @@ export default async function testComponent( themeRoot, componentSlug ) {
 					errors++;
 				}
 			}
+
+			// OCR build contract (SPEC-009): paradigm is required and must be a
+			// valid tag from config/paradigms.json.
+			const validParadigms = [
+				'all',
+				'classic',
+				'universal',
+				'block-based',
+			];
+			if ( ! manifest.paradigm ) {
+				console.error(
+					c.red(
+						'✗ manifest.json: missing required field "paradigm" (all | classic | universal | block-based)'
+					)
+				);
+				errors++;
+			} else if ( ! validParadigms.includes( manifest.paradigm ) ) {
+				console.error(
+					c.red(
+						`✗ manifest.json: invalid paradigm "${
+							manifest.paradigm
+						}" — valid values: ${ validParadigms.join( ', ' ) }`
+					)
+				);
+				errors++;
+			}
 		} catch ( e ) {
 			console.error(
 				c.red( `✗ manifest.json: invalid JSON format (${ e.message })` )
@@ -69,34 +97,30 @@ export default async function testComponent( themeRoot, componentSlug ) {
 	}
 
 	// Check assets from manifest
-	if ( await fs.pathExists( manifestPath ) ) {
-		try {
-			const manifest = await fs.readJson( manifestPath );
-			if ( manifest.asset_mapping ) {
-				for ( const type in manifest.asset_mapping ) {
-					const asset = manifest.asset_mapping[ type ];
-					if ( asset.src ) {
-						const assetPath = path.resolve(
-							themeRoot,
-							getAssetPath( asset.src )
+	if ( manifest && manifest.asset_mapping ) {
+		for ( const type in manifest.asset_mapping ) {
+			for ( const asset of normalizeAssetEntries(
+				manifest.asset_mapping[ type ]
+			) ) {
+				if ( asset.src ) {
+					const assetPath = path.resolve(
+						themeRoot,
+						getAssetPath( asset.src )
+					);
+					if ( await fs.pathExists( assetPath ) ) {
+						console.log(
+							c.green( `✓ Asset ${ asset.src } exists` )
 						);
-						if ( await fs.pathExists( assetPath ) ) {
-							console.log(
-								c.green( `✓ Asset ${ asset.src } exists` )
-							);
-						} else {
-							console.error(
-								c.red(
-									`✗ Asset ${ asset.src } is missing from ${ assetPath }`
-								)
-							);
-							errors++;
-						}
+					} else {
+						console.error(
+							c.red(
+								`✗ Asset ${ asset.src } is missing from ${ assetPath }`
+							)
+						);
+						errors++;
 					}
 				}
 			}
-		} catch ( e ) {
-			// Already handled above
 		}
 	}
 
@@ -140,6 +164,42 @@ export default async function testComponent( themeRoot, componentSlug ) {
 				)
 			);
 			errors++;
+		}
+
+		// OCR build contract (SPEC-009): gated components must declare a PARADIGM
+		// const matching manifest.paradigm and use Paradigm_Component_Trait so
+		// Theme can skip them for inactive paradigms.
+		if ( manifest && manifest.paradigm && manifest.paradigm !== 'all' ) {
+			const expectedConst = `const PARADIGM = '${ manifest.paradigm }';`;
+			if ( content.includes( expectedConst ) ) {
+				console.log(
+					c.green(
+						`✓ PARADIGM const matches manifest (${ manifest.paradigm })`
+					)
+				);
+			} else {
+				console.error(
+					c.red(
+						`✗ Component.php: expected ${ expectedConst } to match manifest.paradigm`
+					)
+				);
+				errors++;
+			}
+
+			if ( content.includes( 'Paradigm_Component_Trait' ) ) {
+				console.log(
+					c.green(
+						'✓ Uses Paradigm_Component_Trait (is_active gating)'
+					)
+				);
+			} else {
+				console.error(
+					c.red(
+						'✗ Component.php: gated components must use Paradigm_Component_Trait (is_active)'
+					)
+				);
+				errors++;
+			}
 		}
 
 		// Security check: Common dangerous functions

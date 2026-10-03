@@ -1,4 +1,5 @@
 ---
+name: php-filters
 description: Guide for using custom PHP hooks and conventions in WP Rig to extend functionality.
 globs: inc/**/*.php, functions.php
 ---

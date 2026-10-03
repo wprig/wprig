@@ -1,8 +1,12 @@
 {
 	"extends": ["@wordpress/stylelint-config"],
+	"plugins": [
+		"./scripts/stylelint/plugins/no-undefined-custom-properties.js",
+		"./scripts/stylelint/plugins/no-hardcoded-colors.js"
+	],
 	"rules": {
 		"color-hex-length": "short",
-		"max-nesting-depth": 4,
+		"max-nesting-depth": 3,
 		"rule-empty-line-before": [
 			"always",
 			{
@@ -31,9 +35,20 @@
 			{
 				"ignoreAtRules": ["media", "custom-media"]
 			}
-		]
+		],
+		"selector-max-specificity": [
+			"0,4,1",
+			{
+				"message": "Selector specificity must stay within 0 IDs, 4 classes/pseudo-classes, 1 element (the C1 budget). Wrap contextual ancestors in :where() to drop specificity."
+			}
+		],
+		"declaration-no-important": true,
+		"custom-property-no-missing-var-function": true,
+		"no-descending-specificity": true,
+		"wprig/no-undefined-custom-properties": [true, { "severity": "warning" }],
+		"wprig/no-hardcoded-colors": [true, { "severity": "warning" }]
 	},
-	"ignoreFiles": ["**/vendor/**/*.css"],
+	"ignoreFiles": ["**/vendor/**/*.css", "**/_tokens.generated.css"],
 	"overrides": [
 		{
 			"files": ["**/*.scss"],

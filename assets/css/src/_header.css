@@ -32,7 +32,7 @@
 
 .site-title {
 	margin: 0 1em;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 	font-size: 38px;
 	font-weight: 700;
@@ -80,7 +80,7 @@
 
 .site-description {
 	margin: 0.4375em 0 0;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
 	font-size: 17px;
 	font-weight: inherit;
@@ -89,9 +89,20 @@
 	color: #757575;
 }
 
+div.wp-site-blocks {
+	.site-header > .wp-block-group {
+		.site-branding {
+			flex:1;
+		}
+		.main-navigation {
+			flex: 2;
+		}
+	}
+}
+
 @media (--narrow-menu-query) {
 
-	header#masthead:has(nav) {
+	.site-header:has(nav) {
 		display: grid;
 		grid-template-columns: 1fr 6fr;
 
@@ -120,7 +131,7 @@
 			border: none;
 		}
 
-		& .main-navigation.nav--toggle-sub {
+		:where(& .main-navigation.nav--toggle-sub) {
 			padding: initial;
 			margin: 1em 0;
 

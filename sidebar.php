@@ -9,7 +9,7 @@
 
 namespace WP_Rig\WP_Rig;
 
-if ( ! wp_rig()->is_primary_sidebar_active() ) {
+if ( ! class_exists( 'WP_Rig\WP_Rig\Sidebars\Component' ) || ! Sidebars\Component::is_active() || ! wp_rig()->is_primary_sidebar_active() ) {
 	return;
 }
 

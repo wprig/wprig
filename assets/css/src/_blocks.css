@@ -67,7 +67,7 @@
 }
 
 .wp-block-cover__inner-container > * {
-	max-width: var(--content-width);
+	max-width: var(--layout-content);
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -137,10 +137,10 @@ ul.wp-block-latest-posts.is-grid.alignfull {
 	grid-column: span 2;
 }
 
-.wp-block-gallery.columns-3 .blocks-gallery-item:last-child:nth-child(3n),
-.wp-block-gallery.columns-5 .blocks-gallery-item:last-child:nth-child(5n),
-.wp-block-gallery.columns-7 .blocks-gallery-item:last-child:nth-child(7n),
-.wp-block-gallery.columns-9 .blocks-gallery-item:last-child:nth-child(9n) {
+:where(.wp-block-gallery.columns-3) .blocks-gallery-item:last-child:nth-child(3n),
+:where(.wp-block-gallery.columns-5) .blocks-gallery-item:last-child:nth-child(5n),
+:where(.wp-block-gallery.columns-7) .blocks-gallery-item:last-child:nth-child(7n),
+:where(.wp-block-gallery.columns-9) .blocks-gallery-item:last-child:nth-child(9n) {
 	grid-column: span 1;
 }
 
@@ -208,4 +208,146 @@ ul.wp-block-latest-posts.is-grid.alignfull {
  */
 .is-style-optimus-hero-shell {
 	min-height: 80vh;
+}
+
+/*--------------------------------------------------------------
+# Block alignment (moved from _media.css — content-width offset)
+--------------------------------------------------------------*/
+
+@media (--content-query) {
+
+	.wp-block-image.alignright {
+		margin-right: calc((100% - var(--layout-content)) / 2);
+	}
+
+	.wp-block-image.alignleft {
+		margin-left: calc((100% - var(--layout-content)) / 2);
+	}
+
+}
+
+/*--------------------------------------------------------------
+# Search block (moved from _forms.css — dark-mode button border)
+--------------------------------------------------------------*/
+
+@media (prefers-color-scheme: dark) {
+	button.wp-block-search__button.wp-element-button {
+		border: 1px solid transparent;
+
+		&:hover {
+			border: 1px solid var(--color-border-strong);
+		}
+	}
+}
+
+/*--------------------------------------------------------------
+## Custom block colors.
+--------------------------------------------------------------*/
+
+.has-theme-primary-color {
+	color: var(--color-accent);
+}
+
+.has-theme-primary-background-color {
+	background-color: var(--color-accent);
+}
+
+.has-theme-secondary-color {
+	color: var(--color-accent-secondary);
+}
+
+.has-theme-secondary-background-color {
+	background-color: var(--color-accent-secondary);
+}
+
+.has-theme-red-color {
+	color: var(--color-red-500);
+}
+
+.has-theme-red-background-color {
+	background-color: var(--color-red-500);
+}
+
+.has-theme-green-color {
+	color: var(--color-green-500);
+}
+
+.has-theme-green-background-color {
+	background-color: var(--color-green-500);
+}
+
+.has-theme-blue-color {
+	color: var(--color-blue-500);
+}
+
+.has-theme-blue-background-color {
+	background-color: var(--color-blue-500);
+}
+
+.has-theme-yellow-color {
+	color: var(--color-yellow-500);
+}
+
+.has-theme-yellow-background-color {
+	background-color: var(--color-yellow-500);
+}
+
+.has-theme-black-color {
+	color: var(--color-neutral-900);
+}
+
+.has-theme-black-background-color {
+	background-color: var(--color-neutral-900);
+}
+
+.has-theme-grey-color {
+	color: var(--color-neutral-500);
+}
+
+.has-theme-grey-background-color {
+	background-color: var(--color-neutral-500);
+}
+
+.has-theme-white-color {
+	color: var(--color-neutral-100);
+}
+
+.has-theme-white-background-color {
+	background-color: var(--color-neutral-100);
+}
+
+.has-custom-daylight-color {
+	color: var(--color-custom-daylight);
+}
+
+.has-custom-daylight-background-color {
+	background-color: var(--color-custom-daylight);
+}
+
+.has-custom-sun-color {
+	color: var(--color-custom-sun);
+}
+
+.has-custom-sun-background-color {
+	background-color: var(--color-custom-sun);
+}
+
+/*--------------------------------------------------------------
+## Custom block font sizes.
+--------------------------------------------------------------*/
+
+.has-small-font-size {
+	font-size: var(--font-size-small);
+}
+
+.has-regular-font-size {
+	font-size: var(--font-size-regular);
+}
+
+.has-large-font-size {
+	font-size: var(--font-size-large);
+}
+
+.has-larger-font-size {
+	font-size: var(--font-size-larger);
 }

@@ -137,6 +137,8 @@ test.describe( 'Mobile Navigation Test Suite', () => {
 	} );
 
 	test.describe( 'Multiple Viewport Scenarios', () => {
+		// Hamburger toggle is hidden at >=481px (--wide-menu-query = viewport.mobile+1);
+		// above that the nav renders desktop-style (hover/submenu-toggle).
 		const viewports = [
 			{ name: 'Small Mobile', width: 375, height: 667, isMobileNav: true },
 			{ name: 'Phablet / Large Mobile', width: 412, height: 915, isMobileNav: true },
@@ -176,6 +178,25 @@ test.describe( 'Mobile Navigation Test Suite', () => {
 				}
 			} );
 		}
+	} );
+
+	test.describe( 'Viewport Boundary (G2 — hamburger toggle flips at 481px)', () => {
+		test( 'Hamburger toggle is visible at exactly 480px', async ( { page } ) => {
+			await page.setViewportSize( { width: 480, height: 800 } );
+			await injectNestedMenuFixture( page, { type: 'classic' } );
+
+			const menuToggle = page.locator( '.menu-toggle' ).first();
+			await expect( menuToggle ).toBeVisible();
+			await expect( menuToggle ).toHaveAttribute( 'aria-expanded', 'false' );
+		} );
+
+		test( 'Hamburger toggle is hidden at 481px', async ( { page } ) => {
+			await page.setViewportSize( { width: 481, height: 800 } );
+			await injectNestedMenuFixture( page, { type: 'classic' } );
+
+			const menuToggle = page.locator( '.menu-toggle' ).first();
+			await expect( menuToggle ).toBeHidden();
+		} );
 	} );
 
 	test.describe( 'Deeply Nested Submenus (Up to 5 Levels)', () => {
@@ -321,7 +342,7 @@ test.describe( 'Mobile Navigation Test Suite', () => {
 	} );
 
 	test.describe( 'Multiple Menu Item States & Developer Lock Mode', () => {
-		test( 'Validates active item state and keyboard focus navigation', async ( { page } ) => {
+		test( 'Validates active item state and keyboard focus navigation', async ( { page }, testInfo ) => {
 			await page.setViewportSize( { width: 375, height: 812 } );
 			await injectNestedMenuFixture( page, { type: 'classic' } );
 
@@ -340,8 +361,14 @@ test.describe( 'Mobile Navigation Test Suite', () => {
 			await page.keyboard.press( 'Enter' );
 			await expect( menuToggle ).toHaveAttribute( 'aria-expanded', 'true' );
 
-			// Tab into level 1 link
-			await page.keyboard.press( 'Tab' );
+			if ( testInfo.project.name === 'webkit' ) {
+				// WebKit's synthetic Tab does not move focus into the opened
+				// menu; focus the level-1 link directly to keep the assertion.
+				await page.locator( '#menu-item-l1 > a' ).focus();
+			} else {
+				// Tab into level 1 link
+				await page.keyboard.press( 'Tab' );
+			}
 			await expect( page.locator( '#menu-item-l1 > a' ) ).toBeFocused();
 		} );
 

@@ -7,7 +7,12 @@
 
 import fs from 'fs';
 import path from 'path';
+import { pathToFileURL } from 'url';
 import glob from 'fast-glob';
+import {
+	validateBlockMarkup,
+	resolveCoreBlocksPath,
+} from '../lib/validate-block-markup.js';
 
 /**
  * Run Gutenberg FSE Block Validation
@@ -18,25 +23,33 @@ export default async function runBlockValidation() {
 	const themeRoot = process.cwd();
 	const templatesPath = path.join( themeRoot, 'templates' );
 	const partsPath = path.join( themeRoot, 'parts' );
-	const coreBlocksPath = path.resolve( themeRoot, '../../../wp-includes/blocks' );
 
 	if ( ! fs.existsSync( templatesPath ) && ! fs.existsSync( partsPath ) ) {
-		console.log( 'No FSE directories (templates/ or parts/) found in theme root.' );
+		console.log(
+			'No FSE directories (templates/ or parts/) found in theme root.'
+		);
 		return true;
 	}
 
 	// Find all HTML files
-	const htmlFiles = await glob( [ 'templates/**/*.html', 'parts/**/*.html' ], {
-		cwd: themeRoot,
-		absolute: true,
-	} );
+	const htmlFiles = await glob(
+		[ 'templates/**/*.html', 'parts/**/*.html' ],
+		{
+			cwd: themeRoot,
+			absolute: true,
+		}
+	);
 
 	if ( htmlFiles.length === 0 ) {
 		console.log( 'No HTML template or part files found.' );
 		return true;
 	}
 
-	console.log( `Discovered ${htmlFiles.length} FSE block template files. Analyzing...\n` );
+	const coreBlocksPath = resolveCoreBlocksPath( themeRoot );
+
+	console.log(
+		`Discovered ${ htmlFiles.length } FSE block template files. Analyzing...\n`
+	);
 
 	let hasErrors = false;
 	let totalFilesValidated = 0;
@@ -45,105 +58,53 @@ export default async function runBlockValidation() {
 	for ( const file of htmlFiles ) {
 		const relativePath = path.relative( themeRoot, file );
 		const content = fs.readFileSync( file, 'utf-8' );
-		const lines = content.split( '\n' );
 
 		totalFilesValidated++;
 
-		// Regex to parse opening Gutenberg block comments: <!-- wp:block-name {attributes} -->
-		const blockRegex = /<!--\s*wp:([a-z0-9-]+\/?[a-z0-9-]+)\s*(\{.*?\})?\s*-->/g;
-		let match;
-		let fileHasErrors = false;
-
-		while ( ( match = blockRegex.exec( content ) ) !== null ) {
-			totalBlocksValidated++;
-
-			let blockName = match[1];
-			if ( ! blockName.includes( '/' ) ) {
-				blockName = 'core/' + blockName;
+		const { errors, warnings, validated } = validateBlockMarkup(
+			content,
+			relativePath,
+			{
+				themeRoot,
+				coreBlocksPath,
 			}
-			const attributesStr = match[2];
-			const blockSlug = blockName.split( '/' )[1];
+		);
 
-			// Find line number
-			const charIndex = match.index;
-			const lineNumber = content.substring( 0, charIndex ).split( '\n' ).length;
+		totalBlocksValidated += validated;
 
-			// Locate block.json in WordPress Core
-			const blockJsonPath = path.join( coreBlocksPath, blockSlug, 'block.json' );
-
-			if ( ! fs.existsSync( blockJsonPath ) ) {
-				// Non-core/custom blocks can be skipped or warned depending on setup
-				continue;
-			}
-
-			// Load the official schema
-			let schema;
-			try {
-				schema = JSON.parse( fs.readFileSync( blockJsonPath, 'utf-8' ) );
-			} catch ( err ) {
-				console.error( `❌ [${relativePath}:${lineNumber}] Failed to parse block.json for ${blockName}` );
-				fileHasErrors = true;
-				hasErrors = true;
-				continue;
-			}
-
-			// Parse attributes if present
-			let attributes = {};
-			if ( attributesStr ) {
-				try {
-					attributes = JSON.parse( attributesStr );
-				} catch ( err ) {
-					console.error( `❌ [${relativePath}:${lineNumber}] Invalid JSON syntax in block comments for ${blockName}: "${attributesStr}"` );
-					fileHasErrors = true;
-					hasErrors = true;
-					continue;
-				}
-			}
-
-			// Validate attributes
-			const supports = schema.supports || {};
-
-			// Check global "className" support (like core/list-item which deactivates it)
-			if ( attributes.className ) {
-				if ( supports.className === false ) {
-					console.error( `❌ [${relativePath}:${lineNumber}] Block "${blockName}" defines custom class "${attributes.className}", but custom classes are EXPLICITLY forbidden by this block's core schema supports. (Gutenberg will trigger a block recovery error!)` );
-					fileHasErrors = true;
-					hasErrors = true;
-				}
-			}
-
-			// Check global "anchor" support (allows html ID links)
-			if ( attributes.anchor ) {
-				if ( ! supports.anchor ) {
-					console.error( `❌ [${relativePath}:${lineNumber}] Block "${blockName}" defines anchor "#${attributes.anchor}", but anchors are not supported by this block.` );
-					fileHasErrors = true;
-					hasErrors = true;
-				}
-			}
-
-			// Check declared custom attributes
-			const declaredAttributes = schema.attributes || {};
-			for ( const attrKey of Object.keys( attributes ) ) {
-				// Ignore common global layout/styling keys that WordPress Core injects automatically
-				if ( [ 'className', 'anchor', 'layout', 'style', 'tagName', 'align' ].includes( attrKey ) ) {
-					continue;
-				}
-
-				if ( ! Object.prototype.hasOwnProperty.call( declaredAttributes, attrKey ) ) {
-					console.warn( `⚠️  [${relativePath}:${lineNumber}] Block "${blockName}" defines unlisted attribute "${attrKey}". Verify if this matches custom configurations or variations.` );
-				}
-			}
+		for ( const error of errors ) {
+			console.error(
+				`❌ [${ relativePath }:${ error.line }] ${ error.message }`
+			);
+			hasErrors = true;
 		}
 
-		if ( ! fileHasErrors ) {
-			console.log( `✅ [VALID] ${relativePath}` );
+		for ( const warning of warnings ) {
+			console.warn(
+				`⚠️  [${ relativePath }:${ warning.line }] ${ warning.message }`
+			);
+		}
+
+		if ( errors.length === 0 ) {
+			console.log( `✅ [VALID] ${ relativePath }` );
 		}
 	}
 
 	console.log( '\n=== Linter Execution Statistics ===' );
-	console.log( `- Files Validated:  ${totalFilesValidated}` );
-	console.log( `- Blocks Checked:   ${totalBlocksValidated}` );
-	console.log( `- Status:           ${hasErrors ? '❌ FAILED' : '🟢 PASSED'}\n` );
+	console.log( `- Files Validated:  ${ totalFilesValidated }` );
+	console.log( `- Blocks Checked:   ${ totalBlocksValidated }` );
+	console.log(
+		`- Status:           ${ hasErrors ? '❌ FAILED' : '🟢 PASSED' }\n`
+	);
 
 	return ! hasErrors;
+}
+
+const isDirectRun =
+	process.argv[ 1 ] &&
+	import.meta.url === pathToFileURL( path.resolve( process.argv[ 1 ] ) ).href;
+
+if ( isDirectRun ) {
+	const ok = await runBlockValidation();
+	process.exit( ok ? 0 : 1 );
 }

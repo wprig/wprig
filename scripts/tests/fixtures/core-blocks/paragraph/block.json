@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "core/paragraph",
+	"title": "Paragraph",
+	"category": "text",
+	"supports": {
+		"className": false,
+		"anchor": true,
+		"color": {
+			"link": true
+		}
+	},
+	"attributes": {
+		"align": {
+			"type": "string"
+		},
+		"anchor": {
+			"type": "string"
+		},
+		"dropCap": {
+			"type": "boolean",
+			"default": false
+		},
+		"backgroundColor": {
+			"type": "string"
+		},
+		"textColor": {
+			"type": "string"
+		},
+		"style": {
+			"type": "object"
+		},
+		"className": {
+			"type": "string"
+		}
+	}
+}

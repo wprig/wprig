@@ -4,9 +4,9 @@
 
 .primary-sidebar {
 	padding: 1.5rem;
-	font-family: var(--highlight-font-family);
+	font-family: var(--font-family-highlight);
 	font-stretch: condensed;
-	max-width: var(--content-width);
+	max-width: var(--layout-content);
 	margin-left: auto;
 	margin-right: auto;
 }

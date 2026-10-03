@@ -1,6 +1,7 @@
 ---
+name: agent-code-review
 description: Mandatory self-review protocol for AI agents to follow before concluding any coding task or pull request phase.
-globs: *
+globs: "*"
 ---
 
 # Agent Self-Code Review Protocol

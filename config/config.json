@@ -9,7 +9,7 @@
     "description": "A progressive theme development rig for WordPress.",
     "version": "1.0.0",
     "themeType": "classic",
-    "enableBlocks": true
+    "enableBlocks": false
   },
   "performance": {
     "cleanup_emojis": true,

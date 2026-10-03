@@ -120,7 +120,7 @@
 	box-sizing: border-box;
 	width: 100%;
 	padding: 0.5em 1em;
-	border: 1px solid var(--border-color-light);
+	border: 1px solid var(--color-border);
 	border-radius: 0;
 }
 
@@ -138,7 +138,7 @@
 
 .widget_calendar thead {
 	background: transparent;
-	color: #333;
+	color: var(--color-text);
 }
 
 .widget_calendar th {
@@ -154,8 +154,8 @@
 	padding: 0.2em;
 	font-size: 0.8em;
 	text-align: center;
-	background: #fff;
-	border: 1px solid var(--border-color-light);
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
 }
 
 .widget_calendar .pad {

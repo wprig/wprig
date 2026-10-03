@@ -151,7 +151,7 @@ const SettingsPage = () => {
 					</div>
 				) }
 			</TabPanel>
-			<div id="settings-saved">
+			<div className="settings-saved">
 				<SnackbarList notices={ snackbarNotices } />
 			</div>
 		</div>
@@ -161,7 +161,7 @@ const SettingsPage = () => {
 export default SettingsPage;
 
 const renderSettingsPage = () => {
-	const container = document.getElementById( 'wp-rig-settings-page' );
+	const container = document.querySelector( '.wp-rig-settings-page' );
 	if ( container ) {
 		const root = createRoot( container );
 		root.render( <SettingsPage /> );

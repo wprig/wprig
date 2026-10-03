@@ -1,4 +1,5 @@
 ---
+name: child-theme-development
 description: Guide for creating and managing child themes using WP Rig's "childify" script.
 globs: childify.js, package.json
 ---
@@ -27,6 +28,10 @@ The script will:
 2. Create a new directory for the child theme in the WordPress `themes/` folder.
 3. Copy the necessary assets (`style.css`, `functions.php`, `package.json`, `config/`).
 4. Set the parent theme reference in `style.css`.
+
+### Paradigm-aware child themes (3.5)
+
+`childify` inherits the parent's **paradigm intelligence**: the component keep-list is derived from the active `theme.themeType` (classic keeps the classic core; universal/block-based also keep Editor, Blocks, Block_Patterns, Block_Styles, Icons), and the keep-list is written to `inc/components-manifest.json` through the framework-native mechanism. The child's config resolves from the shared chain (`config.default.json` → `config.json`), never `config.local.json`, so local harness overrides don't leak into a shipped child.
 
 ## Architecture of WP Rig Child Themes
 

@@ -12,6 +12,7 @@ import * as process from 'node:process';
  * Internal dependencies
  */
 import { configValueDefined } from './utils.js';
+import { isFeatureEnabled } from './paradigm.js';
 
 import config from '../../config/themeConfig.js';
 
@@ -42,7 +43,6 @@ export const nameFieldDefaults = {
 	author: 'The WP Rig Contributors',
 	author_uri: 'https://wprig.io/',
 	description: 'A progressive theme development rig for WordPress.',
-	version: '3.0.1',
 	underscoreCase: 'wp_rig',
 	constant: 'WP_RIG',
 	camelCase: 'WpRig',
@@ -123,6 +123,7 @@ export const paths = {
 		src: [],
 		stringReplaceSrc: [
 			`${ rootPath }/style.css`,
+			`${ rootPath }/readme.txt`,
 			`${ rootPath }/languages/*.po`,
 		],
 	},
@@ -169,6 +170,26 @@ if ( fs.existsSync( paths.blocks.srcDir ) ) {
 	paths.export.src.push(
 		`${ paths.blocks.srcDir }/**/*`.replace( /\\/g, '/' )
 	);
+}
+
+// Add FSE/Universal theme templates, template parts, and theme.json to export when the
+// active theme type is block-capable (universal or block-based per config/paradigms.json).
+if ( isFeatureEnabled( 'block-based' ) ) {
+	if ( fs.existsSync( path.join( rootPath, 'templates' ) ) ) {
+		paths.export.src.push(
+			`${ rootPath }/templates/**/*.html`.replace( /\\/g, '/' )
+		);
+	}
+	if ( fs.existsSync( path.join( rootPath, 'parts' ) ) ) {
+		paths.export.src.push(
+			`${ rootPath }/parts/**/*.html`.replace( /\\/g, '/' )
+		);
+	}
+	if ( fs.existsSync( path.join( rootPath, 'theme.json' ) ) ) {
+		paths.export.src.push(
+			`${ rootPath }/theme.json`.replace( /\\/g, '/' )
+		);
+	}
 }
 
 // Override paths for production
